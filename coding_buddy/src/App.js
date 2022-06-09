@@ -1,11 +1,12 @@
+import React from 'react';
 import './App.css';
+
+import Sockets from './components/sockets';
 
 function App() {
   return (
     <div className="App">
-      <div>
-        DIV FROM APP.js
-      </div>
+      <Sockets />
     </div>
   );
 }
