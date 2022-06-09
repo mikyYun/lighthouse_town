@@ -26,3 +26,5 @@
 - A user can see the notification who enter / exit the chat room because they want to know who join or leave the chat
 - Add and delete Favorite people
 - 3D background or 3d map display upon entering the direct message room
+- QR code
+- user profile edit / renmae / reset password
