@@ -43,7 +43,7 @@ export default function RegistrationModel() {
         requestAnimationFrame(animate);
       }
       // animation faster
-      mixer.timeScale = "2"
+      // mixer.timeScale = "2"
       // animation stop loop
       action1.setLoop(THREE.LoopOnce)
       action2.setLoop(THREE.LoopOnce)
