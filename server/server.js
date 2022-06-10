@@ -1,4 +1,5 @@
 // npm i express nodemon socket.io
+
 // server running with nodemon : npm run dev
 const PORT = process.env.PORT || 5000;
 
@@ -15,8 +16,6 @@ const { createServer } = require("http");
 const httpServer = createServer(app);
 
 const io = Server(httpServer); // optional second params callback
-
-const randomStringGenerator = (Math.random() + 1).toString(36).substring(7);
 
 
 // someone connedted
@@ -55,14 +54,15 @@ io.on("connection", (socket) => {
 
 });
 
-
-app.get("/test", (req, res) => {
+// 서버에서 app.get 으로 가는건 서버의 루트(local..5000) / .... 으로 감
+app.get("/", (req, res) => {
   res.json({ test: "start" });
 });
-
-// app.get("/test", (req, res) => {
-//   res.json({ test: "start" });
-// });
+// path 체크.. localhost:5000/register 로 가면 콘솔, h1 테그 볼 수 있음
+app.get("/register", (req, res) => {
+  res.send('<h1>{ test: "start" }</h1>');
+  console.log("GET/REGISTER");
+});
 
 httpServer.listen(PORT, () => {
   console.log(`Server Started on port ${PORT}`);

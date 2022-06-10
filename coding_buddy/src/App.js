@@ -6,7 +6,7 @@ import Sockets from './components/sockets';
 function App() {
   return (
     <div className="App">
-      <Sockets />
+      {/* <Sockets /> */}
     </div>
   );
 }

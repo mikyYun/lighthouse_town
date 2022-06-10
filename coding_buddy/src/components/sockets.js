@@ -17,8 +17,6 @@ const socket = io.connect("http://localhost:5000", {
   rejectUnauthorized: false
 }); // same domain
 
-
-
 function Sockets() {
   const [user, setUser] = useState('');
   const [users, setUsers] = useState([]);
@@ -44,12 +42,29 @@ function Sockets() {
         prev.filter(name => name !== data)
       ));
     });
-  }, [user]);
+  }, [users]);
   // }, [socket]);
   // console.log(users);
   // console.log(user);
   return (
     <div>
+      <div>
+        <button onClick={() => {
+          // document.getElementsByClassName(".form_register").style({
+          //   display: "none"
+          // })
+          console.log("login clicked")
+        }}>
+          Login
+        </button>
+      </div>
+      <div>
+        <button onClick={() => {
+          console.log("register clicked")
+        }}>
+          Register
+        </button>
+      </div>
       <h1>
         oneUser : {user}
       </h1>
