@@ -1,11 +1,14 @@
 import React from "react";
 import { BrowserRouter, Route, Link } from "react-router-dom";
-
+const logo = require('../img/lighthouse.png')
 function Navbar() {
   return (
     <nav>
       <div className="nav_logo">
-        This is for our Logo
+          <Link to="/">
+        <img className="logo_img" src={logo} alt="Lighthouse">
+        </img>
+          </Link>
       </div>
       <div>
         <p className="nav_home">

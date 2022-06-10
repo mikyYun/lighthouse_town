@@ -51,7 +51,9 @@ io.on("connection", (socket) => {
   socket.on("CLICKED", (data) => {
     console.log("Someone has clicked the button")
   } )
-
+  socket.on("REGISTERED", (data) => {
+    console.log(data)
+  })
 });
 
 // 서버에서 app.get 으로 가는건 서버의 루트(local..5000) / .... 으로 감
