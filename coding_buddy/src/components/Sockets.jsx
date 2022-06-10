@@ -20,37 +20,37 @@ const socket = io.connect("http://localhost:5000", {
 
 
 function Sockets() {
-  const [user, setUser] = useState('');
-  const [users, setUsers] = useState([]);
-  useEffect(() => {
-    // https://socket.io/docs/v4/emit-cheatsheet/
-    // socket.on(server's first message, (server's second message)=> {...}
-    // 백앤드에서 받아옴
-    socket.on('greeting', (data) => { // to brand new user
-      // console.log('second data from server', data)
-      console.log("greeting received from server");
-      // setUser([])
-      // setUsers([])
-      setUser(prev => data.randName);
-      setUsers(prev => data.users);
-    });
-    socket.on("New User Connection", (data) => { // to all current users
-      if (!users.includes(data)) {
-        setUsers(data);
-      }
-    });
-    socket.on("DISCONNECT", (data) => {
-      setUsers(prev => (
-        prev.filter(name => name !== data)
-      ));
-    });
-  }, [user]);
+  // const [user, setUser] = useState('');
+  // const [users, setUsers] = useState([]);
+  // useEffect(() => {
+  //   // https://socket.io/docs/v4/emit-cheatsheet/
+  //   // socket.on(server's first message, (server's second message)=> {...}
+  //   // 백앤드에서 받아옴
+  //   socket.on('greeting', (data) => { // to brand new user
+  //     // console.log('second data from server', data)
+  //     console.log("greeting received from server");
+  //     // setUser([])
+  //     // setUsers([])
+  //     setUser(prev => data.randName);
+  //     setUsers(prev => data.users);
+  //   });
+  //   socket.on("New User Connection", (data) => { // to all current users
+  //     if (!users.includes(data)) {
+  //       setUsers(data);
+  //     }
+  //   });
+  //   socket.on("DISCONNECT", (data) => {
+  //     setUsers(prev => (
+  //       prev.filter(name => name !== data)
+  //     ));
+  //   });
+  // }, [user]);
   // }, [socket]);
   // console.log(users);
   // console.log(user);
   return (
     <div>
-      <h1>
+      {/* <h1>
         oneUser : {user}
       </h1>
       <h3>User List</h3>
@@ -59,7 +59,7 @@ function Sockets() {
       </p>
       <button onClick={() => socket.emit("CLICKED", 'clicked')}>
         Click Me
-      </button>
+      </button> */}
     </div>
   );
 }

@@ -20,22 +20,22 @@ const io = Server(httpServer); // optional second params callback
 
 // someone connedted
 // socket is json format
-let users = [];
 io.on("connection", (socket) => {
+  const users = {}; // only validated user data 
   // console.log('socket is ', socket)
   console.log("Someone has been connedted!");
   // first params stands for MESSAGE TYPE
-  const randName = (Math.random() + 1).toString(36).substring(2);
+  // const randName = (Math.random() + 1).toString(36).substring(2);
   // 중복이름 변경
-  const renaming = (randName) => {
-    if (users.includes(randName)) {
-      renaming();
-    } else {
-      users.push(randName);
-    }
-  };
+  // const renaming = (randName) => {
+  //   if (users.includes(randName)) {
+  //     renaming();
+  //   } else {
+  //     users.push(randName);
+  //   }
+  // };
   // https://socket.io/docs/v4/emit-cheatsheet/
-  renaming(randName);
+  // renaming(randName);
   // users = [] // users reset
   socket.emit('greeting', { randName, users }); // current user 에게만
   socket.name = randName;
@@ -51,8 +51,15 @@ io.on("connection", (socket) => {
   socket.on("CLICKED", (data) => {
     console.log("Someone has clicked the button")
   } )
+
+  // registration // 나중에 데이터테이블에 넣을 수 있게 바꿔야함
   socket.on("REGISTERED", (data) => {
+    // data = {[userData(email, name, password)], [selectedLanguages]}
     console.log(data)
+      users["name"] = data[1]
+      users["email"] = data[0]
+      users["password"] = data[2]
+      users["languagues"] = data.selectedLangueges
   })
 });
 

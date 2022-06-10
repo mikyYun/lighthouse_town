@@ -1,21 +1,31 @@
 import React from "react";
+import RegistrationChecker from "./helper/RegistrationChecker"
+
+
 // import {Outlet} from "react-router-dom";
-const { io } = require("socket.io-client");
-const socket = io.connect("http://localhost:5000", {
-  reconnectionDelay: 1000,
-  reconnection: true,
-  reconnectionAttemps: 10,
-  transports: ["websocket"],
-  agent: false,
-  upgrade: false,
-  rejectUnauthorized: false,
-}); // same domain
+// const { io } = require("socket.io-client");
+// const socket = io.connect("http://localhost:5000", {
+//   reconnectionDelay: 1000,
+//   reconnection: true,
+//   reconnectionAttemps: 10,
+//   transports: ["websocket"],
+//   agent: false,
+//   upgrade: false,
+//   rejectUnauthorized: false,
+// }); // same domain
+
 
 export default function Register() {
+  
+
   return (
     <>
-      {/* <form id="form_registration"> */}
-        <form action="/login" method="GET" id="form_registration">
+      <form action="/login" method="GET" id="form_registration"
+      //  onSubmit={(e) => {
+      //   console.log(e)
+      //   e.preventDefault();
+      // }}
+      >
         EMAIL :{" "}
         <input
           name="email"
@@ -73,33 +83,13 @@ export default function Register() {
         <br />
         <button
           type="submit"
-          onClick={() => {
+          onClick={(e) => {
             const formValues = document.querySelectorAll(
               "#form_registration input" // get all input tags in form tag
             );
-            const userData = []
-            const selectedLanguages = []
-            for (let i = 0; i < formValues.length; i ++) {
-              if (i > 3) { // programming languages
-                // if checked 
-                if (formValues[i].checked)
-                  selectedLanguages.push(formValues[i].value)
-              } else { // user data
-                // console.log(formValues[i].value)
-                userData.push(formValues[i].value)
-              }  
-            }
-            // password check
-            if (userData[2] !== userData[3]) {
-              // if password and confirmation are not matched, alert and return
-              alert('mismatched password')
-              return
-            } else {
-              // if all good, pass all datas to server
-              console.log('userData', userData)
-              console.log('languages', selectedLanguages)
-              socket.emit("REGISTERED", {userData, selectedLanguages});
-            }
+            console.log(formValues)
+            // get all data to check, and pass to the server then go to login page
+            RegistrationChecker(formValues, e)
           }}
         >
           Register
