@@ -17,8 +17,8 @@
 * A user can talk with the other coders in real-time
 * A user can see the whole message at the bottom because the user should be able to check the past chat
 * A user can show their profile when the character is clicked because the user want to build networking by showing their works and abilities
-* A user can have a private chat with one person because they want to find a coding partner
-* A user can invite other people with the link because they want to share and chat with others
+* * A user can have a private chat with one person because they want to find a coding partner
+*??? A user can invite other people with the link because they want to share and chat with others
 
 # Stretch goals
 
@@ -28,3 +28,4 @@
 - 3D background or 3d map display upon entering the direct message room
 - QR code
 - user profile edit / renmae / reset password
+- remember last location 
