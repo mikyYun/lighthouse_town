@@ -63,6 +63,10 @@ io.on("connection", (socket) => {
     users["languagues"] = data.selectedLanguages;
     console.log(users);
   });
+  // registration 성공했으면 프론트에 ok 보내줌 -> 애니메이션 실행하고 로그인페이지로... 다음에//
+  socket.emit('REGISTRATION SUCCESS', true); // current user 에게만
+
+
 });
 
 // 서버에서 app.get 으로 가는건 서버의 루트(local..5000) / .... 으로 감

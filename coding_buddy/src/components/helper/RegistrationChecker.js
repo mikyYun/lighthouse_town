@@ -15,14 +15,6 @@ export default function RegistrationChecker(val, e) {
   for (let i = 0; i < val.length; i++) {
     if (i <= 3) {
       // user data
-      // if (!val[i].value) { // empty user data
-      //   e.preventDefault();
-      //   return alert("empty input");
-      // }
-      // if (val[3].value !== userData[2]) { // failed password confirmation
-      //   e.preventDefault();
-      //   return alert("failed password confirmation");
-      // }
       userData.push(val[i].value);
     } else if (i > 3) {
       // programming languages
@@ -44,5 +36,9 @@ export default function RegistrationChecker(val, e) {
     console.log("userData", userData);
     console.log("languages", selectedLanguages);
     socket.emit("REGISTERED", { userData, selectedLanguages });
+    // const wasSuccessful = () => {
+    //   socket.on("REGISTRATION SUCCESS", (value) => value)
+    // }
+    // if (wasSuccessful) return true
   }
 }

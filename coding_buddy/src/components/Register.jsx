@@ -1,31 +1,11 @@
 import React from "react";
-import RegistrationChecker from "./helper/RegistrationChecker"
-
-
-// import {Outlet} from "react-router-dom";
-// const { io } = require("socket.io-client");
-// const socket = io.connect("http://localhost:5000", {
-//   reconnectionDelay: 1000,
-//   reconnection: true,
-//   reconnectionAttemps: 10,
-//   transports: ["websocket"],
-//   agent: false,
-//   upgrade: false,
-//   rejectUnauthorized: false,
-// }); // same domain
-
+import RegistrationChecker from "./helper/RegistrationChecker";
+import DrawCanvas from "./three/three-scene";
 
 export default function Register() {
-  
-
   return (
-    <>
-      <form action="/login" method="GET" id="form_registration"
-      //  onSubmit={(e) => {
-      //   console.log(e)
-      //   e.preventDefault();
-      // }}
-      >
+    <div>
+      <form action="/login" method="GET" id="form_registration">
         EMAIL :{" "}
         <input
           name="email"
@@ -87,15 +67,17 @@ export default function Register() {
             const formValues = document.querySelectorAll(
               "#form_registration input" // get all input tags in form tag
             );
-            console.log(formValues)
+            console.log(formValues);
             // get all data to check, and pass to the server then go to login page
-            RegistrationChecker(formValues, e)
+            // get return true from server
+            RegistrationChecker(formValues, e);
           }}
         >
           Register
         </button>
       </form>
+      <DrawCanvas />
       {/* <Outlet /> */}
-    </>
+    </div>
   );
 }
