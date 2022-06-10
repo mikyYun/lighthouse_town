@@ -48,8 +48,8 @@ export default function RegistrationModel() {
       action1.setLoop(THREE.LoopOnce)
       action2.setLoop(THREE.LoopOnce)
       // animation stop at last frame
-      action1.clampWhenFinished = true;
-      action2.clampWhenFinished = true;
+      // action1.clampWhenFinished = true;
+      // action2.clampWhenFinished = true;
       action2.play()
       action1.play()
       // animate();
