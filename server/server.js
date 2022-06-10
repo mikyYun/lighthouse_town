@@ -37,30 +37,32 @@ io.on("connection", (socket) => {
   // https://socket.io/docs/v4/emit-cheatsheet/
   // renaming(randName);
   // users = [] // users reset
-  socket.emit('greeting', { randName, users }); // current user 에게만
-  socket.name = randName;
+  // socket.emit('greeting', { randName, users }); // current user 에게만
+  // socket.name = randName;
   socket.broadcast.emit("New User Connection", users); // 전체
-  
+
   socket.on("disconnect", (data) => {
     // console.log(data)
     console.log(`${socket.name} has disconnected!!`);
-    users = users.filter(name => name !== socket.name);
-    socket.broadcast.emit("DISCONNECT", socket.name); // 전체
+    // users = users.filter(name => name !== socket.name);
+    // socket.broadcast.emit("DISCONNECT", socket.name); // 전체
   });
   // console in server
   socket.on("CLICKED", (data) => {
-    console.log("Someone has clicked the button")
-  } )
+    console.log("Someone has clicked the button");
+  });
 
   // registration // 나중에 데이터테이블에 넣을 수 있게 바꿔야함
   socket.on("REGISTERED", (data) => {
     // data = {[userData(email, name, password)], [selectedLanguages]}
-    console.log(data)
-      users["name"] = data[1]
-      users["email"] = data[0]
-      users["password"] = data[2]
-      users["languagues"] = data.selectedLangueges
-  })
+    console.log(data);
+    console.log(data.selectedLanguages);
+    users["name"] = data.userData[1];
+    users["email"] = data.userData[0];
+    users["password"] = data.userData[2];
+    users["languagues"] = data.selectedLanguages;
+    console.log(users);
+  });
 });
 
 // 서버에서 app.get 으로 가는건 서버의 루트(local..5000) / .... 으로 감
