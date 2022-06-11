@@ -4,7 +4,7 @@ import Cookies from "universal-cookie";
 
 
 const { io } = require("socket.io-client");
-const socket = io.connect("http://localhost:8000", {
+const socket = io.connect(process.env.PORT, {
   reconnectionDelay: 1000,
   reconnection: true,
   reconnectionAttemps: 10,
@@ -17,22 +17,15 @@ const socket = io.connect("http://localhost:8000", {
 
 export default function Register() {
   const cookies = new Cookies();
-
-  // document.addEventListener("click", () => {
-  // //   // get input value
-  //   const target = document.querySelectorAll("input");
-  //   // console.log(target)
-  //   target.forEach((each) => {
-  //     console.log(each.value);
-  //   });
-  //   socket.emit("login", '1');
-
+  // // 쿠키 삭제 테스트
+  // // 키 업 => 쿠키 삭제
+  // document.addEventListener("keyup", () => {
+  //   cookies.remove("test", {path: '/'})
   // });
-  // 쿠키 삭제 테스트
   return (
     <>
-      {/* <form action="/game" method="GET" id="form_login"> */}
-      <form>
+      <form action="/game" method="GET" id="form_login">
+      {/* <form> */}
         EMAIL :{" "}
         <input
           name="email"
@@ -60,10 +53,6 @@ export default function Register() {
               userData.push(each.value)
               // console.log(each.value);
             });
-            // console.log(e);
-            // const selectedLanguages = [];
-            // email, name, password length check
-            // if (userData[0].length < 1 || userData[1].length < 2 || userData[2].length < 2) {
             // if password and confirmation are not matched, alert and return
             // e.preventDefault(); // block form action
             // alert("invalid input")
@@ -79,7 +68,7 @@ export default function Register() {
             // const target = document.querySelectorAll("input");
 
             cookies.set(target[0].value, target[1].value, { path: "/" });
-            cookies.set(target[0].value, target[1].value);
+            // cookies.set(target[0].value, target[1].value);
             // console.log(cookies.get("test"));
           }}
         >
