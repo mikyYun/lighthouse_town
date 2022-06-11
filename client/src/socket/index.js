@@ -1,5 +1,14 @@
 module.exports = function (socketIo) {
 
+  // ===============  EVENT TYPES  =============== //
+
+  const SOCKET_EVENT = {
+    JOIN: "JOIN",
+    UPDATE_NICKNAME: "UPDATE_NICKNAME",
+    SEND: "SEND",
+    RECEIVE: "RECEIVE",
+  };
+
   // ===============  CONNECT  =============== //
 
   socketIo.on("connection", function (socket) {
@@ -26,7 +35,7 @@ module.exports = function (socketIo) {
       socket.join(roomName); // user를 "room 1" 방에 참가시킴.
       const responseData = {
         ...requestData,
-        type: "JOIN_ROOM",
+        type: SOCKET_EVENT.JOIN_ROOM,
         time: new Date(),
       };
       // "room 1"에는 이벤트타입과 서버에서 받은 시각을 덧붙여 데이터를 그대로 전송.
@@ -40,33 +49,22 @@ module.exports = function (socketIo) {
     socket.on("UPDATE_NICKNAME", requestData => {
       const responseData = {
         ...requestData,
-        type: "UPDATE_NICKNAME",
+        type: SOCKET_EVENT.UPDATE_NICKNAME,
         time: new Date(),
       };
       socketIo.to(roomName).emit("RECEIVE_MESSAGE", responseData);
       console.log(`UPDATE_NICKNAME is fired with data: ${JSON.stringify(responseData)}`);
     });
 
-    socket.on("SEND_MESSAGE", requestData => {
-      const responseData = {
-        ...requestData,
-        type: "SEND_MESSAGE",
-        time: new Date(),
-      };
-      socketIo.to(roomName).emit("RECEIVE_MESSAGE", responseData);
-      console.log(`SEND_MESSAGE is fired with data: ${JSON.stringify(responseData)}`);
-    });
-
     // --------------- SEND MESSAGE --------------- //
-
-    socket.on("SEND_MESSAGE", requestData => {
+    socket.on(SOCKET_EVENT.SEND_MESSAGE, requestData => {
       const responseData = {
         ...requestData,
-        type: "SEND_MESSAGE",
+        type: SOCKET_EVENT.SEND_MESSAGE,
         time: new Date(),
       };
-      socketIo.to(roomName).emit("RECEIVE_MESSAGE", responseData);
-      console.log(`SEND_MESSAGE is fired with data: ${JSON.stringify(responseData)}`);
+      socketIo.to(roomName).emit(SOCKET_EVENT.RECEIVE_MESSAGE, responseData);
+      console.log(`${SOCKET_EVENT.SEND_MESSAGE} is fired with data: ${JSON.stringify(responseData)}`);
     });
 
     // ===============  DISCONNECT  =============== //
