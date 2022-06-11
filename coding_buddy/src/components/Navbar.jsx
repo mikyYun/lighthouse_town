@@ -26,6 +26,9 @@ function Navbar() {
         <p className="nav_login">
           <Link to="/login">Login</Link>
         </p>
+        <p className="nav_logout">
+          <Link to="/">Logout</Link>
+        </p>
       </div>
     </nav>
   );

@@ -1,7 +1,7 @@
 import React from "react";
 // import React, { useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
-// import { OrbitControls } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 // import { Physics } from "@react-three/cannon";
 // import * as THREE from "three";
 // import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -18,6 +18,7 @@ import RegistrationModel from "./registrationModel";
 export default function DrawCanvas(props) {
   console.log(props)
   return <Canvas>
+    <OrbitControls />
     <pointLight visible={true} intensity={1} />
     <RegistrationModel />
   </Canvas>;

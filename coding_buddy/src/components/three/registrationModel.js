@@ -22,12 +22,14 @@ export default function RegistrationModel() {
   const [model, setModel] = useState();
   useEffect(() => {
     new GLTFLoader().load(filePath, gltf => {
+      // 보이는 화면 회전
+      gltf.scene.rotation._x = -0.2
       console.log(gltf);
       const scale = gltf.scene.scale;
       gltf.scene.traverse(child => {
         child.castShadow = true;
       });
-      scale.set(0.9, 0.9, 0.9);
+      scale.set(1.3,1.3,1.3);
       mixer = new THREE.AnimationMixer(gltf.scene);
       const clips = gltf.animations;
       const clip1 = THREE.AnimationClip.findByName(clips, "Text.001Action")

@@ -4,7 +4,7 @@ import DrawCanvas from "./three/three-scene";
 
 export default function Register() {
   return (
-    <div>
+    <div className="div_relative">
       <form action="/login" method="GET" id="form_registration">
         EMAIL :{" "}
         <input
@@ -61,6 +61,17 @@ export default function Register() {
           <br />
         </ul>
         <br />
+        AVATAR :
+        <ul>
+          <input type="checkbox" id="man" value="M" />
+          <label>M</label>
+          <br />
+          <input type="checkbox" id="woman" value="W" />
+          <label>W</label>
+          <br />
+          
+        </ul>
+        <br />
         <button
           type="submit"
           onClick={(e) => {
@@ -75,8 +86,11 @@ export default function Register() {
         >
           Register
         </button>
+        이미지 마우스로 화면전환 가능
       </form>
+      <div className="div_canvas">
       <DrawCanvas />
+      </div>
       {/* <Outlet /> */}
     </div>
   );

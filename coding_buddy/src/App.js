@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Cookies from 'universal-cookie'
+// import Cookies from 'universal-cookie'
 
 
 // import Navbar from './components/Navbar';
@@ -29,6 +29,7 @@ function App() {
         <Route path='/' element={<Layout />} />
         <Route path='/register' element={<Register />} />
         <Route path='/login' element={<Login />} />
+        {/* <Route path='/login' element="Logout" /> */}
         <Route path='/sockets' element={<Sockets />} />
         <Route path='/game' element={<Game />} />
       </Routes>

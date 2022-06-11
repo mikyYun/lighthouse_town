@@ -1,5 +1,5 @@
 const { io } = require("socket.io-client");
-const socket = io.connect("http://localhost:5000", {
+const socket = io.connect("http://localhost:8000", {
   reconnectionDelay: 1000,
   reconnection: true,
   reconnectionAttemps: 10,
@@ -8,6 +8,7 @@ const socket = io.connect("http://localhost:5000", {
   upgrade: false,
   rejectUnauthorized: false,
 }); // same domain
+// import socket from "../Sockets";
 
 export default function RegistrationChecker(val, e) {
   const userData = [];
