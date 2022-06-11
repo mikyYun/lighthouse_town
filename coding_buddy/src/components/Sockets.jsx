@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 const { io } = require("socket.io-client");
 // console.log(io)
 // ip connect to server
-const socket = io.connect("http://localhost:8000", {
+const socket = io.connect("http://localhost:5000", {
   reconnectionDelay: 1000,
   reconnection: true,
   reconnectionAttemps: 10,

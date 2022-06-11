@@ -23,7 +23,7 @@ const io = Server(httpServer); // optional second params callback
 io.on("connection", (socket) => {
   const users = {}; // only validated user data 
   // console.log('socket is ', socket)
-  console.log("Someone has been connedted!");
+  console.log("Someone has been connected!");
   // first params stands for MESSAGE TYPE
   // const randName = (Math.random() + 1).toString(36).substring(2);
   // 중복이름 변경
