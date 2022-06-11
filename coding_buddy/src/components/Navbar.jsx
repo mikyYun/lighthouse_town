@@ -6,7 +6,13 @@ const logo = require("../img/lighthouse.png");
 function Navbar() {
   const cookies = new Cookies();
   const currentCookie = Object.keys(cookies.getAll());
-  
+  // if (window !== undefined) {
+    window.addEventListener("unload", () => {
+      currentCookie.forEach(each => {
+        cookies.remove(each, {path: "/"})
+      })
+    })
+  // }
   // 쿠키 삭제 테스트
   // 키 업 => 쿠키 삭제
   // document.addEventListener("keyup", () => {
