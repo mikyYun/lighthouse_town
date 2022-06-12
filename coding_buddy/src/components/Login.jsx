@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Cookies from "universal-cookie";
-import { loginHandler } from "./helper/registrationChecker";
+import { loginHandler } from "./helper/RegistrationChecker";
 
 const { io } = require("socket.io-client");
 const socket = io.connect("http://localhost.8000", {

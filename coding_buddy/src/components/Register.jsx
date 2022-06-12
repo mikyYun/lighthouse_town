@@ -1,5 +1,5 @@
 import React from "react";
-import { registrationChecker } from "./helper/registrationChecker";
+import { registrationChecker } from "./helper/RegistrationChecker";
 import DrawCanvas from "./three/three-scene";
 const { io } = require("socket.io-client");
 const socket = io.connect("http://localhost.8000", {
