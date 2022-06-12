@@ -47,19 +47,11 @@ const Canvas = (props) => {
     image: mapImg
   })
 
-  const keys = {
-    w: {
-      pressed: false
-    },
-    a: {
-      pressed: false
-    },
-    s: {
-      pressed: false
-    },
-    d: {
-      pressed: false
-    }
+  const keyPressed = {
+    w: false,
+    a: false,
+    s: false,
+    d: false
   }
 
   // keypress for movement
@@ -70,50 +62,32 @@ const Canvas = (props) => {
   window.addEventListener('keydown', (e) => {
     switch(e.key){
       case "w":
-      // case "ArrowUp":
-        keys.w.pressed = true;
+        keyPressed.w = true;
         positionY -= movement_speed;
         break
       case "a":
-      // case "ArrowLeft":
-        keys.a.pressed = true;
+        keyPressed.a = true;
         positionX -= movement_speed;
-        break
+      break
       case "s":
-      // case "ArrowDown":
-        keys.s.pressed = true;
+        keyPressed.s = true;
         positionY += movement_speed;
         break
       case "d":
-      // case "ArrowRight":
-        keys.d.pressed = true;
+        keyPressed.d = true;
         positionX += movement_speed;
         break
     }
-  });
+  })
 
-
-  window.addEventListener('keyup', (e) => {
+  window.addEventListener('keydown', (e) => {
     switch(e.key){
-      case "w":
-      // case "ArrowUp":
-        keys.w.pressed = false;
-        break
-      case "a":
-      // case "ArrowLeft":
-        keys.a.pressed = false;
-        break
-      case "s":
-      // case "ArrowDown":
-        keys.s.pressed = false;
-        break
-      case "d":
-      // case "ArrowRight":
-        keys.d.pressed = false;
-        break
+      case "w": keyPressed.w = false; break
+      case "a": keyPressed.a = false; break
+      case "s": keyPressed.s = false; break
+      case "d": keyPressed.d = false; break
     }
   });
-
 
   const width = 62;
   const height = 62;
@@ -140,6 +114,7 @@ const Canvas = (props) => {
 
 
   function step() {
+
     frameCount++;
     if (frameCount < 15) {
       window.requestAnimationFrame(step);
@@ -155,12 +130,12 @@ const Canvas = (props) => {
     }
     window.requestAnimationFrame(step);
   }
+  window.requestAnimationFrame(step);
 
-
-mapImg.onload = () => {
-  background.draw();
-  step()
-}
+// mapImg.onload = () => {
+//   background.draw();
+//   step()
+// }
 
 
 
