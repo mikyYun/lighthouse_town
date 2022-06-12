@@ -58,39 +58,67 @@ const Canvas = (props) => {
   const movement_speed = 5;
   let positionX = 0;
   let positionY = 0;
+  const facing = {
+    up: 3,
+    down: 0,
+    left: 1,
+    right: 2
+  }
+  let currentDirection = facing.down
+  let isMoving = false;
 
   window.addEventListener('keydown', (e) => {
     switch(e.key){
       case "w":
         keyPressed.w = true;
         positionY -= movement_speed;
+        currentDirection = facing.up;
+        isMoving = true;
         break
       case "a":
         keyPressed.a = true;
         positionX -= movement_speed;
-      break
+        currentDirection = facing.left;
+        isMoving = true;
+        break
       case "s":
         keyPressed.s = true;
         positionY += movement_speed;
+        currentDirection = facing.down;
+        isMoving = true;
         break
       case "d":
         keyPressed.d = true;
         positionX += movement_speed;
+        currentDirection = facing.right;
+        isMoving = true;
         break
     }
   })
 
-  window.addEventListener('keydown', (e) => {
+  window.addEventListener('keyup', (e) => {
     switch(e.key){
-      case "w": keyPressed.w = false; break
-      case "a": keyPressed.a = false; break
-      case "s": keyPressed.s = false; break
-      case "d": keyPressed.d = false; break
+      case "w":
+        keyPressed.w = false
+        isMoving = false;
+        break
+      case "a":
+        keyPressed.a = false;
+        isMoving = false;
+        break
+      case "s":
+        keyPressed.s = false;
+        isMoving = false;
+        break
+        case "d":
+        keyPressed.d = false;
+        isMoving = false;
+        break
     }
   });
 
-  const width = 62;
-  const height = 62;
+  const width = 63.5;
+  const height = 63.5;
   const drawFrame = (frameX, frameY, canvasX, canvasY) => {
     ctx.drawImage(girlImg,
       frameX * width, frameY * height,
@@ -99,43 +127,33 @@ const Canvas = (props) => {
       width, height
     )
   }
-  // walk frames
-  // remove the first frame and draw second frame
-
-  // drawFrame(0,0,0,0);
-  // drawFrame(1,0,1,0);
-  // drawFrame(2,0,2,0);
-  // drawFrame(3,0,3,0);
 
   //making animation loop
   const cycleLoop = [0,1,2,3];
   let currentLoopIndex = 0;
   let frameCount = 0;
-
+  let framelimit = 12;
 
   function step() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    frameCount++;
-    if (frameCount < 15) {
-      window.requestAnimationFrame(step);
-      return;
+    if (isMoving) {
+      frameCount++;
+      if (frameCount >= framelimit) {
+        frameCount = 0;
+        currentLoopIndex++;
+        if (currentLoopIndex >= cycleLoop.length) {
+          currentLoopIndex = 0;
+        }
+      }
     }
 
-    frameCount = 0;
     background.draw() && ctx.clearRect(0,0, canvas.width, canvas.height);
-    drawFrame(cycleLoop[currentLoopIndex],0,positionX,positionY);
-    currentLoopIndex++;
-    if (currentLoopIndex >= cycleLoop.length) {
-      currentLoopIndex = 0;
-    }
+    drawFrame(cycleLoop[currentLoopIndex],currentDirection,positionX,positionY);
+
     window.requestAnimationFrame(step);
   }
   window.requestAnimationFrame(step);
-
-// mapImg.onload = () => {
-//   background.draw();
-//   step()
-// }
 
 
 
