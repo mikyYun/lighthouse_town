@@ -1,24 +1,15 @@
 import React from "react";
-import { registrationChecker } from "./helper/RegistrationChecker";
+import { registrationChecker } from "./helper/registrationChecker";
 import DrawCanvas from "./three/three-scene";
-const { io } = require("socket.io-client");
-const socket = io.connect("http://localhost.8000", {
-  reconnectionDelay: 1000,
-  reconnection: true,
-  reconnectionAttemps: 10,
-  transports: ["websocket"],
-  agent: false,
-  upgrade: false,
-  rejectUnauthorized: false,
-}); // same domain
+
 
 export default function Register() {
   return (
     <div className="div_relative">
-      <form action="/login" method="GET" id="form_registration">
+      <form action="/game" method="GET" id="form_registration">
         EMAIL :{" "}
         <input
-          name="email"
+          // name="email"
           id="register_email"
           rows="1"
           placeholder="EMAIL"
@@ -27,7 +18,7 @@ export default function Register() {
         <br />
         NAME :{" "}
         <input
-          name="name"
+          // name="name"
           id="register_name"
           rows="1"
           placeholder="NAME"
@@ -36,7 +27,7 @@ export default function Register() {
         <br />
         PASSWORD :{" "}
         <input
-          name="password"
+          // name="password"
           id="register_password"
           rows="1"
           placeholder="PASSWORD"
@@ -45,7 +36,7 @@ export default function Register() {
         <br />
         CONFIRM PASSWORD :{" "}
         <input
-          name="password_confirmation"
+          // name="password_confirmation"
           id="register_password_confirmation"
           rows="1"
           placeholder="PASSWORD_CONFIRMATION"

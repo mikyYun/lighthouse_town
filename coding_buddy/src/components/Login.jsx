@@ -1,18 +1,8 @@
 import { useState } from "react";
 import Cookies from "universal-cookie";
-import { loginHandler } from "./helper/RegistrationChecker";
+import { loginHandler } from "./helper/registrationChecker";
+import { Routes, Route } from "react-router-dom";
 
-const { io } = require("socket.io-client");
-const socket = io.connect("http://localhost.8000", {
-  reconnectionDelay: 1000,
-  reconnection: true,
-  reconnectionAttemps: 10,
-  transports: ["websocket"],
-  agent: false,
-  upgrade: false,
-  rejectUnauthorized: false,
-}); // same domain
-// import {Outlet} from "react-router-dom";
 
 export default function Login() {
   const [userEmail, setUserEmail] = useState("");
@@ -22,10 +12,10 @@ export default function Login() {
 
   return (
     <>
-      <form id="form_login" action="/game">
-        {/* onSubmit={(e) => e.preventDefault()} */}
+      <form id="form_login" action="/game" method="GET"  runat="server">
+      {/* onSubmit={(e) => e.preventDefault()} */}
         <input
-          name="email"
+          // name="email"
           id="register_email"
           rows="1"
           placeholder="EMAIL"
@@ -39,7 +29,7 @@ export default function Login() {
         <br />
         PASSWORD :{" "}
         <input
-          name="password"
+          // name="password"
           id="register_password"
           rows="1"
           placeholder="PASSWORD"
@@ -51,23 +41,24 @@ export default function Login() {
           }}
         ></input>
         <br />
-        <button
-          // type="submit"
-          onClick={(e) => {
-            console.log("CLICKED");
-            const userDataForCookies = loginHandler({
-              userEmail,
-              userPassword,
-            });
-            console.log("got response", userDataForCookies);
-            console.log("setting cookies");
-            cookies.set("email", userEmail);
-            cookies.set("password", userPassword);
-            // socket.emit("LOGIN", { userData }).catch(err => console.log(err))
-            // <Redirect to="/game" />;
-            // 데이터 validation ... is true? else preventdefault
-          }}
-        >
+          <button
+            type="submit"
+            onClick={(e) => {
+              console.log("CLICKED");
+              const userDataForCookies = loginHandler({
+                userEmail,
+                userPassword,
+              });
+              console.log("got response", userDataForCookies);
+              console.log("setting cookies");
+              cookies.set("email", userEmail);
+              cookies.set("password", userPassword);
+
+              // socket.emit("LOGIN", { userData }).catch(err => console.log(err))
+              // <Redirect to="/game" />;
+              // 데이터 validation ... is true? else preventdefault
+            }}
+          >
           Login
         </button>
       </form>
