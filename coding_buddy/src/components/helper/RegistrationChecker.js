@@ -10,7 +10,9 @@ const socket = io.connect("http://localhost:8000", {
 }); // same domain
 // import socket from "../Sockets";
 
-export default function RegistrationChecker(val, e) {
+export function registrationChecker(val, e) {
+  console.log("TEST");
+  socket.emit("LOGIN", val);
   const userData = [];
   const selectedLanguages = [];
   for (let i = 0; i < val.length; i++) {
@@ -28,18 +30,24 @@ export default function RegistrationChecker(val, e) {
   if (userData[0].length < 1 || userData[1].length < 2 || userData[2].length < 2) {
     // if password and confirmation are not matched, alert and return
     e.preventDefault(); // block form action
-    alert("invalid input")
+    alert("invalid input");
   } else if (userData[2] !== userData[3]) {
     e.preventDefault(); // block form action
     alert("mismatched password");
   } else {
     // if all good, pass all datas to server
+
     console.log("userData", userData);
     console.log("languages", selectedLanguages);
     socket.emit("REGISTERED", { userData, selectedLanguages });
-    // const wasSuccessful = () => {
-    //   socket.on("REGISTRATION SUCCESS", (value) => value)
-    // }
-    // if (wasSuccessful) return true
   }
 }
+
+export function loginHandler(loginUserData) {
+  socket.emit("LOGIN", { userData: loginUserData })
+  return (socket.on("SUCCESS", (msg) => {
+    // console.log(msg)
+  }))
+  
+}
+

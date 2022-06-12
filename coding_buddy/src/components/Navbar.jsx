@@ -6,18 +6,10 @@ const logo = require("../img/lighthouse.png");
 function Navbar() {
   const cookies = new Cookies();
   const currentCookie = Object.keys(cookies.getAll());
-  // if (window !== undefined) {
-    window.addEventListener("unload", () => {
-      currentCookie.forEach(each => {
-        cookies.remove(each, {path: "/"})
-      })
-    })
-  // }
+
   // 쿠키 삭제 테스트
   // 키 업 => 쿠키 삭제
-  // document.addEventListener("keyup", () => {
-  //   cookies.remove("test", {path: '/'})
-  // });
+
   return (
     <nav>
       <div className="nav_logo">
@@ -26,6 +18,7 @@ function Navbar() {
         </Link>
       </div>
       <div>
+        <a href="djsaf.facebook.sdfkajle"></a>
         <p className="nav_home">
           <Link to="/">Home</Link>
         </p>
@@ -41,7 +34,7 @@ function Navbar() {
         <p className="nav_login">
           <Link to="/login">Login</Link>
         </p>
-        <p className="nav_logout">
+        {/* <p className="nav_logout"> */}
           <form method="get" action="/">
             <button onClick={() => {
               // 원하는 유저 쿠키만 삭제 : currentCookies[index]
@@ -59,7 +52,7 @@ function Navbar() {
               Logout
             </button>
           </form>
-        </p>
+        {/* </p> */}
       </div>
     </nav>
   );

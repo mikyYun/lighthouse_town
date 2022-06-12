@@ -1,6 +1,16 @@
 import React from "react";
-import RegistrationChecker from "./helper/RegistrationChecker";
+import { registrationChecker } from "./helper/registrationChecker";
 import DrawCanvas from "./three/three-scene";
+const { io } = require("socket.io-client");
+const socket = io.connect("http://localhost.8000", {
+  reconnectionDelay: 1000,
+  reconnection: true,
+  reconnectionAttemps: 10,
+  transports: ["websocket"],
+  agent: false,
+  upgrade: false,
+  rejectUnauthorized: false,
+}); // same domain
 
 export default function Register() {
   return (
@@ -69,7 +79,6 @@ export default function Register() {
           <input type="checkbox" id="woman" value="W" />
           <label>W</label>
           <br />
-          
         </ul>
         <br />
         <button
@@ -81,7 +90,8 @@ export default function Register() {
             console.log(formValues);
             // get all data to check, and pass to the server then go to login page
             // get return true from server
-            RegistrationChecker(formValues, e);
+            // socket.emit("LOGIN", "REGITSRATION casdfals")
+            registrationChecker(formValues, e);
           }}
         >
           Register
@@ -89,7 +99,7 @@ export default function Register() {
         이미지 마우스로 화면전환 가능
       </form>
       <div className="div_canvas">
-      <DrawCanvas />
+        <DrawCanvas />
       </div>
       {/* <Outlet /> */}
     </div>

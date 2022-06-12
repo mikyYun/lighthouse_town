@@ -1,10 +1,9 @@
-import React from "react";
+import { useState } from "react";
 import Cookies from "universal-cookie";
-
-
+import { loginHandler } from "./helper/registrationChecker";
 
 const { io } = require("socket.io-client");
-const socket = io.connect(process.env.PORT, {
+const socket = io.connect("http://localhost.8000", {
   reconnectionDelay: 1000,
   reconnection: true,
   reconnectionAttemps: 10,
@@ -15,24 +14,27 @@ const socket = io.connect(process.env.PORT, {
 }); // same domain
 // import {Outlet} from "react-router-dom";
 
-export default function Register() {
+export default function Login() {
+  const [userEmail, setUserEmail] = useState("");
+  const [userPassword, setUserPassword] = useState("");
+
   const cookies = new Cookies();
-  // // 쿠키 삭제 테스트
-  // // 키 업 => 쿠키 삭제
-  // document.addEventListener("keyup", () => {
-  //   cookies.remove("test", {path: '/'})
-  // });
+
   return (
     <>
-      <form action="/game" method="GET" id="form_login">
-      {/* <form> */}
-        EMAIL :{" "}
+      <form id="form_login" action="/game">
+        {/* onSubmit={(e) => e.preventDefault()} */}
         <input
           name="email"
           id="register_email"
           rows="1"
           placeholder="EMAIL"
-          typeof="email"
+          type="email"
+          value={userEmail}
+          onChange={(e) => {
+            console.log(e.target.value);
+            setUserEmail(e.target.value);
+          }}
         ></input>
         <br />
         PASSWORD :{" "}
@@ -42,40 +44,33 @@ export default function Register() {
           rows="1"
           placeholder="PASSWORD"
           type="password"
+          value={userPassword}
+          onChange={(e) => {
+            console.log(e.target.value);
+            setUserPassword(e.target.value);
+          }}
         ></input>
         <br />
         <button
+          // type="submit"
           onClick={(e) => {
-            const userData = []
-            const target = document.querySelectorAll("input");
-            // console.log(target)
-            target.forEach((each) => {
-              userData.push(each.value)
-              // console.log(each.value);
+            console.log("CLICKED");
+            const userDataForCookies = loginHandler({
+              userEmail,
+              userPassword,
             });
-            // if password and confirmation are not matched, alert and return
-            // e.preventDefault(); // block form action
-            // alert("invalid input")
-            // } else if (userData[2] !== userData[3]) {
-            // e.preventDefault(); // block form action
-            // alert("mismatched password");
-            // } else {
-            // if all good, pass all datas to server
-            // console.log("userData", userData);
-            socket.emit("login", userData);
+            console.log("got response", userDataForCookies);
+            console.log("setting cookies");
+            cookies.set("email", userEmail);
+            cookies.set("password", userPassword);
+            // socket.emit("LOGIN", { userData }).catch(err => console.log(err))
+            // <Redirect to="/game" />;
             // 데이터 validation ... is true? else preventdefault
-            // 쿠키 세팅
-            // const target = document.querySelectorAll("input");
-
-            cookies.set(target[0].value, target[1].value, { path: "/" });
-            // cookies.set(target[0].value, target[1].value);
-            // console.log(cookies.get("test"));
           }}
         >
           Login
         </button>
       </form>
-      {/* <Outlet /> */}
     </>
   );
 }
