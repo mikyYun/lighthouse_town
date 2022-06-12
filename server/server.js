@@ -47,7 +47,7 @@ io.on("connection", (socket) => {
 
 
   const users = {}; // only validated user data 나중에 데이터베이스로..
-  console.log("Someone has been connedted!");
+  console.log("Someone has been connected!");
   socket.broadcast.emit("New User Connection", users); // 전체
 
   socket.on("disconnect", (data) => {
