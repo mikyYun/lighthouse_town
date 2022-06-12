@@ -69,6 +69,7 @@ io.on("connection", (socket) => {
 });
 
 // 서버에서 app.get 으로 가는건 서버의 루트(local..5000) / .... 으로 감
+// front: 3000, be: 8000 or 5000
 app.get("/", (req, res) => {
   res.json({ test: "start" });
 });
