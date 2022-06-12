@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import mapImage from './game_img/town-map.png'
 import girlImage from './game_img/girl1.png'
+import Sprite from "./helper/Sprite";
 
 const Canvas = (props) => {
   const canvasRef = useRef(null)
@@ -19,23 +20,154 @@ const Canvas = (props) => {
   ctx.fillStyle = 'white';
   ctx.fillRect(0,0, canvas.width, canvas.height);
 
-  const map = new Image();
-  map.src = mapImage
-  const girl = new Image();
-  girl.src = girlImage
+  const mapImg = new Image();
+  mapImg.src = mapImage
+  const girlImg = new Image();
+  girlImg.src = girlImage
 
-  map.onload = () => {
-    ctx.drawImage(map ,0,0)
-    ctx.drawImage(girl,
-      0,0,
-      62,62,
-      165, 150,
-      62,62
-      )
+  class Sprite {
+    constructor({ position, velocity, image
+    }) {
+      this.positionX = position.x
+      this.positionY = position.y
+      this.image = image
     }
+
+    draw() {
+      ctx.drawImage(this.image ,this.positionX, this.positionY)
+    }
+  };
+
+  // make new Sprites
+  const background = new Sprite({
+    position: {
+      x: 0,
+      y: 0
+    },
+    image: mapImg
+  })
+
+  const keys = {
+    w: {
+      pressed: false
+    },
+    a: {
+      pressed: false
+    },
+    s: {
+      pressed: false
+    },
+    d: {
+      pressed: false
+    }
+  }
+
+  // keypress for movement
+  const movement_speed = 5;
+  let positionX = 0;
+  let positionY = 0;
+
+  window.addEventListener('keydown', (e) => {
+    switch(e.key){
+      case "w":
+      // case "ArrowUp":
+        keys.w.pressed = true;
+        positionY -= movement_speed;
+        break
+      case "a":
+      // case "ArrowLeft":
+        keys.a.pressed = true;
+        positionX -= movement_speed;
+        break
+      case "s":
+      // case "ArrowDown":
+        keys.s.pressed = true;
+        positionY += movement_speed;
+        break
+      case "d":
+      // case "ArrowRight":
+        keys.d.pressed = true;
+        positionX += movement_speed;
+        break
+    }
+  });
+
+
+  window.addEventListener('keyup', (e) => {
+    switch(e.key){
+      case "w":
+      // case "ArrowUp":
+        keys.w.pressed = false;
+        break
+      case "a":
+      // case "ArrowLeft":
+        keys.a.pressed = false;
+        break
+      case "s":
+      // case "ArrowDown":
+        keys.s.pressed = false;
+        break
+      case "d":
+      // case "ArrowRight":
+        keys.d.pressed = false;
+        break
+    }
+  });
+
+
+  const width = 62;
+  const height = 62;
+  const drawFrame = (frameX, frameY, canvasX, canvasY) => {
+    ctx.drawImage(girlImg,
+      frameX * width, frameY * height,
+      width, height,
+      165 + canvasX, 150 + canvasY,
+      width, height
+    )
+  }
+  // walk frames
+  // remove the first frame and draw second frame
+
+  // drawFrame(0,0,0,0);
+  // drawFrame(1,0,1,0);
+  // drawFrame(2,0,2,0);
+  // drawFrame(3,0,3,0);
+
+  //making animation loop
+  const cycleLoop = [0,1,2,3];
+  let currentLoopIndex = 0;
+  let frameCount = 0;
+
+
+  function step() {
+    frameCount++;
+    if (frameCount < 15) {
+      window.requestAnimationFrame(step);
+      return;
+    }
+
+    frameCount = 0;
+    background.draw() && ctx.clearRect(0,0, canvas.width, canvas.height);
+    drawFrame(cycleLoop[currentLoopIndex],0,positionX,positionY);
+    currentLoopIndex++;
+    if (currentLoopIndex >= cycleLoop.length) {
+      currentLoopIndex = 0;
+    }
+    window.requestAnimationFrame(step);
+  }
+
+
+mapImg.onload = () => {
+  background.draw();
+  step()
+}
+
+
 
 
 }, [])
+
+
 
   return (
     <>
