@@ -22,36 +22,38 @@ export default function RegistrationModel() {
   const [model, setModel] = useState();
   useEffect(() => {
     new GLTFLoader().load(filePath, gltf => {
+      // 보이는 화면 회전
+      gltf.scene.rotation._x = -0.2;
       console.log(gltf);
       const scale = gltf.scene.scale;
       gltf.scene.traverse(child => {
         child.castShadow = true;
       });
-      scale.set(0.9, 0.9, 0.9);
+      scale.set(1.3, 1.3, 1.3);
       mixer = new THREE.AnimationMixer(gltf.scene);
       const clips = gltf.animations;
-      const clip1 = THREE.AnimationClip.findByName(clips, "Text.001Action")
-      const clip2 = THREE.AnimationClip.findByName(clips, "ArmatureAction")
-      
-      const action1 = mixer.clipAction(clip1)
-      const action2 = mixer.clipAction(clip2)
+      const clip1 = THREE.AnimationClip.findByName(clips, "Text.001Action");
+      const clip2 = THREE.AnimationClip.findByName(clips, "ArmatureAction");
+
+      const action1 = mixer.clipAction(clip1);
+      const action2 = mixer.clipAction(clip2);
       console.log(mixer);
       setModel(gltf);
       scene.add(gltf.scene);
       animate = () => {
         mixer.update(clock.getDelta());
         requestAnimationFrame(animate);
-      }
+      };
       // animation faster
-      // mixer.timeScale = "2"
+      mixer.timeScale = "0.8";
       // animation stop loop
-      // action1.setLoop(THREE.LoopOnce)
-      // action2.setLoop(THREE.LoopOnce)
+      action1.setLoop(THREE.LoopOnce);
+      action2.setLoop(THREE.LoopOnce);
       // animation stop at last frame
-      // action1.clampWhenFinished = true;
-      // action2.clampWhenFinished = true;
-      action2.play()
-      action1.play()
+      action1.clampWhenFinished = true;
+      action2.clampWhenFinished = true;
+      action2.play();
+      action1.play();
       // animate();
 
     }, () => {
@@ -65,8 +67,8 @@ export default function RegistrationModel() {
     const clock = new THREE.Clock();
 
     document.addEventListener("click", () => {
-      animate()
-    })
+      animate();
+    });
 
   }, []);
 
