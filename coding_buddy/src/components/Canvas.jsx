@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import mapImage from './game_img/town-map.png'
 import girlImage from './game_img/girl1.png'
-import Sprite from "./helper/Sprite";
+import Characters from "./helper/Characters";
+import boyImage from './game_img/boy1.png'
 
 const Canvas = (props) => {
   const canvasRef = useRef(null)
@@ -17,18 +18,6 @@ const Canvas = (props) => {
 
   const mapImg = new Image();
   mapImg.src = mapImage
-  const girlImg = new Image();
-  girlImg.src = girlImage
-
-
-  // make new Sprites
-  const background = new Sprite({
-    position: {
-      x: 0,
-      y: 0
-    },
-    image: mapImg
-  })
 
   const keyPressed = {
     w: false,
@@ -36,80 +25,35 @@ const Canvas = (props) => {
     s: false,
     d: false
   }
-
-  // keypress for movement
-  const movement_speed = 5;
-  let positionX = 0;
-  let positionY = 0;
-  const facing = {
-    up: 3,
-    down: 0,
-    left: 1,
-    right: 2
-  }
-  let currentDirection = facing.down
-  let isMoving = false;
-
-  window.addEventListener('keydown', (e) => {
-    switch(e.key){
-      case "w":
-        keyPressed.w = true;
-        positionY -= movement_speed;
-        currentDirection = facing.up;
-        isMoving = true;
-        break
-      case "a":
-        keyPressed.a = true;
-        positionX -= movement_speed;
-        currentDirection = facing.left;
-        isMoving = true;
-        break
-      case "s":
-        keyPressed.s = true;
-        positionY += movement_speed;
-        currentDirection = facing.down;
-        isMoving = true;
-        break
-      case "d":
-        keyPressed.d = true;
-        positionX += movement_speed;
-        currentDirection = facing.right;
-        isMoving = true;
-        break
-    }
-  })
-
-  window.addEventListener('keyup', (e) => {
-    switch(e.key){
-      case "w":
-        keyPressed.w = false
-        isMoving = false;
-        break
-      case "a":
-        keyPressed.a = false;
-        isMoving = false;
-        break
-      case "s":
-        keyPressed.s = false;
-        isMoving = false;
-        break
-        case "d":
-        keyPressed.d = false;
-        isMoving = false;
-        break
-    }
+  // make girl sprite
+  const girl = new Characters({
+    position: {
+      x: 165,
+      y: 150
+    },
+    image: girlImage
   });
 
-  const width = 63.5;
-  const height = 63.5;
-  const drawFrame = (frameX, frameY, canvasX, canvasY) => {
-    ctx.drawImage(girlImg,
-      frameX * width, frameY * height,
-      width, height,
-      165 + canvasX, 150 + canvasY,
-      width, height
-    )
+  const boy = new Characters({
+    position: {
+      x: 180,
+      y: 250
+    },
+    image: boyImage
+
+  })
+
+
+
+  const keydownHandler = (e, keyPressed) => {
+    girl.move(e, keyPressed)
+    boy.move(e,keyPressed)
   }
+  window.addEventListener('keydown', keydownHandler)
+  window.addEventListener('keyup', () => {
+    girl.stop()
+    boy.stop()
+  })
 
   //making animation loop
   const cycleLoop = [0,1,2,3];
@@ -117,10 +61,11 @@ const Canvas = (props) => {
   let frameCount = 0;
   let framelimit = 12;
 
+
   function step() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (isMoving) {
+    if (girl.isMoving) {
       frameCount++;
       if (frameCount >= framelimit) {
         frameCount = 0;
@@ -131,12 +76,19 @@ const Canvas = (props) => {
       }
     }
 
-    background.draw(ctx) && ctx.clearRect(0,0, canvas.width, canvas.height);
-    drawFrame(cycleLoop[currentLoopIndex],currentDirection,positionX,positionY);
+    ctx.drawImage(mapImg, 0,0) && ctx.clearRect(0,0, canvas.width, canvas.height);
+    girl.drawFrame(cycleLoop[currentLoopIndex],girl.currentDirection, girl.positionX, girl.positionY, ctx)
+    boy.drawFrame(cycleLoop[currentLoopIndex],boy.currentDirection, boy.positionX, boy.positionY, ctx)
 
     window.requestAnimationFrame(step);
   }
   window.requestAnimationFrame(step);
+
+  // return function : remove
+  return () => {
+    window.removeEventListener('keydown', keydownHandler)
+    window.removeEventListener('keyup', keydownHandler)
+  }
 
 
 }, [])
