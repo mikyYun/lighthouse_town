@@ -7,11 +7,13 @@ const Canvas = (props) => {
   const canvasRef = useRef(null)
 
   useEffect(() => {
+    // 얘는 어디에 쓰일까
     const canvas = canvasRef.current
 
   } , [])
 
   useEffect(() => {
+    // canvas, ctx only in this useEffect
   const canvas = document.querySelector('canvas');
   const ctx = canvas.getContext('2d')
   canvas.width = 1024;

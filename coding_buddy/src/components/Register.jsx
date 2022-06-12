@@ -1,11 +1,13 @@
 import React from "react";
 import { registrationChecker } from "./helper/registrationChecker";
 import DrawCanvas from "./three/three-scene";
+import Navbar from "./Navbar";
 
 
 export default function Register() {
   return (
     <div className="div_relative">
+      <Navbar />
       <form action="/game" method="GET" id="form_registration">
         EMAIL :{" "}
         <input
