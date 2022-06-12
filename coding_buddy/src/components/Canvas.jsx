@@ -7,36 +7,19 @@ const Canvas = (props) => {
   const canvasRef = useRef(null)
 
   useEffect(() => {
-    const canvas = canvasRef.current
-
-  } , [])
-
-  useEffect(() => {
-  const canvas = document.querySelector('canvas');
+  const canvas = canvasRef.current
   const ctx = canvas.getContext('2d')
   canvas.width = 1024;
   canvas.height = 576;
 
-  ctx.fillStyle = 'white';
-  ctx.fillRect(0,0, canvas.width, canvas.height);
+  // ctx.fillStyle = 'white';
+  // ctx.fillRect(0,0, canvas.width, canvas.height);
 
   const mapImg = new Image();
   mapImg.src = mapImage
   const girlImg = new Image();
   girlImg.src = girlImage
 
-  class Sprite {
-    constructor({ position, velocity, image
-    }) {
-      this.positionX = position.x
-      this.positionY = position.y
-      this.image = image
-    }
-
-    draw() {
-      ctx.drawImage(this.image ,this.positionX, this.positionY)
-    }
-  };
 
   // make new Sprites
   const background = new Sprite({
@@ -148,14 +131,12 @@ const Canvas = (props) => {
       }
     }
 
-    background.draw() && ctx.clearRect(0,0, canvas.width, canvas.height);
+    background.draw(ctx) && ctx.clearRect(0,0, canvas.width, canvas.height);
     drawFrame(cycleLoop[currentLoopIndex],currentDirection,positionX,positionY);
 
     window.requestAnimationFrame(step);
   }
   window.requestAnimationFrame(step);
-
-
 
 
 }, [])
