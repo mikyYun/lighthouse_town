@@ -1,1 +1,0 @@
-INSERT INTO users (username, password, email, avatar, language_id) VALUES ("moon", "moon", "test@test.com", "femail", "1");
