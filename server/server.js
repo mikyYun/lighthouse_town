@@ -60,7 +60,6 @@ io.on("connection", (socket) => {
     // console.log("socket request", socket.request.session);
     socket.request.session = null;
 
-
     console.log(`A user has disconnected!!`);
     // users = users.filter(name => name !== socket.name);
     // socket.broadcast.emit("DISCONNECT", socket.name); // 전체

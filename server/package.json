@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "reset": "psql -U coding_buddy -d coding_buddy < ./db/schema/create.sql && psql -U coding_buddy -d coding_buddy < ./db/schema/01_users.sql && psql -U coding_buddy -d coding_buddy < ./db/schema/02_rooms.sql && psql -U coding_buddy -d coding_buddy < ./db/schema/03_avatars.sql && psql -U coding_buddy -d coding_buddy < ./db/schema/04_languages.sql"
+    "db:reset": "node bin/resetdb.js"
   },
   "keywords": [],
   "author": "",
