@@ -1,8 +1,8 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-// import Cookies from 'universal-cookie'
-
+// import Cookies from 'universal-cookie';
+// usehistory
 
 // import Navbar from './components/Navbar';
 import Sockets from './components/Sockets';
@@ -14,15 +14,7 @@ import Login from './components/Login';
 
 
 function App() {
-  // 쿠키 세팅
-  // const cookies = new Cookies();
-  // cookies.set("test", "test11", {path: '/'})
-  // console.log(cookies.get('test'))
-  // 쿠키 삭제 테스트
-  // document.addEventListener("click", () => {
-    // cookies.remove("test")
-    // console.log(cookies.get('test'))
-  // })
+  // // 쿠키 세팅
   return (
     <BrowserRouter>
       <Routes>
