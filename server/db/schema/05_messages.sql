@@ -15,4 +15,4 @@ INSERT INTO messages (message, sender_id, private_chats_id, created_at)
 INSERT INTO messages (message, sender_id, private_chats_id, created_at)
   VALUES ('!!!!(~0~)!!!!', 3, 1, '2022-06-13 15:02:52.281964');
 INSERT INTO messages (message, sender_id, private_chats_id, created_at)
-  VALUES ('Hello?? Anybody here??', 3, 1, '2022-06-13 15:30:52.281964');
+  VALUES ('Hello?? Anybody here??', 3, 2, '2022-06-13 15:30:52.281964');
