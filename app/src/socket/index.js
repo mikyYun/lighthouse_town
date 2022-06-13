@@ -28,7 +28,7 @@ module.exports = function (socketIo) {
     // ===============  EVENTS  =============== //
 
     // --------------- JOIN ROOM --------------- //
-    socket.on("JOIN_ROOM", requestData => {
+    socket.on(SOCKET_EVENT.JOIN_ROOM, requestData => {
       // 콜백함수의 파라미터는 클라이언트에서 보내주는 데이터. 
       // 이 데이터를 소켓 서버에 던져줌.
       // 소켓서버는 데이터를 받아 콜백함수를 실행.
@@ -46,7 +46,7 @@ module.exports = function (socketIo) {
     });
 
     // --------------- UPDATE NICKNAME --------------- //
-    socket.on("UPDATE_NICKNAME", requestData => {
+    socket.on(SOCKET_EVENT.UPDATE_NICKNAME, requestData => {
       const responseData = {
         ...requestData,
         type: SOCKET_EVENT.UPDATE_NICKNAME,
