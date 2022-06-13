@@ -5,7 +5,6 @@ import { socket, SocketContext, SOCKET_EVENT } from "src/service/socket";
 import NicknameForm from "src/components/NicknameForm";
 import ChatRoom from "src/components/ChatRoom";
 
-
 /*
 "JOIN_ROOM": 유저가 방에 참가했을 때 발생
 "UPDATE_NICKNAME": 유저가 닉네임을 변경했을 때 발생
@@ -15,6 +14,12 @@ import ChatRoom from "src/components/ChatRoom";
 
 function App() {
   const [nickname, setNickname] = useState("김첨지");
+  const handleSubmitNickname = useCallback(newNickname => {
+    prevNickname.current = nickname;
+    setNickname(newNickname);
+  },
+    [nickname]
+  );
 
   useEffect(() => {
     return () => { // App 컴포넌트 unmount시 실행
