@@ -16,7 +16,7 @@ const io = Server(httpServer, {
 });
 const socket = require("./socket/index.js");
 
-const { createAdapter } = require('@socket.io/postgres-adapter') //ap.get, 안써도 socket.io 안에서 직접 postgres 연결이 가능. root path 따로 설정 불필요. 
+const { createAdapter } = require('@socket.io/postgres-adapter') //ap.get, 안써도 socket.io 안에서 직접 postgres 연결이 가능. root path 따로 설정 불필요.
 const bodyParser = require("body-parser");
 
 const sessionMiddleware = session({ secret: 'coding_buddy', cookie: { maxAge: 60000 } });
@@ -53,11 +53,15 @@ io.use((socket, next) => {
 io.adapter(createAdapter(pool));
 
 io.on("connection", (socket) => {
-  // 
+  console.log('a user connected: heesoo')
+  //
   const session = socket.request.session;
   session.save();
   const req = socket.request;
   const userName = {};
+
+  socket.emit("init", {data: 'hello world'})
+
 
   socket.on("LOGIN", (data) => {
     // userData = {"userEmail" : ~~, "userPassword" : ~~}
@@ -163,7 +167,7 @@ app.get("/", (req, res) => { // server url -> 8000
 // });
 
 // db check // 이건 예시
-// 데이터 REST -> cod 
+// 데이터 REST -> cod
 // GET 모든 유저 정보 받아오기
 // app.get('/users', db.getUsers)
 
