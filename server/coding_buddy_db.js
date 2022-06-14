@@ -1,4 +1,4 @@
-const Pool = require('pg').Pool;
+const Pool = require('pg').Pool; //postgres
 require("dotenv").config();
 
 const pool = new Pool({
@@ -43,15 +43,15 @@ const createUser = (req, res) => {
 };
 
 // PUT : updated data in an existing user
-const updateUser = (req,res) => {
+const updateUser = (req, res) => {
   const id = parseInt(req.params.id)
-  const {name, email} = req.body
+  const { name, email } = req.body
   pool.query(
     "UPDATE users SET name = $1, email = $2 WHERE id = $3", [name, email, id],
     (err, result) => {
       if (err) throw err
     })
-    res.status(200).send(`User modified with ID: ${id}`)
+  res.status(200).send(`User modified with ID: ${id}`)
 }
 
 // DELETE : delete a user
@@ -64,4 +64,4 @@ const deleteUser = (req, res) => {
   })
 }
 
-module.exports = {getUsers, getUserById, createUser, updateUser, deleteUser}
+module.exports = { getUsers, getUserById, createUser, updateUser, deleteUser }
