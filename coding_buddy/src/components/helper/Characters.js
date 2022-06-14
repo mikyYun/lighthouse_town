@@ -69,4 +69,3 @@ export default Characters;
 // update within class -> update method
 
 // drawFrame : in Character
-//
