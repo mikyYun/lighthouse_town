@@ -1,0 +1,44 @@
+#root {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+button.with-icon {
+  display: flex;
+}
+
+.w300 {
+  width: 300px;
+}
+
+.message-nickname {
+  font-weight: bold;
+  margin-right: 4px;
+}
+
+.send-btn {
+  height: 38px;
+  margin-left: 6px;
+}
+
+.card {
+  padding: 14px;
+}
+
+.text-box {
+  padding: 6px;
+}
+
+.time {
+  margin-left: 4px;
+  color: #aaa;
+  font-size: 13px;
+  line-height: 2;
+}
+
+.chat-window {
+  height: 400px;
+  overflow-y: auto;
+}
+
+ 
