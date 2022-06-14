@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useContext, useRef } from "react";
 import MessageForm from "./MessageForm";
-import { SocketContext, SOCKET_EVENT, makeMessage } from "service/socket";
+import { SocketContext, SOCKET_EVENT, makeMessage } from "./service/socket";
 
 function ChatRoom({ nickname }) {
   const [messages, setMessages] = useState([]);
