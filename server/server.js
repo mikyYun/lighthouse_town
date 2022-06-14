@@ -1,16 +1,24 @@
 // server running with nodemon : npm run dev
 require("dotenv").config();
-
-const bodyParser = require("body-parser");
-const PORT = process.env.PORT || 8000;
 const express = require('express');
 const session = require('express-session');
 const app = express();
-const Server = require('socket.io');
-const { createServer } = require("http");
-const { createAdapter } = require('@socket.io/postgres-adapter')
-const httpServer = createServer(app);
-const io = Server(httpServer);
+const PORT = process.env.PORT || 8000;
+const cors = require("cors");
+// const { createServer } = require("http");
+const httpServer = require("http").createServer(app);
+const Server = require("socket.io") //socketIo
+const io = Server(httpServer, {
+  cors: {
+    origin: "http://localhost:3000", //client
+    credentials: true,
+  },
+});
+const socket = require("./socket/index.js");
+
+const { createAdapter } = require('@socket.io/postgres-adapter') //ap.get, 안써도 socket.io 안에서 직접 postgres 연결이 가능. root path 따로 설정 불필요. 
+const bodyParser = require("body-parser");
+
 const sessionMiddleware = session({ secret: 'coding_buddy', cookie: { maxAge: 60000 } });
 const { Pool } = require('pg');
 
@@ -25,8 +33,8 @@ const pool = new Pool({
   port: process.env.PGPORT
 });
 
-
-
+socket(io);// /src/socket/index.js 의 socket으로 socketIo 객체를 전달
+app.use(cors({ origin: "http://localhost:3000", credentials: true })); // cors 미들웨어 사용
 app.use(sessionMiddleware);
 app.use(bodyParser.json());
 app.use(
@@ -178,47 +186,6 @@ app.get("/", (req, res) => { // server url -> 8000
 
 
 httpServer.listen(PORT, () => {
-  console.log(`Server Started on port ${PORT}`);
+  console.log(`Server Started on port ${PORT}, ${new Date().toLocaleString()} #####`);
   // console.log(`Server Started on port ${PORT}in ${ENV} mode`);
 });
-
-
-
-
-/* Moon's Chat Server
-
-const express = require("express");
-const app = express();
-const server = require("http").createServer(app);
-const cors = require("cors");
-const socketIo = require("socket.io")(server, { //????왜 괄호 두개
-  cors: {
-    origin: "http://localhost:3000",
-    credentials: true,
-  },
-});
-// const socket = require("../chat-app/src/service/socket");
-const socket = require("./socket");
-
-const port = 4000;
-
-// express의 미들웨어 사용 방식
-app.get("/", (req, res) => {
-  res.json({ test: "start" });
-  console.log("this is server.js") //this appears in terminal
-});
-
-app.use(cors({ origin: "http://localhost:3000", credentials: true })); // cors 미들웨어 사용
-socket(socketIo);// /src/socket/index.js 의 socket으로 socketIo 객체를 전달
-
-// homepage
-
-server.listen(port, () => {
-  console.log(
-    `##### server is running on http://localhost:4000. ${new Date().toLocaleString()} #####`
-  );
-});
-
-//코드를 위에서부터 보면 express로 만든 서버에 socket을 열어줬고 cors로 localhost:3000 url만 통신을 허용하도록 설정했습니다. src/socket은 아직 만들진 않았지만 이제 바로 만들 것이기 때문에 미리 작성해뒀습니다. src/socket.js 파일에서 소켓의 이벤트에 따른 로직들을 작성할 것입니다.
-
-*/

@@ -1,4 +1,4 @@
-module.exports = function (socketIo) {
+module.exports = function (io) {
 
   // ===============  EVENT TYPES  =============== //
 
@@ -11,7 +11,7 @@ module.exports = function (socketIo) {
 
   // ===============  CONNECT  =============== //
 
-  socketIo.on("connection", function (socket) {
+  io.on("connection", function (socket) {
     // 클라이언트와 연결이 되면 연결된 사실을 출력합니다.
     console.log("socket connection succeeded."); //in terminal - vs code
 
@@ -41,7 +41,7 @@ module.exports = function (socketIo) {
         time: new Date(),
       };
       // "room 1"에는 이벤트타입과 서버에서 받은 시각을 덧붙여 데이터를 그대로 전송.
-      socketIo.to(roomName).emit("RECEIVE_MESSAGE", responseData);
+      Server.to(roomName).emit("RECEIVE_MESSAGE", responseData);
       // 클라이언트에 이벤트를 전달.
       // 클라이언트에서는 RECEIVE_MESSAGE 이벤트 리스너를 가지고 있어서 그쪽 콜백 함수가 또 실행됌. 서버구현 마치고 클라이언트 구현은 나중에.
       console.log(`JOIN_ROOM is fired with data: ${JSON.stringify(responseData)}`);
@@ -54,7 +54,7 @@ module.exports = function (socketIo) {
         type: SOCKET_EVENT.UPDATE_NICKNAME,
         time: new Date(),
       };
-      socketIo.to(roomName).emit("RECEIVE_MESSAGE", responseData);
+      io.to(roomName).emit("RECEIVE_MESSAGE", responseData);
       console.log(`UPDATE_NICKNAME is fired with data: ${JSON.stringify(responseData)}`);
     });
 
@@ -68,7 +68,7 @@ module.exports = function (socketIo) {
         type: SOCKET_EVENT.SEND_MESSAGE,
         time: new Date(),
       };
-      socketIo.to(roomName).emit(SOCKET_EVENT.RECEIVE_MESSAGE, responseData); //responseData = chat message 
+      SVGPreserveAspectRatio.to(roomName).emit(SOCKET_EVENT.RECEIVE_MESSAGE, responseData); //responseData = chat message 
       //@@@@@@ ChatRoom.jsx line 21
       console.log(`${SOCKET_EVENT.SEND_MESSAGE} is fired with data: ${JSON.stringify(responseData)}`);
     });
