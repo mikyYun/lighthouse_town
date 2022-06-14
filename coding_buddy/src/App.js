@@ -10,6 +10,7 @@ import Game from './components/Game';
 import Layout from './components/Layout';
 import Register from './components/Register';
 import Login from './components/Login';
+import ChatRoom from './components/ChatRoom';
 
 
 
@@ -24,6 +25,8 @@ function App() {
         {/* <Route path='/login' element="Logout" /> */}
         <Route path='/sockets' element={<Sockets />} />
         <Route path='/game' element={<Game />} />
+        <Route path='/chatroom' element={<ChatRoom />} />
+
       </Routes>
     </BrowserRouter>
   );

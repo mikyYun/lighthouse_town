@@ -32,7 +32,10 @@ function Navbar() {
       <p className="nav_game">
         <Link to="/game">Game</Link>
       </p>
-      {true ? "test" : "no"}
+      <p className="nav_chat">
+        <Link to="/chat">Chat</Link>
+      </p>
+      {/* {true ? "test" : "no"} */}
       <p className="nav_register">
         <Link to="/register" onClick={() => (clearCookie = true)}>
           Register
