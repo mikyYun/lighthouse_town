@@ -10,7 +10,7 @@ const socket = io.connect("http://localhost:8000", {
 }); // same domain
 // import socket from "../Sockets";
 
-export function registrationChecker(val, e) {
+export function RegistrationChecker(val, e) {
   console.log("TEST");
   socket.emit("LOGIN", val);
   const userData = [];

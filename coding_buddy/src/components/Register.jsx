@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { registrationChecker } from "./helper/registrationChecker";
+import { RegistrationChecker } from "./helper/RegistrationChecker";
 import DrawCanvas from "./three/three-scene";
 import Navbar from "./Navbar";
 
@@ -99,7 +99,7 @@ export default function Register() {
               // get all data to check, and pass to the server then go to login page
               // get return true from server
               // socket.emit("LOGIN", "REGITSRATION casdfals")
-              registrationChecker(formValues, e);
+              RegistrationChecker(formValues, e);
           }}
         >
           Register

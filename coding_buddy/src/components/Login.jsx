@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Cookies from "universal-cookie";
-import { loginHandler } from "./helper/registrationChecker";
+import { loginHandler } from "./helper/RegistrationChecker";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./Navbar";
 
