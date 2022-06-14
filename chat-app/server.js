@@ -16,6 +16,9 @@ const port = 4000;
 
 // express의 미들웨어 사용 방식
 
+app.get("/", (req, res) => {
+  res.json({ test: "start" });
+});
 
 app.use(cors({ origin: "http://localhost:3000", credentials: true })); // cors 미들웨어 사용
 socket(socketIo);// /src/socket/index.js 의 socket으로 socketIo 객체를 전달
