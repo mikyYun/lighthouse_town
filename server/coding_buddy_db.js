@@ -35,11 +35,15 @@ const getUserById = (req, res) => {
 
 // POST a new user
 const createUser = (req, res) => {
-  const { name, email } = req.body;
-  pool.query("INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *", [name, email], (err, result) => {
+  const { username, password, email, avatar_id, languages } = req.body;
+  pool.query("INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [username, password, email, avatar_id], (err, result) => {
     if (err) throw err;
-    response.status(201).send(`User added with ID: ${result.rows[0].id}`)
+    res.status(201).send(`User added with ID: ${result.rows[0].id}`)
   });
+  pool.query("INSERT INTO user_language (user_id, language_id) VALUES ($1) RETURNING *", [languages], (err, result) => {
+    if (err) throw err;
+    res.status(201).send(`User added with `)
+  })
 };
 
 // PUT : updated data in an existing user

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 const { io } = require("socket.io-client");
 const socket = io.connect("http://localhost:8000", {
   reconnectionDelay: 1000,
@@ -11,19 +12,33 @@ const socket = io.connect("http://localhost:8000", {
 // import socket from "../Sockets";
 
 export function RegistrationChecker(val, e) {
+  // const {userData, setUserData} = useState([]);
+  // const {languages, setLanguages} = useState([]);
+  // const {avatar, setAvatar} = useState();
   console.log("TEST");
-  socket.emit("LOGIN", val);
+  // socket.emit("LOGIN", val);
   const userData = [];
-  const selectedLanguages = [];
+  const languages = [];
+  let avatar = '';
   for (let i = 0; i < val.length; i++) {
-    if (i <= 3) {
+    if (i <= 3) { // default information
       // user data
+      // setUserData((prev) => ([...prev, val[i].value]))
       userData.push(val[i].value);
-    } else if (i > 3) {
+    } else if (i > 3 && i < 9) { //languages
       // programming languages
       // if checked
-      if (val[i].checked)
-        selectedLanguages.push(val[i].value);
+      // if (val[i].checked && i < 9)
+      // setLanguages((prev) => ([...prev, val[i].value]))
+      languages.push(val[i].value);
+    } else {
+      if (val[i].value === 'M') {
+        // setAvatar(1)
+        avatar = 1
+      } else {
+        // setAvatar(2)
+        avatar = 2
+      }
     }
   }
   // email, name, password length check
@@ -38,21 +53,25 @@ export function RegistrationChecker(val, e) {
     // if all good, pass all datas to server
 
     console.log("userData", userData);
-    console.log("languages", selectedLanguages);
+    console.log("languages", languages);
+    console.log("avatar", avatar);
     // send
-    socket.emit("REGISTERED", { userData, selectedLanguages });
+    socket.emit("REGISTERED", { userData, languages, avatar });
+    return socket.on("SUCCESS", (msg) => {
+      return msg;
+    });
   }
-  // receive
-  socket.on("REGISTERED USER", (data) => {
+  // receiv
+  // socket.on("REGISTERED USER", (data) => {
 
-  })
+  // })
 }
 
 export function loginHandler(loginUserData) {
-  socket.emit("LOGIN", { userData: loginUserData })
+  socket.emit("LOGIN", { userData: loginUserData });
   return socket.on("SUCCESS", (msg) => {
     // console.log(msg) // msg = 유저 이메일
-    return msg
-  })
-  
+    return msg;
+  });
+
 }

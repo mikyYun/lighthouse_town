@@ -1,18 +1,31 @@
-const db = require("./coding_buddy_db");
-// const ENV = require("./coding_buddy");
+// server running with nodemon : npm run dev
+require("dotenv").config();
 
 const bodyParser = require("body-parser");
-
-// server running with nodemon : npm run dev
 const PORT = process.env.PORT || 8000;
 const express = require('express');
 const session = require('express-session');
 const app = express();
 const Server = require('socket.io');
 const { createServer } = require("http");
+const {createAdapter} = require('@socket.io/postgres-adapter')
 const httpServer = createServer(app);
 const io = Server(httpServer);
 const sessionMiddleware = session({ secret: 'coding_buddy', cookie: { maxAge: 60000 } });
+const { Pool } = require('pg');
+
+// const db = require("./coding_buddy_db");
+
+
+const pool = new Pool({
+  user: process.env.PGUSER,
+  host: process.env.PGHOST,
+  database: process.env.PGDATABASE,
+  password: process.env.PGPASSWORD,
+  port: process.env.PGPORT
+});
+
+
 
 app.use(sessionMiddleware);
 app.use(bodyParser.json());
@@ -22,9 +35,14 @@ app.use(
   })
 );
 
+// httpServer.adapter(createAdapter.pool)
+// console.log(io.adapter(pool))
+
 io.use((socket, next) => {
   sessionMiddleware(socket.request, {}, next);
 });
+
+io.adapter(createAdapter(pool));
 
 io.on("connection", (socket) => {
   // 
@@ -82,9 +100,32 @@ io.on("connection", (socket) => {
   //   // console.log(users);
   // });
   socket.on("REGISTERED", (data) => {
-    console.log(data);
+    console.log("registering", data);
+    // 프론트에서 받은 데이터가 이미 데이터베이스에 존재하는지 확인
+    pool.query("SELECT * FROM users WHERE username = $1 OR email = $2", [data.userData[1], data.userData[2]], (err, result) => {
+      if (err) throw err;
+      console.log(result.rows[0])
+    })
+    pool.query("INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [data.userData[1], data.userData[2], data.userData[0], data.avatar], (err, result) => {
+      if (err) throw err;
+      res.status(201).send(`User added with ID: ${result.rows[0].id}`)
+    });
+    pool.query("INSERT INTO user_language (user_id, language_id) VALUES (ARRAY [$1]) RETURNING *", [data.languages], (err, result) => {
+      if (err) throw err;
+      res.status(201).send('User added')
+    })
+    return socket.emit("SUCCESS", data.userData[0])
+    // app.post('/register', db.createUser);
     // 유저 등록 데이터 받음. db 에 저장하기
-    app.post('/users', db.createUser);
+    // app.post('/delete/:id', db.createUser);
+    // app.post('/', db.deleteUser);
+    // app.post('/', db.createUser);
+    // app.post('/', db.createUser);
+    // app.post('/users', db.createUser);
+    // '/'
+    // 'login'
+    // 'register'
+    // 'game'
 
   });
   // registration 성공했으면 프론트에 ok 보내줌 -> 애니메이션 실행하고 로그인페이지로... 다음에//

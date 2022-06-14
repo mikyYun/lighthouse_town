@@ -14,7 +14,9 @@ export default function Register() {
   return (
     <div className="div_relative">
       <Navbar />
-      <form action="/game" method="GET" id="form_registration">
+      <form action="/game" method="GET" id="form_registration" onSubmit={(e) => {
+        e.preventDefault()
+      }}>
         EMAIL :{" "}
         <input
           // name="email"
@@ -22,9 +24,7 @@ export default function Register() {
           rows="1"
           placeholder="EMAIL"
           typeof="email"
-          onChange={(e) => {
-            setUserEmail(e.target.value);
-          }}
+          
         ></input>
         <br />
         NAME :{" "}
@@ -33,10 +33,7 @@ export default function Register() {
           id="register_name"
           rows="1"
           placeholder="NAME"
-          typeof="text"
-          onChange={(e) => {
-            setUserName(e.target.value);
-          }}
+          type="text"
         ></input>
         <br />
         PASSWORD :{" "}
@@ -46,9 +43,6 @@ export default function Register() {
           rows="1"
           placeholder="PASSWORD"
           type="password"
-          onChange={(e) => {
-            setUserPassword(e.target.value);
-          }}
         ></input>
         <br />
         CONFIRM PASSWORD :{" "}
