@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
 import { loginHandler } from "./helper/RegistrationChecker";
 import { Routes, Route } from "react-router-dom";
@@ -11,11 +11,13 @@ export default function Login() {
 
   const cookies = new Cookies();
 
+
+
   return (
     <>
       <Navbar />
-      <form id="form_login" action="/game" method="GET"  runat="server"  onSubmit={(e) => e.preventDefault()}>
-      {/* onSubmit={(e) => e.preventDefault()} */}
+      <form id="form_login" action="/game" method="GET"  runat="server">
+      {/* <form id="form_login" action="/game" method="GET"  runat="server"  onSubmit={(e) => e.preventDefault()}> */}
         <input
           // name="email"
           id="register_email"
@@ -46,14 +48,23 @@ export default function Login() {
           <button
             type="submit"
             onClick={(e) => {
-              console.log("CLICKED");
-              const userDataForCookies = loginHandler({
-                userEmail,
-                userPassword,
-              });
-              console.log("got response", userDataForCookies);
-              console.log("setting cookies");
-              cookies.set("email", userEmail);
+              // useEffect(() => {
+
+              // })
+                // console.log(res)
+                console.log("CLICKED");
+                const userDataForCookies = loginHandler({
+                  userEmail,
+                  userPassword,
+                });
+                userDataForCookies.then((data) => {
+                  cookies.set("email", data);
+                  console.log("LOGIN DATA", data)
+                })
+                // console.log("got response", userDataForCookies);
+                // console.log("setting cookies");
+                // e.preventDefault()
+
               // cookies.set("password", userPassword);
 
               // socket.emit("LOGIN", { userData }).catch(err => console.log(err))
