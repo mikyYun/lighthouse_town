@@ -64,7 +64,8 @@ module.exports = function (socketIo) {
         type: SOCKET_EVENT.SEND_MESSAGE,
         time: new Date(),
       };
-      socketIo.to(roomName).emit(SOCKET_EVENT.RECEIVE_MESSAGE, responseData); //responseData = chat message
+      socketIo.to(roomName).emit(SOCKET_EVENT.RECEIVE_MESSAGE, responseData); //responseData = chat message 
+      //@@@@@@ ChatRoom.jsx line 21
       console.log(`${SOCKET_EVENT.SEND_MESSAGE} is fired with data: ${JSON.stringify(responseData)}`);
     });
 

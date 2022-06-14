@@ -6,8 +6,6 @@ import ChatRoom from "components/ChatRoom";
 /*
 "JOIN_ROOM": 유저가 방에 참가했을 때 발생
 "UPDATE_NICKNAME": 유저가 닉네임을 변경했을 때 발생
-"SEND_MESSAGE": 유저가 메시지를 전송했을 때 발생
-"RECEIVE_MESSAGE": 유저가 메시지를 받을 때 발생
 */
 
 function App() {
