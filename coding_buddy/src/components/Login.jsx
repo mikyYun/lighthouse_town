@@ -14,7 +14,7 @@ export default function Login() {
   return (
     <>
       <Navbar />
-      <form id="form_login" action="/game" method="GET"  runat="server">
+      <form id="form_login" action="/game" method="GET"  runat="server"  onSubmit={(e) => e.preventDefault()}>
       {/* onSubmit={(e) => e.preventDefault()} */}
         <input
           // name="email"

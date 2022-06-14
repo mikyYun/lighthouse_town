@@ -39,14 +39,20 @@ export function registrationChecker(val, e) {
 
     console.log("userData", userData);
     console.log("languages", selectedLanguages);
+    // send
     socket.emit("REGISTERED", { userData, selectedLanguages });
   }
+  // receive
+  socket.on("REGISTERED USER", (data) => {
+
+  })
 }
 
 export function loginHandler(loginUserData) {
   socket.emit("LOGIN", { userData: loginUserData })
-  return (socket.on("SUCCESS", (msg) => {
-    // console.log(msg)
-  }))
+  return socket.on("SUCCESS", (msg) => {
+    // console.log(msg) // msg = 유저 이메일
+    return msg
+  })
   
 }

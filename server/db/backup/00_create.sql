@@ -30,8 +30,9 @@ CREATE TABLE users (
 -- room = all private
 CREATE TABLE private_chats_rooms (
   id SERIAL PRIMARY KEY NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW() NOT NULL
+  permission BOOLEAN DEFAULT FALSE NOT NULL
 );
+  -- roomname VARCHAR(255) NOT NULL
 
 CREATE TABLE messages (
   id SERIAL PRIMARY KEY NOT NULL,

@@ -1,10 +1,16 @@
-import React from "react";
+import React, {useState} from "react";
 import { registrationChecker } from "./helper/registrationChecker";
 import DrawCanvas from "./three/three-scene";
 import Navbar from "./Navbar";
 
 
 export default function Register() {
+  const {userEmail, setUserEmail} = useState()
+  const {userName, setUserName} = useState()
+  const {userPassword, setUserPassword} = useState()
+  const {userLanguages, setUserLanguages} = useState([])
+  const {userAvatar, setUserAvatar} = useState()
+
   return (
     <div className="div_relative">
       <Navbar />
@@ -16,6 +22,9 @@ export default function Register() {
           rows="1"
           placeholder="EMAIL"
           typeof="email"
+          onChange={(e) => {
+            setUserEmail(e.target.value);
+          }}
         ></input>
         <br />
         NAME :{" "}
@@ -25,6 +34,9 @@ export default function Register() {
           rows="1"
           placeholder="NAME"
           typeof="text"
+          onChange={(e) => {
+            setUserName(e.target.value);
+          }}
         ></input>
         <br />
         PASSWORD :{" "}
@@ -34,6 +46,9 @@ export default function Register() {
           rows="1"
           placeholder="PASSWORD"
           type="password"
+          onChange={(e) => {
+            setUserPassword(e.target.value);
+          }}
         ></input>
         <br />
         CONFIRM PASSWORD :{" "}
@@ -79,12 +94,12 @@ export default function Register() {
           onClick={(e) => {
             const formValues = document.querySelectorAll(
               "#form_registration input" // get all input tags in form tag
-            );
-            console.log(formValues);
-            // get all data to check, and pass to the server then go to login page
-            // get return true from server
-            // socket.emit("LOGIN", "REGITSRATION casdfals")
-            registrationChecker(formValues, e);
+              );
+              console.log(formValues);
+              // get all data to check, and pass to the server then go to login page
+              // get return true from server
+              // socket.emit("LOGIN", "REGITSRATION casdfals")
+              registrationChecker(formValues, e);
           }}
         >
           Register
@@ -92,7 +107,7 @@ export default function Register() {
         이미지 마우스로 화면전환 가능
       </form>
       <div className="div_canvas">
-        <DrawCanvas />
+        {/* <DrawCanvas /> */}
       </div>
       {/* <Outlet /> */}
     </div>

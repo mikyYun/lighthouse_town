@@ -45,7 +45,6 @@ class Characters {
       this.currentDirection = this.facing.right;
       this.isMoving = true;
     }
-
   }
 
   stop = () => {

@@ -1,4 +1,4 @@
-const db = require("./coding_buddy_db")
+const db = require("./coding_buddy_db");
 // const ENV = require("./coding_buddy");
 
 const bodyParser = require("body-parser");
@@ -36,7 +36,7 @@ io.on("connection", (socket) => {
   socket.on("LOGIN", (data) => {
     // userData = {"userEmail" : ~~, "userPassword" : ~~}
     console.log("LOGIN", data);
-    socket.emit("SUCCESS", "Who are you");
+    socket.emit("SUCCESS", data.userData.userEmail); //  클라이언트에 유저 이메일만 전송
     socket.request.session.reload((err) => {
       if (err) {
         return console.log("ERROR");
@@ -81,7 +81,12 @@ io.on("connection", (socket) => {
   //   users["languagues"] = data.selectedLanguages;
   //   // console.log(users);
   // });
-  socket.on("REGISTERED", (data) => console.log(data));
+  socket.on("REGISTERED", (data) => {
+    console.log(data);
+    // 유저 등록 데이터 받음. db 에 저장하기
+    app.post('/users', db.createUser);
+
+  });
   // registration 성공했으면 프론트에 ok 보내줌 -> 애니메이션 실행하고 로그인페이지로... 다음에//
   // socket.emit('REGISTRATION SUCCESS', true); // current user 에게만
 
@@ -90,7 +95,7 @@ io.on("connection", (socket) => {
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
 
-   // 데이터베이스 관리 => coding_buddy_db.js //
+// 데이터베이스 관리 => coding_buddy_db.js //
 
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
