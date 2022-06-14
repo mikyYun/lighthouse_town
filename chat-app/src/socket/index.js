@@ -25,9 +25,11 @@ module.exports = function (socketIo) {
     "RECEIVE_MESSAGE": 유저가 메시지를 받을 때 발생
     */
 
+
+
     // ===============  EVENTS  =============== //
 
-    // --------------- JOIN ROOM --------------- //
+    // --------------- JOIN ROOM ------------
     socket.on(SOCKET_EVENT.JOIN_ROOM, requestData => {
       // 콜백함수의 파라미터는 클라이언트에서 보내주는 데이터. 
       // 이 데이터를 소켓 서버에 던져줌.
@@ -45,7 +47,7 @@ module.exports = function (socketIo) {
       console.log(`JOIN_ROOM is fired with data: ${JSON.stringify(responseData)}`);
     });
 
-    // --------------- UPDATE NICKNAME --------------- //
+    // --------------- UPDATE NICKNAME ---------------
     socket.on(SOCKET_EVENT.UPDATE_NICKNAME, requestData => {
       const responseData = {
         ...requestData,
@@ -56,7 +58,8 @@ module.exports = function (socketIo) {
       console.log(`UPDATE_NICKNAME is fired with data: ${JSON.stringify(responseData)}`);
     });
 
-    // --------------- SEND MESSAGE --------------- //
+    // receive.message는 ChatRoom.jsx 에서 defined 
+    // --------------- SEND MESSAGE ---------------
     socket.on(SOCKET_EVENT.SEND_MESSAGE, requestData => {
       //emiting back to receive message in line 67
       const responseData = {
@@ -68,6 +71,8 @@ module.exports = function (socketIo) {
       //@@@@@@ ChatRoom.jsx line 21
       console.log(`${SOCKET_EVENT.SEND_MESSAGE} is fired with data: ${JSON.stringify(responseData)}`);
     });
+
+
 
     // ===============  DISCONNECT  =============== //
     socket.on("disconnect", reason => {

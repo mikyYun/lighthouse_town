@@ -19,6 +19,7 @@ export const SOCKET_EVENT = {
   RECEIVE_MESSAGE: "RECEIVE_MESSAGE",
 };
 
+//makeMessage
 export const makeMessage = pongData => {
   const { prevNickname, nickname, content, type, time } = pongData;
 

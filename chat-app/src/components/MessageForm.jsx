@@ -23,8 +23,7 @@ function MessageForm({ nickname }) {
       return;
     }
 
-    // 메시지가 있으면 nickname과 message를 SEND_MESSAGE 이벤트 타입과 함께 소켓 서버로 (socket > index. js) 전송합니다.
-    // @@@@ socket > index.js
+    // @@@@ 메시지가 있으면 nickname과 message를 SEND_MESSAGE 이벤트 타입과 함께 소켓 서버로 (socket > index. js) 전송합니다.
     socket.emit(SOCKET_EVENT.SEND_MESSAGE, {
       nickname,
       content: typingMessage,

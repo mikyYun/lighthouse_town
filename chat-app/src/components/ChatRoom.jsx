@@ -18,12 +18,14 @@ function ChatRoom({ nickname }) {
   }, []);
 
   // RECEIVE_MESSAGE 이벤트 콜백: messages state에 데이터를 추가합니다.
+  // @@@@ Message.Form line 26 & socket > index.js line 68
   const handleReceiveMessage = useCallback(pongData => {
-    const newMessage = makeMessage(pongData); // makeMessage는 아직 구현하지 않은 함수.
-    setMessages(messages => [...messages, newMessage]);
+    const newMessage = makeMessage(pongData);
+    // makeMessage 는 service > socket.js 에 있음.
+    setMessages(messages => [...messages, newMessage]); //????이해안됌
     moveScrollToReceiveMessage();
   },
-    [moveScrollToReceiveMessage]
+    [moveScrollToReceiveMessage] //????이해안됌
   );
 
   useEffect(() => {
