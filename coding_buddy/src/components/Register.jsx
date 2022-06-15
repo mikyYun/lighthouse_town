@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Cookies from "universal-cookie";
 import DrawCanvas from "./three/three-scene";
 import Navbar from "./Navbar";
+import Layout from "./Layout";
 
 export default function Register(props) {
   const [ userEmail, setUserEmail ] = useState();
@@ -26,7 +27,7 @@ export default function Register(props) {
   }
   return (
     <div className="div_relative">
-      <Navbar />
+      <Layout />
       <form action="/login" method="GET" id="form_registration">
         EMAIL :{" "}
         <input
@@ -120,11 +121,15 @@ export default function Register(props) {
           onClick={(e) => {
             // return new Promise((res) => {
               // const formValues = document.querySelectorAll(
-              //   "#form_registration input" // get all input tags in form tag
+                // "#form_registration input" // get all input tags in form tag
               // );
+            // fetch('/register', (e) => {
+              // console.log('eee', e)
+            // })
+
               const userInfo = {userName, userPassword, userEmail, userLanguages, userAvatar}
               props.submitRegistrationInfo(userInfo);
-              // e.preventDefault();
+              e.preventDefault();
             // })
             // cookies.set("username", username);
           }}

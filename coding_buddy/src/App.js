@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import Cookies from "universal-cookie";
 import Sockets from './components/Sockets';
@@ -16,23 +16,42 @@ const { io } = require("socket.io-client");
 
 
 function App() {
+  const navigate = useNavigate()
+
   // // 쿠키 세팅
   const [socket, setSocket] = useState();
   const cookies = new Cookies();
+  let location = useLocation()
+  useEffect(() => {
+    // ga()
+    console.log("location check", location.pathname)
+    console.log(clearCookies)
+    if (location.pathname !== "/game") clearCookies()
+  }, [location.pathname])
+
   useEffect(() => {
     const socket = io();
-
+    
     socket.on("CONNECT", (e) => {
       console.log("CONNECTED", e);
     });
 
+    socket.on("REGISTRATIPN SUCCESS", (userdame) => {
+      console.log("cookie set after register")
+      cookies.set("email", userdame);
+      navigate("/game")
+    });
+
     setSocket(socket);
-    return () => socket.disconnect(); // => prevent memory leak..
+    return () => {
+      socket.disconnect()
+      clearCookies()
+    }; // => prevent memory leak..
   }, []);
   // socket && socket.emit("REGISTERED", "HEY");
 
   const RegistrationChecker = (val) => {
-    console.log('ref')
+    console.log('ref');
     socket && socket.emit("REGISTERED", val);
   };
 
@@ -43,28 +62,33 @@ function App() {
   const setCookies = (e) => {
     socket && socket.emit("SET COOKIES");
   };
-  const clearCookies = (e) => {
+  const clearCookies = () => {
     const all_cookies = cookies.getAll();
-    if (all_cookies.length > 0) {
-      all_cookies.forEach((each) => {
-        cookies.remove(each, { path: "/" });
-      });
-    } else {
-      console.log("No Cookies");
-    }
+    console.log("@@@@@@@", all_cookies)
+    // if (all_cookies.length > 0) {
+      Object.keys(all_cookies).forEach((each) => {
+        console.log("each", each)
+        cookies.remove(each);
+      })
+      // all_cookies.forEach((each) => {
+      //   console.log("each", each)
+      //   cookies.remove(each);
+      // });
+    // } else {
+      // console.log("No Cookies");
+    // }
   };
 
   return (
-    <BrowserRouter>
+
       <Routes>
         <Route path='/' element={<Layout click={() => clearCookies()} />} />
-        <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker}/>} click={() => clearCookies()} />
-        <Route path='/login' element={<Login click={() => clearCookies()}/>} />
+        <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} click={() => clearCookies()} />
+        <Route path='/login' element={<Login click={() => clearCookies()} />} />
         {/* <Route path='/login' element="Logout" /> */}
-        <Route path='/sockets' element={<Sockets click={() => clearCookies()}/>} />
-        <Route path='/game' element={<Game click={() => clearCookies()}/>} />
+        <Route path='/sockets' element={<Sockets click={() => clearCookies()} />} />
+        <Route path='/game' element={<Game />} />
       </Routes>
-    </BrowserRouter>
   );
 }
 

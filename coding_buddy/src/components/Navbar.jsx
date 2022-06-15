@@ -5,7 +5,7 @@ const logo = require("../img/lighthouse.png");
 
 let clearCookie = false;
 function Navbar(props) {
-  console.log("nav", props.click)
+  console.log("nav", props)
   // const [history, setHistory] = useState();
   const cookies = new Cookies();
   const removeAllCookies = props.click
@@ -39,7 +39,7 @@ function Navbar(props) {
       {/* <p className="nav_logout"> */}
       <form method="get" action="/">
         <button
-          onClick={() => removeAllCookies()}
+          // onClick={() => removeAllCookies()}
         >
           Logout
         </button>
