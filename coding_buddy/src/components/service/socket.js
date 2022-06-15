@@ -7,7 +7,7 @@ export const socket = socketIo(String(process.env.REACT_APP_BACK_URL), { withCre
 export const SocketContext = createContext(socket); //G
 
 socket.on("connect", () => { //GABRIEL
-  console.log("socket server connected.");
+  console.log("Service > socket.js: socket server connected.");
   socket.send('THIS IS TO CONNECT') //browser console.
 });
 
@@ -27,7 +27,7 @@ export const makeMessage = pongData => {
   const { prevNickname, nickname, content, type, time } = pongData;
   let nicknameLabel;
   let contentLabel = "";
-
+  console.log("inside makeMessage")
   switch (type) {
     case SOCKET_EVENT.JOIN_ROOM: {
       contentLabel = `${nickname} has joined the room.`;
