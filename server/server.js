@@ -1,14 +1,15 @@
 // server running with nodemon : npm run dev
 require("dotenv").config();
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const PORT = process.env.PORT || 8000;
 const express = require('express');
 const session = require('express-session');
 const app = express();
-const PORT = process.env.PORT || 4000;
-const cors = require("cors");
-// const { createServer } = require("http");
 const httpServer = require("http").createServer(app);
-const Server = require("socket.io") //socketIo
-const io = Server(httpServer
+// const { createServer } = require("http");
+const { Server } = require("socket.io"); //socketIo
+const io = new Server(httpServer
   , {
     cors: {
       origin: "http://localhost:3000", //client
@@ -17,9 +18,8 @@ const io = Server(httpServer
   }
 );
 const socket = require("./socket/index.js");
+const { createAdapter } = require('@socket.io/postgres-adapter'); //ap.get, 안써도 socket.io 안에서 직접 postgres 연결이 가능. root path 따로 설정 불필요.
 
-const { createAdapter } = require('@socket.io/postgres-adapter') //ap.get, 안써도 socket.io 안에서 직접 postgres 연결이 가능. root path 따로 설정 불필요.
-const bodyParser = require("body-parser");
 
 const sessionMiddleware = session({ secret: 'coding_buddy', cookie: { maxAge: 60000 } });
 const { Pool } = require('pg');
@@ -41,7 +41,7 @@ socket(io);// /src/socket/index.js 의 socket으로 socketIo 객체를 전달
 //G. create a new instance of a socket handler
 //G. and passing io as an argument.
 //G. io is the Server.
-app.use(cors({ origin: "http://localhost:3000", credentials: true })); // cors 미들웨어 사용
+app.use(cors()); // cors 미들웨어 사용
 app.use(sessionMiddleware);
 app.use(bodyParser.json());
 app.use(
@@ -60,8 +60,12 @@ io.use((socket, next) => {
 io.adapter(createAdapter(pool));
 
 io.on("connection", (socket) => {
+<<<<<<< HEAD
   // user id 1명의 커넥션
 
+=======
+  console.log('a user connected: heesoo');
+>>>>>>> 9c76e1c2fd5404400d46ce9ea8d47541deb912c4
   //
   const session = socket.request.session;
   session.save();
@@ -162,49 +166,32 @@ io.on("connection", (socket) => {
 
 });
 
-///////////////////////////////////////////////////
-///////////////////////////////////////////////////
-
-// 데이터베이스 관리 => coding_buddy_db.js //
-
-///////////////////////////////////////////////////
-///////////////////////////////////////////////////
 
 // 서버에서 app.get 으로 가는건 서버의 루트(local..) / .... 으로 감
 app.get("/", (req, res) => { // server url -> 8000
   res.json({ test: "start" });
 });
-// app.get("/login", (req, res) => {
-//   console.log('login get')
-// })
-// path 체크.. localhost:5000/register 로 가면 콘솔, h1 테그 볼 수 있음
-// app.get("/register", (req, res) => {
-//   res.send('<h1>{ test: "start" }</h1>');
-//   console.log("GET/REGISTER");
-// });
 
-// db check // 이건 예시
-// 데이터 REST -> cod
-// GET 모든 유저 정보 받아오기
-// app.get('/users', db.getUsers)
+// 로그인 정보 리퀘스트 .. 진행중
+app.post("/login", (req, res) => {
+  // client sending
+  console.log(req.body);
+  const username = req.body.username;
+  // and password.. username=$1 AND userpassword=$2
+  return pool.query("SELECT * FROM users WHERE username=$1", [username], (err, response) => {
+    if (err) throw err;
+    // res.status(201).send('User added');
+    res.json(response.rows);
+    // response.rows[0] ==> obj
+    console.log("new user's language data added", response.rows[0]);
+  });
+});
 
-// GET 유저 아이디로 한명만 찾기
-// app.get('/users/:id', db.getUserById)
+app.post("/register", (req, res) => {
+  console.log("post register request", req.body);
+});
 
-// POST 새로운 유저 생성
-// app.post('/users', db.createUser)
-
-// POST(PUT) 유저 정보 업데이트
-// app.put('/users/:id', db.updateUser)
-
-// POST(DELETE) 유저 삭제
-// app.delete('/users/:id', db.deleteUser)
-
-// 클라이언트에서 socket.emit 또는 io.... 로 유저 register 정보 받으면
-// app.post('/users, db.createUser)  // 해서 데이터에 저장하고
-// app.get('/users, db...) // 해서 필요한 정보 리턴시키고 그걸 클라이언트로 패스?
-
-io.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Server Started on port ${PORT}, ${new Date().toLocaleString()} #####`);
   // console.log(`Server Started on port ${PORT}in ${ENV} mode`);
 });

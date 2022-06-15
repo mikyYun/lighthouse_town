@@ -2,10 +2,12 @@ import React from "react";
 import {Outlet} from "react-router-dom";
 import Navbar from "./Navbar";
 
-const Layout = () => {
+const Layout = (props) => {
+  console.log("layouts", props)
+  // const clearCookies = props.click
   return (
     <>
-      <Navbar />
+      <Navbar click={props.click}/>
       {/* <Outlet /> */}
     </>
   );

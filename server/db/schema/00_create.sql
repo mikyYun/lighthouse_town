@@ -7,8 +7,6 @@ DROP TABLE IF EXISTS languages CASCADE;
 DROP TABLE IF EXISTS messages CASCADE;
 DROP TABLE IF EXISTS user_language CASCADE;
 DROP TABLE IF EXISTS private_chat_members CASCADE;
-DROP TABLE IF EXISTS room_members CASCADE;
-DROP TABLE IF EXISTS rooms CASCADE;
 
 CREATE TABLE avatars (
   id SERIAL PRIMARY KEY NOT NULL,
@@ -17,7 +15,7 @@ CREATE TABLE avatars (
 
 CREATE TABLE languages (
   id SERIAL PRIMARY KEY NOT NULL,
-  language_name VARCHAR(255)[] UNIQUE NOT NULL
+  language_name VARCHAR(255) UNIQUE NOT NULL
 );
 
 CREATE TABLE users (
@@ -58,5 +56,5 @@ CREATE TABLE private_chat_members (
 CREATE TABLE user_language (
   id SERIAL PRIMARY KEY NOT NULL,
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-  language_id INTEGER REFERENCES private_chats_rooms(id) ON DELETE CASCADE
+  language_id INTEGER REFERENCES languages(id) ON DELETE CASCADE
 );

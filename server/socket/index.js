@@ -80,8 +80,6 @@ module.exports = function (socketIo) {
       console.log(`${SOCKET_EVENT.SEND_MESSAGE} is fired with data: ${JSON.stringify(responseData)}`);
     });
 
-
-
     // ===============  DISCONNECT  =============== //
     client.on("disconnect", reason => {
       console.log(`disconnect: ${reason}`);

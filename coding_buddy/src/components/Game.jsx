@@ -1,7 +1,8 @@
 import React from "react";
-import Canvas from './Canvas'
-import './Game.scss'
+import Canvas from "./Canvas";
+import "./Game.scss";
 import Navbar from "./Navbar";
+import Layout from "./Layout";
 
 
 export default function Game() {
@@ -10,8 +11,8 @@ export default function Game() {
 
   return(
     <>
-    <Navbar />
-    <Canvas />
+      <Layout />
+      <Canvas />
     </>
-  )
+  );
 }

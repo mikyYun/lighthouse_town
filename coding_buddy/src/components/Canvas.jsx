@@ -6,7 +6,7 @@ import boyImage from "./game_img/boy1.png";
 import townWall from "./game_img/collision_data.js/townWall";
 
 const { io } = require("socket.io-client");
-const socket = io('http://localhost:3000')
+// const socket = io('http://localhost:3000')
 
 const Canvas = (props) => {
   const canvasRef = useRef(null);
