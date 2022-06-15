@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 // import { RegistrationChecker } from "./helper/RegistrationChecker";
 import Cookies from "universal-cookie";
+import { useNavigate } from "react-router-dom";
 import DrawCanvas from "./three/three-scene";
 import Navbar from "./Navbar";
 import Layout from "./Layout";
@@ -12,7 +13,8 @@ export default function Register(props) {
   const [userPassword, setUserPassword] = useState();
   const [userLanguages, setUserLanguages] = useState([]);
   const [userAvatar, setUserAvatar] = useState();
-  // const cookies = new Cookies();
+  const cookies = new Cookies();
+  const navigate = useNavigate()
   // window.addEventListener("click", (e) => {
   //   console.log("REG PROPS", props)
   //   props.submitRegistrationInfo("test")
@@ -176,10 +178,11 @@ export default function Register(props) {
               .then(res => {
                 if (res.data) {
                   console.log(res.data)
-                  Cookies.set("username", res.data.username)
+                  props.submitRegistrationInfo(res.data);
+                  cookies.set("username", res.data)
+                  navigate("/game")
                 }
               })
-            // props.submitRegistrationInfo(userInfo);
             e.preventDefault();
             // })
             // cookies.set("username", username);

@@ -55,7 +55,7 @@ export default function Login(props) {
                   console.log("1", res);
                   console.log(res.data);
                   cookies.set("email", res.data.username);
-                  // navigate("/game")
+                  navigate("/game")
                 }
               });
             // useEffect(() => {

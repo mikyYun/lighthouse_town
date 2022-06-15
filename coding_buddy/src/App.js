@@ -68,6 +68,7 @@ function App() {
   const setCookies = (e) => {
     socket && socket.emit("SET COOKIES");
   };
+  
   const clearCookies = () => {
     const all_cookies = cookies.getAll();
     console.log("@@@@@@@", all_cookies)

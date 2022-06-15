@@ -120,6 +120,9 @@ io.on("connection", (socket) => {
   //   // });
   //   socket.on("REGISTERED", (data) => {
   //     console.log("registering", data);
+
+
+
   //     // 프론트에서 받은 데이터가 이미 데이터베이스에 존재하는지 확인
   //     pool.query("SELECT * FROM users WHERE username = $1 OR email = $2", [data.userData[1], data.userData[2]], (err, result) => {
   //       if (err) throw err;
@@ -172,10 +175,57 @@ app.post("/login", (req, res) => {
     console.log("new user's language data added", response.rows[0]);
   });
 });
-
+//"/login" => local 8000/login
 app.post("/register", (req, res) => {
-  console.log("post register request", req.body);
+  console.log("post register request", req.body); // {userInfo}
+  // const userInfo = {
+  //   userName,
+  //   userPassword,
+  //   userEmail,
+  //   userLanguages,
+  //   userAvatar,
+  // };
+  const userName = req.body.userInfo.userName;
+  const userPassword = req.body.userInfo.userPassword;
+  const userEmail = req.body.userInfo.userEmail;
+  const userLanguages = req.body.userInfo.userLanguages;
+  const userAvatar = req.body.userInfo.userAvatar;
+  pool.query("SELECT * FROM users WHERE username = $1 OR email = $2", [userName, userEmail], (err, result) => {
+    if (err) throw err;
+    console.log(result.rows[0]);
+    if (result.rows[0]) return res.status(201).send("existing data");
+  });
+  pool.query("INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [userName, userPassword, userEmail, userAvatar], (err, result) => {
+    if (err) throw err;
+    console.log("new user registered");
+    // res.status(201).send(`User added with ID: ${result.rows[0].id}`);
+    pool.query("SELECT id FROM users WHERE username = $1", [userName], (err, res) => {
+      console.log("new user's user ID", res.rows);
+      const newUserID = res.rows[0].id;
+      userLanguages.forEach(lang_id => {
+        if (lang_id) {
+          console.log(lang_id);
+          pool.query("INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *", [newUserID, lang_id], (err, res) => {
+            if (err) throw err;
+            console.log("new user's language data added", res.rows);
+          });
+        }
+      });
+    });
+  });
+  res.status(201).send({userName, userEmail, userLanguages, userAvatar});
 });
+
+//   pool.query("INSERT INTO user_language (user_id, language_id) VALUES (ARRAY [$1]) RETURNING *", [userLanguages], (err, result) => {
+//     if (err) throw err;
+//     // res.status(201).send('User added');
+//     console.log("new user language datas inserted")
+//   });
+//   if (err) throw err;
+//   res.status(201).send({userName, userEmail, userLanguages, userAvatar})
+//   // return socket.emit("SUCCESS", data.userData[0]);
+// // })
+// });
 
 httpServer.listen(PORT, () => {
   console.log(`Server Started on port ${PORT}, ${new Date().toLocaleString()} #####`);
