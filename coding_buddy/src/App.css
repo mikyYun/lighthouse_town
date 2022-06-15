@@ -1,10 +1,10 @@
 /* @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap'); */
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+@import url("http://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap");
 
 body {
   background-color: #bada55;
   /* font-family: 'VT323', monospace; */
-  font-family: 'Share Tech Mono', monospace;
+  font-family: "Share Tech Mono", monospace;
 }
 
 .logo_img {
@@ -22,9 +22,8 @@ body {
   position: relative;
 } */
 
-
 .main {
   width: 100vw;
   height: 100vh;
-  padding-top: 1px
+  padding-top: 1px;
 }

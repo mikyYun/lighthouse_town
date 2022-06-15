@@ -48,7 +48,7 @@ export default function Register(props) {
               console.log(e.target.value);
               setUserEmail(e.target.value);
             }}
-            ></input>
+          ></input>
         </div>
         <div className="field">
           <span> NAME :{" "}</span>
@@ -105,23 +105,23 @@ export default function Register(props) {
           <span> PROGRAMMING LANGUAGES :</span>
           <ul>
             <li>
-              <input type="checkbox" id="html" value="HTML" onChange={(e) => insertLanguages(e, 1)}/>
+              <input type="checkbox" id="html" value="HTML" onChange={(e) => insertLanguages(e, 1)} />
               <label>HTML</label>
             </li>
             <li>
-              <input type="checkbox" id="css" value="CSS" onChange={(e) => insertLanguages(e, 2)}/>
+              <input type="checkbox" id="css" value="CSS" onChange={(e) => insertLanguages(e, 2)} />
               <label>CSS</label>
             </li>
             <li>
-              <input type="checkbox" id="javascript" value="JavaScript" onChange={(e) => insertLanguages(e, 3)}/>
+              <input type="checkbox" id="javascript" value="JavaScript" onChange={(e) => insertLanguages(e, 3)} />
               <label>JavaScript</label>
             </li>
             <li>
-              <input type="checkbox" id="react" value="react" onChange={(e) => insertLanguages(e, 4)}/>
+              <input type="checkbox" id="react" value="react" onChange={(e) => insertLanguages(e, 4)} />
               <label>React</label>
             </li>
             <li>
-              <input type="checkbox" id="ruby" value="ruby" onChange={(e) => insertLanguages(e, 5)}/>
+              <input type="checkbox" id="ruby" value="ruby" onChange={(e) => insertLanguages(e, 5)} />
               <label>Ruby</label>
             </li>
           </ul>
@@ -171,7 +171,7 @@ export default function Register(props) {
               userAvatar,
             };
             axios
-              .post("http://localhost:8000/register", {userInfo})
+              .post("http://localhost:8000/register", { userInfo })
               .then(res => {
                 if (res.data) {
                   console.log(res.data)

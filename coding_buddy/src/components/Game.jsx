@@ -18,12 +18,12 @@ export default function Game(props) {
   // console.log('inside game',location.state)  //username
   // console.log('inside game',location.state.userName)  //username
 
-  return(
+  return (
     <>
       {/* <Layout /> */}
       <div className="main-container">
-        <Canvas username={location.state[0]} avatar={location.state[1]} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage}/>
-        <Chat username={location.state}/>
+        <Canvas username={location.state[0]} avatar={location.state[1]} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} />
+        <Chat username={location.state} />
       </div>
     </>
   );

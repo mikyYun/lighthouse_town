@@ -14,8 +14,8 @@ const Canvas = (props) => {
   const canvasRef = useRef(null);
   const sendMessage = props.sendMessage
   const sendPrivateMessage = props.sendPrivateMessage
-  console.log("THIS",sendMessage)
-  console.log("THAT",sendPrivateMessage)
+  console.log("THIS", sendMessage)
+  console.log("THAT", sendPrivateMessage)
   useEffect(() => {
     //make collision wall
     // console.log(townWall.length)
@@ -56,49 +56,49 @@ const Canvas = (props) => {
     // chat bubble :
     //
 
-  // test data from database
-  console.log('props', props)
-  const username = props.username;
-  const avatar = props.avatar;
-  console.log('inside canvas avatar', avatar)
-  console.log('inside canvas username', username)
+    // test data from database
+    console.log('props', props)
+    const username = props.username;
+    const avatar = props.avatar;
+    console.log('inside canvas avatar', avatar)
+    console.log('inside canvas username', username)
 
-  const users = []
-  users.push({
-    username: props.username,
-    x: 150,
-    y:150,
-    image: selectAvatar(props.avatar)
-  })
-  console.log('users', users)
-  // const users = [
-  //   {
-  //     username: 'moon',
-  //     x: 165,
-  //     y: 50,
-  //     currentDirection: 0,
-  //     isMoving: false,
-  //     image: girlImage
-  //   },
-  //   {
-  //     username: 'heesoo',
-  //     x: 200,
-  //     y: 100,
-  //     currentDirection: 0,
-  //     isMoving: false,
-  //     image: boyImage
-  //   },
-  //   {
-  //     username: 'Park',
-  //     x: 300,
-  //     y: 150,
-  //     currentDirection: 0,
-  //     isMoving: false,
-  //     image: boyImage
-  //   }
-  // ]
+    const users = []
+    users.push({
+      username: props.username,
+      x: 150,
+      y: 150,
+      image: selectAvatar(props.avatar)
+    })
+    console.log('users', users)
+    // const users = [
+    //   {
+    //     username: 'moon',
+    //     x: 165,
+    //     y: 50,
+    //     currentDirection: 0,
+    //     isMoving: false,
+    //     image: girlImage
+    //   },
+    //   {
+    //     username: 'heesoo',
+    //     x: 200,
+    //     y: 100,
+    //     currentDirection: 0,
+    //     isMoving: false,
+    //     image: boyImage
+    //   },
+    //   {
+    //     username: 'Park',
+    //     x: 300,
+    //     y: 150,
+    //     currentDirection: 0,
+    //     isMoving: false,
+    //     image: boyImage
+    //   }
+    // ]
 
-  let userChar;
+    let userChar;
 
     //making animation loop
 
@@ -112,39 +112,40 @@ const Canvas = (props) => {
         if (user.username === name) {
           userChar = new Characters(user)
         } else {
-         characters.push(new Characters(user))
+          characters.push(new Characters(user))
         }
-       console.log('userChar', userChar)
-       console.log("new", characters)
+        console.log('userChar', userChar)
+        console.log("new", characters)
       }
-    )}
+      )
+    }
     makeCharacters(users, username)
 
 
     function step() {
 
-     // go through users array and make each chracters
+      // go through users array and make each chracters
 
-        // walking motion
-         if (userChar.state.isMoving) {
-          frameCount++;
-          if (frameCount >= framelimit) {
-            frameCount = 0;
-            userChar.incrementLoopIndex();
-          }
+      // walking motion
+      if (userChar.state.isMoving) {
+        frameCount++;
+        if (frameCount >= framelimit) {
+          frameCount = 0;
+          userChar.incrementLoopIndex();
         }
+      }
 
-        ctx.drawImage(mapImg, 0, 0)
+      ctx.drawImage(mapImg, 0, 0)
 
-        // characters.map(character => {
-        //   character.drawFrame(ctx)
-        //   ctx.fillText(character.state.username, character.state.x + 20, character.state.y+10)
-        //   ctx.fillStyle = 'purple'
-        // });
+      // characters.map(character => {
+      //   character.drawFrame(ctx)
+      //   ctx.fillText(character.state.username, character.state.x + 20, character.state.y+10)
+      //   ctx.fillStyle = 'purple'
+      // });
 
-        userChar.drawFrame(ctx);
-        ctx.fillText(username, userChar.state.x + 20, userChar.state.y+10)
-        ctx.fillStyle = 'purple'
+      userChar.drawFrame(ctx);
+      ctx.fillText(username, userChar.state.x + 20, userChar.state.y + 10)
+      ctx.fillStyle = 'purple'
 
       window.requestAnimationFrame(step);
     }
@@ -163,11 +164,11 @@ const Canvas = (props) => {
     // pass function
     // window.requestAnimationFrame(() => gameLoop(ctx, canvas, characters, mapImg));
 
-  //   setInterval(() => {
-  //   socket.on('init', msg => console.log('msg', msg))
-  //   socket.emit('sendData', userChar.state)
-  //   socket.on('backData', data => console.log('data', data))
-  // } ,1000)
+    //   setInterval(() => {
+    //   socket.on('init', msg => console.log('msg', msg))
+    //   socket.emit('sendData', userChar.state)
+    //   socket.on('backData', data => console.log('data', data))
+    // } ,1000)
 
 
     return () => {
