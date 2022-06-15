@@ -60,12 +60,7 @@ io.use((socket, next) => {
 io.adapter(createAdapter(pool));
 
 io.on("connection", (socket) => {
-<<<<<<< HEAD
-  // user id 1명의 커넥션
-
-=======
   console.log('a user connected: heesoo');
->>>>>>> 9c76e1c2fd5404400d46ce9ea8d47541deb912c4
   //
   const session = socket.request.session;
   session.save();
@@ -143,10 +138,6 @@ app.post("/login", (req, res) => {
     } else { // no matching user
       res.status(201).send(false);
     }
-    // res.status(201).send('User added');
-    // res.json(response.rows);
-    // response.rows[0] ==> obj
-    // console.log("new user's language data added", response.rows[0]);
   });
 });
 //"/login" => local 8000/login
