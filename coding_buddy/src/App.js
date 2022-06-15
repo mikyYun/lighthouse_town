@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-ro
 import { useState, useCallback, useEffect, useRef } from "react";
 // import { socket, SocketContext, SOCKET_EVENT } from "./components/service/socket";
 import Chat from "./components/Chat"
-import ChatRoom from './components/ChatRoom';
 
 import Cookies from 'universal-cookie';
 // usehistory
