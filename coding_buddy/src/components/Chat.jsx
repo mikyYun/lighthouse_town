@@ -14,7 +14,7 @@ export default function Chat() {
   useEffect(() => { //G
     socket.connect() //connecting to the server. G added this line.
 
-    //before G's fix: we only had this return 
+    //before G's fix: we only had this return
     return () => { // App 컴포넌트 unmount시 실행 (when the component disappears from the DOM tree)
       socket.disconnect();
     }
@@ -35,7 +35,7 @@ export default function Chat() {
   return (
     <SocketContext.Provider value={socket}>
       {/* //??PROVIDER ? */}
-      <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+      <div className="d-flex flex-column justify-content-center align-items-center vh-100 chatroom">
         <NicknameForm handleSubmitNickname={handleSubmitNickname} />
         <ChatRoom nickname={nickname} />
       </div>

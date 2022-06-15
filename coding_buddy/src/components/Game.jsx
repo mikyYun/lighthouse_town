@@ -3,6 +3,7 @@ import Canvas from "./Canvas";
 import "./Game.scss";
 import Navbar from "./Navbar";
 import Layout from "./Layout";
+import Chat from "./Chat";
 
 
 export default function Game() {
@@ -12,7 +13,10 @@ export default function Game() {
   return(
     <>
       <Layout />
-      <Canvas />
+      <div className="main-container">
+        <Canvas />
+        <Chat />
+      </div>
     </>
   );
 }

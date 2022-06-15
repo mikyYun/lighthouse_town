@@ -25,8 +25,8 @@ const Canvas = (props) => {
     // canvas, ctx only in this useEffect
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    canvas.width = 1024;
-    canvas.height = 576;
+    canvas.width = 1120;
+    canvas.height = 640;
 
     const mapImg = new Image();
     mapImg.src = mapImage;
@@ -135,9 +135,9 @@ const Canvas = (props) => {
     // pass function
     // window.requestAnimationFrame(() => gameLoop(ctx, canvas, characters, mapImg));
 
-    socket.on('init', msg => console.log(msg))
-    socket.emit('sendData', userChar.state)
-    socket.on('backData', data => console.log(data))
+    // socket.on('init', msg => console.log(msg))
+    // socket.emit('sendData', userChar.state)
+    // socket.on('backData', data => console.log(data))
 
 
     return () => {
@@ -147,9 +147,9 @@ const Canvas = (props) => {
   }, []);
 
   return (
-    <>
-      <canvas ref={canvasRef}></canvas>
-    </>
+    <div className="game-container">
+      <canvas className="game-canvas" ref={canvasRef}></canvas>
+    </div>
   );
 };
 
