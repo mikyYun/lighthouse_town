@@ -70,13 +70,6 @@ function App() {
         console.log("each", each)
         cookies.remove(each);
       })
-      // all_cookies.forEach((each) => {
-      //   console.log("each", each)
-      //   cookies.remove(each);
-      // });
-    // } else {
-      // console.log("No Cookies");
-    // }
   };
 
   return (
