@@ -2,7 +2,6 @@ import NicknameForm from "./NicknameForm";
 import { useState, useCallback, useEffect, useRef } from "react";
 import { socket, SocketContext, SOCKET_EVENT } from "./service/socket";
 import ChatRoom from "./ChatRoom";
-
 export default function Chat(props) {
 
   const prevNickname = useRef(null); // prevNickname 변경은 컴포넌트를 리렌더링 하지않습니다.
