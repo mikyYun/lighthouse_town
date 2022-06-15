@@ -6,6 +6,7 @@ import DrawCanvas from "./three/three-scene";
 import Navbar from "./Navbar";
 import Layout from "./Layout";
 import axios from "axios";
+import boyImage from "./game_img/boy1.png"
 
 export default function Register(props) {
   const [userEmail, setUserEmail] = useState();
@@ -13,6 +14,7 @@ export default function Register(props) {
   const [userPassword, setUserPassword] = useState();
   const [userLanguages, setUserLanguages] = useState([]);
   const [userAvatar, setUserAvatar] = useState();
+  const [incorrectPassword, setIncorrectPassword] = useState("correct_password")
   const cookies = new Cookies();
   const navigate = useNavigate()
   // window.addEventListener("click", (e) => {
@@ -28,6 +30,7 @@ export default function Register(props) {
       setUserLanguages((prev) => prev.filter((el) => el !== id));
     }
   };
+
   return (
     <div className="div_relative">
       <Layout />
@@ -83,10 +86,16 @@ export default function Register(props) {
           placeholder="PASSWORD_CONFIRMATION"
           type="password"
           onChange={(e) => {
-            if (e.target.value !== userPassword)
+            if (e.target.value !== userPassword) {
+              setIncorrectPassword("incorrect_password")
               console.log("confirmation password is not matched");
+            } else {
+              setIncorrectPassword("correct_password")
+            }
           }}
         ></input>
+        <br />
+        <span className={incorrectPassword}>confirmation password is incorrect</span>
         <br />
         PROGRAMMING LANGUAGES :
         <ul>
@@ -134,6 +143,8 @@ export default function Register(props) {
         <br />
         AVATAR :
         <ul>
+          <div className="div_boyImage">
+          </div>
           <input
             type="checkbox"
             id="man"
@@ -143,7 +154,10 @@ export default function Register(props) {
             }}
           />
           <label>M</label>
+
           <br />
+          <div className="div_girlImage">
+          </div>
           <input
             type="checkbox"
             id="woman"
@@ -174,6 +188,8 @@ export default function Register(props) {
                   props.submitRegistrationInfo(res.data);
                   cookies.set("username", res.data)
                   navigate("/game")
+                } else {
+
                 }
               })
             e.preventDefault();
