@@ -35,9 +35,9 @@ const pool = new Pool({
   port: process.env.PGPORT
 });
 
-socket(io);// /src/socket/index.js 의 socket으로 socketIo 객체를 전달 
+socket(io);// /src/socket/index.js 의 socket으로 socketIo 객체를 전달
 
-//G. socket(server) 
+//G. socket(server)
 //G. create a new instance of a socket handler
 //G. and passing io as an argument.
 //G. io is the Server.
@@ -67,7 +67,15 @@ io.on("connection", (socket) => {
   const req = socket.request;
   const userName = {};
 
-  socket.emit("init", { data: 'hello world' });
+
+  socket.emit("init", {data: 'hello world'})
+  socket.on('sendData', data => {
+    console.log(data)
+    // add userid from data
+    const users = []
+    users.push(data)
+    socket.emit('backData', users)
+  })
 
 
   socket.on("LOGIN", (data) => {

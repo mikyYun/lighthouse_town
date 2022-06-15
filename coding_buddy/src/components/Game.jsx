@@ -7,8 +7,9 @@ import Layout from "./Layout";
 
 export default function Game() {
 
+  // pass the mapimg as props
 
-  return (
+  return(
     <>
       <Layout />
       <Canvas />
