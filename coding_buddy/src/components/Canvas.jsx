@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import mapImage from "./game_img/town-map.png";
-import girlImage from "./game_img/girl1.png";
+// import girlImage from "./game_img/girl1.png";
 import Characters from "./helper/Characters";
-import boyImage from "./game_img/boy1.png";
+// import boyImage from "./game_img/boy1.png";
 import townWall from "./game_img/collision_data.js/townWall";
+import selectAvatar from "./helper/selecAvatar";
+
 
 const { io } = require("socket.io-client");
 const socket = io('http://localhost:3000')
@@ -52,34 +54,46 @@ const Canvas = (props) => {
     //
 
   // test data from database
+  console.log('props', props)
   const username = props.username;
+  const avatar = props.avatar;
+  console.log('inside canvas avatar', avatar)
   console.log('inside canvas username', username)
-  const users = [
-    {
-      username: 'moon',
-      x: 165,
-      y: 50,
-      currentDirection: 0,
-      isMoving: false,
-      image: girlImage
-    },
-    {
-      username: 'heesoo',
-      x: 200,
-      y: 100,
-      currentDirection: 0,
-      isMoving: false,
-      image: boyImage
-    },
-    {
-      username: 'Park',
-      x: 300,
-      y: 150,
-      currentDirection: 0,
-      isMoving: false,
-      image: boyImage
-    }
-  ]
+
+  const users = []
+  users.push({
+    username: props.username,
+    x: 150,
+    y:150,
+    image: selectAvatar(props.avatar)
+  })
+  console.log('users', users)
+  // const users = [
+  //   {
+  //     username: 'moon',
+  //     x: 165,
+  //     y: 50,
+  //     currentDirection: 0,
+  //     isMoving: false,
+  //     image: girlImage
+  //   },
+  //   {
+  //     username: 'heesoo',
+  //     x: 200,
+  //     y: 100,
+  //     currentDirection: 0,
+  //     isMoving: false,
+  //     image: boyImage
+  //   },
+  //   {
+  //     username: 'Park',
+  //     x: 300,
+  //     y: 150,
+  //     currentDirection: 0,
+  //     isMoving: false,
+  //     image: boyImage
+  //   }
+  // ]
 
   let userChar;
 
@@ -103,6 +117,7 @@ const Canvas = (props) => {
     )}
     makeCharacters(users, username)
 
+
     function step() {
 
      // go through users array and make each chracters
@@ -118,18 +133,18 @@ const Canvas = (props) => {
 
         ctx.drawImage(mapImg, 0, 0)
 
-        characters.map(character => {
-          character.drawFrame(ctx)
-          ctx.fillText(character.state.username, character.state.x + 20, character.state.y+10)
-          ctx.fillStyle = 'purple'
-        });
+        // characters.map(character => {
+        //   character.drawFrame(ctx)
+        //   ctx.fillText(character.state.username, character.state.x + 20, character.state.y+10)
+        //   ctx.fillStyle = 'purple'
+        // });
 
         userChar.drawFrame(ctx);
         ctx.fillText(username, userChar.state.x + 20, userChar.state.y+10)
         ctx.fillStyle = 'purple'
 
       window.requestAnimationFrame(step);
-    };
+    }
     // console.log(Char)
     window.addEventListener("keydown", e => userChar.move(e));
     window.addEventListener("keyup", () => userChar.stop());
@@ -139,9 +154,11 @@ const Canvas = (props) => {
     // pass function
     // window.requestAnimationFrame(() => gameLoop(ctx, canvas, characters, mapImg));
 
-    // socket.on('init', msg => console.log(msg))
-    // socket.emit('sendData', userChar.state)
-    // socket.on('backData', data => console.log(data))
+    setInterval(() => {
+    socket.on('init', msg => console.log('msg', msg))
+    socket.emit('sendData', userChar.state)
+    socket.on('backData', data => console.log('data', data))
+  } ,1000)
 
 
     return () => {

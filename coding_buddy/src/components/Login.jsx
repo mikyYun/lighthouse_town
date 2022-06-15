@@ -20,9 +20,10 @@ export default function Login(props) {
     navigate('/register')
   }
 
-  const goChat = (username) => {
-    console.log('username', username)
-    navigate('/game', {state: username})
+  const goChat = (username, avatar) => {
+    console.log('user', username, avatar)
+    const data = [username, avatar]
+    navigate('/game', {state : data})
   }
 
   return (
@@ -74,7 +75,7 @@ export default function Login(props) {
                   // console.log("1", res);
                   console.log('login with', res.data);
                   cookies.set("email", res.data);
-                  goChat(res.data.userName)
+                  goChat(res.data.userName, res.data.avatar)
                 } else {
                   console.log("no matching user")
                   alert ("Invalid information. Please confirm your email and password")
