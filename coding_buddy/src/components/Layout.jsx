@@ -7,7 +7,7 @@ const Layout = (props) => {
   // const clearCookies = props.click
   return (
     <>
-      <Navbar click={props.click}/>
+      <Navbar />
       {/* <Outlet /> */}
     </>
   );

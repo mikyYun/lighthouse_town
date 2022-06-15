@@ -33,3 +33,20 @@
   height: 5rem;
   width: 100%;
 }
+.incorrect_password {
+  color: red;
+  display: inline-block;
+}
+.correct_password {
+  display: none;
+}
+.div_boyImage {
+  background-image: url("./components/game_img/boy1.png");
+  width: 65px;
+  height: 65px;
+}
+.div_girlImage {
+  background-image: url("./components/game_img/girl1.png");
+  width: 65px;
+  height: 65px;
+}
