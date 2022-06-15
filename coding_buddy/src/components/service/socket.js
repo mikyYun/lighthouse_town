@@ -3,7 +3,8 @@
 import { createContext } from "react";
 import socketIo from "socket.io-client";
 // import dayjs from 'react-dayjs';
-export const socket = socketIo(String(process.env.REACT_APP_BACK_URL), { withCredentials: true });
+// export const socket = socketIo(process.env.REACT_APP_BACK_URL);
+export const socket = socketIo(process.env.REACT_APP_BACK_URL);
 export const SocketContext = createContext(socket); //G
 
 socket.on("connect", () => { //GABRIEL
