@@ -27,7 +27,7 @@ class Characters {
 
   // add websocket
   move = (e) => {
-    console.log('inside move', this)
+    // console.log('inside move', this)
     if (e.key === 'w') {
       // keyPressed.w = true;
       this.state.y -= this.movement_speed;

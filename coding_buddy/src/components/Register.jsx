@@ -7,6 +7,7 @@ import Navbar from "./Navbar";
 import Layout from "./Layout";
 import axios from "axios";
 import boyImage from "./game_img/boy1.png"
+import './Register.scss'
 
 export default function Register(props) {
   const [userEmail, setUserEmail] = useState();
@@ -32,145 +33,134 @@ export default function Register(props) {
   };
 
   return (
-    <div className="div_relative">
-      <Layout />
+    <div className="register-form">
+      {/* <Layout /> */}
       <form action="/login" method="GET" id="form_registration">
-        EMAIL :{" "}
-        <input
-          // name="email"
-          id="register_email"
-          rows="1"
-          placeholder="EMAIL"
-          typeof="email"
-          onChange={(e) => {
-            console.log(e.target.value);
-            setUserEmail(e.target.value);
-          }}
-        ></input>
-        <br />
-        NAME :{" "}
-        <input
-          // name="name"
-          id="register_name"
-          rows="1"
-          placeholder="NAME"
-          type="text"
-          onChange={(e) => {
-            console.log(e.target.value);
-            if (e.target.value.length < 4)
-              console.log("username should be longer than 4 chars");
-            setUserName(e.target.value);
-          }}
-        ></input>
-        <br />
-        PASSWORD :{" "}
-        <input
-          // name="password"
-          id="register_password"
-          rows="1"
-          placeholder="PASSWORD"
-          type="password"
-          onChange={(e) => {
-            if (e.target.value.length < 4)
-              console.log("password should be longer than 4 chars");
-            console.log(e.target.value);
-            setUserPassword(e.target.value);
-          }}
-        ></input>
-        <br />
-        CONFIRM PASSWORD :{" "}
-        <input
-          // name="password_confirmation"
-          id="register_password_confirmation"
-          rows="1"
-          placeholder="PASSWORD_CONFIRMATION"
-          type="password"
-          onChange={(e) => {
-            if (e.target.value !== userPassword) {
-              setIncorrectPassword("incorrect_password")
-              console.log("confirmation password is not matched");
-            } else {
-              setIncorrectPassword("correct_password")
-            }
-          }}
-        ></input>
-        <br />
+        <div className="field">
+          <span>EMAIL :{" "}</span>    {/* 이안에 뭐가 들어갈껀가요? */}
+          <input
+            // name="email"
+            id="register_email"
+            rows="1"
+            placeholder="EMAIL"
+            typeof="email"
+            onChange={(e) => {
+              console.log(e.target.value);
+              setUserEmail(e.target.value);
+            }}
+            ></input>
+        </div>
+        <div className="field">
+          <span> NAME :{" "}</span>
+          <input
+            // name="name"
+            id="register_name"
+            rows="1"
+            placeholder="NAME"
+            type="text"
+            onChange={(e) => {
+              console.log(e.target.value);
+              if (e.target.value.length < 4)
+                console.log("username should be longer than 4 chars");
+              setUserName(e.target.value);
+            }}
+          ></input>
+        </div>
+        <div className="field">
+          <span> PASSWORD :{" "}</span>
+          <input
+            // name="password"
+            id="register_password"
+            rows="1"
+            placeholder="PASSWORD"
+            type="password"
+            onChange={(e) => {
+              if (e.target.value.length < 4)
+                console.log("password should be longer than 4 chars");
+              console.log(e.target.value);
+              setUserPassword(e.target.value);
+            }}
+          ></input>
+        </div>
+        <div className="field">
+          <span> CONFIRM PASSWORD :{" "}</span>
+          <input
+            // name="password_confirmation"
+            id="register_password_confirmation"
+            rows="1"
+            placeholder="PASSWORD_CONFIRMATION"
+            type="password"
+            onChange={(e) => {
+              if (e.target.value !== userPassword) {
+                setIncorrectPassword("incorrect_password")
+                console.log("confirmation password is not matched");
+              } else {
+                setIncorrectPassword("correct_password")
+              }
+            }}
+          ></input>
+        </div>
         <span className={incorrectPassword}>confirmation password is incorrect</span>
-        <br />
-        PROGRAMMING LANGUAGES :
-        <ul>
-          <input
-            type="checkbox"
-            id="html"
-            value="HTML"
-            onChange={(e) => insertLanguages(e, 1)}
-          />
-          <label>HTML</label>
-          <br />
-          <input
-            type="checkbox"
-            id="css"
-            value="CSS"
-            onChange={(e) => insertLanguages(e, 2)}
-          />
-          <label>CSS</label>
-          <br />
-          <input
-            type="checkbox"
-            id="javascript"
-            value="JavaScript"
-            onChange={(e) => insertLanguages(e, 3)}
-          />
-          <label>JavaScript</label>
-          <br />
-          <input
-            type="checkbox"
-            id="react"
-            value="react"
-            onChange={(e) => insertLanguages(e, 4)}
-          />
-          <label>React</label>
-          <br />
-          <input
-            type="checkbox"
-            id="ruby"
-            value="ruby"
-            onChange={(e) => insertLanguages(e, 5)}
-          />
-          <label>Ruby</label>
-          <br />
-        </ul>
-        <br />
-        AVATAR :
-        <ul>
-          <div className="div_boyImage">
-          </div>
-          <input
-            type="checkbox"
-            id="man"
-            value="M"
-            onChange={(e) => {
-              setUserAvatar(1);
-            }}
-          />
-          <label>M</label>
-
-          <br />
-          <div className="div_girlImage">
-          </div>
-          <input
-            type="checkbox"
-            id="woman"
-            value="W"
-            onChange={(e) => {
-              setUserAvatar(2);
-            }}
-          />
-          <label>W</label>
-          <br />
-        </ul>
-        <br />
+        <div className="field">
+          <span> PROGRAMMING LANGUAGES :</span>
+          <ul>
+            <li>
+              <input type="checkbox" id="html" value="HTML" onChange={(e) => insertLanguages(e, 1)}/>
+              <label>HTML</label>
+            </li>
+            <li>
+              <input type="checkbox" id="css" value="CSS" onChange={(e) => insertLanguages(e, 2)}/>
+              <label>CSS</label>
+            </li>
+            <li>
+              <input type="checkbox" id="javascript" value="JavaScript" onChange={(e) => insertLanguages(e, 3)}/>
+              <label>JavaScript</label>
+            </li>
+            <li>
+              <input type="checkbox" id="react" value="react" onChange={(e) => insertLanguages(e, 4)}/>
+              <label>React</label>
+            </li>
+            <li>
+              <input type="checkbox" id="ruby" value="ruby" onChange={(e) => insertLanguages(e, 5)}/>
+              <label>Ruby</label>
+            </li>
+          </ul>
+        </div>
+        <div className="field">
+          <span>AVATAR :</span>
+          <ul>
+            <li>
+              <div className="div_boyImage"></div>
+              <div>
+                <input
+                  type="checkbox"
+                  id="man"
+                  value="M"
+                  onChange={(e) => {
+                    setUserAvatar(1);
+                  }}
+                />
+                <label>M</label>
+              </div>
+            </li>
+            <li>
+              <div className="div_girlImage"></div>
+              <div>
+                <input
+                  type="checkbox"
+                  id="woman"
+                  value="W"
+                  onChange={(e) => {
+                    setUserAvatar(2);
+                  }}
+                />
+                <label>W</label>
+              </div>
+            </li>
+          </ul>
+        </div>
         <button
+          className="btn"
           type="submit"
           onClick={(e) => {
             const userInfo = {
@@ -199,7 +189,6 @@ export default function Register(props) {
         >
           Register
         </button>
-        이미지 마우스로 화면전환 가능
       </form>
       <div className="div_canvas">{/* <DrawCanvas /> */}</div>
       {/* <Outlet /> */}

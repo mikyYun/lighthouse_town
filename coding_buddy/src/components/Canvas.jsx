@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import mapImage from "./game_img/town-map.png";
-import girlImage from "./game_img/girl1.png";
+// import girlImage from "./game_img/girl1.png";
 import Characters from "./helper/Characters";
-import boyImage from "./game_img/boy1.png";
+// import boyImage from "./game_img/boy1.png";
 import townWall from "./game_img/collision_data.js/townWall";
+import selectAvatar from "./helper/selecAvatar";
+
 
 const { io } = require("socket.io-client");
 const socket = io('http://localhost:3000')
@@ -16,20 +18,20 @@ const Canvas = (props) => {
   console.log("THAT",sendPrivateMessage)
   useEffect(() => {
     //make collision wall
-    console.log(townWall.length)
+    // console.log(townWall.length)
     const collisionTownMap = []
     for (let i = 0; i < townWall.length; i += 70) {
       collisionTownMap.push(townWall.splice(i, i + 70))
     }
 
-    console.log(collisionTownMap)
+    // console.log(collisionTownMap)
 
     // put step function
     // canvas, ctx only in this useEffect
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    canvas.width = 1024;
-    canvas.height = 576;
+    canvas.width = 1120;
+    canvas.height = 640;
 
     const mapImg = new Image();
     mapImg.src = mapImage;
@@ -55,33 +57,46 @@ const Canvas = (props) => {
     //
 
   // test data from database
-  const username = 'heesoo'
-  const users = [
-    {
-      username: 'heesoo',
-      x: 165,
-      y: 50,
-      currentDirection: 0,
-      isMoving: false,
-      image: girlImage
-    },
-    {
-      username: 'john',
-      x: 200,
-      y: 100,
-      currentDirection: 0,
-      isMoving: false,
-      image: boyImage
-    },
-    {
-      username: 'hero',
-      x: 300,
-      y: 150,
-      currentDirection: 0,
-      isMoving: false,
-      image: boyImage
-    }
-  ]
+  console.log('props', props)
+  const username = props.username;
+  const avatar = props.avatar;
+  console.log('inside canvas avatar', avatar)
+  console.log('inside canvas username', username)
+
+  const users = []
+  users.push({
+    username: props.username,
+    x: 150,
+    y:150,
+    image: selectAvatar(props.avatar)
+  })
+  console.log('users', users)
+  // const users = [
+  //   {
+  //     username: 'moon',
+  //     x: 165,
+  //     y: 50,
+  //     currentDirection: 0,
+  //     isMoving: false,
+  //     image: girlImage
+  //   },
+  //   {
+  //     username: 'heesoo',
+  //     x: 200,
+  //     y: 100,
+  //     currentDirection: 0,
+  //     isMoving: false,
+  //     image: boyImage
+  //   },
+  //   {
+  //     username: 'Park',
+  //     x: 300,
+  //     y: 150,
+  //     currentDirection: 0,
+  //     isMoving: false,
+  //     image: boyImage
+  //   }
+  // ]
 
   let userChar;
 
@@ -99,14 +114,14 @@ const Canvas = (props) => {
         } else {
          characters.push(new Characters(user))
         }
-       console.log('heesoo', userChar)
+       console.log('userChar', userChar)
        console.log("new", characters)
       }
     )}
-    makeCharacters(users, 'heesoo')
+    makeCharacters(users, username)
+
 
     function step() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
      // go through users array and make each chracters
 
@@ -121,14 +136,18 @@ const Canvas = (props) => {
 
         ctx.drawImage(mapImg, 0, 0)
 
-        characters.map(character => {
-          character.drawFrame(ctx)
-        });
+        // characters.map(character => {
+        //   character.drawFrame(ctx)
+        //   ctx.fillText(character.state.username, character.state.x + 20, character.state.y+10)
+        //   ctx.fillStyle = 'purple'
+        // });
 
         userChar.drawFrame(ctx);
+        ctx.fillText(username, userChar.state.x + 20, userChar.state.y+10)
+        ctx.fillStyle = 'purple'
 
       window.requestAnimationFrame(step);
-    };
+    }
     // console.log(Char)
     window.addEventListener("keydown", e => {
       userChar.move(e)
@@ -144,11 +163,12 @@ const Canvas = (props) => {
     // pass function
     // window.requestAnimationFrame(() => gameLoop(ctx, canvas, characters, mapImg));
 
-    socket.on('init', msg => console.log(msg))
-    socket.emit('sendData', userChar.state)
-    socket.on('backData', data => console.log(data))
-      
-      // console.log("click")
+  //   setInterval(() => {
+  //   socket.on('init', msg => console.log('msg', msg))
+  //   socket.emit('sendData', userChar.state)
+  //   socket.on('backData', data => console.log('data', data))
+  // } ,1000)
+
 
     return () => {
       window.removeEventListener("keydown", e => userChar.move(e));
@@ -157,9 +177,9 @@ const Canvas = (props) => {
   }, []);
 
   return (
-    <>
-      <canvas ref={canvasRef}></canvas>
-    </>
+    <div className="game-container">
+      <canvas className="game-canvas" ref={canvasRef}></canvas>
+    </div>
   );
 };
 

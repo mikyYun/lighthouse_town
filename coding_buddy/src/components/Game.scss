@@ -1,3 +1,17 @@
-body {
-  background-color: white;
+
+.main-container {
+  width: 100%;
+  display: flex;
 }
+
+.game-container {
+  width: 70%;
+  margin: 0 auto;
+}
+
+.chatroom {
+  width: 30%;
+  margin: 0;
+  padding: 20px
+}
+

@@ -38,7 +38,7 @@ function App() {
 
   useEffect(() => {
     const socket = io();
-    
+
     socket.on("CONNECT", (e) => {
       console.log("My socket ID",socket.id)
       console.log("CONNECTED", e);
@@ -93,16 +93,17 @@ function App() {
     socket && socket.emit("PRIVATE MESSAGE", {"target": target, "message": msg, "senderID": socket.id})
   }
   return (
-
+    <div className='main'>
       <Routes>
-        <Route path='/' element={<Layout />} />
+        <Route path='/' element={<Layout setUser={createSocketIdNameObject}/>} />
         <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
-        <Route path='/login' element={<Login setUser={createSocketIdNameObject}/>} />
+        <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
         {/* <Route path='/login' element="Logout" /> */}
         {/* <Route path='/sockets' element={<Sockets />} /> */}
         <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage}/>} />
         <Route path='/chat' element={<Chat />} />
       </Routes>
+    </div>
   );
 
 

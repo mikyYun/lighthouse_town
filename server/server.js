@@ -85,26 +85,26 @@ io.on("connection", (socket) => {
 
   // socketID and username matching
   // socket.on("SET USERNAME", (socketID, username) => {
-    socket.on("SET USERNAME", (obj) => {
-    console.log("SETSETSET", obj)
-    const username = obj.username
-    const socketid = obj.socketID
-    console.log(socketid)
-    console.log(username)
+  socket.on("SET USERNAME", (obj) => {
+    console.log("SETSETSET", obj);
+    const username = obj.username;
+    const socketid = obj.socketID;
+    console.log(socketid);
+    console.log(username);
     // currentUsers[id] = username;
     // const id = socketID
     // currentUsers = {...currentUsers, socketid : username}
-    currentUsers[socketid] = username
+    currentUsers[socketid] = username;
     console.log("AFTER LOGIN, SET USER NAME AND SOCKET ID PAIR", currentUsers);
   });
 
   socket.on("disconnect", () => {
     // console.log("disconnected id", socket.id)
-    console.log("CURRENT USERS", currentUsers)
-    delete currentUsers[socket.id]
-    console.log("UPDATED CURRENT USERS", currentUsers)
+    console.log("CURRENT USERS", currentUsers);
+    delete currentUsers[socket.id];
+    console.log("UPDATED CURRENT USERS", currentUsers);
 
-  })
+  });
 
   // socket.on("LOGIN", (data) => {
   //   // userData = {"userEmail" : ~~, "userPassword" : ~~}
@@ -131,22 +131,22 @@ io.on("connection", (socket) => {
   socket.on("PRIVATE MESSAGE", (obj) => {
     // e = {target: username, message: "message"}
     // const Name target
-    const msg = obj.message
-    const targetName = obj.target
-    const senderId = obj.senderID
-    console.log(targetName)
-    console.log(currentUsers)
-    let targetSocketId
-    
-    const senderName = currentUsers[senderId]
+    const msg = obj.message;
+    const targetName = obj.target;
+    const senderId = obj.senderID;
+    console.log(targetName);
+    console.log(currentUsers);
+    let targetSocketId;
+
+    const senderName = currentUsers[senderId];
     Object.keys(currentUsers).forEach(recipientSocketId => {
       if (currentUsers[recipientSocketId] === targetName) {
-        targetSocketId = recipientSocketId
-        console.log(targetSocketId)
+        targetSocketId = recipientSocketId;
+        console.log(targetSocketId);
       }
       // if (currentUsers.socket.id)
     });
-    socket.to(targetSocketId).emit("PRIVATE MESSAGE", { "message": msg, from: senderName});
+    socket.to(targetSocketId).emit("PRIVATE MESSAGE", { "message": msg, from: senderName });
   });
 
 });

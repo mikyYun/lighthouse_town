@@ -4,39 +4,56 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 // import Navbar from "./Navbar";
 import Layout from "./Layout";
 import axios from "axios";
+import './Login.scss'
 
 
 export default function Login(props) {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const setUser = props.setUser
+  // console.log("!!!!!!!!!!", props)
 
+  const [username, setUsername] = useState("");
 
   const cookies = new Cookies();
   const navigate = useNavigate()
+
+  const goRegister = () => {
+    navigate('/register')
+  }
+
+  const goChat = (username, avatar) => {
+    console.log('user', username, avatar)
+    const data = [username, avatar]
+    navigate('/game', {state : data})
+  }
+
   return (
-    <>
-      {/* <Navbar click={props.click}/> */}
-      <Layout />
+    // <>
+      // {/* <Navbar click={props.click}/> */}
+      // {/* <Layout /> */}
       <form id="form_login" action="/game" method="GET" runat="server">
         {/* <form id="form_login" action="/game" method="GET"  runat="server"  onSubmit={(e) => e.preventDefault()}> */}
-        <input
-          // name="email"
-          id="register_email"
-          rows="1"
-          placeholder="EMAIL"
-          type="email"
-          value={userEmail}
-          onChange={(e) => {
-            // console.log(e.target.value);
-            setUserEmail(e.target.value);
-          }}
-        ></input>
-        <br />
-        PASSWORD :{" "}
+        <div>
+          <span>EMAIL : </span>
+          <input
+            // name="email"
+            id="register_email"
+            rows="1"
+            placeholder="EMAIL"
+            type="email"
+            value={userEmail}
+            onChange={(e) => {
+              // console.log(e.target.value);
+              setUserEmail(e.target.value);
+            }}
+            ></input>
+        </div>
+        <div>
+        <span>PASSWORD :{" "}</span>
         <input
           // name="password"
-          
+
           id="register_password"
           rows="1"
           placeholder="PASSWORD"
@@ -46,9 +63,10 @@ export default function Login(props) {
             // console.log(e.target.value);
             setUserPassword(e.target.value);
           }}
-        ></input>
-        <br />
+          ></input>
+        </div>
         <button
+          className="btn"
           type="submit"
           onClick={(e) => {
             const loginInfo = {userEmail, userPassword}
@@ -60,7 +78,7 @@ export default function Login(props) {
                   setUser(res.data.userName) // pass username so that server set username and socketid as key:value pair
                   console.log("res.data", res.data);
                   cookies.set("email", res.data);
-                  navigate("/game")
+                  goChat(res.data.userName, res.data.avatar)
                 } else {
                   console.log("no matching user")
                   alert ("Invalid information. Please confirm your email and password")
@@ -91,7 +109,8 @@ export default function Login(props) {
         >
           Login
         </button>
+        <button className="btn" onClick={goRegister}>New here ?</button>
       </form>
-    </>
+    // </>
   );
 }

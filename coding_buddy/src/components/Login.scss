@@ -1,0 +1,24 @@
+#form_login {
+  background-color: whitesmoke;
+    width: 400px;
+    height: 35vh;
+    margin: auto;
+    margin-top: 200px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 5px 5px #888888;
+}
+
+#form_login div {
+  margin: 5px
+}
+
+.btn {
+  background-color: #bada55;
+  width: 150px;
+  margin: 5px
+}
