@@ -11,12 +11,18 @@ import './Login.scss'
 export default function Login(props) {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
+  const [username, setUsername] = useState("");
 
   const cookies = new Cookies();
   const navigate = useNavigate()
 
-  const goChat = (path) => {
-    navigate(path);
+  const goRegister = () => {
+    navigate('/register')
+  }
+
+  const goChat = (username) => {
+    console.log('username', username)
+    navigate('/game', {state: username})
   }
 
   return (
@@ -66,9 +72,9 @@ export default function Login(props) {
               .then((res) => {
                 if (res.data) {
                   // console.log("1", res);
-                  console.log(res.data);
+                  console.log('login with', res.data);
                   cookies.set("email", res.data);
-                  navigate("/game")
+                  goChat(res.data.userName)
                 } else {
                   console.log("no matching user")
                   alert ("Invalid information. Please confirm your email and password")
@@ -99,7 +105,7 @@ export default function Login(props) {
         >
           Login
         </button>
-        <button className="btn" onClick={()=>goChat('/register')}>New here ?</button>
+        <button className="btn" onClick={goRegister}>New here ?</button>
       </form>
     // </>
   );

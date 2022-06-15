@@ -37,7 +37,7 @@ function MessageForm({ nickname }) {
 
   return (
     <form className="card">
-      <div className="d-flex align-items-center">
+      <div className="align-items-center">
         <textarea
           className="form-control"
           maxLength={400}

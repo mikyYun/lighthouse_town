@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useContext, useRef } from "react";
 import MessageForm from "./MessageForm";
 import NicknameForm from './NicknameForm';
+import './ChatRoom.scss'
 
 import { SocketContext, SOCKET_EVENT, makeMessage } from "./service/socket";
 
@@ -46,17 +47,11 @@ function ChatRoom({ nickname }) {
 
   console.log('hello this is chat message', messages)
   return (
-    <div
-      className="d-flex flex-column"
-      style={{ width: 300 }}
-    >
+    <div className="d-flex flex-column chat-form">
       <div className="text-box">
         <span>{nickname}</span>, Welcome!
       </div>
-      <div
-        className="chat-window card"
-        ref={chatWindow}
-      >
+      <div className="chat-window card" ref={chatWindow}>
         {messages.map((message, index) => {
           const { nickname, content, time } = message;
           return (

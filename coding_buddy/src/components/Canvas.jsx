@@ -52,10 +52,11 @@ const Canvas = (props) => {
     //
 
   // test data from database
-  const username = 'heesoo'
+  const username = props.username;
+  console.log('inside canvas username', username)
   const users = [
     {
-      username: 'heesoo',
+      username: 'moon',
       x: 165,
       y: 50,
       currentDirection: 0,
@@ -63,7 +64,7 @@ const Canvas = (props) => {
       image: girlImage
     },
     {
-      username: 'john',
+      username: 'heesoo',
       x: 200,
       y: 100,
       currentDirection: 0,
@@ -71,7 +72,7 @@ const Canvas = (props) => {
       image: boyImage
     },
     {
-      username: 'hero',
+      username: 'Park',
       x: 300,
       y: 150,
       currentDirection: 0,
@@ -96,14 +97,13 @@ const Canvas = (props) => {
         } else {
          characters.push(new Characters(user))
         }
-      //  console.log('heesoo', userChar)
-      //  console.log("new", characters)
+       console.log('userChar', userChar)
+       console.log("new", characters)
       }
     )}
-    makeCharacters(users, 'heesoo')
+    makeCharacters(users, username)
 
     function step() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
      // go through users array and make each chracters
 
@@ -120,9 +120,13 @@ const Canvas = (props) => {
 
         characters.map(character => {
           character.drawFrame(ctx)
+          ctx.fillText(character.state.username, character.state.x + 20, character.state.y+10)
+          ctx.fillStyle = 'purple'
         });
 
         userChar.drawFrame(ctx);
+        ctx.fillText(username, userChar.state.x + 20, userChar.state.y+10)
+        ctx.fillStyle = 'purple'
 
       window.requestAnimationFrame(step);
     };

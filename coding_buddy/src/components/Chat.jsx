@@ -2,10 +2,11 @@ import NicknameForm from "./NicknameForm";
 import { useState, useCallback, useEffect, useRef } from "react";
 import { socket, SocketContext, SOCKET_EVENT } from "./service/socket";
 import ChatRoom from "./ChatRoom";
-export default function Chat() {
+
+export default function Chat(props) {
 
   const prevNickname = useRef(null); // prevNickname 변경은 컴포넌트를 리렌더링 하지않습니다.
-  const [nickname, setNickname] = useState("NoName");
+  const [nickname, setNickname] = useState(props.username);
   const handleSubmitNickname = useCallback(newNickname => {
     prevNickname.current = nickname;
     setNickname(newNickname);
@@ -36,7 +37,7 @@ export default function Chat() {
     <SocketContext.Provider value={socket}>
       {/* //??PROVIDER ? */}
       <div className="d-flex flex-column justify-content-center align-items-center vh-100 chatroom">
-        <NicknameForm handleSubmitNickname={handleSubmitNickname} />
+        {/* <NicknameForm handleSubmitNickname={handleSubmitNickname} /> */}
         <ChatRoom nickname={nickname} />
       </div>
     </SocketContext.Provider>
