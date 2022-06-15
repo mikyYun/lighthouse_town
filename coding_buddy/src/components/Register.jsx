@@ -159,13 +159,6 @@ export default function Register(props) {
         <button
           type="submit"
           onClick={(e) => {
-            // return new Promise((res) => {
-            // const formValues = document.querySelectorAll(
-            // "#form_registration input" // get all input tags in form tag
-            // );
-            // fetch('/register', (e) => {
-            // console.log('eee', e)
-            // })
             const userInfo = {
               userName,
               userPassword,

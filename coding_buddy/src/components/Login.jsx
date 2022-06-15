@@ -48,14 +48,17 @@ export default function Login(props) {
         <button
           type="submit"
           onClick={(e) => {
+            const loginInfo = {userEmail, userPassword}
             axios
-              .post("http://localhost:8000/login", { username: "mike" })
+              .post("http://localhost:8000/login", loginInfo)
               .then((res) => {
                 if (res.data) {
-                  console.log("1", res);
+                  // console.log("1", res);
                   console.log(res.data);
-                  cookies.set("email", res.data.username);
+                  cookies.set("email", res.data);
                   navigate("/game")
+                } else {
+                  console.log("no matching user")
                 }
               });
             // useEffect(() => {

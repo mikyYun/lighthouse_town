@@ -8,17 +8,16 @@ function Navbar(props) {
   console.log("nav", props)
   // const [history, setHistory] = useState();
   // const cookies = new Cookies();
-  const removeAllCookies = props.click
   // const currentCookie = Object.keys(cookies.getAll());
 
   return (
     <nav className="navigation">
-      <Link to="/" onClick={() => removeAllCookies()}>
+      <Link to="/" >
         <img className="logo_img" src={logo} alt="Lighthouse"></img>
       </Link>
       <a href="djsaf.facebook.sdfkajle"></a>
       <p className="nav_home">
-        <Link to="/" onClick={() => removeAllCookies()}>
+        <Link to="/" >
           Home
         </Link>
       </p>
@@ -30,19 +29,19 @@ function Navbar(props) {
       </p>
       {/* {true ? "test" : "no"} */}
       <p className="nav_register">
-        <Link to="/register" onClick={() => removeAllCookies()}>
+        <Link to="/register" >
           Register
         </Link>
       </p>
       <p className="nav_login">
-        <Link to="/login" onClick={() => removeAllCookies()}>
+        <Link to="/login" >
           Login
         </Link>
       </p>
       {/* <p className="nav_logout"> */}
       <form method="get" action="/">
         <button
-          // onClick={() => removeAllCookies()}
+          // 
         >
           Logout
         </button>
