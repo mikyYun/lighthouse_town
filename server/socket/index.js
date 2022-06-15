@@ -1,4 +1,4 @@
-module.exports = function (io) {
+module.exports = function (socketIo) {
 
   // ===============  EVENT TYPES  =============== //
 
@@ -11,8 +11,10 @@ module.exports = function (io) {
 
   // ===============  CONNECT  =============== //
 
-  io.on("connection", function (socket) {
+  // client side event listener
+  socketIo.on("connection", function (client) {
     // 클라이언트와 연결이 되면 연결된 사실을 출력합니다.
+    console.log('socket.on', client.on)
     console.log("socket connection succeeded."); //in terminal - vs code
 
     // 구현 편의상, 모든 클라이언트의 방 번호는 모두 "room 1"으로 배정해줍니다.
@@ -30,37 +32,40 @@ module.exports = function (io) {
     // ===============  EVENTS  =============== //
 
     // --------------- JOIN ROOM ------------
-    socket.on(SOCKET_EVENT.JOIN_ROOM, requestData => {
+
+    // server side event listener
+
+    client.on(SOCKET_EVENT.JOIN_ROOM, requestData => {
       // 콜백함수의 파라미터는 클라이언트에서 보내주는 데이터. 
       // 이 데이터를 소켓 서버에 던져줌.
       // 소켓서버는 데이터를 받아 콜백함수를 실행.
-      socket.join(roomName); // user를 "room 1" 방에 참가시킴.
+      client.join(roomName); // user를 "room 1" 방에 참가시킴.
       const responseData = {
         ...requestData,
         type: SOCKET_EVENT.JOIN_ROOM,
         time: new Date(),
       };
       // "room 1"에는 이벤트타입과 서버에서 받은 시각을 덧붙여 데이터를 그대로 전송.
-      Server.to(roomName).emit("RECEIVE_MESSAGE", responseData);
+      socketIo.to(roomName).emit("RECEIVE_MESSAGE", responseData);
       // 클라이언트에 이벤트를 전달.
       // 클라이언트에서는 RECEIVE_MESSAGE 이벤트 리스너를 가지고 있어서 그쪽 콜백 함수가 또 실행됌. 서버구현 마치고 클라이언트 구현은 나중에.
       console.log(`JOIN_ROOM is fired with data: ${JSON.stringify(responseData)}`);
     });
 
     // --------------- UPDATE NICKNAME ---------------
-    socket.on(SOCKET_EVENT.UPDATE_NICKNAME, requestData => {
+    client.on(SOCKET_EVENT.UPDATE_NICKNAME, requestData => {
       const responseData = {
         ...requestData,
         type: SOCKET_EVENT.UPDATE_NICKNAME,
         time: new Date(),
       };
-      io.to(roomName).emit("RECEIVE_MESSAGE", responseData);
+      socketIo.to(roomName).emit("RECEIVE_MESSAGE", responseData);
       console.log(`UPDATE_NICKNAME is fired with data: ${JSON.stringify(responseData)}`);
     });
 
     // receive.message는 ChatRoom.jsx 에서 defined 
     // --------------- SEND MESSAGE ---------------
-    socket.on(SOCKET_EVENT.SEND_MESSAGE, requestData => {
+    client.on(SOCKET_EVENT.SEND_MESSAGE, requestData => {
       console.log('I got a message')
       //emiting back to receive message in line 67
       const responseData = {
@@ -68,7 +73,9 @@ module.exports = function (io) {
         type: SOCKET_EVENT.SEND_MESSAGE,
         time: new Date(),
       };
-      SVGPreserveAspectRatio.to(roomName).emit(SOCKET_EVENT.RECEIVE_MESSAGE, responseData); //responseData = chat message 
+      // SVGPreserveAspectRatio.to(roomName).emit
+      socketIo.emit(SOCKET_EVENT.RECEIVE_MESSAGE, responseData);
+      //responseData = chat message
       //@@@@@@ ChatRoom.jsx line 21
       console.log(`${SOCKET_EVENT.SEND_MESSAGE} is fired with data: ${JSON.stringify(responseData)}`);
     });
@@ -76,7 +83,7 @@ module.exports = function (io) {
 
 
     // ===============  DISCONNECT  =============== //
-    socket.on("disconnect", reason => {
+    client.on("disconnect", reason => {
       console.log(`disconnect: ${reason}`);
     })
   })

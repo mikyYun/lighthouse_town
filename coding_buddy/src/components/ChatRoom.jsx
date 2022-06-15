@@ -1,5 +1,7 @@
 import { useState, useCallback, useEffect, useContext, useRef } from "react";
 import MessageForm from "./MessageForm";
+import NicknameForm from './NicknameForm';
+
 import { SocketContext, SOCKET_EVENT, makeMessage } from "./service/socket";
 
 function ChatRoom({ nickname }) {
@@ -46,7 +48,7 @@ function ChatRoom({ nickname }) {
   return (
     <div
       className="d-flex flex-column"
-      style={{ width: 1000 }}
+      style={{ width: 300 }}
     >
       <div className="text-box">
         <span>{nickname}</span>, Welcome!

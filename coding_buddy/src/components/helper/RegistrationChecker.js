@@ -1,6 +1,6 @@
 import { useState } from 'react';
 const { io } = require("socket.io-client");
-const socket = io.connect("http://localhost:8000", {
+const socket = io.connect("http://localhost:4000", {
   reconnectionDelay: 1000,
   reconnection: true,
   reconnectionAttemps: 10,
