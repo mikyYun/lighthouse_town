@@ -9,7 +9,7 @@ import axios from "axios";
 export default function Login(props) {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  
+  const setUser = props.setUser
 
 
   const cookies = new Cookies();
@@ -57,7 +57,8 @@ export default function Login(props) {
               .then((res) => {
                 if (res.data) {
                   // console.log("1", res);
-                  console.log(res.data);
+                  setUser(res.data.userName) // pass username so that server set username and socketid as key:value pair
+                  console.log("res.data", res.data);
                   cookies.set("email", res.data);
                   navigate("/game")
                 } else {

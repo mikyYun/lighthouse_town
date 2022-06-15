@@ -19,7 +19,7 @@ class Characters {
     }
     this.img = new Image();
     this.img.src = config.image;
-    this.movement_speed = 10;
+    this.movement_speed = 7;
     this.width = 63.5;
     this.height = 63.5;
     this.currentLoopIndex = 0;

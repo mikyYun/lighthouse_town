@@ -35,6 +35,8 @@ const pool = new Pool({
   port: process.env.PGPORT
 });
 
+
+
 socket(io);// /src/socket/index.js 의 socket으로 socketIo 객체를 전달
 
 //G. socket(server)
@@ -58,38 +60,93 @@ io.use((socket, next) => {
 });
 
 io.adapter(createAdapter(pool));
-
+// store all users' socket id with username key-value pair
+let currentUsers = {};
 io.on("connection", (socket) => {
-  console.log('a user connected: heesoo');
+  // console.log('a user connected: heesoo');
+  // console.log("SOCKET id", socket.id)
+  // console.log("SOCKET CONNECTED", socket.connected)
   //
   const session = socket.request.session;
   session.save();
-  const req = socket.request;
-  const userName = {};
+  // const req = socket.request;
+  // const userName = {};
 
-  console.log('a user connected: heesoo')
+  console.log('a user connected: ', socket.id);
 
-  socket.emit("init", {data: 'hello world'})
+  socket.emit("init", { data: 'hello world' });
   socket.on('sendData', data => {
-    console.log(data)
+    console.log(data);
     // add userid from data
-    const users = []
-    users.push(data)
-    socket.broadcast.emit('backData', users)
+    const users = [];
+    users.push(data);
+    socket.broadcast.emit('backData', users);
+  });
+
+  // socketID and username matching
+  // socket.on("SET USERNAME", (socketID, username) => {
+    socket.on("SET USERNAME", (obj) => {
+    console.log("SETSETSET", obj)
+    const username = obj.username
+    const socketid = obj.socketID
+    console.log(socketid)
+    console.log(username)
+    // currentUsers[id] = username;
+    // const id = socketID
+    // currentUsers = {...currentUsers, socketid : username}
+    currentUsers[socketid] = username
+    console.log("AFTER LOGIN, SET USER NAME AND SOCKET ID PAIR", currentUsers);
+  });
+
+  socket.on("disconnect", () => {
+    // console.log("disconnected id", socket.id)
+    console.log("CURRENT USERS", currentUsers)
+    delete currentUsers[socket.id]
+    console.log("UPDATED CURRENT USERS", currentUsers)
+
   })
 
+  // socket.on("LOGIN", (data) => {
+  //   // userData = {"userEmail" : ~~, "userPassword" : ~~}
+  //   console.log("LOGIN", data);
+  //   socket.emit("SUCCESS", data.userData.userEmail); //  클라이언트에 유저 이메일만 전송
+  //   socket.request.session.reload((err) => {
+  //     if (err) {
+  //       return console.log("ERROR");
+  //     }
+  //     console.log("clicked", socket.request.session);
+  //     // userName["userEmail"] = userData.userEmail;
+  //   });
+  // });
 
-  socket.on("LOGIN", (data) => {
-    // userData = {"userEmail" : ~~, "userPassword" : ~~}
-    console.log("LOGIN", data);
-    socket.emit("SUCCESS", data.userData.userEmail); //  클라이언트에 유저 이메일만 전송
-    socket.request.session.reload((err) => {
-      if (err) {
-        return console.log("ERROR");
+  // receive message
+  socket.on("NEW MESSAGE", (e) => {
+    console.log(e);
+    // all users
+    io.emit("PASS", "PASS");
+    // to specific user
+    // socket.broadcast.emit("PASS", "to all users") // works
+  });
+
+  socket.on("PRIVATE MESSAGE", (obj) => {
+    // e = {target: username, message: "message"}
+    // const Name target
+    const msg = obj.message
+    const targetName = obj.target
+    const senderId = obj.senderID
+    console.log(targetName)
+    console.log(currentUsers)
+    let targetSocketId
+    
+    const senderName = currentUsers[senderId]
+    Object.keys(currentUsers).forEach(recipientSocketId => {
+      if (currentUsers[recipientSocketId] === targetName) {
+        targetSocketId = recipientSocketId
+        console.log(targetSocketId)
       }
-      console.log("clicked", socket.request.session);
-      // userName["userEmail"] = userData.userEmail;
+      // if (currentUsers.socket.id)
     });
+    socket.to(targetSocketId).emit("PRIVATE MESSAGE", { "message": msg, from: senderName});
   });
 
 });
@@ -113,28 +170,28 @@ app.post("/login", (req, res) => {
     if (err) throw err;
     console.log(res_1.rows);
     if (res_1.rows[0]) { // user exist
-      const userInfo = res_1.rows[0]
-      const userName = userInfo.username
-      const avatar = userInfo.avatar_id
+      const userInfo = res_1.rows[0];
+      const userName = userInfo.username;
+      const avatar = userInfo.avatar_id;
       console.log(res_1.rows[0]); // id: 3, username: "mike", password: "mike", email: "test2@test.com", avatar_id: 1
-      const userID = res_1.rows[0].id
+      const userID = res_1.rows[0].id;
       // find languages
       pool.query("SELECT * FROM user_language WHERE user_id=$1", [userID], (err, res_2) => {
-        const userLanguages = []
+        const userLanguages = [];
         if (err) throw err;
         if (res_2.rows.length > 0) {
-          console.log("find user's languages", res_2.rows)
+          console.log("find user's languages", res_2.rows);
           res_2.rows.forEach(obj => {
-            userLanguages.push(obj.language_id)
-          })
+            userLanguages.push(obj.language_id);
+          });
           const loginUserData = {
             userName, avatar, userLanguages
-          }
-          res.status(201).send(loginUserData)
+          };
+          res.status(201).send(loginUserData);
         } else {
-          console.log("No available language", res_2.rows)
+          console.log("No available language", res_2.rows);
         }
-      })
+      });
     } else { // no matching user
       res.status(201).send(false);
     }

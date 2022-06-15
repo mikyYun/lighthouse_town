@@ -5,14 +5,16 @@ import Navbar from "./Navbar";
 import Layout from "./Layout";
 
 
-export default function Game() {
+export default function Game(props) {
   console.log("game loading")
+  console.log("GAME PROPS", props.sendPrivateMessage)
   // pass the mapimg as props
-
+  const sendMessage = props.sendMessage
+  const sendPrivateMessage = props.sendPrivateMessage
   return(
     <>
       <Layout />
-      <Canvas />
+      <Canvas sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage}/>
     </>
   );
 }

@@ -10,7 +10,10 @@ const socket = io('http://localhost:3000')
 
 const Canvas = (props) => {
   const canvasRef = useRef(null);
-
+  const sendMessage = props.sendMessage
+  const sendPrivateMessage = props.sendPrivateMessage
+  console.log("THIS",sendMessage)
+  console.log("THAT",sendPrivateMessage)
   useEffect(() => {
     //make collision wall
     console.log(townWall.length)
@@ -127,8 +130,14 @@ const Canvas = (props) => {
       window.requestAnimationFrame(step);
     };
     // console.log(Char)
-    window.addEventListener("keydown", e => userChar.move(e));
-    window.addEventListener("keyup", () => userChar.stop());
+    window.addEventListener("keydown", e => {
+      userChar.move(e)
+      sendMessage("SEND")
+    });
+    window.addEventListener("keyup", () => {
+      userChar.stop()
+      sendPrivateMessage("moon", "this is private message")
+    });
 
     window.requestAnimationFrame(step);
 
@@ -138,7 +147,8 @@ const Canvas = (props) => {
     socket.on('init', msg => console.log(msg))
     socket.emit('sendData', userChar.state)
     socket.on('backData', data => console.log(data))
-
+      
+      // console.log("click")
 
     return () => {
       window.removeEventListener("keydown", e => userChar.move(e));
