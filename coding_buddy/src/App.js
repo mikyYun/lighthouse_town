@@ -36,7 +36,7 @@ function App() {
   }, [location.pathname])
 
   useEffect(() => {
-    const socket = io();
+    const socket = io("/");
 
     socket.on("CONNECT", (e) => {
       console.log("My socket ID",socket.id)
@@ -89,7 +89,7 @@ function App() {
   }
 
   const privateMessage = (target, msg, username) => {
-    socket && socket.emit("PRIVATE MESSAGE", {"target": target, "message": msg, "username" : username}) // add senderName
+    socket && socket.emit("PRIVATE MESSAGE", {"target": target, "message": msg, "username" : username})
   }
   
   return (

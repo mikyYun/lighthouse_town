@@ -7,8 +7,8 @@ import townWall from "./game_img/collision_data.js/townWall";
 import selectAvatar from "./helper/selecAvatar";
 
 
-const { io } = require("socket.io-client");
-const socket = io('http://localhost:3000')
+// const { io } = require("socket.io-client");
+// const socket = io('http://localhost:3000')
 
 const Canvas = (props) => {
   const canvasRef = useRef(null);
