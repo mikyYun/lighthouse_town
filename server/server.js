@@ -7,7 +7,6 @@ const express = require('express');
 const session = require('express-session');
 const app = express();
 const httpServer = require("http").createServer(app);
-// const { createServer } = require("http");
 const { Server } = require("socket.io"); //socketIo
 const io = new Server(httpServer
   , {
@@ -18,14 +17,11 @@ const io = new Server(httpServer
   }
 );
 const socket = require("./socket/index.js");
-const { createAdapter } = require('@socket.io/postgres-adapter'); //ap.get, 안써도 socket.io 안에서 직접 postgres 연결이 가능. root path 따로 설정 불필요.
-
-
+const { createAdapter } = require('@socket.io/postgres-adapter'); //app.get, 안써도 socket.io 안에서 직접 postgres 연결이 가능. root path 따로 설정 불필요.
 const sessionMiddleware = session({ secret: 'coding_buddy', cookie: { maxAge: 60000 } });
 const { Pool } = require('pg');
 
 // const db = require("./coding_buddy_db");
-
 
 const pool = new Pool({
   user: process.env.PGUSER,
@@ -35,14 +31,13 @@ const pool = new Pool({
   port: process.env.PGPORT
 });
 
-
-
 socket(io);// /src/socket/index.js 의 socket으로 socketIo 객체를 전달
 
 //G. socket(server)
 //G. create a new instance of a socket handler
 //G. and passing io as an argument.
 //G. io is the Server.
+
 app.use(cors()); // cors 미들웨어 사용
 app.use(sessionMiddleware);
 app.use(bodyParser.json());
@@ -51,9 +46,6 @@ app.use(
     extended: true,
   })
 );
-
-// httpServer.adapter(createAdapter.pool)
-// console.log(io.adapter(pool))
 
 io.use((socket, next) => {
   sessionMiddleware(socket.request, {}, next);
@@ -64,11 +56,6 @@ io.adapter(createAdapter(pool));
 let currentUsers = {}; // => {username : socket.id}
 // socket.id : username
 io.on("connection", (socket) => {
-  // create socket.id for each user
-  // console.log('a user connected: heesoo');
-  // console.log("SOCKET id", socket.id)
-  // console.log("SOCKET CONNECTED", socket.connected)
-  //
   const session = socket.request.session;
   session.save();
   // const req = socket.request;
