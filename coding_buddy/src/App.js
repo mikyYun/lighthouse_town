@@ -3,7 +3,7 @@ import './App.css';
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useState, useCallback, useEffect, useRef } from "react";
 // import { socket, SocketContext, SOCKET_EVENT } from "./components/service/socket";
-import Chat from "./components/Chat"
+import Chat from "./components/Chat";
 
 import Cookies from 'universal-cookie';
 // usehistory
@@ -14,52 +14,54 @@ import Game from './components/Game';
 import Layout from './components/Layout';
 import Register from './components/Register';
 import Login from './components/Login';
-
+import {} from './components/service/socket'
 const { io } = require("socket.io-client");
-
-// import Navbar from './components/Navbar';
-
 
 
 function App() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // // 쿠키 세팅
   const [socket, setSocket] = useState();
   const cookies = new Cookies();
-  let location = useLocation()
+  let location = useLocation();
   useEffect(() => {
     // ga()
-    console.log("location check", location.pathname)
-    console.log(clearCookies)
-    if (location.pathname !== "/game") clearCookies()
-  }, [location.pathname])
+    console.log("location check", location.pathname);
+    console.log(clearCookies);
+    if (location.pathname !== "/game") clearCookies();
+  }, [location.pathname]);
 
   useEffect(() => {
-    const socket = io("/");
+    const socket = io();
 
-    socket.on("CONNECT", (e) => {
-      console.log("My socket ID",socket.id)
-      console.log("CONNECTED", e);
+    socket.on("connect", () => {
+      console.log("App.js: socket server connected.");
+      console.log("My socket ID", socket.id);
+      console.log("CONNECTED");
     });
 
     socket.on("REGISTRATIPN SUCCESS", (userdame) => {
-      console.log("cookie set after register")
+      console.log("cookie set after register");
       cookies.set("email", userdame);
-      navigate("/game")
+      navigate("/game");
     });
 
     socket.on("PASS", (e) => {
-      console.log(e)
-    })
+      console.log(e);
+    });
 
     socket.on("PRIVATE MESSAGE", (e) => {
-      console.log(e)
-    })
+      console.log(e);
+    });
+
+    socket.on("init", msg => console.log("msg", msg))
+    socket.on("backData", data => console.log("data", data))
+
 
     setSocket(socket);
     return () => {
-      socket.disconnect()
+      socket.disconnect();
       // clearCookies()
     }; // => prevent memory leak..
   }, []);
@@ -71,36 +73,43 @@ function App() {
 
   const clearCookies = () => {
     const all_cookies = cookies.getAll();
-    console.log("@@@@@@@", all_cookies)
+    console.log("@@@@@@@", all_cookies);
     // if (all_cookies.length > 0) {
-      Object.keys(all_cookies).forEach((each) => {
-        console.log("each", each)
-        cookies.remove(each);
-      })
+    Object.keys(all_cookies).forEach((each) => {
+      console.log("each", each);
+      cookies.remove(each);
+    });
   };
 
   const createSocketIdNameObject = (username) => {
-    socket && socket.emit("SET USERNAME", {"socketID": socket.id, "username": username} )
-  }
-
+    socket && socket.emit("SET USERNAME", { "socketID": socket.id, "username": username });
+  };
 
   const sendMessage = () => {
-    socket && socket.emit("NEW MESSAGE", socket.id)
-  }
+    socket && socket.emit("NEW MESSAGE", socket.id);
+  };
 
   const privateMessage = (target, msg, username) => {
-    socket && socket.emit("PRIVATE MESSAGE", {"target": target, "message": msg, "username" : username})
-  }
-  
+    socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username });
+  };
+
+//////////////////////////////////////////////
+// socket update
+// const { io } = require("socket.io-client");
+
+const sendData = (state) => {
+  socket && socket.emit("sendData", state)
+}
+////////////////////////////////////////////////////
   return (
     <div className='main'>
       <Routes>
-        <Route path='/' element={<Layout setUser={createSocketIdNameObject}/>} />
+        <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
         <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
         <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
         {/* <Route path='/login' element="Logout" /> */}
         {/* <Route path='/sockets' element={<Sockets />} /> */}
-        <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage}/>} />
+        <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} sendData={sendData}/>} />
         <Route path='/chat' element={<Chat />} />
       </Routes>
     </div>

@@ -7,14 +7,14 @@ import socketIo from "socket.io-client";
 export const socket = socketIo(process.env.REACT_APP_BACK_URL);
 export const SocketContext = createContext(socket); //G
 
-socket.on("connect", () => { //GABRIEL
-  console.log("Service > socket.js: socket server connected.");
-  socket.send('THIS IS TO CONNECT') //browser console.
-});
+// socket.on("connect", () => { //GABRIEL
+//   console.log("Service > socket.js: socket server connected.");
+//   socket.send('THIS IS TO CONNECT') //browser console.
+// });
 
-socket.on("disconnect", () => {
-  console.log("socket server disconnected.");
-});
+// socket.on("disconnect", () => {
+//   console.log("socket server disconnected.");
+// });
 
 export const SOCKET_EVENT = {
   JOIN_ROOM: "JOIN_ROOM",
@@ -53,3 +53,4 @@ export const makeMessage = pongData => {
     // time: dayjs(time).format("HH:mm"),
   };
 };
+

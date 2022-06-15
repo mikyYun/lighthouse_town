@@ -16,12 +16,10 @@ const io = new Server(httpServer
     },
   }
 );
-const socket = require("./socket/index.js");
+
 const { createAdapter } = require('@socket.io/postgres-adapter'); //app.get, 안써도 socket.io 안에서 직접 postgres 연결이 가능. root path 따로 설정 불필요.
 const sessionMiddleware = session({ secret: 'coding_buddy', cookie: { maxAge: 60000 } });
 const { Pool } = require('pg');
-
-// const db = require("./coding_buddy_db");
 
 const pool = new Pool({
   user: process.env.PGUSER,
@@ -31,7 +29,12 @@ const pool = new Pool({
   port: process.env.PGPORT
 });
 
-socket(io);// /src/socket/index.js 의 socket으로 socketIo 객체를 전달
+// const SOCKET_EVENT = {
+//   JOIN_ROOM: "JOIN_ROOM",
+//   UPDATE_NICKNAME: "UPDATE_NICKNAME",
+//   SEND_MESSAGE: "SEND_MESSAGE",
+//   RECEIVE_MESSAGE: "RECEIVE_MESSAGE",
+// };
 
 //G. socket(server)
 //G. create a new instance of a socket handler
@@ -52,15 +55,19 @@ io.use((socket, next) => {
 });
 
 io.adapter(createAdapter(pool));
+
 // store all users' socket id with username key-value pair
 let currentUsers = {}; // => {username : socket.id}
-// socket.id : username
+
 io.on("connection", (socket) => {
+  const roomName = "room 1";
   const session = socket.request.session;
   session.save();
+
   // const req = socket.request;
   // const userName = {};
 
+  console.log('socket.on', socket.on);
   console.log('a user connected: ', socket.id);
 
   socket.emit("init", { data: 'hello world' });
@@ -84,36 +91,11 @@ io.on("connection", (socket) => {
     // const id = socketID
     // currentUsers = {...currentUsers, socketid : username}
     // currentUsers[socketid] = username;
-    currentUsers[username] = socketid
+    currentUsers[username] = socketid;
     console.log("AFTER LOGIN, SET USER NAME AND SOCKET ID PAIR", currentUsers);
   });
 
-  //////////////////////////// currentUsers 오브젝트에서 종료되는 유저 삭제
-  socket.on("disconnect", () => {
-    // console.log("disconnected id", socket.id)
-    console.log("CURRENT USERS", currentUsers);
-    Object.keys(currentUsers).forEach((username) => {
-      if (currentUsers[username] === socket.id) {
-        delete currentUsers[socket.id]
-        console.log("DELETE DISCONNECT USER DATA FROM currentusers OBJ", currentUsers);
-      }
-    })
-    // delete currentUsers[socket.id];
 
-  });
-
-  // socket.on("LOGIN", (data) => {
-  //   // userData = {"userEmail" : ~~, "userPassword" : ~~}
-  //   console.log("LOGIN", data);
-  //   socket.emit("SUCCESS", data.userData.userEmail); //  클라이언트에 유저 이메일만 전송
-  //   socket.request.session.reload((err) => {
-  //     if (err) {
-  //       return console.log("ERROR");
-  //     }
-  //     console.log("clicked", socket.request.session);
-  //     // userName["userEmail"] = userData.userEmail;
-  //   });
-  // });
 
   // receive message
   socket.on("NEW MESSAGE", (e) => {
@@ -130,24 +112,74 @@ io.on("connection", (socket) => {
     const msg = obj.message;
     const targetName = obj.target;
     // const senderId = obj.senderID;
-    const username = obj.username
+    const username = obj.username;
     console.log(targetName);
     console.log(currentUsers);
     // let targetSocketId;
 
-    const targetSocketId = currentUsers[targetName] // get target's socketid
+    const targetSocketId = currentUsers[targetName]; // get target's socketid
 
-    // const senderName = currentUsers[senderId];
-    // Object.keys(currentUsers).forEach(recipientSocketId => {
-    //   if (currentUsers[recipientSocketId] === targetName) {
-    //     targetSocketId = recipientSocketId;
-    //     console.log(targetSocketId);
-    //   }
-    //   // if (currentUsers.socket.id)
-    // });
     socket.to(targetSocketId).emit("PRIVATE MESSAGE", { "message": msg, from: username });
   });
 
+  /////////////////////// ADDED FROM socket/index.js
+
+  socket.on("JOIN_ROOM", requestData => {
+    // 콜백함수의 파라미터는 클라이언트에서 보내주는 데이터. 
+    // 이 데이터를 소켓 서버에 던져줌.
+    // 소켓서버는 데이터를 받아 콜백함수를 실행.
+    socket.join(roomName); // user를 "room 1" 방에 참가시킴.
+    const responseData = {
+      ...requestData,
+      type: "JOIN_ROOM",
+      time: new Date(),
+    };
+    // "room 1"에는 이벤트타입과 서버에서 받은 시각을 덧붙여 데이터를 그대로 전송.
+    io.to(roomName).emit("RECEIVE_MESSAGE", responseData);
+    // 클라이언트에 이벤트를 전달.
+    // 클라이언트에서는 RECEIVE_MESSAGE 이벤트 리스너를 가지고 있어서 그쪽 콜백 함수가 또 실행됌. 서버구현 마치고 클라이언트 구현은 나중에.
+    console.log(`JOIN_ROOM is fired with data: ${JSON.stringify(responseData)}`);
+  });
+
+  socket.on("UPDATE_NICKNAME", requestData => {
+    const responseData = {
+      ...requestData,
+      type: "UPDATE_NICKNAME",
+      time: new Date(),
+    };
+    io.to(roomName).emit("RECEIVE_MESSAGE", responseData);
+    console.log(`UPDATE_NICKNAME is fired with data: ${JSON.stringify(responseData)}`);
+  });
+
+  // receive.message는 ChatRoom.jsx 에서 defined 
+  // --------------- SEND MESSAGE ---------------
+  socket.on("SEND_MESSAGE", requestData => {
+    console.log('I got a message');
+    //emiting back to receive message in line 67
+    const responseData = {
+      ...requestData,
+      type: "SEND_MESSAGE",
+      time: new Date(),
+    };
+    // SVGPreserveAspectRatio.to(roomName).emit
+    io.emit("RECEIVE_MESSAGE", responseData);
+    //responseData = chat message
+    //@@@@@@ ChatRoom.jsx line 21
+    console.log(`"SEND_MESSAGE" is fired with data: ${JSON.stringify(responseData)}`);
+  });
+
+  //////////////////////////// currentUsers 오브젝트에서 종료되는 유저 삭제
+  socket.on("disconnect", () => {
+    // console.log("disconnected id", socket.id)
+    console.log("CURRENT USERS", currentUsers);
+    Object.keys(currentUsers).forEach((username) => {
+      if (currentUsers[username] === socket.id) {
+        delete currentUsers[socket.id];
+        console.log("DELETE DISCONNECT USER DATA FROM currentusers OBJ", currentUsers);
+      }
+    });
+    // delete currentUsers[socket.id];
+  });
 });
 
 
@@ -234,6 +266,10 @@ app.post("/register", (req, res) => {
     });
   });
   res.status(201).send({ userName, userEmail, userLanguages, userAvatar });
+
+
+
+
 });
 
 httpServer.listen(PORT, () => {

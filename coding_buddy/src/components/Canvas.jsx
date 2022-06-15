@@ -14,6 +14,7 @@ const Canvas = (props) => {
   const canvasRef = useRef(null);
   const sendMessage = props.sendMessage
   const sendPrivateMessage = props.sendPrivateMessage
+  const sendData = props.sendData
   console.log("THIS", sendMessage)
   console.log("THAT", sendPrivateMessage)
   useEffect(() => {
@@ -167,6 +168,7 @@ const Canvas = (props) => {
     //   setInterval(() => {
     //   socket.on('init', msg => console.log('msg', msg))
     //   socket.emit('sendData', userChar.state)
+    sendData(userChar.state) // socket.emit("sendData", userChar.state)
     //   socket.on('backData', data => console.log('data', data))
     // } ,1000)
 

@@ -16,7 +16,7 @@ module.exports = function (socketIo) {
     // 클라이언트와 연결이 되면 연결된 사실을 출력합니다.
     console.log('socket.on', client.on)
     console.log("socket connection succeeded."); //in terminal - vs code
-
+    console.log("MEKLFMSKLDFM:SEMFKLS:DJF:KLJDVLKJSL:VJDKL:VJKLSD:JFKL:SD")
     // 구현 편의상, 모든 클라이언트의 방 번호는 모두 "room 1"으로 배정해줍니다.
     const roomName = "room 1";
 
