@@ -1,8 +1,6 @@
 import { useState, useCallback, useEffect, useContext, useRef } from "react";
 import MessageForm from "./MessageForm";
 import './ChatRoom.scss'
-import Select from 'react-select';
-
 import { SocketContext, SOCKET_EVENT, makeMessage } from "./service/socket";
 
 function ChatRoom({ nickname }) {
