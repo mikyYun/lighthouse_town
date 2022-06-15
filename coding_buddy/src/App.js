@@ -38,7 +38,7 @@ function App() {
 
   useEffect(() => {
     const socket = io();
-    
+
     socket.on("CONNECT", (e) => {
       console.log("CONNECTED", e);
     });
@@ -80,7 +80,7 @@ function App() {
   };
 
   return (
-
+    <div className='main'>
       <Routes>
         <Route path='/' element={<Layout />} />
         <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
@@ -90,6 +90,7 @@ function App() {
         <Route path='/game' element={<Game />} />
         <Route path='/chat' element={<Chat />} />
       </Routes>
+    </div>
   );
 
 

@@ -5,39 +5,46 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 // import Navbar from "./Navbar";
 import Layout from "./Layout";
 import axios from "axios";
+import './Login.scss'
 
 
 export default function Login(props) {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  
-
 
   const cookies = new Cookies();
   const navigate = useNavigate()
+
+  const goChat = (path) => {
+    navigate(path);
+  }
+
   return (
-    <>
-      {/* <Navbar click={props.click}/> */}
-      <Layout />
+    // <>
+      // {/* <Navbar click={props.click}/> */}
+      // {/* <Layout /> */}
       <form id="form_login" action="/game" method="GET" runat="server">
         {/* <form id="form_login" action="/game" method="GET"  runat="server"  onSubmit={(e) => e.preventDefault()}> */}
-        <input
-          // name="email"
-          id="register_email"
-          rows="1"
-          placeholder="EMAIL"
-          type="email"
-          value={userEmail}
-          onChange={(e) => {
-            // console.log(e.target.value);
-            setUserEmail(e.target.value);
-          }}
-        ></input>
-        <br />
-        PASSWORD :{" "}
+        <div>
+          <span>EMAIL : </span>
+          <input
+            // name="email"
+            id="register_email"
+            rows="1"
+            placeholder="EMAIL"
+            type="email"
+            value={userEmail}
+            onChange={(e) => {
+              // console.log(e.target.value);
+              setUserEmail(e.target.value);
+            }}
+            ></input>
+        </div>
+        <div>
+        <span>PASSWORD :{" "}</span>
         <input
           // name="password"
-          
+
           id="register_password"
           rows="1"
           placeholder="PASSWORD"
@@ -47,9 +54,10 @@ export default function Login(props) {
             // console.log(e.target.value);
             setUserPassword(e.target.value);
           }}
-        ></input>
-        <br />
+          ></input>
+        </div>
         <button
+          className="btn"
           type="submit"
           onClick={(e) => {
             const loginInfo = {userEmail, userPassword}
@@ -91,7 +99,8 @@ export default function Login(props) {
         >
           Login
         </button>
+        <button className="btn" onClick={()=>goChat('/register')}>New here ?</button>
       </form>
-    </>
+    // </>
   );
 }

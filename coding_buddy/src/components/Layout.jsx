@@ -1,5 +1,6 @@
 import React from "react";
 import {Outlet} from "react-router-dom";
+import Login from "./Login";
 import Navbar from "./Navbar";
 
 const Layout = (props) => {
@@ -7,8 +8,9 @@ const Layout = (props) => {
   // const clearCookies = props.click
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       {/* <Outlet /> */}
+      <Login />
     </>
   );
 };

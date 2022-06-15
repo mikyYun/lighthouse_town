@@ -13,13 +13,13 @@ const Canvas = (props) => {
 
   useEffect(() => {
     //make collision wall
-    console.log(townWall.length)
+    // console.log(townWall.length)
     const collisionTownMap = []
     for (let i = 0; i < townWall.length; i += 70) {
       collisionTownMap.push(townWall.splice(i, i + 70))
     }
 
-    console.log(collisionTownMap)
+    // console.log(collisionTownMap)
 
     // put step function
     // canvas, ctx only in this useEffect
@@ -96,8 +96,8 @@ const Canvas = (props) => {
         } else {
          characters.push(new Characters(user))
         }
-       console.log('heesoo', userChar)
-       console.log("new", characters)
+      //  console.log('heesoo', userChar)
+      //  console.log("new", characters)
       }
     )}
     makeCharacters(users, 'heesoo')

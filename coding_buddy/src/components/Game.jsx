@@ -12,7 +12,7 @@ export default function Game() {
 
   return(
     <>
-      <Layout />
+      {/* <Layout /> */}
       <div className="main-container">
         <Canvas />
         <Chat />

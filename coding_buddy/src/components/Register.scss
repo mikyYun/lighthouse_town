@@ -1,0 +1,74 @@
+.register-form {
+  width: 35%;
+  height: 97vh;
+  background-color: whitesmoke;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 5px 5px #888888;
+  margin: 10px auto;
+}
+
+.field {
+  padding: 10px;
+  ul {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    li {
+      list-style: none;
+      padding-left: 10px;
+      padding-right: 10px;
+      display: flex;
+      align-items: flex-end;
+      label {
+        margin:0
+      }
+    }
+
+  }
+}
+
+.btn {
+  background-color: #bada55;
+  width: 150px;
+  margin: 5px
+}
+
+
+#form_registration {
+  position: absolute;
+  z-index: 100;
+}
+.div_canvas {
+  position: absolute;
+  z-index: -100;
+  top: 10rem;
+  width: 100%;
+  height: 50vh;
+}
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  /* flex-direction: column; */
+  align-items: center;
+  background-color: #bada55;
+  height: 5rem;
+  width: 100%;
+}
+.incorrect_password {
+  color: red;
+  display: inline-block;
+}
+.correct_password {
+  display: none;
+}
+.div_boyImage {
+  background-image: url("./game_img/boy1.png");
+  width: 65px;
+  height: 65px;
+}
+.div_girlImage {
+  background-image: url("./game_img/girl1.png");
+  width: 65px;
+  height: 65px;
+}
