@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
-import { loginHandler } from "./helper/RegistrationChecker";
 import { Routes, Route, useNavigate } from "react-router-dom";
 // import Navbar from "./Navbar";
 import Layout from "./Layout";
