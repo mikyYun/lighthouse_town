@@ -27,8 +27,6 @@ module.exports = function (socketIo) {
     "RECEIVE_MESSAGE": 유저가 메시지를 받을 때 발생
     */
 
-
-
     // ===============  EVENTS  =============== //
 
     // --------------- JOIN ROOM ------------
