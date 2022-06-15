@@ -60,13 +60,15 @@ io.use((socket, next) => {
 io.adapter(createAdapter(pool));
 
 io.on("connection", (socket) => {
-  console.log('a user connected: heesoo')
+  // user id 1명의 커넥션
+
   //
   const session = socket.request.session;
   session.save();
   const req = socket.request;
   const userName = {};
 
+  console.log('a user connected: heesoo')
 
   socket.emit("init", {data: 'hello world'})
   socket.on('sendData', data => {
@@ -74,7 +76,7 @@ io.on("connection", (socket) => {
     // add userid from data
     const users = []
     users.push(data)
-    socket.emit('backData', users)
+    socket.broadcast.emit('backData', users)
   })
 
 
