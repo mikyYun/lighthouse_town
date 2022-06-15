@@ -3,7 +3,7 @@ import mapImage from "./game_img/town-map.png";
 import girlImage from "./game_img/girl1.png";
 import Characters from "./helper/Characters";
 import boyImage from "./game_img/boy1.png";
-import randomGenerator from "./helper/randomGenerator";
+import townWall from "./game_img/collision_data.js/townWall";
 
 const { io } = require("socket.io-client");
 // const socket = io('http://localhost:3000')
@@ -12,6 +12,14 @@ const Canvas = (props) => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
+    //make collision wall
+    console.log(townWall.length)
+    const collisionTownMap = []
+    for (let i = 0; i < townWall.length; i += 70) {
+      collisionTownMap.push(townWall.splice(i, i + 70))
+    }
+
+    console.log(collisionTownMap)
 
     // put step function
     // canvas, ctx only in this useEffect
@@ -19,9 +27,6 @@ const Canvas = (props) => {
     const ctx = canvas.getContext("2d");
     canvas.width = 1024;
     canvas.height = 576;
-
-    // ctx.fillStyle = 'white';
-    // ctx.fillRect(0,0, canvas.width, canvas.height);
 
     const mapImg = new Image();
     mapImg.src = mapImage;
@@ -38,26 +43,6 @@ const Canvas = (props) => {
     // use userid from database
     // x, y
 
-
-
-    // const characters = {
-    //   girl: new Characters({
-    //     id: randomGenerator(),
-    //     position: {
-    //       x: 165,
-    //       y: 150,
-    //     },
-    //     image: girlImage,
-    //   }),
-      // boy: new Characters({
-      //   position: {
-      //     x: 180,
-      //     y: 250,
-      //   },
-      //   image: boyImage,
-      // })
-     // test data for sockets
-
     // dynamically create characters
     // websockets girl -> websockets
     // person joins server will have list of characters
@@ -66,7 +51,7 @@ const Canvas = (props) => {
     // chat bubble :
     //
 
-  // from database
+  // test data from database
   const username = 'heesoo'
   const users = [
     {
@@ -150,9 +135,9 @@ const Canvas = (props) => {
     // pass function
     // window.requestAnimationFrame(() => gameLoop(ctx, canvas, characters, mapImg));
 
-    // socket.on('init', msg => console.log(msg))
-    // socket.emit('sendData', Char.state)
-    // socket.on('backData', data => console.log(data))
+    socket.on('init', msg => console.log(msg))
+    socket.emit('sendData', userChar.state)
+    socket.on('backData', data => console.log(data))
 
 
     return () => {
