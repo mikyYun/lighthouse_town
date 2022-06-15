@@ -1,8 +1,15 @@
 import React from 'react';
 import './App.css';
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { useState, useEffect } from 'react';
-import Cookies from "universal-cookie";
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { useState, useCallback, useEffect, useRef } from "react";
+// import { socket, SocketContext, SOCKET_EVENT } from "./components/service/socket";
+import Chat from "./components/Chat"
+import ChatRoom from './components/ChatRoom';
+
+import Cookies from 'universal-cookie';
+// usehistory
+
+// import Navbar from './components/Navbar';
 import Sockets from './components/Sockets';
 import Game from './components/Game';
 import Layout from './components/Layout';
@@ -48,7 +55,6 @@ function App() {
       clearCookies()
     }; // => prevent memory leak..
   }, []);
-  // socket && socket.emit("REGISTERED", "HEY");
 
   const RegistrationChecker = (val) => {
     console.log('ref');
@@ -79,10 +85,14 @@ function App() {
         <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} click={() => clearCookies()} />
         <Route path='/login' element={<Login click={() => clearCookies()} />} />
         {/* <Route path='/login' element="Logout" /> */}
-        <Route path='/sockets' element={<Sockets click={() => clearCookies()} />} />
+        {/* <Route path='/sockets' element={<Sockets />} /> */}
         <Route path='/game' element={<Game />} />
+        <Route path='/chat' element={<Chat />} />
       </Routes>
   );
+
+
+
 }
 
 export default App;

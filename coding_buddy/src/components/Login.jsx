@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
 import { loginHandler } from "./helper/RegistrationChecker";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 // import Navbar from "./Navbar";
 import Layout from "./Layout";
 import axios from "axios";
@@ -11,7 +11,7 @@ export default function Login(props) {
   const [userPassword, setUserPassword] = useState("");
 
   const cookies = new Cookies();
-
+  const navigate = useNavigate()
   return (
     <>
       {/* <Navbar click={props.click}/> */}
@@ -54,7 +54,7 @@ export default function Login(props) {
                 if (res.data) {
                   console.log("1", res);
                   console.log(res.data);
-                  cookies.set("email", 'data');
+                  cookies.set("email", res.data.username);
                   // navigate("/game")
                 }
               });
@@ -72,7 +72,7 @@ export default function Login(props) {
             // });
             // console.log("got response", userDataForCookies);
             // console.log("setting cookies");
-            // e.preventDefault();
+            e.preventDefault();
 
             // cookies.set("password", userPassword);
 

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Link } from "react-router-dom";
-import Cookies from "universal-cookie";
+// import Cookies from "universal-cookie";
 const logo = require("../img/lighthouse.png");
 
 let clearCookie = false;
 function Navbar(props) {
   console.log("nav", props)
   // const [history, setHistory] = useState();
-  const cookies = new Cookies();
+  // const cookies = new Cookies();
   const removeAllCookies = props.click
-  const currentCookie = Object.keys(cookies.getAll());
+  // const currentCookie = Object.keys(cookies.getAll());
 
   return (
     <nav className="navigation">
@@ -24,6 +24,9 @@ function Navbar(props) {
       </p>
       <p className="nav_game">
         <Link to="/game">Game</Link>
+      </p>
+      <p className="nav_chat">
+        <Link to="/chat">Chat</Link>
       </p>
       {/* {true ? "test" : "no"} */}
       <p className="nav_register">
