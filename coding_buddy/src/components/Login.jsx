@@ -6,9 +6,12 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import Layout from "./Layout";
 import axios from "axios";
 
+
 export default function Login(props) {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
+  
+
 
   const cookies = new Cookies();
   const navigate = useNavigate()
@@ -26,7 +29,7 @@ export default function Login(props) {
           type="email"
           value={userEmail}
           onChange={(e) => {
-            console.log(e.target.value);
+            // console.log(e.target.value);
             setUserEmail(e.target.value);
           }}
         ></input>
@@ -34,13 +37,14 @@ export default function Login(props) {
         PASSWORD :{" "}
         <input
           // name="password"
+          
           id="register_password"
           rows="1"
           placeholder="PASSWORD"
           type="password"
           value={userPassword}
           onChange={(e) => {
-            console.log(e.target.value);
+            // console.log(e.target.value);
             setUserPassword(e.target.value);
           }}
         ></input>
@@ -48,14 +52,18 @@ export default function Login(props) {
         <button
           type="submit"
           onClick={(e) => {
+            const loginInfo = {userEmail, userPassword}
             axios
-              .post("http://localhost:8000/login", { username: "mike" })
+              .post("http://localhost:8000/login", loginInfo)
               .then((res) => {
                 if (res.data) {
-                  console.log("1", res);
+                  // console.log("1", res);
                   console.log(res.data);
-                  cookies.set("email", res.data.username);
-                  // navigate("/game")
+                  cookies.set("email", res.data);
+                  navigate("/game")
+                } else {
+                  console.log("no matching user")
+                  alert ("Invalid information. Please confirm your email and password")
                 }
               });
             // useEffect(() => {

@@ -60,7 +60,6 @@ io.use((socket, next) => {
 io.adapter(createAdapter(pool));
 
 io.on("connection", (socket) => {
-
   console.log('a user connected: heesoo');
   //
   const session = socket.request.session;
@@ -92,73 +91,6 @@ io.on("connection", (socket) => {
       // userName["userEmail"] = userData.userEmail;
     });
   });
-  //     // 로그인 페이지에서 들어오는 정보
-  //     // console.log("LoginInformation", userData);
-  //     req.session.save(); //ASK WHAT IT DOES?
-  //   });
-  //   // compare userdata and pass data to client
-
-
-  //   const users = {}; // only validated user data 나중에 데이터베이스로..
-  //   console.log("Someone has been connected!");
-  //   socket.broadcast.emit("New User Connection", users); // 전체
-
-  //   socket.on("disconnect", (data) => {
-  //     // console.log("socket request", socket.request.session);
-  //     socket.request.session = null;
-
-  //     console.log(`A user has disconnected!!`);
-  //     // users = users.filter(name => name !== socket.name);
-  //     // socket.broadcast.emit("DISCONNECT", socket.name); // 전체
-  //   });
-  //   // console in server
-  //   socket.on("CLICKED", (data) => {
-  //     console.log("Someone has clicked the button");
-  //   });
-
-  //   // registration // 나중에 데이터테이블에 넣을 수 있게 바꿔야함
-  //   // socket.on("REGISTERED", (data) => {
-  //   //   // data = {[userData(email, name, password)], [selectedLanguages]}
-  //   //   console.log("use asks registration");
-  //   //   // console.log(data);
-  //   //   // console.log(data.selectedLanguages);
-  //   //   users["name"] = data.userData[1];
-  //   //   users["email"] = data.userData[0];
-  //   //   users["password"] = data.userData[2];
-  //   //   users["languagues"] = data.selectedLanguages;
-  //   //   // console.log(users);
-  //   // });
-  //   socket.on("REGISTERED", (data) => {
-  //     console.log("registering", data);
-  //     // 프론트에서 받은 데이터가 이미 데이터베이스에 존재하는지 확인
-  //     pool.query("SELECT * FROM users WHERE username = $1 OR email = $2", [data.userData[1], data.userData[2]], (err, result) => {
-  //       if (err) throw err;
-  //       console.log(result.rows[0])
-  //     })
-  //     pool.query("INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [data.userData[1], data.userData[2], data.userData[0], data.avatar], (err, result) => {
-  //       if (err) throw err;
-  //       res.status(201).send(`User added with ID: ${result.rows[0].id}`)
-  //     });
-  //     pool.query("INSERT INTO user_language (user_id, language_id) VALUES (ARRAY [$1]) RETURNING *", [data.languages], (err, result) => {
-  //       if (err) throw err;
-  //       res.status(201).send('User added')
-  //     })
-  //     return socket.emit("SUCCESS", data.userData[0])
-  //     // app.post('/register', db.createUser);
-  //     // 유저 등록 데이터 받음. db 에 저장하기
-  //     // app.post('/delete/:id', db.createUser);
-  //     // app.post('/', db.deleteUser);
-  //     // app.post('/', db.createUser);
-  //     // app.post('/', db.createUser);
-  //     // app.post('/users', db.createUser);
-  //     // '/'
-  //     // 'login'
-  //     // 'register'
-  //     // 'game'
-
-  //   });
-  //   // registration 성공했으면 프론트에 ok 보내줌 -> 애니메이션 실행하고 로그인페이지로... 다음에//
-  //   // socket.emit('REGISTRATION SUCCESS', true); // current user 에게만
 
 });
 
@@ -171,20 +103,81 @@ app.get("/", (req, res) => { // server url -> 8000
 // 로그인 정보 리퀘스트 .. 진행중
 app.post("/login", (req, res) => {
   // client sending
-  console.log(req.body);
-  const username = req.body.username;
-  // and password.. username=$1 AND userpassword=$2
-  return pool.query("SELECT * FROM users WHERE username=$1", [username], (err, response) => {
+  console.log("login request", req.body);
+  // req.body = {userEmail: '', userPassword: ''}
+
+  const email = req.body.userEmail;
+  const password = req.body.userPassword;
+  // and password.. userName=$1 AND userpassword=$2
+  return pool.query("SELECT * FROM users WHERE email=$1 AND password=$2", [email, password], (err, res_1) => {
     if (err) throw err;
-    // res.status(201).send('User added');
-    res.json(response.rows);
-    // response.rows[0] ==> obj
-    console.log("new user's language data added", response.rows[0]);
+    console.log(res_1.rows);
+    if (res_1.rows[0]) { // user exist
+      const userInfo = res_1.rows[0]
+      const userName = userInfo.username
+      const avatar = userInfo.avatar_id
+      console.log(res_1.rows[0]); // id: 3, username: "mike", password: "mike", email: "test2@test.com", avatar_id: 1
+      const userID = res_1.rows[0].id
+      // find languages
+      pool.query("SELECT * FROM user_language WHERE user_id=$1", [userID], (err, res_2) => {
+        const userLanguages = []
+        if (err) throw err;
+        if (res_2.rows.length > 0) {
+          console.log("find user's languages", res_2.rows)
+          res_2.rows.forEach(obj => {
+            userLanguages.push(obj.language_id)
+          })
+          const loginUserData = {
+            userName, avatar, userLanguages
+          }
+          res.status(201).send(loginUserData)
+        } else {
+          console.log("No available language", res_2.rows)
+        }
+      })
+    } else { // no matching user
+      res.status(201).send(false);
+    }
   });
 });
-
+//"/login" => local 8000/login
 app.post("/register", (req, res) => {
   console.log("post register request", req.body);
+  // req.body = userInfo = {
+  //   userName,
+  //   userPassword,
+  //   userEmail,
+  //   userLanguages,
+  //   userAvatar,
+  // };
+  const userName = req.body.userInfo.userName;
+  const userPassword = req.body.userInfo.userPassword;
+  const userEmail = req.body.userInfo.userEmail;
+  const userLanguages = req.body.userInfo.userLanguages;
+  const userAvatar = req.body.userInfo.userAvatar;
+  pool.query("SELECT * FROM users WHERE username = $1 OR email = $2", [userName, userEmail], (err, res_1) => {
+    if (err) throw err;
+    console.log(res_1.rows[0]);
+    if (res_1.rows[0]) return res.status(201).send("existing data");
+  });
+  pool.query("INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [userName, userPassword, userEmail, userAvatar], (err, result) => {
+    if (err) throw err;
+    console.log("new user registered");
+    pool.query("SELECT id FROM users WHERE username = $1", [userName], (err, res_2) => {
+      console.log("new user's user ID", res_2.rows);
+      const newUserID = res_2.rows[0].id;
+      userLanguages.forEach(lang_id => {
+        if (lang_id) {
+          console.log(lang_id);
+          pool.query("INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *", [newUserID, lang_id], (err, res_3) => {
+            if (err) throw err;
+            console.log("new user's language data added", res_3.rows);
+          });
+        }
+      });
+    });
+  });
+  res.status(201).send({ userName, userEmail, userLanguages, userAvatar });
 });
 
 httpServer.listen(PORT, () => {

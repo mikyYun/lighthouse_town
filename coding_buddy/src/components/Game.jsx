@@ -7,7 +7,7 @@ import Chat from "./Chat";
 
 
 export default function Game() {
-
+  console.log("game loading")
   // pass the mapimg as props
 
   return(
