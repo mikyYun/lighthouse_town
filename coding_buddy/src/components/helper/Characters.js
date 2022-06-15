@@ -1,23 +1,28 @@
+
 const facing = {
   up: 3,
   down: 0,
   left: 1,
   right: 2
 }
+
+const cycleLoop = [0,1,2,3];
 class Characters {
 
   constructor(config) {
     this.state = {
-      x: config.position.x,
-      y: config.position.y,
+      username: config.username,
+      x: config.x,
+      y: config.y,
       currentDirection: facing.down,
       isMoving: false
     }
     this.img = new Image();
     this.img.src = config.image;
-    this.movement_speed = 10;  //?????
+    this.movement_speed = 10;
     this.width = 63.5;
     this.height = 63.5;
+    this.currentLoopIndex = 0;
   }
 
   // add websocket
@@ -54,12 +59,20 @@ class Characters {
     this.state.isMoving = false;
   }
 
-  drawFrame = (frameX, frameY, posX, posY, ctx) => {
+  incrementLoopIndex = () => {
+    this.currentLoopIndex += 1;
+    if (this.currentLoopIndex >= cycleLoop.length) {
+      this.currentLoopIndex = 0;
+    }
+  }
+
+  drawFrame = (ctx) => {
     // console.log('inside drawFrame')
+    const frameX = cycleLoop[this.currentLoopIndex];
     ctx.drawImage(this.img,
-      frameX * this.width, frameY * this.height,
+      frameX * this.width, this.state.currentDirection * this.height,
       this.width, this.height,
-      posX, posY,
+      this.state.x, this.state.y,
       this.width, this.height
       )
     // this.update

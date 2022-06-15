@@ -60,7 +60,15 @@ io.on("connection", (socket) => {
   const req = socket.request;
   const userName = {};
 
+
   socket.emit("init", {data: 'hello world'})
+  socket.on('sendData', data => {
+    console.log(data)
+    // add userid from data
+    const users = []
+    users.push(data)
+    socket.emit('backData', users)
+  })
 
 
   socket.on("LOGIN", (data) => {

@@ -3,18 +3,15 @@ import mapImage from "./game_img/town-map.png";
 import girlImage from "./game_img/girl1.png";
 import Characters from "./helper/Characters";
 import boyImage from "./game_img/boy1.png";
+import randomGenerator from "./helper/randomGenerator";
 
 const { io } = require("socket.io-client");
 const socket = io('http://localhost:3000')
-
-
 
 const Canvas = (props) => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
-    socket.on('init', msg => console.log(msg))
-
 
     // put step function
     // canvas, ctx only in this useEffect
@@ -29,13 +26,6 @@ const Canvas = (props) => {
     const mapImg = new Image();
     mapImg.src = mapImage;
 
-    const girlSprite = new Characters({
-      position: {
-        x: 165,
-        y: 150,
-      },
-      image: girlImage,
-    })
     // girlsprite to websockets server - front -> back
     // girlSprite should have id
     // eventListener for only that id
@@ -45,14 +35,20 @@ const Canvas = (props) => {
     // websockets on react render that list of users  - front
 
     // make girl sprite
-    const characters = {
-      girl: new Characters({
-        position: {
-          x: 165,
-          y: 150,
-        },
-        image: girlImage,
-      }),
+    // use userid from database
+    // x, y
+
+
+
+    // const characters = {
+    //   girl: new Characters({
+    //     id: randomGenerator(),
+    //     position: {
+    //       x: 165,
+    //       y: 150,
+    //     },
+    //     image: girlImage,
+    //   }),
       // boy: new Characters({
       //   position: {
       //     x: 180,
@@ -60,59 +56,108 @@ const Canvas = (props) => {
       //   },
       //   image: boyImage,
       // })
-    }
+     // test data for sockets
 
     // dynamically create characters
     // websockets girl -> websockets
     // person joins server will have list of characters
     // if websocket user -> make a character -> character obj
-;
-    window.addEventListener("keydown", e => characters.girl.move(e));
-    window.addEventListener("keyup", () => characters.girl.stop());
+
+    // chat bubble :
+    //
+
+  // from database
+  const username = 'heesoo'
+  const users = [
+    {
+      username: 'heesoo',
+      x: 165,
+      y: 50,
+      currentDirection: 0,
+      isMoving: false,
+      image: girlImage
+    },
+    {
+      username: 'john',
+      x: 200,
+      y: 100,
+      currentDirection: 0,
+      isMoving: false,
+      image: boyImage
+    },
+    {
+      username: 'hero',
+      x: 300,
+      y: 150,
+      currentDirection: 0,
+      isMoving: false,
+      image: boyImage
+    }
+  ]
+
+  let userChar;
 
     //making animation loop
-    const cycleLoop = [0, 1, 2, 3];
-    let currentLoopIndex = 0;
+
     let frameCount = 0;
     let framelimit = 10;
+
+    // make it as array
+    let characters = [];
+    const makeCharacters = (users, name) => {
+      users.map(user => {
+        if (user.username === name) {
+          userChar = new Characters(user)
+        } else {
+         characters.push(new Characters(user))
+        }
+       console.log('heesoo', userChar)
+       console.log("new", characters)
+      }
+    )}
+    makeCharacters(users, 'heesoo')
 
     function step() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // walking effect
-      if (characters.girl.state.isMoving) {
-        frameCount++;
-        if (frameCount >= framelimit) {
-          frameCount = 0;
-          currentLoopIndex++;
-          if (currentLoopIndex >= cycleLoop.length) {
-            currentLoopIndex = 0;
+     // go through users array and make each chracters
+
+        // walking motion
+         if (userChar.state.isMoving) {
+          frameCount++;
+          if (frameCount >= framelimit) {
+            frameCount = 0;
+            userChar.incrementLoopIndex();
           }
         }
-      }
 
-      ctx.drawImage(mapImg, 0, 0)
+        ctx.drawImage(mapImg, 0, 0)
 
-      characters.girl.drawFrame(
-        cycleLoop[currentLoopIndex],
-        characters.girl.state.currentDirection,
-        characters.girl.state.x,
-        characters.girl.state.y,
-        ctx
-      );
+        characters.map(character => {
+          character.drawFrame(ctx)
+        });
+
+        userChar.drawFrame(ctx);
 
       window.requestAnimationFrame(step);
     };
-    // console.log(characters.girl)
+    // console.log(Char)
+    window.addEventListener("keydown", e => userChar.move(e));
+    window.addEventListener("keyup", () => userChar.stop());
+
     window.requestAnimationFrame(step);
 
     // pass function
     // window.requestAnimationFrame(() => gameLoop(ctx, canvas, characters, mapImg));
 
-    // return function : remove
+    // socket.on('init', msg => console.log(msg))
+    // socket.emit('sendData', Char.state)
+    // socket.on('backData', data => console.log(data))
+
+
     return () => {
-      window.removeEventListener("keydown", e => characters.girl.move(e));
-      window.removeEventListener("keyup", () => characters.girl.stop());
+      window.removeEventListener("keydown", e => userChar.move(e));
+      window.removeEventListener("keyup", () => userChar.stop());
     };
   }, []);
 
@@ -122,5 +167,6 @@ const Canvas = (props) => {
     </>
   );
 };
+
 
 export default Canvas;
