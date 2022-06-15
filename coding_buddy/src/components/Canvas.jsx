@@ -155,7 +155,7 @@ const Canvas = (props) => {
     });
     window.addEventListener("keyup", () => {
       userChar.stop()
-      sendPrivateMessage("moon", "this is private message")
+      sendPrivateMessage("moon", "this is private message", username)
     });
 
     window.requestAnimationFrame(step);

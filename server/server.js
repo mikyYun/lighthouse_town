@@ -61,8 +61,10 @@ io.use((socket, next) => {
 
 io.adapter(createAdapter(pool));
 // store all users' socket id with username key-value pair
-let currentUsers = {};
+let currentUsers = {}; // => {username : socket.id}
+// socket.id : username
 io.on("connection", (socket) => {
+  // create socket.id for each user
   // console.log('a user connected: heesoo');
   // console.log("SOCKET id", socket.id)
   // console.log("SOCKET CONNECTED", socket.connected)
@@ -94,15 +96,22 @@ io.on("connection", (socket) => {
     // currentUsers[id] = username;
     // const id = socketID
     // currentUsers = {...currentUsers, socketid : username}
-    currentUsers[socketid] = username;
+    // currentUsers[socketid] = username;
+    currentUsers[username] = socketid
     console.log("AFTER LOGIN, SET USER NAME AND SOCKET ID PAIR", currentUsers);
   });
 
+  //////////////////////////// currentUsers 오브젝트에서 종료되는 유저 삭제
   socket.on("disconnect", () => {
     // console.log("disconnected id", socket.id)
     console.log("CURRENT USERS", currentUsers);
-    delete currentUsers[socket.id];
-    console.log("UPDATED CURRENT USERS", currentUsers);
+    Object.keys(currentUsers).forEach((username) => {
+      if (currentUsers[username] === socket.id) {
+        delete currentUsers[socket.id]
+        console.log("DELETE DISCONNECT USER DATA FROM currentusers OBJ", currentUsers);
+      }
+    })
+    // delete currentUsers[socket.id];
 
   });
 
@@ -133,20 +142,23 @@ io.on("connection", (socket) => {
     // const Name target
     const msg = obj.message;
     const targetName = obj.target;
-    const senderId = obj.senderID;
+    // const senderId = obj.senderID;
+    const username = obj.username
     console.log(targetName);
     console.log(currentUsers);
-    let targetSocketId;
+    // let targetSocketId;
 
-    const senderName = currentUsers[senderId];
-    Object.keys(currentUsers).forEach(recipientSocketId => {
-      if (currentUsers[recipientSocketId] === targetName) {
-        targetSocketId = recipientSocketId;
-        console.log(targetSocketId);
-      }
-      // if (currentUsers.socket.id)
-    });
-    socket.to(targetSocketId).emit("PRIVATE MESSAGE", { "message": msg, from: senderName });
+    const targetSocketId = currentUsers[targetName] // get target's socketid
+
+    // const senderName = currentUsers[senderId];
+    // Object.keys(currentUsers).forEach(recipientSocketId => {
+    //   if (currentUsers[recipientSocketId] === targetName) {
+    //     targetSocketId = recipientSocketId;
+    //     console.log(targetSocketId);
+    //   }
+    //   // if (currentUsers.socket.id)
+    // });
+    socket.to(targetSocketId).emit("PRIVATE MESSAGE", { "message": msg, from: username });
   });
 
 });

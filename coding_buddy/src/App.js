@@ -10,7 +10,7 @@ import Cookies from 'universal-cookie';
 // usehistory
 
 // import Navbar from './components/Navbar';
-import Sockets from './components/Sockets';
+// import Sockets from './components/Sockets';
 import Game from './components/Game';
 import Layout from './components/Layout';
 import Register from './components/Register';
@@ -89,9 +89,10 @@ function App() {
     socket && socket.emit("NEW MESSAGE", socket.id)
   }
 
-  const privateMessage = (target, msg) => {
-    socket && socket.emit("PRIVATE MESSAGE", {"target": target, "message": msg, "senderID": socket.id})
+  const privateMessage = (target, msg, username) => {
+    socket && socket.emit("PRIVATE MESSAGE", {"target": target, "message": msg, "username" : username}) // add senderName
   }
+  
   return (
     <div className='main'>
       <Routes>
