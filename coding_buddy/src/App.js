@@ -13,7 +13,7 @@ function App() {
   const navigate = useNavigate()
   const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
-  const [chatName, setChatName] = useState(username)
+  const [nickname, setNickname] = useState('babe')
 
   let location = useLocation()
 
@@ -45,8 +45,8 @@ function App() {
 
     socket.on("REGISTRATION SUCCESS", (username) => {
       console.log("cookie set after register")
-      // cookies.set("email", username);
-      cookies.set("username", username);
+      cookies.set("email", username);
+      // cookies.set("username", username);
       navigate("/game")
     });
 
@@ -81,13 +81,14 @@ function App() {
     socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username })
   }
 
+
   return (
     <div className='main'>
       <Routes>
         <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
         <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
-        <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
-        <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} room={room} />} />
+        <Route path='/login' element={<Login setUser={createSocketIdNameObject} setNickname={setNickname} />} />
+        <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} room={room} nickname={nickname} />} />
         <Route path={`/game/${room}`}
           element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} />}
         />

@@ -3,11 +3,13 @@ import MessageForm from "./MessageForm";
 import './ChatRoom.scss'
 import { SocketContext, SOCKET_EVENT, makeMessage } from "./service/socket";
 
-function ChatRoom({ nickname }) {
+function ChatRoom(props) {
+  const { nickname } = props;
   const [messages, setMessages] = useState([]);
   const chatWindow = useRef(null);
   const socket = useContext(SocketContext);
-
+  console.log('props', props)
+  console.log('nickname', nickname)
   // 새 메시지를 받으면 스크롤을 이동하는 함수
   const moveScrollToReceiveMessage = useCallback(() => {
     if (chatWindow.current) {
@@ -47,7 +49,7 @@ function ChatRoom({ nickname }) {
   return (
     <div className="d-flex flex-column chat-form">
       <div className="text-box">
-        <span>{nickname}</span>, Welcome!
+        <span>{props.nickname}</span>, Welcome!
       </div>
       <div className="chat-window card" ref={chatWindow}>
         {messages.map((message, index) => {
