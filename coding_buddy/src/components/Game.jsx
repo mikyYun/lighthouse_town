@@ -17,18 +17,20 @@ export default function Game(props) {
   console.log("LOCATION", location)
   console.log("LOCATION.STATE", location.state)
 
-  const prevNickname = useRef(null); 
+  const prevNickname = useRef(null);
   const [nickname, setNickname] = useState(props.username);
   const handleSubmitNickname = useCallback(newNickname => {
     prevNickname.current = nickname;
     setNickname(newNickname);
   }, [nickname]);
+
+  console.log('game props', props)
   return (
     <>
       {/* <Layout /> */}
       <div className="main-container">
         <Canvas username={location.state?.[0] || 'heesoo'} avatar={location.state?.[1] || 1} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} />
-        <Chat username={location.state} room={props.room} handleSubmitNickname={handleSubmitNickname} nickname={nickname} />
+        <Chat username={location.state} room={props.room} handleSubmitNickname={handleSubmitNickname} nickname={props.nickname} />
       </div>
     </>
   );
