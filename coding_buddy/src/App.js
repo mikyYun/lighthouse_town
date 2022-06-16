@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {  Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect, } from "react";
 import Cookies from 'universal-cookie';
 import Game from './components/Game';
@@ -13,13 +13,14 @@ function App() {
   const navigate = useNavigate()
   const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
+  const [chatName, setChatName] = useState(username)
 
   let location = useLocation()
 
   useEffect(() => {
     setRoom(location.pathname.split("/").splice(2)[0])
     console.log("LOCATION.PATHNAME", location.pathname)
-   
+
     const cookies = new Cookies();
     const clearCookies = () => {
       const all_cookies = cookies.getAll();
@@ -42,13 +43,14 @@ function App() {
       console.log("CONNECTED", e);
     });
 
-    socket.on("REGISTRATIPN SUCCESS", (username) => {
+    socket.on("REGISTRATION SUCCESS", (username) => {
       console.log("cookie set after register")
-      cookies.set("email", username);
+      // cookies.set("email", username);
+      cookies.set("username", username);
       navigate("/game")
     });
 
-    socket.on("PASS", (e) => {
+    socket.on("PASS", (e) => { //this is every time character moves.
       console.log(e)
     })
 
@@ -64,8 +66,7 @@ function App() {
   }, []);
 
   const RegistrationChecker = (val) => {
-    console.log('ref');
-    socket && socket.emit("REGISTERED", val);
+    socket && socket.emit("REGISTERED", val); //if socket exists, then emit
   };
 
   const createSocketIdNameObject = (username) => {
