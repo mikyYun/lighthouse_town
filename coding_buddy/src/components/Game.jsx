@@ -6,7 +6,6 @@ import Layout from "./Layout";
 import Chat from "./Chat";
 import { useLocation } from "react-router-dom";
 
-
 export default function Game(props) {
   // console.log("game loading")
   // pass the mapimg as props
@@ -17,6 +16,9 @@ export default function Game(props) {
   const location = useLocation();
   // console.log('inside game',location.state)  //username
   // console.log('inside game',location.state.userName)  //username
+
+  console.log("LOCATION", location)
+  console.log("LOCATION.STATE", location.state)
 
   return (
     <>

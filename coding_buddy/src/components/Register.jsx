@@ -171,17 +171,17 @@ export default function Register(props) {
               userAvatar,
             };
             axios
-              .post("http://localhost:8000/register", { userInfo })
-              .then(res => {
-                if (res.data) {
-                  console.log(res.data)
-                  props.submitRegistrationInfo(res.data);
-                  cookies.set("username", res.data)
-                  navigate("/game")
-                } else {
+              .post("/register", { userInfo })
+                .then(res => {
+                  if (res.data) {
+                    console.log(res.data)
+                    props.submitRegistrationInfo(res.data);
+                    cookies.set("username", res.data)
+                    navigate("/game")
+                  } else {
 
-                }
-              })
+                  }
+                })
             e.preventDefault();
             // })
             // cookies.set("username", username);

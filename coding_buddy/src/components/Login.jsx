@@ -12,8 +12,7 @@ export default function Login(props) {
   const [userPassword, setUserPassword] = useState("");
   const setUser = props.setUser
   // console.log("!!!!!!!!!!", props)
-
-  const [username, setUsername] = useState("");
+  // const [username, setUsername] = useState("");
 
   const cookies = new Cookies();
   const navigate = useNavigate()
@@ -71,7 +70,7 @@ export default function Login(props) {
         onClick={(e) => {
           const loginInfo = { userEmail, userPassword }
           axios
-            .post("http://localhost:8000/login", loginInfo)
+            .post("/login", loginInfo)
             .then((res) => {
               if (res.data) {
                 // console.log("1", res);

@@ -37,7 +37,7 @@ export default function Chat(props) {
     <SocketContext.Provider value={socket}>
       <div className="d-flex flex-column justify-content-center align-items-center vh-100 chatroom">
         <Recipient />
-        <NicknameForm handleSubmitNickname={handleSubmitNickname} />
+        {/* <NicknameForm handleSubmitNickname={handleSubmitNickname} /> */}
         <ChatRoom nickname={nickname} />
       </div>
     </SocketContext.Provider>

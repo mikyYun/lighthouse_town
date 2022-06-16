@@ -39,7 +39,7 @@ function App() {
     const socket = io("/");
 
     socket.on("CONNECT", (e) => {
-      console.log("My socket ID",socket.id)
+      console.log("My socket ID", socket.id)
       console.log("CONNECTED", e);
     });
 
@@ -73,14 +73,14 @@ function App() {
     const all_cookies = cookies.getAll();
     console.log("@@@@@@@", all_cookies)
     // if (all_cookies.length > 0) {
-      Object.keys(all_cookies).forEach((each) => {
-        console.log("each", each)
-        cookies.remove(each);
-      })
+    Object.keys(all_cookies).forEach((each) => {
+      console.log("each", each)
+      cookies.remove(each);
+    })
   };
 
   const createSocketIdNameObject = (username) => {
-    socket && socket.emit("SET USERNAME", {"socketID": socket.id, "username": username} )
+    socket && socket.emit("SET USERNAME", { "socketID": socket.id, "username": username })
   }
 
 
@@ -89,18 +89,18 @@ function App() {
   }
 
   const privateMessage = (target, msg, username) => {
-    socket && socket.emit("PRIVATE MESSAGE", {"target": target, "message": msg, "username" : username})
+    socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username })
   }
-  
+
   return (
     <div className='main'>
       <Routes>
-        <Route path='/' element={<Layout setUser={createSocketIdNameObject}/>} />
+        <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
         <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
         <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
         {/* <Route path='/login' element="Logout" /> */}
         {/* <Route path='/sockets' element={<Sockets />} /> */}
-        <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage}/>} />
+        <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} />} />
         <Route path='/chat' element={<Chat />} />
       </Routes>
     </div>

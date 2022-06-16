@@ -12,7 +12,7 @@ function Recipient() {
 
   return (
     <div className="card d-flex flex-row align-items-center">
-      <label htmlFor="user-name-input" style={{ width: 60 }}>
+      <label htmlFor="user-name-input" style={{ width: 290 }}>
         Recipient
       </label>
       <Select
