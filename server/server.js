@@ -84,10 +84,10 @@ io.on("connection", (socket) => {
 
   // socket.emit("init", {data: 'hello world'})
   socket.on('sendData', data => {
-    console.log('sendData', data) // print on server
+    // console.log('sendData', data) // print on server
     // add userid from data
     users[data.username] = data
-    console.log('users',users)
+    // console.log('users',users)
 
     // look for user inside obj if user is new or not
     // for that specific room
@@ -97,7 +97,7 @@ io.on("connection", (socket) => {
     // join -> add new user to the room
 
 
-
+    // setInterval inside here
     io.emit('sendData', users)
 
   });
