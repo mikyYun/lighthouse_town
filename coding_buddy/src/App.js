@@ -52,6 +52,15 @@ function App() {
     socket.on("backData", data => console.log("data", data)) //coming from server
 
     socket.on("all user names", (obj) => {
+      console.log("지금 로그인 되어있는 유저 line 61 - App.js", obj.users)
+      // obj.users = [user1, user2] => [{value: name, label: name } {}]
+      const usersOnline = obj.users.map(name => ({ value: name, label: name }))
+      console.log('usersOnline', usersOnline)
+      setOnline(usersOnline)
+    }) // this works
+
+    /*MIKE
+    setSocket(socket);
       console.log("지금 로그인 되어있는 유저 line 61 - App.js", obj.users) // obj.users = [user1, user2]
       obj.users.forEach(name => {
         const valueAndLabel = { value: name, label: name }
@@ -62,8 +71,8 @@ function App() {
           setOnline(prev => [...prev, valueAndLabel])
         }
       })
-    }) // this works
-
+    })
+    */
     return () => {
       socket.disconnect();
     }; // => prevent memory leak..
