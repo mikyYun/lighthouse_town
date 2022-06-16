@@ -12,7 +12,7 @@ import './Register.scss'
 export default function Register(props) {
   const [userEmail, setUserEmail] = useState();
   const [userName, setUserName] = useState();
-  const [userPassword, setUserPassword] = useState();
+  const [userPasssword, setUserPassword] = useState();
   const [userLanguages, setUserLanguages] = useState([]);
   const [userAvatar, setUserAvatar] = useState();
   const [incorrectPassword, setIncorrectPassword] = useState("correct_password")
