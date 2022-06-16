@@ -5,10 +5,8 @@ import Characters from "./helper/Characters";
 // import boyImage from "./game_img/boy1.png";
 import townWall from "./game_img/collision_data.js/townWall";
 import selectAvatar from "./helper/selecAvatar";
+import { socket } from "./service/socket";
 
-
-const { io } = require("socket.io-client");
-const socket = io('http://localhost:3000')
 
 const Canvas = (props) => {
   const canvasRef = useRef(null);
@@ -37,7 +35,12 @@ const Canvas = (props) => {
   //     setUsersPosition(data);
   //   })
   // } ,1000)
-
+   setInterval(() => {
+    socket.on('sendData', data => {
+      console.log('data', data);
+      setUsersPosition(data);
+    })
+  } ,1000)
   console.log('allUsers', usersPosition)
 
 
@@ -48,26 +51,23 @@ const Canvas = (props) => {
   // set characters -> new Character(150, 150) if it doesn't exist
   // nCharacter.state = {}
 
-//   // create new character for other users
-//   {
-//     "moon": {
-//         "username": "moon",
-//         "x": 150,
-//         "y": 360,
-//         "currentDirection": 0,
-//         "isMoving": false
-//     },
-//     "heesoo": {
-//         "username": "heesoo",
-//         "x": 150,
-//         "y": 200,
-//         "currentDirection": 0,
-//         "isMoving": false
-//     }
+
+// 유저데이터가 있을 때
+// 내 캐릭터 이름이 아니고
+
+const createCharacter = () =>{
+  Object.keys(usersPosition).map ( name => {
+    if (name !== username){}
+  })
+};
+
+
+// if (usersPosition) {
+//   console.log(Object.keys(usersPosition))
+//   Object.keys(usersPosition).map( name => {
+//     if (name !== username &&
+//   })
 // }
-if (usersPosition) {
-  console.log(Object.keys(usersPosition))
-}
 
   for (let name in usersPosition) {
     console.log('name',name)
@@ -113,6 +113,12 @@ if (usersPosition) {
   //   // console.log('otheruserchars',otherUserChars[0])
   // }, [usersPosition])
 
+
+  const sendMessage = props.sendMessage
+  const sendPrivateMessage = props.sendPrivateMessage
+  const sendData = props.sendData
+  // console.log("THIS", sendMessage)
+  // console.log("THAT", sendPrivateMessage)
 
   useEffect(() => {
     //make collision wall
@@ -186,18 +192,30 @@ if (usersPosition) {
       console.log(e.key)
       userChar.move(e)
       socket.emit('sendData', userChar.state)
+         // socket.emit('sendData', userChar.state)
+      // console.log('sendData', userChar.state)
+      // sendMessage("SEND")
     });
     window.addEventListener("keyup", () => {
       userChar.stop()
       socket.emit('sendData', userChar.state)
+   // socket.emit('sendData', userChar.state)
+      // sendPrivateMessage("moon", "this is private message", username)
     });
     // add another
+
 
     window.requestAnimationFrame(step);
 
     // pass function
     // window.requestAnimationFrame(() => gameLoop(ctx, canvas, characters, mapImg));
 
+    //   setInterval(() => {
+    //   socket.on('init', msg => console.log('msg', msg))
+    //   socket.emit('sendData', userChar.state)
+    sendData(userChar.state) // socket.emit("sendData", userChar.state)
+    //   socket.on('backData', data => console.log('data', data))
+    // } ,1000)
 
 
     return () => {

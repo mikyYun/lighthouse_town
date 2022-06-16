@@ -51,7 +51,7 @@ export default function Sockets() {
 // const [user, setUser] = useState('');
 // const [users, setUsers] = useState([]);
 // useEffect(() => {
-//   // https://socket.io/docs/v4/emit-cheatsheet/
+//   // http://socket.io/docs/v4/emit-cheatsheet/
 //   // socket.on(server's first message, (server's second message)=> {...}
 //   // 백앤드에서 받아옴
 //   socket.on('greeting', (data) => { // to brand new user
