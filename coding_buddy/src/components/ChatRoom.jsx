@@ -66,7 +66,6 @@ function ChatRoom(props) {
       <MessageForm nickname={nickname} />
     </div>
   );
-
 }
 
 export default ChatRoom;

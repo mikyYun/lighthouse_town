@@ -81,7 +81,6 @@ function App() {
     socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username })
   }
 
-
   return (
     <div className='main'>
       <Routes>

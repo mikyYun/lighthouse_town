@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { socket, SocketContext, SOCKET_EVENT } from "./service/socket";
 import NicknameForm from "./NicknameForm"
 import ChatRoom from "./ChatRoom";
