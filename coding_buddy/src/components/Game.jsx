@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Canvas from "./Canvas";
 import "./Game.scss";
 import Chat from "./Chat";
-import { useLocation, useNavigate, Routes, Route } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 export default function Game(props) {
   const navigate = useNavigate()
   // let loggedIn = false
