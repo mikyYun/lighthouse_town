@@ -35,7 +35,7 @@ const Canvas = (props) => {
     })
   }, 1000)
 
-  console.log('allUsers', usersPosition)
+  console.log('usersPosition', usersPosition) //가장 처음에는 undefined 여야함.
 
   // useEffect(() => {
   //   for ( let name in usersPosition) {
