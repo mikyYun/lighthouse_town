@@ -101,6 +101,11 @@ const Canvas = (props) => {
   }, [usersPosition])
 
 
+  const sendMessage = props.sendMessage
+  const sendPrivateMessage = props.sendPrivateMessage
+  const sendData = props.sendData
+  console.log("THIS", sendMessage)
+  console.log("THAT", sendPrivateMessage)
   useEffect(() => {
     //make collision wall
     // console.log(townWall.length)
@@ -172,18 +177,28 @@ const Canvas = (props) => {
       console.log(e.key)
       userChar.move(e)
       socket.emit('sendData', userChar.state)
+      userChar.move(e)
+      sendMessage("SEND")
     });
     window.addEventListener("keyup", () => {
       userChar.stop()
       socket.emit('sendData', userChar.state)
+      sendPrivateMessage("moon", "this is private message", username)
     });
     // add another
+
 
     window.requestAnimationFrame(step);
 
     // pass function
     // window.requestAnimationFrame(() => gameLoop(ctx, canvas, characters, mapImg));
 
+    //   setInterval(() => {
+    //   socket.on('init', msg => console.log('msg', msg))
+    //   socket.emit('sendData', userChar.state)
+    sendData(userChar.state) // socket.emit("sendData", userChar.state)
+    //   socket.on('backData', data => console.log('data', data))
+    // } ,1000)
 
 
     return () => {
