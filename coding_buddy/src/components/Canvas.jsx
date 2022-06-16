@@ -1,11 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import mapImage from "./game_img/town-map.png";
 // import girlImage from "./game_img/girl1.png";
 import Characters from "./helper/Characters";
 // import boyImage from "./game_img/boy1.png";
 import townWall from "./game_img/collision_data.js/townWall";
 import selectAvatar from "./helper/selecAvatar";
-import { socket } from "./service/socket";
+// import { socket } from "./service/socket";
+import { SocketContext } from "../App";
 
 // const { io } = require("socket.io-client");
 // const socket = io('http://localhost:3000')
@@ -14,7 +15,7 @@ const Canvas = (props) => {
   const canvasRef = useRef(null);
   const [usersPosition, setUsersPosition] = useState();
   const [userCharacters, setUserCharacters] = useState([]);
-
+  const {socket} = useContext(SocketContext)
   const username = props.username; //moon
   const avatar = props.avatar;  //1
   const userData = {

@@ -268,13 +268,6 @@ app.post("/login", (req, res) => {
 //"/login" => local 8000/login
 app.post("/register", (req, res) => {
   console.log("post register request", req.body);
-  // req.body = userInfo = {
-  //   userName,
-  //   userPassword,
-  //   userEmail,
-  //   userLanguages,
-  //   userAvatar,
-  // };
   const userName = req.body.userInfo.userName;
   const userPassword = req.body.userInfo.userPassword;
   const userEmail = req.body.userInfo.userEmail;
