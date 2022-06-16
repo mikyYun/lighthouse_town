@@ -8,9 +8,6 @@ import Game from './components/Game';
 import Layout from './components/Layout';
 import Register from './components/Register';
 import Login from './components/Login';
-// import {} from './components/service/socket'
-// const { io } = require("socket.io-client");
-// import { SocketContext } from './components/service/socket'
 import { socket } from './components/service/socket.js'
 import { createContext } from "react";
 export const SocketContext = createContext(socket); // going to Recipient.jsx
@@ -64,28 +61,16 @@ function App() {
       obj.users.forEach(name => {
         const valueAndLabel = { value: name, label: name }
         console.log("valueAndLabel", valueAndLabel)
-        setOnline(prev => [...prev, valueAndLabel])
+        if (online.includes(valueAndLabel)) {
+          setOnline([valueAndLabel])
+        } else {
+          setOnline(prev => [...prev, valueAndLabel])
+        }
       })
     }) // this works
 
-
-    // console.log("BEFOER ALL")
-    // socket.on("all user names", (obj) => {
-    //   // alert(JSON.stringify(obj.users))
-    //   console.log("지금 로그인 되어있는 유저 - obj.users (App.jsx)", obj.users)
-
-    // })
-
-
-    // socket.on('sendData', data => {
-    //   console.log('data', data);
-    //   setUsersPosition(data);
-    // })
-
-    // setSocket(socket);
     return () => {
       socket.disconnect();
-      // clearCookies()
     }; // => prevent memory leak..
   }, []);
 
@@ -116,18 +101,9 @@ function App() {
     socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username });
   };
 
-  // const getAllUsers = () => {
-  //   socket && socket.on("all user names", (obj) => {
-  //     console.log("지금 로그인 되어있는 유저", obj.users)
-  //   })
-  // }
-  ////////////////////////////////////////////
-  // socket update
-  // const { io } = require("socket.io-client");
 
   const sendData = (state) => {
     socket && socket.emit("sendData", state)
-    // socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username })
   }
   return (
 

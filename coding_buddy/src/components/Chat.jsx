@@ -29,7 +29,7 @@ export default function Chat(props) {
     // should be in the top in component tree. app.js
     // every component underneath Chat.jsx will be able to access this contexts.
     <>
-      <div className="d-flex flex-column justify-content-center align-items-center vh-100 chatroom">
+      <div className="d-flex flex-column chatroom">
         <Recipient />
         <ChatRoom nickname={nickname} room={props.room} />
       </div>
