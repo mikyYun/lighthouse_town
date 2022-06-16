@@ -64,7 +64,13 @@ function App() {
     // console.log("BEFOER ALL")
     socket.on("all user names", (obj) => {
       // alert(JSON.stringify(obj.users))
-      console.log("지금 로그인 되어있는 유저", obj.users)
+        // alert(JSON.stringify(obj.users))
+        console.log("지금 로그인 되어있는 유저 - obj.users (App.js)", obj.users)
+        // obj.users = ['name']
+        obj.users.forEach(name => {
+          const valueAndLabel = {"value": name, "label": name}
+          setOptions(prev => [...prev, valueAndLabel])
+        })
 
     })
 
