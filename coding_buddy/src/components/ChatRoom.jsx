@@ -1,15 +1,16 @@
 import { useState, useCallback, useEffect, useContext, useRef } from "react";
 import MessageForm from "./MessageForm";
-import NicknameForm from './NicknameForm';
 import './ChatRoom.scss'
+import { SOCKET_EVENT, makeMessage } from "./service/socket";
+import { SocketContext } from '../App.js'
 
-import { SocketContext, SOCKET_EVENT, makeMessage } from "./service/socket";
-
-function ChatRoom({ nickname }) {
+function ChatRoom(props) {
+  const { socket } = useContext(SocketContext)
+  const { nickname } = props;
   const [messages, setMessages] = useState([]);
   const chatWindow = useRef(null);
-  const socket = useContext(SocketContext);
-
+  console.log('props', props)
+  console.log('nickname', nickname)
   // 새 메시지를 받으면 스크롤을 이동하는 함수
   const moveScrollToReceiveMessage = useCallback(() => {
     if (chatWindow.current) {
@@ -37,7 +38,7 @@ function ChatRoom({ nickname }) {
   }, [messages])
 
   // io.on("conenct" (socket) => {
-//   socket.cfjasdklf
+  //   socket.cfjasdklf
   // })
 
   useEffect(() => {
@@ -70,7 +71,6 @@ function ChatRoom({ nickname }) {
       <MessageForm nickname={nickname} />
     </div>
   );
-
 }
 
 export default ChatRoom;

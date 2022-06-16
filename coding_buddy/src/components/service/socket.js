@@ -1,12 +1,12 @@
 //client for the socket
 
-import { createContext } from "react";
+// import { createContext } from "react";
 import socketIo from "socket.io-client";
 // import dayjs from 'react-dayjs';
 // export const socket = socketIo(process.env.REACT_APP_BACK_URL);
 // export const socket = socketIo(process.env.REACT_APP_BACK_URL); //io()
 export const socket = socketIo("http://localhost:8000"); //io()
-export const SocketContext = createContext(socket); //G
+// export const SocketContext = createContext(socket); //G
 
 // socket.on("connect", () => { //GABRIEL
 //   console.log("Service > socket.js: socket server connected.");
@@ -23,9 +23,6 @@ export const SOCKET_EVENT = {
   SEND_MESSAGE: "SEND_MESSAGE",
   RECEIVE_MESSAGE: "RECEIVE_MESSAGE",
 };
-
-
-
 
 //makeMessage
 export const makeMessage = pongData => {
