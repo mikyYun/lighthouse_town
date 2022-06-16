@@ -2,34 +2,25 @@ import React from 'react';
 import './App.css';
 import {  Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect, } from "react";
-// import { socket, SocketContext, SOCKET_EVENT } from "./components/service/socket";
 import Cookies from 'universal-cookie';
-// usehistory
-
 import Game from './components/Game';
 import Layout from './components/Layout';
 import Register from './components/Register';
 import Login from './components/Login';
-
 const { io } = require("socket.io-client");
 
 function App() {
   const navigate = useNavigate()
-  // 쿠키 세팅
   const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
 
-
-
-
   let location = useLocation()
+
   useEffect(() => {
-    // ga()
     setRoom(location.pathname.split("/").splice(2)[0])
     console.log("LOCATION.PATHNAME", location.pathname)
-
+   
     const cookies = new Cookies();
-
     const clearCookies = () => {
       const all_cookies = cookies.getAll();
       // if (all_cookies.length > 0) {
@@ -95,11 +86,7 @@ function App() {
         <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
         <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
         <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
-        {/* <Route path='/login' element="Logout" /> */}
-        {/* <Route path='/sockets' element={<Sockets />} /> */}
         <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} room={room} />} />
-
-        {/* <Route path={`/game/${room}`} element={<Chat room={room} />} /> */}
         <Route path={`/game/${room}`}
           element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} />}
         />
