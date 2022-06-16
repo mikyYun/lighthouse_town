@@ -33,7 +33,6 @@ function Recipient() {
         defaultValue={recipient}
         onChange={setRecipient}
         options={online}
-
       />
     </div>
   );
