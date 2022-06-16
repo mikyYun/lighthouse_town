@@ -1,17 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Select from 'react-select';
-const options = [
-  { value: 'all', label: 'all' },
-  { value: 'moon', label: 'moon' },
-  { value: 'mike', label: 'mike' },
-  { value: 'heesoo', label: 'heesoo' },
-];
+import { SocketContext } from '../App.js'
 
 function Recipient() {
   const [recipient, setRecipient] = useState(null);
-
+  const { online } = useContext(SocketContext)
+  console.log("ONLINE - RECIPIENT.JSX", online)
   return (
-    <div className="card d-flex flex-row align-items-center">
+    <div className="card d-flex flex-row align-items-center" >
       <label htmlFor="user-name-input" style={{ width: 290 }}>
         Recipient
       </label>
@@ -22,10 +18,11 @@ function Recipient() {
         value={recipient}
         defaultValue={recipient}
         onChange={setRecipient}
-        options={options}
+        options={online}
+
       />
     </div>
   );
-}
+};
 
 export default Recipient;
