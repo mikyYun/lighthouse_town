@@ -58,6 +58,14 @@ io.adapter(createAdapter(pool));
 
 // store all users' socket id with username key-value pair
 let currentUsers = {}; // => {username : socket.id}
+// currentUsers={
+  // username: {
+    // socketID: "socketID",
+    // 
+  // }
+// }
+
+
 
 io.on("connection", (socket) => {
   const roomName = "room 1";
@@ -66,6 +74,15 @@ io.on("connection", (socket) => {
 
   // const req = socket.request;
   // const userName = {};
+
+  ///////////////////// 접속한 유저 이름 sort 후 패스 _ 유저가 로그인 하거나 로그아웃 할 때 전송
+  // setInterval(() => {
+    // socket.emit("all user names", {"users" : Object.keys(currentUsers).sort()})
+  // }, 1000)
+  // socket.emit("all user names", {"users" : ["he", "ai", 'ze', 'bajsd'].sort()})
+
+  // console.log("ALL", clients)
+
 
   console.log('socket.on', socket.on);
   console.log('a user connected: ', socket.id);
@@ -93,6 +110,11 @@ io.on("connection", (socket) => {
     // currentUsers[socketid] = username;
     currentUsers[username] = socketid;
     console.log("AFTER LOGIN, SET USER NAME AND SOCKET ID PAIR", currentUsers);
+    const alluserNames = Object.keys(currentUsers)
+    alluserNames.forEach(username => {
+      socket.to(currentUsers[username]).emit("all user names", {"users" : alluserNames.sort()})
+    })
+    // socket.broadcast.emit("all user names", {"users" : Object.keys(currentUsers).sort()})
   });
 
 
@@ -178,6 +200,10 @@ io.on("connection", (socket) => {
         console.log("DELETE DISCONNECT USER DATA FROM currentusers OBJ", currentUsers);
       }
     });
+    const alluserNames = Object.keys(currentUsers)
+    alluserNames.forEach(username => {
+      socket.to(currentUsers[username]).emit("all user names", {"users" : alluserNames.sort()})
+    })
     // delete currentUsers[socket.id];
   });
 });

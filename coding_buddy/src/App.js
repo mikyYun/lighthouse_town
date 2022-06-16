@@ -14,7 +14,7 @@ import Game from './components/Game';
 import Layout from './components/Layout';
 import Register from './components/Register';
 import Login from './components/Login';
-import {} from './components/service/socket'
+// import {} from './components/service/socket'
 const { io } = require("socket.io-client");
 
 
@@ -58,6 +58,9 @@ function App() {
     socket.on("init", msg => console.log("msg", msg))
     socket.on("backData", data => console.log("data", data))
 
+    // socket.on("all user names", (obj) => {
+    //   console.log("지금 로그인 되어있는 유저", obj.users)
+    // })
 
     setSocket(socket);
     return () => {
@@ -93,6 +96,11 @@ function App() {
     socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username });
   };
 
+  const getAllUsers = () => {
+    socket && socket.on("all user names", (obj) => {
+      console.log("지금 로그인 되어있는 유저", obj.users)
+    })
+  }
 //////////////////////////////////////////////
 // socket update
 // const { io } = require("socket.io-client");
@@ -109,7 +117,7 @@ const sendData = (state) => {
         <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
         {/* <Route path='/login' element="Logout" /> */}
         {/* <Route path='/sockets' element={<Sockets />} /> */}
-        <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} sendData={sendData}/>} />
+        <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} sendData={sendData} getAllUsers={getAllUsers()} setUser={createSocketIdNameObject} />} />
         <Route path='/chat' element={<Chat />} />
       </Routes>
     </div>
