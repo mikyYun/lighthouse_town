@@ -1,7 +1,5 @@
 import React from "react";
 import Canvas from "./Canvas";
-import Recipient from "./Recipient";
-import NicknameForm from "./NicknameForm"
 import "./Game.scss";
 // import Navbar from "./Navbar";
 // import Layout from "./Layout";

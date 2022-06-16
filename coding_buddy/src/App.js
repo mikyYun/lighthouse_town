@@ -1,15 +1,11 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { useState, useCallback, useEffect, useRef } from "react";
+import {  Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect, } from "react";
 // import { socket, SocketContext, SOCKET_EVENT } from "./components/service/socket";
-import Chat from "./components/Chat"
-
 import Cookies from 'universal-cookie';
 // usehistory
 
-// import Navbar from './components/Navbar';
-// import Sockets from './components/Sockets';
 import Game from './components/Game';
 import Layout from './components/Layout';
 import Register from './components/Register';
@@ -17,14 +13,9 @@ import Login from './components/Login';
 
 const { io } = require("socket.io-client");
 
-// import Navbar from './components/Navbar';
-
-
-
 function App() {
   const navigate = useNavigate()
-
-  // // 쿠키 세팅
+  // 쿠키 세팅
   const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
 
@@ -35,7 +26,6 @@ function App() {
   useEffect(() => {
     // ga()
     setRoom(location.pathname.split("/").splice(2)[0])
-    console.log('room after split and slice', room)
     console.log("LOCATION.PATHNAME", location.pathname)
 
     const cookies = new Cookies();
@@ -87,12 +77,9 @@ function App() {
     socket && socket.emit("REGISTERED", val);
   };
 
-
-
   const createSocketIdNameObject = (username) => {
     socket && socket.emit("SET USERNAME", { "socketID": socket.id, "username": username })
   }
-
 
   const sendMessage = () => {
     socket && socket.emit("NEW MESSAGE", socket.id)
