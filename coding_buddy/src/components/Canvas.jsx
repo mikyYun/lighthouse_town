@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import mapImage from "./game_img/town-map.png";
 // import girlImage from "./game_img/girl1.png";
 import Characters from "./helper/Characters";
@@ -24,6 +24,8 @@ const Canvas = (props) => {
   console.log('userChar', userChar)
 
   socket.on('sendData', data => {
+    // remove user with username
+    delete data[username];
     setUsersPosition(data)
   });
 
@@ -35,83 +37,61 @@ const Canvas = (props) => {
   //     setUsersPosition(data);
   //   })
   // } ,1000)
-   setInterval(() => {
-    socket.on('sendData', data => {
-      console.log('data', data);
-      setUsersPosition(data);
-    })
-  } ,1000)
+
   console.log('allUsers', usersPosition)
 
+const isEmpty = (obj) => {
+  return obj === undefined || Object.keys(obj).length === 0 ? true : false
+}
 
-  // remove nested loop
-  // make
+console.log(isEmpty(usersPosition))
 
-  // *******
-  // set characters -> new Character(150, 150) if it doesn't exist
-  // nCharacter.state = {}
+// when the other users exist
+const createCharacter = () => {
+  console.log('isEmpty?', isEmpty(usersPosition));
+  if (!isEmpty(usersPosition)) {
+    console.log("users are here!!!!!")
+    console.log(usersPosition)
+    console.log(userCharacters)
+    // when there is no characters
+    console.log(isEmpty(userCharacters))
+    if(isEmpty(userCharacters)) {
+      console.log('no character here!!!!', usersPosition)
+      // console.log(usersPosition[Object.keys(usersPosition)])
+      const name = Object.keys(usersPosition)[0]
+      let char = new Characters(usersPosition[Object.keys(usersPosition)[0]]);
+      console.log('char', char)
+      return setUserCharacters({username: char})    //////////////how can I store name as name variable that I define above???
 
-
-// 유저데이터가 있을 때
-// 내 캐릭터 이름이 아니고
-
-const createCharacter = () =>{
-  Object.keys(usersPosition).map ( name => {
-    if (name !== username){}
-  })
-};
-
-
-// if (usersPosition) {
-//   console.log(Object.keys(usersPosition))
-//   Object.keys(usersPosition).map( name => {
-//     if (name !== username &&
-//   })
-// }
-
-  for (let name in usersPosition) {
-    console.log('name',name)
-    if (name !== username) {
-      console.log('not user', name)
-      let Char = new Characters(usersPosition[name])
-      console.log('Char',Char);
-      setUserCharacters({name: Char})
-
-      // setUserCharacters((prev) => {...prev, name: Char});
-      console.log('userCharacters',userCharacters)
+      console.log('create!!!!!', userCharacters)
     }
   }
+    console.log('inside create char', userCharacters)
+}
 
+createCharacter();
+console.log('after create char', userCharacters)
 
-  // useEffect(() => {
-  //   // for ( let name in usersPosition) {
-  //   //   console.log(name) // moon, heesoo, mike
-  //   //   // 만약에 이름이 나랑 같지 않고
-  //   //   if (name !== userData.username) {
-  //   //     console.log('first', userCharacters)
-  //   //     if (userCharacters.length === 0) {
-  //   //       console.log('second', userCharacters)
-  //   //       let char = new Characters(usersPosition[name])
-  //   //       setUserCharacters( prev => [...prev, char])
-  //   //       console.log('third', userCharacters)
-  //   //       // otherUserChars.push(char);
-  //   //     } else {
-  //   //       // once updated, draw the canvas!
-  //   //       console.log('inside else')
-  //   //       userCharacters.forEach(char => {
-  //   //         if (char.state.username !== name) {
-  //   //           let char = new Characters(usersPosition[name])
-  //   //           console.log('new Char', char)
-  //   //           setUserCharacters( prev => [...prev, char])
-  //   //           console.log('userChar state', userCharacters)
-  //   //         }
-  //   //       })
-  //   //     }
-  //   //   }
-  // // }
+// update user
+const updateCharacter = () => {
+  if (usersPosition && userCharacters) {
+    console.log(usersPosition)
+    console.log(userCharacters)
+    console.log(Object.keys(usersPosition))
+    Object.keys(usersPosition).forEach( user => {
+      console.log(user)
+      console.log(userCharacters)
+      // console.log(userCharacters[name])   ///this will be used after fixing it
+      console.log()
+      setUserCharacters(
+        userCharacters['username'].state = usersPosition[user]
+      )
+      console.log('afterupdate', userCharacters)
+    })
+  }
+}
 
-  //   // console.log('otheruserchars',otherUserChars[0])
-  // }, [usersPosition])
+useEffect(() => {updateCharacter()}, [usersPosition])
 
 
   const sendMessage = props.sendMessage
@@ -174,9 +154,11 @@ const createCharacter = () =>{
         ctx.fillStyle = 'purple'
 
         // console.log('inside step', userCharacters);
-        if (userCharacters.length >0) {
+
+        if(userCharacters) {
           userCharacters[0].drawFrame(ctx)
         }
+
 
         // otherUserChars.forEach(otherUserChar => {
         //   otherUserChar.drawFrame(ctx)
@@ -207,13 +189,10 @@ const createCharacter = () =>{
 
     window.requestAnimationFrame(step);
 
-    // pass function
-    // window.requestAnimationFrame(() => gameLoop(ctx, canvas, characters, mapImg));
-
     //   setInterval(() => {
     //   socket.on('init', msg => console.log('msg', msg))
     //   socket.emit('sendData', userChar.state)
-    sendData(userChar.state) // socket.emit("sendData", userChar.state)
+    // sendData(userChar.state) // socket.emit("sendData", userChar.state)
     //   socket.on('backData', data => console.log('data', data))
     // } ,1000)
 

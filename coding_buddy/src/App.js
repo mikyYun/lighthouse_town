@@ -27,8 +27,8 @@ function App() {
   let location = useLocation();
   useEffect(() => {
     // ga()
-    console.log("location check", location.pathname);
-    console.log(clearCookies);
+    // console.log("location check", location.pathname);
+    // console.log(clearCookies);
     if (location.pathname !== "/game") clearCookies();
   }, [location.pathname]);
 
@@ -36,23 +36,23 @@ function App() {
     const socket = io();
 
     socket.on("connect", () => {
-      console.log("App.js: socket server connected.");
-      console.log("My socket ID", socket.id);
-      console.log("CONNECTED");
+      // console.log("App.js: socket server connected.");
+      // console.log("My socket ID", socket.id);
+      // console.log("CONNECTED");
     });
 
     socket.on("REGISTRATIPN SUCCESS", (userdame) => {
-      console.log("cookie set after register");
+      // console.log("cookie set after register");
       cookies.set("email", userdame);
       navigate("/game");
     });
 
     socket.on("PASS", (e) => {
-      console.log(e);
+      // console.log(e);
     });
 
     socket.on("PRIVATE MESSAGE", (e) => {
-      console.log(e);
+      // console.log(e);
     });
 
     socket.on("init", msg => console.log("msg", msg))
@@ -64,7 +64,7 @@ function App() {
     // console.log("BEFOER ALL")
     socket.on("all user names", (obj) => {
       // alert(JSON.stringify(obj.users))
-      console.log("지금 로그인 되어있는 유저", obj.users)
+      // console.log("지금 로그인 되어있는 유저", obj.users)
     })
 
     // socket.on('sendData', data => {
@@ -80,16 +80,16 @@ function App() {
   }, []);
 
   const RegistrationChecker = (val) => {
-    console.log('ref');
+    // console.log('ref');
     socket && socket.emit("REGISTERED", val);
   };
 
   const clearCookies = () => {
     const all_cookies = cookies.getAll();
-    console.log("@@@@@@@", all_cookies);
+    // console.log("@@@@@@@", all_cookies);
     // if (all_cookies.length > 0) {
     Object.keys(all_cookies).forEach((each) => {
-      console.log("each", each);
+      // console.log("each", each);
       cookies.remove(each);
     });
   };

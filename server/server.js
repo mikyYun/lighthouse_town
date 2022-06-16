@@ -66,8 +66,10 @@ io.on("connection", (socket) => {
   const session = socket.request.session;
   session.save();
 
-  // use object
+  console.log('socket.on', socket.on);
+  console.log('line 70 a user connected: ', socket.id);
 
+  // use object
   // socket.emit("init", {data: 'hello world'})
   socket.on('sendData', data => {
     // console.log('sendData', data) // print on server
@@ -79,13 +81,11 @@ io.on("connection", (socket) => {
 
   });
 
-  console.log('socket.on', socket.on);
-  console.log('a user connected: ', socket.id);
 
     // setInterval inside here
-    setInterval(() => {
+    // setInterval(() => {
       io.emit('sendData', users)
-    } ,2000)
+    // } ,2000)
 
   socket.emit("init", { data: 'hello world' });
   // socket.on('sendData', data => {
