@@ -175,9 +175,10 @@ const Canvas = (props) => {
     // console.log(Char)
     window.addEventListener("keydown", e => {
       userChar.move(e)
-      // socket.emit('sendData', userChar.state)
+      socket.emit('sendData', userChar.state)
       // console.log('sendData', userChar.state)
       // sendMessage("SEND")
+      // sendData(userChar.state) // socket.emit("sendData", userChar.state)
     });
     window.addEventListener("keyup", () => {
       userChar.stop()
@@ -195,7 +196,6 @@ const Canvas = (props) => {
     //   setInterval(() => {
     //   socket.on('init', msg => console.log('msg', msg))
     //   socket.emit('sendData', userChar.state)
-    sendData(userChar.state) // socket.emit("sendData", userChar.state)
     //   socket.on('backData', data => console.log('data', data))
     // } ,1000)
 
