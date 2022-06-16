@@ -98,7 +98,7 @@ function App() {
 
 
   const sendData = (state) => {
-    socket && socket.emit("sendData", state)
+    // socket && socket.emit("sendData", state)
   }
   return (
 
