@@ -1,3 +1,4 @@
+import boyImg from '../game_img/boy1.png'
 
 const facing = {
   up: 3,
@@ -18,7 +19,7 @@ class Characters {
       isMoving: false
     }
     this.img = new Image();
-    this.img.src = config.image;
+    this.img.src = boyImg
     this.movement_speed = 10;
     this.width = 63.5;
     this.height = 63.5;
@@ -28,26 +29,26 @@ class Characters {
   // add websocket
   move = (e) => {
     // console.log('inside move', this)
-    if (e.key === 'w') {
+    if (e.key === 'ArrowUp') {
       // keyPressed.w = true;
       this.state.y -= this.movement_speed;
       // console.log(this.state.y)
       this.state.currentDirection = facing.up;
       this.state.isMoving = true;
     }
-    if (e.key === 'a') {
+    if (e.key === 'ArrowLeft') {
       // keyPressed.a = true;
       this.state.x -= this.movement_speed;
       this.state.currentDirection = facing.left;
       this.state.isMoving = true;
     }
-    if (e.key === 's') {
+    if (e.key === 'ArrowDown') {
       // keyPressed.s = true;
       this.state.y += this.movement_speed;
       this.state.currentDirection = facing.down;
       this.state.isMoving = true;
     }
-    if (e.key === 'd') {
+    if (e.key === 'ArrowRight') {
       // keyPressed.d = true;
       this.state.x += this.movement_speed;
       this.state.currentDirection = facing.right;

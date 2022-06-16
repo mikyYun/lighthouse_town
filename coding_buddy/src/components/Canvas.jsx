@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import mapImage from "./game_img/town-map.png";
 // import girlImage from "./game_img/girl1.png";
 import Characters from "./helper/Characters";
@@ -12,6 +12,81 @@ const socket = io('http://localhost:3000')
 
 const Canvas = (props) => {
   const canvasRef = useRef(null);
+
+  const username = props.username; //moon
+  const avatar = props.avatar;  //1
+  const userData = {
+    username: props.username,
+    x: 150,
+    y:150,
+  }
+  const userChar = new Characters(userData)
+  console.log('userChar', userChar)
+
+  let otherUsers;
+  let otherUserChars = [];
+  // get other users data from the server
+  setInterval(() => {
+    socket.on('sendData', data => {
+      console.log('data', data);
+      otherUsers = data;
+
+      //create character and do manipulation
+      // if (otherUsers) {
+      //   console.log('before for-loop')
+      //   for (const [key, value] of Object.entries(otherUsers)) {
+      //     console.log(`${key}: ${value}`);
+      //   }
+      // }
+
+      for ( let name in otherUsers) {
+        // exclude my own character
+        if (name !== userData.username && name !== otherUsers[name]) {  // name :park
+            let char = new Characters(otherUsers[name])
+            otherUserChars.push(char);
+          }
+      }
+      console.log('otherUserChars', otherUserChars)
+
+
+    })
+  } ,3000)
+  console.log('otherUsers', otherUsers)
+
+  // console.log('props', props)
+  // console.log('inside canvas avatar', avatar)
+  // console.log('inside canvas username', username)
+
+  //make user Character
+
+
+  // other users Character
+
+  // otherUsers = {
+  //   Park: {username: 'Park', x: 150, y: 190,currentDirection: 0, isMoving: false},
+  //   moon: {username: 'moon', x: 150, y: 140, currentDirection: 3, isMoving: false}
+  // }
+
+//   otherUsers = {
+//     "Park": {
+//         "username": "Park",
+//         "x": 270,
+//         "y": 400,
+//         "currentDirection": 2,
+//         "isMoving": false
+//     },
+//     "moon": {
+//         "username": "moon",
+//         "x": 160,
+//         "y": 180,
+//         "currentDirection": 0,
+//         "isMoving": false
+//     }
+// }
+
+  // console.log('otherUsers', otherUsers)
+
+
 
   useEffect(() => {
     //make collision wall
@@ -30,6 +105,7 @@ const Canvas = (props) => {
     canvas.width = 1120;
     canvas.height = 640;
 
+    // make background image
     const mapImg = new Image();
     mapImg.src = mapImage;
 
@@ -54,73 +130,56 @@ const Canvas = (props) => {
     //
 
   // test data from database
-  console.log('props', props)
-  const username = props.username;
-  const avatar = props.avatar;
-  console.log('inside canvas avatar', avatar)
-  console.log('inside canvas username', username)
+  // console.log('props', props)
+  // const username = props.username; //moon
+  // const avatar = props.avatar;  //1
+  // console.log('inside canvas avatar', avatar)
+  // console.log('inside canvas username', username)
 
-  const users = []
-  users.push({
-    username: props.username,
-    x: 150,
-    y:150,
-    image: selectAvatar(props.avatar)
-  })
-  console.log('users', users)
-  // const users = [
-  //   {
-  //     username: 'moon',
-  //     x: 165,
-  //     y: 50,
-  //     currentDirection: 0,
-  //     isMoving: false,
-  //     image: girlImage
-  //   },
-  //   {
-  //     username: 'heesoo',
-  //     x: 200,
-  //     y: 100,
-  //     currentDirection: 0,
-  //     isMoving: false,
-  //     image: boyImage
-  //   },
-  //   {
-  //     username: 'Park',
-  //     x: 300,
-  //     y: 150,
-  //     currentDirection: 0,
-  //     isMoving: false,
-  //     image: boyImage
+  // //make user Character
+  // const userData = {
+  //   username: props.username,
+  //   x: 150,
+  //   y:150,
+  // }
+
+
+  // image: selectAvatar(props.avatar),
+  // const userChar = new Characters(userData)
+  // console.log('userChar', userChar)
+  // // other users Character
+  // let otherUserChars = [];
+  // for ( let name in otherUsers) {
+  //   if (name !== userData.username) {
+  //     otherUserChars.push(otherUsers[name])
   //   }
-  // ]
-
-  let userChar;
-
+  // }
+  console.log('otherUser', otherUsers )
     //making animation loop
 
     let frameCount = 0;
     let framelimit = 10;
 
-    // make it as array
-    let characters = [];
-    const makeCharacters = (users, name) => {
-      users.map(user => {
-        if (user.username === name) {
-          userChar = new Characters(user)
-        } else {
-         characters.push(new Characters(user))
-        }
-       console.log('userChar', userChar)
-       console.log("new", characters)
-      }
-    )}
-    makeCharacters(users, username)
+
+    // // make it as array
+    // const makeCharacters = (users, name) => {
+    //   users.map(user => {
+    //     if (user.username === name) {
+    //       userChar = new Characters(user)
+    //     } else {
+    //      characters.push(new Characters(user))
+    //     }
+    //    console.log('userChar', userChar)
+    //    console.log("new", characters)
+    //   }
+    // )}
+    // makeCharacters(users, username)
 
 
-    function step() {
-
+  function step() {
      // go through users array and make each chracters
+
+     ctx.clearRect(0,0, canvas.width, canvas.height)
 
         // walking motion
          if (userChar.state.isMoving) {
@@ -131,35 +190,45 @@ const Canvas = (props) => {
           }
         }
 
+        // draw background map
         ctx.drawImage(mapImg, 0, 0)
-
-        // characters.map(character => {
-        //   character.drawFrame(ctx)
-        //   ctx.fillText(character.state.username, character.state.x + 20, character.state.y+10)
-        //   ctx.fillStyle = 'purple'
-        // });
-
         userChar.drawFrame(ctx);
+
+        // draw user character
+
         ctx.fillText(username, userChar.state.x + 20, userChar.state.y+10)
         ctx.fillStyle = 'purple'
+
+        // draw other user characters
+        otherUserChars.map(otherUserChar => {
+          otherUserChar.drawFrame(ctx)
+          ctx.fillText(otherUserChar.state.username, otherUserChar.state.x + 20, otherUserChar.state.y+10)
+          ctx.fillStyle = 'purple'
+        });
+
+
 
       window.requestAnimationFrame(step);
     }
     // console.log(Char)
-    window.addEventListener("keydown", e => userChar.move(e));
-    window.addEventListener("keyup", () => userChar.stop());
+    window.addEventListener("keydown", e => {
+      // console.log('otherUsers', otherUsers)
+      // console.log('otherUsersChar', otherUserChars)
+
+      console.log(e.key)
+      userChar.move(e)
+      socket.emit('sendData', userChar.state)
+    });
+    window.addEventListener("keyup", () => {
+      userChar.stop()
+      socket.emit('sendData', userChar.state)
+    });
+    // add another
 
     window.requestAnimationFrame(step);
 
     // pass function
     // window.requestAnimationFrame(() => gameLoop(ctx, canvas, characters, mapImg));
-
-    setInterval(() => {
-    socket.on('init', msg => console.log('msg', msg))
-    socket.emit('sendData', userChar.state)
-    socket.on('backData', data => console.log('data', data))
-  } ,1000)
-
 
     return () => {
       window.removeEventListener("keydown", e => userChar.move(e));

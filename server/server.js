@@ -59,20 +59,49 @@ io.use((socket, next) => {
 
 io.adapter(createAdapter(pool));
 
+// store users data
+// const usersInRoom = {
+//   // rooid: {
+//   //  {
+//      userid : {
+//        username,
+//        x,
+//        y,
+//        currentDirection,
+//        isMoving
+//      }
+//    }
+// /
+const users = {};
+
 io.on("connection", (socket) => {
   const session = socket.request.session;
   session.save();
   const req = socket.request;
   const userName = {};
 
-  socket.emit("init", {data: 'hello world'})
+  // use object
+
+  // socket.emit("init", {data: 'hello world'})
   socket.on('sendData', data => {
-    console.log('sendData', data)
+    console.log('sendData', data) // print on server
     // add userid from data
-    const users = []
-    users.push(data)
-    socket.emit('backData', users)
-  })
+    users[data.username] = data
+    console.log('users',users)
+
+    // look for user inside obj if user is new or not
+    // for that specific room
+    // room[userid]
+    // socket msg for joining and leaving room
+    // socket on 'join', 'leaving', 'moving'
+    // join -> add new user to the room
+
+
+
+    io.emit('sendData', users)
+
+  });
+
 
 
   socket.on("LOGIN", (data) => {
