@@ -13,7 +13,7 @@ const socket = io('http://localhost:3000')
 const Canvas = (props) => {
   const canvasRef = useRef(null);
   const [usersPosition, setUsersPosition] = useState();
-  const [userCharacters, setUserCharacters] = useState([]);
+  const [userCharacters, setUserCharacters] = useState({});
 
   const username = props.username; //moon
   const avatar = props.avatar;  //1
@@ -23,44 +23,23 @@ const Canvas = (props) => {
     y:150,
   }
   const userChar = new Characters(userData)
-  // console.log('userChar', userChar)
+  console.log('userChar', userChar)
 
+  socket.on('sendData', data => {
+    setUsersPosition(data)
+  });
 
   // let otherUserChars = [];
   // get other users data from the server
-  setInterval(() => {
-    socket.on('sendData', data => {
-      // console.log('data', data);
-      setUsersPosition(data);
-    })
-  } ,1000)
+  // setInterval(() => {
+  //   socket.on('sendData', data => {
+  //     console.log('data', data);
+  //     setUsersPosition(data);
+  //   })
+  // } ,1000)
 
   console.log('allUsers', usersPosition)
 
-  // useEffect(() => {
-  //   for ( let name in usersPosition) {
-  //     console.log(name) // moon, Park, John
-  //     // 만약에 이름이 나랑 같지 않고
-  //     if (name !== userData.username) {
-  //       let char = new Characters(usersPosition[name])
-  //       setUserCharacters(prev => [...prev, char])
-  //       // if (userCharacters.length === 0) {
-  //       //   let char = new Characters(usersPosition[name])
-  //       //   setUserCharacters( prev => [...prev, char])
-  //       //   // otherUserChars.push(char);
-  //       // } else {
-  //       //   userCharacters.forEach(char => {
-  //       //     if (char.state.username !== name) {
-  //       //       let char = new Characters(usersPosition[name])
-  //       //       setUserCharacters( prev => [...prev, char])
-  //       //     }
-  //       //   })
-  //       // }
-  //     }
-  //   }
-
-  //   // console.log('otheruserchars',otherUserChars[0])
-  // }, [usersPosition])
 
   // remove nested loop
   // make
@@ -69,36 +48,70 @@ const Canvas = (props) => {
   // set characters -> new Character(150, 150) if it doesn't exist
   // nCharacter.state = {}
 
+//   // create new character for other users
+//   {
+//     "moon": {
+//         "username": "moon",
+//         "x": 150,
+//         "y": 360,
+//         "currentDirection": 0,
+//         "isMoving": false
+//     },
+//     "heesoo": {
+//         "username": "heesoo",
+//         "x": 150,
+//         "y": 200,
+//         "currentDirection": 0,
+//         "isMoving": false
+//     }
+// }
+if (usersPosition) {
+  console.log(Object.keys(usersPosition))
+}
 
-  useEffect(() => {
-    for ( let name in usersPosition) {
-      console.log(name) // moon, heesoo, mike
-      // 만약에 이름이 나랑 같지 않고
-      if (name !== userData.username) {
-        console.log('first', userCharacters)
-        if (userCharacters.length === 0) {
-          console.log('second', userCharacters)
-          let char = new Characters(usersPosition[name])
-          setUserCharacters( prev => [...prev, char])
-          console.log('third', userCharacters)
-          // otherUserChars.push(char);
-        } else {
-          // once updated, draw the canvas!
-          console.log('inside else')
-          userCharacters.forEach(char => {
-            if (char.state.username !== name) {
-              let char = new Characters(usersPosition[name])
-              console.log('new Char', char)
-              setUserCharacters( prev => [...prev, char])
-              console.log('userChar state', userCharacters)
-            }
-          })
-        }
-      }
+  for (let name in usersPosition) {
+    console.log('name',name)
+    if (name !== username) {
+      console.log('not user', name)
+      let Char = new Characters(usersPosition[name])
+      console.log('Char',Char);
+      setUserCharacters({name: Char})
+
+      // setUserCharacters((prev) => {...prev, name: Char});
+      console.log('userCharacters',userCharacters)
     }
+  }
 
-    // console.log('otheruserchars',otherUserChars[0])
-  }, [usersPosition])
+
+  // useEffect(() => {
+  //   // for ( let name in usersPosition) {
+  //   //   console.log(name) // moon, heesoo, mike
+  //   //   // 만약에 이름이 나랑 같지 않고
+  //   //   if (name !== userData.username) {
+  //   //     console.log('first', userCharacters)
+  //   //     if (userCharacters.length === 0) {
+  //   //       console.log('second', userCharacters)
+  //   //       let char = new Characters(usersPosition[name])
+  //   //       setUserCharacters( prev => [...prev, char])
+  //   //       console.log('third', userCharacters)
+  //   //       // otherUserChars.push(char);
+  //   //     } else {
+  //   //       // once updated, draw the canvas!
+  //   //       console.log('inside else')
+  //   //       userCharacters.forEach(char => {
+  //   //         if (char.state.username !== name) {
+  //   //           let char = new Characters(usersPosition[name])
+  //   //           console.log('new Char', char)
+  //   //           setUserCharacters( prev => [...prev, char])
+  //   //           console.log('userChar state', userCharacters)
+  //   //         }
+  //   //       })
+  //   //     }
+  //   //   }
+  // // }
+
+  //   // console.log('otheruserchars',otherUserChars[0])
+  // }, [usersPosition])
 
 
   useEffect(() => {
@@ -167,6 +180,7 @@ const Canvas = (props) => {
 
       window.requestAnimationFrame(step);
     }
+
     // console.log(Char)
     window.addEventListener("keydown", e => {
       console.log(e.key)

@@ -98,8 +98,9 @@ io.on("connection", (socket) => {
 
 
     // setInterval inside here
-    io.emit('sendData', users)
-
+    setInterval(() => {
+      io.emit('sendData', users)
+    } ,2000)
   });
 
 
