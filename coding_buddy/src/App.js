@@ -1,25 +1,18 @@
 import React from 'react';
 import './App.css';
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
-// import { socket, SocketContext, SOCKET_EVENT } from "./components/service/socket";
+import { useState, useEffect } from "react";
 import Cookies from 'universal-cookie';
 import Game from './components/Game';
 import Layout from './components/Layout';
 import Register from './components/Register';
 import Login from './components/Login';
-// import {} from './components/service/socket'
-// const { io } = require("socket.io-client");
-// import { SocketContext } from './components/service/socket'
+
 import { socket } from './components/service/socket.js'
 import { createContext } from "react";
 export const SocketContext = createContext(socket); // going to Recipient.jsx
-
 function App() {
   const navigate = useNavigate();
-
-  // 쿠키 세팅
-  // const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
   const [nickname, setNickname] = useState('');
   const [online, setOnline] = useState([{ value: 'all', label: 'all' }]);
@@ -137,8 +130,6 @@ function App() {
           <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
           <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
           <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
-          {/* <Route path='/login' element="Logout" /> */}
-          {/* <Route path='/sockets' element={<Sockets />} /> */}
           <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} sendData={sendData} setUser={createSocketIdNameObject} room={room} nickname={nickname} />} />
           {/* <Route path='/chat' element={<Chat />} /> */}
           <Route path={`/game/${room}`} element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} />} />
