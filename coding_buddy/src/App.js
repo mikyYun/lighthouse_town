@@ -133,8 +133,6 @@ const sendData = (state) => {
     </div>
   );
 
-
-
 }
 
 export default App;

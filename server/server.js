@@ -34,7 +34,7 @@ const pool = new Pool({
 //G. and passing io as an argument.
 //G. io is the Server.
 
-app.use(cors()); 
+app.use(cors());
 app.use(sessionMiddleware);
 app.use(bodyParser.json());
 app.use(
@@ -92,7 +92,7 @@ io.on("connection", (socket) => {
     alluserNames.forEach(each => { // each = moon, mike, heesoo
       console.log("THIS iS NAME", each, "CURRENT USERS", currentUsers[each])
       // const sortedName = alluserNames.sort()
-      io.to(currentUsers[each]).emit("all user names", {"users" : alluserNames})
+      io.to(currentUsers[each]).emit("all user names", { "users": alluserNames })
       // io.to(roomName).emit("all user names", "jasklefjl;ksajv@@@@@")
       // io.emit("all user names", "TEST")
       // io.in(roomName).emit("all user names", {"users" : alluserNames.sort()})
@@ -182,11 +182,11 @@ io.on("connection", (socket) => {
       if (currentUsers[username] === socket.id) {
         delete currentUsers[socket.id];
         console.log("DELETE DISCONNECT USER DATA FROM currentusers OBJ", currentUsers);
-      } 
+      }
     });
     const alluserNames = Object.keys(currentUsers)
     alluserNames.forEach(username => {
-      socket.to(currentUsers[username]).emit("all user names", {"users" : alluserNames})
+      socket.to(currentUsers[username]).emit("all user names", { "users": alluserNames })
     })
     // delete currentUsers[socket.id];
   });
@@ -252,6 +252,7 @@ app.post("/register", (req, res) => {
   const userEmail = req.body.userInfo.userEmail;
   const userLanguages = req.body.userInfo.userLanguages;
   const userAvatar = req.body.userInfo.userAvatar;
+  console.log("userPassword", userPassword)
   pool.query("SELECT * FROM users WHERE username = $1 OR email = $2", [userName, userEmail], (err, res_1) => {
     if (err) throw err;
     console.log(res_1.rows[0]);

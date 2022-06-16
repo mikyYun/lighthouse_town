@@ -12,7 +12,7 @@ import './Register.scss'
 export default function Register(props) {
   const [userEmail, setUserEmail] = useState();
   const [userName, setUserName] = useState();
-  const [userPasssword, setUserPassword] = useState();
+  const [userPassword, setUserPassword] = useState();
   const [userLanguages, setUserLanguages] = useState([]);
   const [userAvatar, setUserAvatar] = useState();
   const [incorrectPassword, setIncorrectPassword] = useState("correct_password")
@@ -36,6 +36,7 @@ export default function Register(props) {
     <div className="register-form">
       {/* <Layout /> */}
       <form action="/login" method="GET" id="form_registration">
+
         <div className="field">
           <span>EMAIL :{" "}</span>    {/* 이안에 뭐가 들어갈껀가요? */}
           <input
@@ -44,12 +45,14 @@ export default function Register(props) {
             rows="1"
             placeholder="EMAIL"
             typeof="email"
+            value={userEmail}
             onChange={(e) => {
-              console.log(e.target.value);
               setUserEmail(e.target.value);
+              console.log(e.target.value);
             }}
           ></input>
         </div>
+
         <div className="field">
           <span> NAME :{" "}</span>
           <input
@@ -58,14 +61,15 @@ export default function Register(props) {
             rows="1"
             placeholder="NAME"
             type="text"
+            value={userName}
             onChange={(e) => {
               console.log(e.target.value);
-              if (e.target.value.length < 4)
-                console.log("username should be longer than 4 chars");
-              setUserName(e.target.value);
+              if (e.target.value.length < 4) setUserName(e.target.value);
+              console.log("username should be longer than 4 chars");
             }}
           ></input>
         </div>
+
         <div className="field">
           <span> PASSWORD :{" "}</span>
           <input
@@ -74,11 +78,11 @@ export default function Register(props) {
             rows="1"
             placeholder="PASSWORD"
             type="password"
+            // value={userPassword}
             onChange={(e) => {
-              if (e.target.value.length < 4)
-                console.log("password should be longer than 4 chars");
+              if (e.target.value.length < 4) setUserPassword(e.target.value);
+              console.log("password should be longer than 4 chars");
               console.log(e.target.value);
-              setUserPassword(e.target.value);
             }}
           ></input>
         </div>

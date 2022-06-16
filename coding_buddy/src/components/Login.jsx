@@ -38,7 +38,7 @@ export default function Login(props) {
         <span>EMAIL : </span>
         <input
           // name="email"
-          id="register_email"
+          id="login_email"
           rows="1"
           placeholder="EMAIL"
           type="email"
@@ -54,7 +54,7 @@ export default function Login(props) {
         <input
           // name="password"
 
-          id="register_password"
+          id="login_password"
           rows="1"
           placeholder="PASSWORD"
           type="password"
