@@ -17,9 +17,9 @@ export default function Game(props) {
   // const getAllUsers = props.getAllUsers
   // getAllUsers()
   const location = useLocation();
-  useEffect(() => {
-    if (location.state === null) navigate("/")
-  }, [])
+  // useEffect(() => {
+  //   if (location.state === null) navigate("/")
+  // }, [])
   // useEffect(() => {
   // console.log("LOCATION", location.state)
   // if (location.state == null) navigate("/")
@@ -27,25 +27,25 @@ export default function Game(props) {
   // console.log('inside game',location.state)  //username
   // console.log('inside game',location.state.userName)  //username
   // if (location.state === null) alert("hey")
-  if (location.state !== null) {
-    return (
-      <>
-        {/* <Layout /> */}
-        <div className="main-container">
-          {/* {(location.state === null) && navigate("/")} */}
-          <Canvas username={location.state[0] || 'guest'} avatar={location.state[1]} sendData={props.sendData} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} />
-          {/* <Canvas username={location.state?.[0] || 'heesoo'} avatar={location.state?.[1] || 1} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} /> */}
+  // if (location.state !== null) {
+  return (
+    <>
+      {/* <Layout /> */}
+      <div className="main-container">
+        {/* {(location.state === null) && navigate("/")} */}
+        {/* <Canvas username={location.state[0] || 'guest'} avatar={location.state[1]} sendData={props.sendData} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} /> */}
+        <Canvas username={location.state?.[0]} avatar={location.state?.[1] || 1} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} sendData={props.sendData} />
 
-          <Chat username={location.state} room={props.room} handleSubmitNickname={props.handleSubmitNickname} nickname={props.nickname} />
-        </div>
-      </>
-    );
-  }
-  else {
-    return (
-      <Routes>
-        <Route path="/" />
-      </Routes>
-    )
-  }
+        <Chat username={location.state} room={props.room} handleSubmitNickname={props.handleSubmitNickname} nickname={props.nickname} />
+      </div>
+    </>
+  );
+  // }
+  // else {
+  //   return (
+  //     <Routes>
+  //       <Route path="/" />
+  //     </Routes>
+  //   )
+  // }
 }

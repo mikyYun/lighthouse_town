@@ -1,33 +1,29 @@
 import React from 'react';
 import './App.css';
-<<<<<<< HEAD
-import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { useState, useCallback, useEffect, useRef } from "react";
+
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 // import { socket, SocketContext, SOCKET_EVENT } from "./components/service/socket";
 import Chat from "./components/Chat";
-
-=======
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { useState, useEffect, } from "react";
->>>>>>> moons
 import Cookies from 'universal-cookie';
 import Game from './components/Game';
 import Layout from './components/Layout';
 import Register from './components/Register';
 import Login from './components/Login';
-<<<<<<< HEAD
 // import {} from './components/service/socket'
 const { io } = require("socket.io-client");
-
 
 function App() {
   const navigate = useNavigate();
 
   // // 쿠키 세팅
   const [socket, setSocket] = useState();
+  const [room, setRoom] = useState('plaza');
+  const [nickname, setNickname] = useState('')
   const cookies = new Cookies();
   let location = useLocation();
   useEffect(() => {
+    setRoom(location.pathname.split("/").splice(2)[0])
     // ga()
     console.log("location check", location.pathname);
     console.log(clearCookies);
@@ -43,63 +39,16 @@ function App() {
       console.log("CONNECTED");
     });
 
-    socket.on("REGISTRATIPN SUCCESS", (userdame) => {
+    socket.on("REGISTRATIPN SUCCESS", (username) => {
       console.log("cookie set after register");
-      cookies.set("email", userdame);
+      cookies.set("email", username);
+      console.log("username", username)
       navigate("/game");
     });
 
     socket.on("PASS", (e) => {
       console.log(e);
     });
-=======
-const { io } = require("socket.io-client");
-
-function App() {
-  const navigate = useNavigate()
-  const [socket, setSocket] = useState();
-  const [room, setRoom] = useState('plaza');
-  const [nickname, setNickname] = useState('babe')
-
-  let location = useLocation()
-
-  useEffect(() => {
-    setRoom(location.pathname.split("/").splice(2)[0])
-    console.log("LOCATION.PATHNAME", location.pathname)
-
-    const cookies = new Cookies();
-    const clearCookies = () => {
-      const all_cookies = cookies.getAll();
-      // if (all_cookies.length > 0) {
-      Object.keys(all_cookies).forEach((each) => {
-        console.log("each", each)
-        cookies.remove(each);
-      })
-    };
-
-    if (location.pathname !== "/game") clearCookies()
-  }, [location.pathname, room])
-
-  useEffect(() => {
-    const socket = io("/");
-    const cookies = new Cookies();
-
-    socket.on("CONNECT", (e) => {
-      console.log("My socket ID", socket.id)
-      console.log("CONNECTED", e);
-    });
-
-    socket.on("REGISTRATION SUCCESS", (username) => {
-      console.log("cookie set after register")
-      cookies.set("email", username);
-      // cookies.set("username", username);
-      navigate("/game")
-    });
-
-    socket.on("PASS", (e) => { //this is every time character moves.
-      console.log(e)
-    })
->>>>>>> moons
 
     socket.on("PRIVATE MESSAGE", (e) => {
       console.log(e);
@@ -115,7 +64,9 @@ function App() {
     socket.on("all user names", (obj) => {
       // alert(JSON.stringify(obj.users))
       console.log("지금 로그인 되어있는 유저", obj.users)
+
     })
+
 
     // socket.on('sendData', data => {
     //   console.log('data', data);
@@ -136,10 +87,8 @@ function App() {
 
   const clearCookies = () => {
     const all_cookies = cookies.getAll();
-    console.log("@@@@@@@", all_cookies);
     // if (all_cookies.length > 0) {
     Object.keys(all_cookies).forEach((each) => {
-      console.log("each", each);
       cookies.remove(each);
     });
   };

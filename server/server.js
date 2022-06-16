@@ -81,7 +81,7 @@ io.on("connection", (socket) => {
   // });
 
   // socketID and username matching
-  socket.on("SET USERNAME", (obj) => {
+  socket.on("SET USERNAME", (obj) => { //Login.jsx 의 setUser(res.data.userName)
     const username = obj.username;
     const socketid = obj.socketID;
 
@@ -92,7 +92,7 @@ io.on("connection", (socket) => {
     alluserNames.forEach(each => { // each = moon, mike, heesoo
       console.log("THIS iS NAME", each, "CURRENT USERS", currentUsers[each])
       // const sortedName = alluserNames.sort()
-      io.to(currentUsers[each]).emit("all user names", { "users": alluserNames })
+      io.to(currentUsers[each]).emit("all user names", { "users": alluserNames }) // App.jsx 로 보내기
       // io.to(roomName).emit("all user names", "jasklefjl;ksajv@@@@@")
       // io.emit("all user names", "TEST")
       // io.in(roomName).emit("all user names", {"users" : alluserNames.sort()})
@@ -204,6 +204,7 @@ app.post("/login", (req, res) => {
 
   const email = req.body.userEmail;
   const password = req.body.userPassword;
+
   // and password.. userName=$1 AND userpassword=$2
   return pool.query("SELECT * FROM users WHERE email=$1 AND password=$2", [email, password], (err, res_1) => {
     if (err) throw err;
@@ -226,7 +227,7 @@ app.post("/login", (req, res) => {
           const loginUserData = {
             userName, avatar, userLanguages
           };
-          res.status(201).send(loginUserData);
+          res.status(201).send(loginUserData); //object - username, avatar, language
         } else {
           console.log("No available language", res_2.rows);
         }

@@ -56,7 +56,6 @@ export default function Login(props) {
         onClick={(e) => {
           const loginInfo = { userEmail, userPassword }
           cookies.set("username", userEmail)
-          props.setNickname(userEmail)
           axios
             .post("/login", loginInfo)
             .then((res) => {
@@ -64,8 +63,9 @@ export default function Login(props) {
                 // console.log("1", res);
                 setUser(res.data.userName) // pass username so that server set username and socketid as key:value pair
                 console.log("res.data", res.data);
-                cookies.set("email", res.data);
+                cookies.set("userdata", res.data);
                 goChat(res.data.userName, res.data.avatar)
+                // props.setNickname(res.data.userName)
               } else {
                 console.log("no matching user")
                 alert("Invalid information. Please confirm your email and password")

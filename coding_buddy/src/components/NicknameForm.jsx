@@ -7,9 +7,9 @@ function NicknameForm({ handleSubmitNickname }) {
     setNickname(event.target.value);
   }, []);
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback((event) => {
     handleSubmitNickname(nickname);
-    setNickname("");
+    setNickname(event.target.value);
   }, [handleSubmitNickname, nickname]);
 
   return (

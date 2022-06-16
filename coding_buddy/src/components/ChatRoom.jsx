@@ -37,7 +37,7 @@ function ChatRoom(props) {
   }, [messages])
 
   // io.on("conenct" (socket) => {
-//   socket.cfjasdklf
+  //   socket.cfjasdklf
   // })
 
   useEffect(() => {
@@ -53,7 +53,7 @@ function ChatRoom(props) {
   return (
     <div className="d-flex flex-column chat-form">
       <div className="text-box">
-        <span>{props.nickname}</span>, Welcome!
+        <span>{nickname}</span>, Welcome!
       </div>
       <div className="chat-window card" ref={chatWindow}>
         {messages.map((message, index) => {
