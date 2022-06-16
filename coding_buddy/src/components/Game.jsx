@@ -41,8 +41,8 @@ export default function Game(props) {
           <Chat username={location.state} />
         </div>
       </>
-    );
-  } 
+    );s
+  }
   else {
     return (
       <Routes>

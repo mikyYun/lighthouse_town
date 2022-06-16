@@ -56,45 +56,40 @@ io.use((socket, next) => {
 
 io.adapter(createAdapter(pool));
 
+const users = {};
 // store all users' socket id with username key-value pair
 let currentUsers = {}; // => {username : socket.id}
-// currentUsers={
-  // username: {
-    // socketID: "socketID",
-    // 
-  // }
-// }
-
 
 
 io.on("connection", (socket) => {
   const roomName = "room 1";
   const session = socket.request.session;
   session.save();
-  let loginRoom = 1;
-  // const req = socket.request;
-  // const userName = {};
 
-  ///////////////////// 접속한 유저 이름 sort 후 패스 _ 유저가 로그인 하거나 로그아웃 할 때 전송
-  // setInterval(() => {
-    // socket.emit("all user names", {"users" : Object.keys(currentUsers).sort()})
-  // }, 1000)
-  // socket.emit("all user names", {"users" : ["he", "ai", 'ze', 'bajsd'].sort()})
+  // use object
 
-  // console.log("ALL", clients)
+  // socket.emit("init", {data: 'hello world'})
+  socket.on('sendData', data => {
+    // console.log('sendData', data) // print on server
+    // add userid from data
+    users[data.username] = data
+    // console.log('users',users)
+    // setInterval inside here
+    io.emit('sendData', users)
 
+  });
 
   console.log('socket.on', socket.on);
   console.log('a user connected: ', socket.id);
 
   socket.emit("init", { data: 'hello world' });
-  socket.on('sendData', data => {
-    console.log(data);
-    // add userid from data
-    const users = [];
-    users.push(data);
-    socket.broadcast.emit('backData', users);
-  });
+  // socket.on('sendData', data => {
+  //   console.log(data);
+  //   // add userid from data
+  //   const users = [];
+  //   users.push(data);
+  //   socket.broadcast.emit('backData', users);
+  // });
 
   // socketID and username matching
   // socket.on("SET USERNAME", (socketID, username) => {
@@ -112,6 +107,7 @@ io.on("connection", (socket) => {
     // 1, 2, 3, 4 => 1, 1, 2, 3, 4, 5
     alluserNames.forEach(each => { // each = moon, mike, heesoo
       console.log("THIS iS NAME", each, "CURRENT USERS", currentUsers[each])
+      // const sortedName = alluserNames.sort()
       io.to(currentUsers[each]).emit("all user names", {"users" : alluserNames})
       // console.log("BETWEEN")
       // io.to(roomName).emit("all user names", "jasklefjl;ksajv@@@@@")
@@ -152,7 +148,7 @@ io.on("connection", (socket) => {
   /////////////////////// ADDED FROM socket/index.js
 
   socket.on("JOIN_ROOM", requestData => {
-    // 콜백함수의 파라미터는 클라이언트에서 보내주는 데이터. 
+    // 콜백함수의 파라미터는 클라이언트에서 보내주는 데이터.
     // 이 데이터를 소켓 서버에 던져줌.
     // 소켓서버는 데이터를 받아 콜백함수를 실행.
     socket.join(roomName); // user를 "room 1" 방에 참가시킴.
@@ -180,7 +176,7 @@ io.on("connection", (socket) => {
     console.log(`UPDATE_NICKNAME is fired with data: ${JSON.stringify(responseData)}`);
   });
 
-  // receive.message는 ChatRoom.jsx 에서 defined 
+  // receive.message는 ChatRoom.jsx 에서 defined
   // --------------- SEND MESSAGE ---------------
   socket.on("SEND_MESSAGE", requestData => {
     console.log('I got a message');
@@ -209,7 +205,7 @@ io.on("connection", (socket) => {
     });
     const alluserNames = Object.keys(currentUsers)
     alluserNames.forEach(username => {
-      socket.to(currentUsers[username]).emit("all user names", {"users" : alluserNames.sort()})
+      socket.to(currentUsers[username]).emit("all user names", {"users" : alluserNames})
     })
     // delete currentUsers[socket.id];
   });

@@ -1,22 +1,111 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import mapImage from "./game_img/town-map.png";
 // import girlImage from "./game_img/girl1.png";
 import Characters from "./helper/Characters";
 // import boyImage from "./game_img/boy1.png";
 import townWall from "./game_img/collision_data.js/townWall";
 import selectAvatar from "./helper/selecAvatar";
-
+import { socket } from "./service/socket";
 
 // const { io } = require("socket.io-client");
 // const socket = io('http://localhost:3000')
 
 const Canvas = (props) => {
   const canvasRef = useRef(null);
+  const [usersPosition, setUsersPosition] = useState();
+  const [userCharacters, setUserCharacters] = useState([]);
+
+  const username = props.username; //moon
+  const avatar = props.avatar;  //1
+  const userData = {
+    username: props.username,
+    x: 150,
+    y:150,
+  }
+  const userChar = new Characters(userData)
+  // console.log('userChar', userChar)
+
+
+  // let otherUserChars = [];
+  // get other users data from the server
+  setInterval(() => {
+    socket.on('sendData', data => {
+      console.log('data', data);
+      setUsersPosition(data);
+    })
+  } ,1000)
+
+  console.log('allUsers', usersPosition)
+
+  // useEffect(() => {
+  //   for ( let name in usersPosition) {
+  //     console.log(name) // moon, Park, John
+  //     // 만약에 이름이 나랑 같지 않고
+  //     if (name !== userData.username) {
+  //       let char = new Characters(usersPosition[name])
+  //       setUserCharacters(prev => [...prev, char])
+  //       // if (userCharacters.length === 0) {
+  //       //   let char = new Characters(usersPosition[name])
+  //       //   setUserCharacters( prev => [...prev, char])
+  //       //   // otherUserChars.push(char);
+  //       // } else {
+  //       //   userCharacters.forEach(char => {
+  //       //     if (char.state.username !== name) {
+  //       //       let char = new Characters(usersPosition[name])
+  //       //       setUserCharacters( prev => [...prev, char])
+  //       //     }
+  //       //   })
+  //       // }
+  //     }
+  //   }
+
+  //   // console.log('otheruserchars',otherUserChars[0])
+  // }, [usersPosition])
+
+  // remove nested loop
+  // make
+
+  // *******
+  // set characters -> new Character(150, 150) if it doesn't exist
+  // nCharacter.state = {}
+
+
+  useEffect(() => {
+    for ( let name in usersPosition) {
+      console.log(name) // moon, heesoo, mike
+      // 만약에 이름이 나랑 같지 않고
+      if (name !== userData.username) {
+        console.log('first', userCharacters)
+        if (userCharacters.length === 0) {
+          console.log('second', userCharacters)
+          let char = new Characters(usersPosition[name])
+          setUserCharacters( prev => [...prev, char])
+          console.log('third', userCharacters)
+          // otherUserChars.push(char);
+        } else {
+          // once updated, draw the canvas!
+          console.log('inside else')
+          userCharacters.forEach(char => {
+            if (char.state.username !== name) {
+              let char = new Characters(usersPosition[name])
+              console.log('new Char', char)
+              setUserCharacters( prev => [...prev, char])
+              console.log('userChar state', userCharacters)
+            }
+          })
+        }
+      }
+    }
+
+    // console.log('otheruserchars',otherUserChars[0])
+  }, [usersPosition])
+
+
   const sendMessage = props.sendMessage
   const sendPrivateMessage = props.sendPrivateMessage
   const sendData = props.sendData
-  console.log("THIS", sendMessage)
-  console.log("THAT", sendPrivateMessage)
+  // console.log("THIS", sendMessage)
+  // console.log("THAT", sendPrivateMessage)
   useEffect(() => {
     //make collision wall
     // console.log(townWall.length)
@@ -34,131 +123,68 @@ const Canvas = (props) => {
     canvas.width = 1120;
     canvas.height = 640;
 
+    // make background image
     const mapImg = new Image();
     mapImg.src = mapImage;
-
-    // girlsprite to websockets server - front -> back
-    // girlSprite should have id
-    // eventListener for only that id
-
-    // websockets shoule have an array of users - back
-    // broadcast the list of the array of users - back -> front
-    // websockets on react render that list of users  - front
-
-    // make girl sprite
-    // use userid from database
-    // x, y
-
-    // dynamically create characters
-    // websockets girl -> websockets
-    // person joins server will have list of characters
-    // if websocket user -> make a character -> character obj
-
-    // chat bubble :
-    //
-
-    // test data from database
-    console.log('props', props)
-    const username = props.username;
-    const avatar = props.avatar;
-    console.log('inside canvas avatar', avatar)
-    console.log('inside canvas username', username)
-
-    const users = []
-    users.push({
-      username: props.username,
-      x: 150,
-      y: 150,
-      image: selectAvatar(props.avatar)
-    })
-    console.log('users', users)
-    // const users = [
-    //   {
-    //     username: 'moon',
-    //     x: 165,
-    //     y: 50,
-    //     currentDirection: 0,
-    //     isMoving: false,
-    //     image: girlImage
-    //   },
-    //   {
-    //     username: 'heesoo',
-    //     x: 200,
-    //     y: 100,
-    //     currentDirection: 0,
-    //     isMoving: false,
-    //     image: boyImage
-    //   },
-    //   {
-    //     username: 'Park',
-    //     x: 300,
-    //     y: 150,
-    //     currentDirection: 0,
-    //     isMoving: false,
-    //     image: boyImage
-    //   }
-    // ]
-
-    let userChar;
-
-    //making animation loop
 
     let frameCount = 0;
     let framelimit = 10;
 
-    // make it as array
-    let characters = [];
-    const makeCharacters = (users, name) => {
-      users.map(user => {
-        if (user.username === name) {
-          userChar = new Characters(user)
-        } else {
-          characters.push(new Characters(user))
+  function step() {
+
+    // socket.on('sendData', data => {
+    //   // console.log('data', data);
+    //   setUsersPosition(data);
+    // })
+     // go through users array and make each chracters
+
+     ctx.clearRect(0,0, canvas.width, canvas.height)
+
+        // walking motion
+         if (userChar.state.isMoving) {
+          frameCount++;
+          if (frameCount >= framelimit) {
+            frameCount = 0;
+            userChar.incrementLoopIndex();
+          }
         }
-        console.log('userChar', userChar)
-        console.log("new", characters)
-      }
-      )
-    }
-    makeCharacters(users, username)
 
+        // draw background map
+        ctx.drawImage(mapImg, 0, 0)
+        userChar.drawFrame(ctx);
 
-    function step() {
+        // draw user character
 
-      // go through users array and make each chracters
+        ctx.fillText(username, userChar.state.x + 20, userChar.state.y+10)
+        ctx.fillStyle = 'purple'
 
-      // walking motion
-      if (userChar.state.isMoving) {
-        frameCount++;
-        if (frameCount >= framelimit) {
-          frameCount = 0;
-          userChar.incrementLoopIndex();
+        // console.log('inside step', userCharacters);
+        if (userCharacters.length >0) {
+          userCharacters[0].drawFrame(ctx)
         }
-      }
 
-      ctx.drawImage(mapImg, 0, 0)
-
-      // characters.map(character => {
-      //   character.drawFrame(ctx)
-      //   ctx.fillText(character.state.username, character.state.x + 20, character.state.y+10)
-      //   ctx.fillStyle = 'purple'
-      // });
-
-      userChar.drawFrame(ctx);
-      ctx.fillText(username, userChar.state.x + 20, userChar.state.y + 10)
-      ctx.fillStyle = 'purple'
+        // otherUserChars.forEach(otherUserChar => {
+        //   otherUserChar.drawFrame(ctx)
+        //   ctx.fillText(otherUserChar.state.username, otherUserChar.state.x + 20, otherUserChar.state.y+10)
+        //   ctx.fillStyle = 'purple'
+        // });
 
       window.requestAnimationFrame(step);
     }
     // console.log(Char)
     window.addEventListener("keydown", e => {
       userChar.move(e)
-      sendMessage("SEND")
+      // socket.emit('sendData', userChar.state)
+      // console.log('sendData', userChar.state)
+      // sendMessage("SEND")
     });
     window.addEventListener("keyup", () => {
       userChar.stop()
-      sendPrivateMessage("moon", "this is private message", username)
+      // socket.emit('sendData', userChar.state)
+      // sendPrivateMessage("moon", "this is private message", username)
     });
+    // add another
+
 
     window.requestAnimationFrame(step);
 

@@ -5,7 +5,7 @@ import socketIo from "socket.io-client";
 // import dayjs from 'react-dayjs';
 // export const socket = socketIo(process.env.REACT_APP_BACK_URL);
 // export const socket = socketIo(process.env.REACT_APP_BACK_URL); //io()
-export const socket = socketIo(); //io()
+export const socket = socketIo("http://localhost:8000"); //io()
 export const SocketContext = createContext(socket); //G
 
 // socket.on("connect", () => { //GABRIEL

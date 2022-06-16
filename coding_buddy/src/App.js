@@ -61,11 +61,16 @@ function App() {
     // socket.on("all user names", (obj) => {
     //   console.log("지금 로그인 되어있는 유저", obj.users)
     // })
-    console.log("BEFOER ALL")
+    // console.log("BEFOER ALL")
     socket.on("all user names", (obj) => {
       // alert(JSON.stringify(obj.users))
       console.log("지금 로그인 되어있는 유저", obj.users)
     })
+
+    // socket.on('sendData', data => {
+    //   console.log('data', data);
+    //   setUsersPosition(data);
+    // })
 
     setSocket(socket);
     return () => {
