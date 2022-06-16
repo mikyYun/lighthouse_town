@@ -1,10 +1,10 @@
-import React from 'react';
+import React , {useContext } from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useState, useCallback, useEffect, useRef } from "react";
 // import { socket, SocketContext, SOCKET_EVENT } from "./components/service/socket";
 import Chat from "./components/Chat";
-
+import { SocketContext } from './components/service/socket';
 import Cookies from 'universal-cookie';
 // usehistory
 
@@ -15,14 +15,14 @@ import Layout from './components/Layout';
 import Register from './components/Register';
 import Login from './components/Login';
 // import {} from './components/service/socket'
-const { io } = require("socket.io-client");
+// const { io } = require("socket.io-client");
 
 
 function App() {
   const navigate = useNavigate();
-
+  const socket = useContext(SocketContext)
   // // 쿠키 세팅
-  const [socket, setSocket] = useState();
+  // const [socket, setSocket] = useState();
   const cookies = new Cookies();
   let location = useLocation();
   useEffect(() => {
@@ -33,7 +33,7 @@ function App() {
   }, [location.pathname]);
 
   useEffect(() => {
-    const socket = io();
+    // const socket = io();
 
     socket.on("connect", () => {
       console.log("App.js: socket server connected.");
@@ -72,7 +72,7 @@ function App() {
     //   setUsersPosition(data);
     // })
 
-    setSocket(socket);
+    // setSocket(socket);
     return () => {
       socket.disconnect();
       // clearCookies()
@@ -116,7 +116,9 @@ function App() {
 // const { io } = require("socket.io-client");
 
 const sendData = (state) => {
-  socket && socket.emit("sendData", state)
+  // setInterval(() => {
+    socket && socket.emit("sendData", state)
+  // }, 1000)
 }
 ////////////////////////////////////////////////////
   return (
