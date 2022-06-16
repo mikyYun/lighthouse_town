@@ -41,6 +41,7 @@ function MessageForm({ nickname }) {
         <textarea
           className="form-control"
           maxLength={400}
+          maxHeight={400}
           autoFocus
           value={typingMessage}
           onChange={handleChangeTypingMessage}

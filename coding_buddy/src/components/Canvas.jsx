@@ -20,7 +20,7 @@ const Canvas = (props) => {
   const userData = {
     username: props.username,
     x: 150,
-    y:150,
+    y: 150,
   }
   const userChar = new Characters(userData)
   // console.log('userChar', userChar)
@@ -33,7 +33,7 @@ const Canvas = (props) => {
       console.log('data', data);
       setUsersPosition(data);
     })
-  } ,1000)
+  }, 1000)
 
   console.log('allUsers', usersPosition)
 
@@ -71,7 +71,7 @@ const Canvas = (props) => {
 
 
   useEffect(() => {
-    for ( let name in usersPosition) {
+    for (let name in usersPosition) {
       console.log(name) // moon, heesoo, mike
       // 만약에 이름이 나랑 같지 않고
       if (name !== userData.username) {
@@ -79,7 +79,7 @@ const Canvas = (props) => {
         if (userCharacters.length === 0) {
           console.log('second', userCharacters)
           let char = new Characters(usersPosition[name])
-          setUserCharacters( prev => [...prev, char])
+          setUserCharacters(prev => [...prev, char])
           console.log('third', userCharacters)
           // otherUserChars.push(char);
         } else {
@@ -89,7 +89,7 @@ const Canvas = (props) => {
             if (char.state.username !== name) {
               let char = new Characters(usersPosition[name])
               console.log('new Char', char)
-              setUserCharacters( prev => [...prev, char])
+              setUserCharacters(prev => [...prev, char])
               console.log('userChar state', userCharacters)
             }
           })
@@ -130,44 +130,44 @@ const Canvas = (props) => {
     let frameCount = 0;
     let framelimit = 10;
 
-  function step() {
+    function step() {
 
-    // socket.on('sendData', data => {
-    //   // console.log('data', data);
-    //   setUsersPosition(data);
-    // })
-     // go through users array and make each chracters
+      // socket.on('sendData', data => {
+      //   // console.log('data', data);
+      //   setUsersPosition(data);
+      // })
+      // go through users array and make each chracters
 
-     ctx.clearRect(0,0, canvas.width, canvas.height)
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-        // walking motion
-         if (userChar.state.isMoving) {
-          frameCount++;
-          if (frameCount >= framelimit) {
-            frameCount = 0;
-            userChar.incrementLoopIndex();
-          }
+      // walking motion
+      if (userChar.state.isMoving) {
+        frameCount++;
+        if (frameCount >= framelimit) {
+          frameCount = 0;
+          userChar.incrementLoopIndex();
         }
+      }
 
-        // draw background map
-        ctx.drawImage(mapImg, 0, 0)
-        userChar.drawFrame(ctx);
+      // draw background map
+      ctx.drawImage(mapImg, 0, 0)
+      userChar.drawFrame(ctx);
 
-        // draw user character
+      // draw user character
 
-        ctx.fillText(username, userChar.state.x + 20, userChar.state.y+10)
-        ctx.fillStyle = 'purple'
+      ctx.fillText(username, userChar.state.x + 20, userChar.state.y + 10)
+      ctx.fillStyle = 'purple'
 
-        // console.log('inside step', userCharacters);
-        if (userCharacters.length >0) {
-          userCharacters[0].drawFrame(ctx)
-        }
+      // console.log('inside step', userCharacters);
+      if (userCharacters.length > 0) {
+        userCharacters[0].drawFrame(ctx)
+      }
 
-        // otherUserChars.forEach(otherUserChar => {
-        //   otherUserChar.drawFrame(ctx)
-        //   ctx.fillText(otherUserChar.state.username, otherUserChar.state.x + 20, otherUserChar.state.y+10)
-        //   ctx.fillStyle = 'purple'
-        // });
+      // otherUserChars.forEach(otherUserChar => {
+      //   otherUserChar.drawFrame(ctx)
+      //   ctx.fillText(otherUserChar.state.username, otherUserChar.state.x + 20, otherUserChar.state.y+10)
+      //   ctx.fillStyle = 'purple'
+      // });
 
       window.requestAnimationFrame(step);
     }

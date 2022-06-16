@@ -1,16 +1,17 @@
-import NicknameForm from "./NicknameForm";
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { socket, SocketContext, SOCKET_EVENT } from "./service/socket";
+import NicknameForm from "./NicknameForm"
 import ChatRoom from "./ChatRoom";
-
+import Recipient from "./Recipient";
 export default function Chat(props) {
-
+  const { nickname } = props;
   const prevNickname = useRef(null); // prevNickname 변경은 컴포넌트를 리렌더링 하지않습니다.
-  const [nickname, setNickname] = useState(props.username);
-  const handleSubmitNickname = useCallback(newNickname => {
-    prevNickname.current = nickname;
-    setNickname(newNickname);
-  }, [nickname]);
+  // const [nickname, setNickname] = useState(props.username);
+  // const handleSubmitNickname = useCallback(newNickname => {
+  //   prevNickname.current = nickname;
+  //   setNickname(newNickname);
+  // }, [nickname]); 
+  // now using the function from game component
 
   // useEffect(() => { //G
   //   socket.connect() //connecting to the server. G added this line.
@@ -36,8 +37,9 @@ export default function Chat(props) {
   return (
     <SocketContext.Provider value={socket}>
       <div className="d-flex flex-column justify-content-center align-items-center vh-100 chatroom">
-        <NicknameForm handleSubmitNickname={handleSubmitNickname} />
-        <ChatRoom nickname={nickname} />
+        <Recipient />
+        <NicknameForm handleSubmitNickname={props.handleSubmitNickname} />
+        <ChatRoom nickname={props.nickname} room={props.room} />
       </div>
     </SocketContext.Provider>
   )

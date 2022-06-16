@@ -15,14 +15,14 @@ function NicknameForm({ handleSubmitNickname }) {
   return (
     <form className="d-flex">
       <div className="card d-flex flex-row align-items-center">
-        <label htmlFor="user-name-input" style={{ width: 60 }}>
+        <label htmlFor="user-name-input" style={{ width: 60, height: 5 }}>
           Nick Name
         </label>
         <input
           type="text"
           className="form-control w300"
           id="user-name-input"
-          maxLength={12}
+          maxLength={5}
           value={nickname}
           onChange={handleChangeNickname}
         />
@@ -33,7 +33,9 @@ function NicknameForm({ handleSubmitNickname }) {
           value="Save"
           placeholder="Save"
           onClick={handleSubmit}
-        />
+        >
+          SUBMIT
+        </button>
       </div>
     </form>
   );

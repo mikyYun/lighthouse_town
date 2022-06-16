@@ -1,12 +1,8 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import Canvas from "./Canvas";
 import "./Game.scss";
-import Navbar from "./Navbar";
-import Layout from "./Layout";
 import Chat from "./Chat";
 import { useLocation, useNavigate, Routes, Route } from "react-router-dom";
-
-
 export default function Game(props) {
   const navigate = useNavigate()
   // let loggedIn = false
@@ -25,8 +21,8 @@ export default function Game(props) {
     if (location.state === null) navigate("/")
   }, [])
   // useEffect(() => {
-    // console.log("LOCATION", location.state)
-    // if (location.state == null) navigate("/")
+  // console.log("LOCATION", location.state)
+  // if (location.state == null) navigate("/")
   // })
   // console.log('inside game',location.state)  //username
   // console.log('inside game',location.state.userName)  //username
@@ -37,8 +33,10 @@ export default function Game(props) {
         {/* <Layout /> */}
         <div className="main-container">
           {/* {(location.state === null) && navigate("/")} */}
-          <Canvas username={location.state[0]} avatar={location.state[1]} sendData={props.sendData} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} />
-          <Chat username={location.state} />
+          <Canvas username={location.state[0] || 'guest'} avatar={location.state[1]} sendData={props.sendData} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} />
+          {/* <Canvas username={location.state?.[0] || 'heesoo'} avatar={location.state?.[1] || 1} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} /> */}
+
+          <Chat username={location.state} room={props.room} handleSubmitNickname={props.handleSubmitNickname} nickname={props.nickname} />
         </div>
       </>
     );
