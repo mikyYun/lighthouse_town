@@ -114,8 +114,8 @@ const Canvas = (props) => {
         } else {
           characters.push(new Characters(user))
         }
-        console.log('userChar', userChar)
-        console.log("new", characters)
+        // console.log('userChar', userChar)
+        // console.log("new", characters)
       }
       )
     }

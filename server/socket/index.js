@@ -18,7 +18,7 @@ module.exports = function (socketIo) {
     console.log("socket connection succeeded."); //in terminal - vs code
 
     // 구현 편의상, 모든 클라이언트의 방 번호는 모두 "room 1"으로 배정해줍니다.
-    const roomName = "room 1";
+    const roomName = "plaza";
 
     /*
     "JOIN_ROOM": 유저가 방에 참가했을 때 발생

@@ -26,26 +26,44 @@ function App() {
 
   // // 쿠키 세팅
   const [socket, setSocket] = useState();
-  const cookies = new Cookies();
+  const [room, setRoom] = useState('plaza');
+
+
+
+
   let location = useLocation()
   useEffect(() => {
     // ga()
-    console.log("location check", location.pathname)
-    console.log(clearCookies)
+    setRoom(location.pathname.split("/").splice(2)[0])
+    console.log('room after split and slice', room)
+    console.log("LOCATION.PATHNAME", location.pathname)
+
+    const cookies = new Cookies();
+
+    const clearCookies = () => {
+      const all_cookies = cookies.getAll();
+      // if (all_cookies.length > 0) {
+      Object.keys(all_cookies).forEach((each) => {
+        console.log("each", each)
+        cookies.remove(each);
+      })
+    };
+
     if (location.pathname !== "/game") clearCookies()
-  }, [location.pathname])
+  }, [location.pathname, room])
 
   useEffect(() => {
     const socket = io("/");
+    const cookies = new Cookies();
 
     socket.on("CONNECT", (e) => {
       console.log("My socket ID", socket.id)
       console.log("CONNECTED", e);
     });
 
-    socket.on("REGISTRATIPN SUCCESS", (userdame) => {
+    socket.on("REGISTRATIPN SUCCESS", (username) => {
       console.log("cookie set after register")
-      cookies.set("email", userdame);
+      cookies.set("email", username);
       navigate("/game")
     });
 
@@ -69,15 +87,7 @@ function App() {
     socket && socket.emit("REGISTERED", val);
   };
 
-  const clearCookies = () => {
-    const all_cookies = cookies.getAll();
-    console.log("@@@@@@@", all_cookies)
-    // if (all_cookies.length > 0) {
-    Object.keys(all_cookies).forEach((each) => {
-      console.log("each", each)
-      cookies.remove(each);
-    })
-  };
+
 
   const createSocketIdNameObject = (username) => {
     socket && socket.emit("SET USERNAME", { "socketID": socket.id, "username": username })
@@ -100,14 +110,15 @@ function App() {
         <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
         {/* <Route path='/login' element="Logout" /> */}
         {/* <Route path='/sockets' element={<Sockets />} /> */}
-        <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} />} />
-        <Route path='/chat' element={<Chat />} />
+        <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} room={room} />} />
+
+        {/* <Route path={`/game/${room}`} element={<Chat room={room} />} /> */}
+        <Route path={`/game/${room}`}
+          element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} />}
+        />
       </Routes>
     </div>
   );
-
-
-
 }
 
 export default App;
