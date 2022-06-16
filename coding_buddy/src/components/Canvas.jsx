@@ -104,8 +104,8 @@ const Canvas = (props) => {
   const sendMessage = props.sendMessage
   const sendPrivateMessage = props.sendPrivateMessage
   const sendData = props.sendData
-  console.log("THIS", sendMessage)
-  console.log("THAT", sendPrivateMessage)
+  // console.log("THIS", sendMessage)
+  // console.log("THAT", sendPrivateMessage)
   useEffect(() => {
     //make collision wall
     // console.log(townWall.length)
@@ -174,15 +174,14 @@ const Canvas = (props) => {
     }
     // console.log(Char)
     window.addEventListener("keydown", e => {
-      console.log(e.key)
       userChar.move(e)
-      socket.emit('sendData', userChar.state)
-      userChar.move(e)
+      // socket.emit('sendData', userChar.state)
+      // console.log('sendData', userChar.state)
       sendMessage("SEND")
     });
     window.addEventListener("keyup", () => {
       userChar.stop()
-      socket.emit('sendData', userChar.state)
+      // socket.emit('sendData', userChar.state)
       sendPrivateMessage("moon", "this is private message", username)
     });
     // add another
