@@ -36,6 +36,10 @@ function ChatRoom({ nickname }) {
     console.log(messages)
   }, [messages])
 
+  // io.on("conenct" (socket) => {
+//   socket.cfjasdklf
+  // })
+
   useEffect(() => {
     console.log("are you receiving?")
     socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); // 이벤트 리스너 설치

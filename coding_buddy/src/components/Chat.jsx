@@ -12,14 +12,14 @@ export default function Chat(props) {
     setNickname(newNickname);
   }, [nickname]);
 
-  useEffect(() => { //G
-    socket.connect() //connecting to the server. G added this line.
+  // useEffect(() => { //G
+  //   socket.connect() //connecting to the server. G added this line.
 
-    //before G's fix: we only had this return
-    return () => { // App 컴포넌트 unmount시 실행 (when the component disappears from the DOM tree)
-      socket.disconnect();
-    }
-  }, []);
+  //   //before G's fix: we only had this return
+  //   return () => { // App 컴포넌트 unmount시 실행 (when the component disappears from the DOM tree)
+  //     socket.disconnect();
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (prevNickname.current) {

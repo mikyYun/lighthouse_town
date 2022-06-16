@@ -10,7 +10,7 @@ import { useLocation, useNavigate, Routes, Route } from "react-router-dom";
 export default function Game(props) {
   const navigate = useNavigate()
   // let loggedIn = false
-  const setUser = props.setUser
+  // const setUser = props.setUser
   // sendData function from props => props.sendData
   // console.log("game loading")
   // pass the mapimg as props
@@ -23,7 +23,7 @@ export default function Game(props) {
   const location = useLocation();
   useEffect(() => {
     if (location.state === null) navigate("/")
-  })
+  }, [])
   // useEffect(() => {
     // console.log("LOCATION", location.state)
     // if (location.state == null) navigate("/")

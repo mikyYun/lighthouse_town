@@ -71,7 +71,7 @@ io.on("connection", (socket) => {
   const roomName = "room 1";
   const session = socket.request.session;
   session.save();
-
+  let loginRoom = 1;
   // const req = socket.request;
   // const userName = {};
 
@@ -99,23 +99,28 @@ io.on("connection", (socket) => {
   // socketID and username matching
   // socket.on("SET USERNAME", (socketID, username) => {
   socket.on("SET USERNAME", (obj) => {
-    console.log("SETSETSET", obj);
+    // console.log("SETSETSET", obj);
     const username = obj.username;
     const socketid = obj.socketID;
-    console.log(socketid);
-    console.log(username);
-    // currentUsers[id] = username;
-    // const id = socketID
-    // currentUsers = {...currentUsers, socketid : username}
-    // currentUsers[socketid] = username;
+    // console.log(socketid);
+    // console.log(username);
     currentUsers[username] = socketid;
+    // socket.join(loginRoom)
+    const alluserNames = Object.keys(currentUsers) // {username : socket.id}
+    // console.log("current USERS", currentUsers, alluserNames)
     console.log("AFTER LOGIN, SET USER NAME AND SOCKET ID PAIR", currentUsers);
-    const alluserNames = Object.keys(currentUsers)
-    alluserNames.forEach(username => {
-      socket.to(currentUsers[username]).emit("all user names", {"users" : alluserNames.sort()})
+    // 1, 2, 3, 4 => 1, 1, 2, 3, 4, 5
+    alluserNames.forEach(each => { // each = moon, mike, heesoo
+      console.log("THIS iS NAME", each, "CURRENT USERS", currentUsers[each])
+      io.to(currentUsers[each]).emit("all user names", {"users" : alluserNames})
+      // console.log("BETWEEN")
+      // io.to(roomName).emit("all user names", "jasklefjl;ksajv@@@@@")
+      // io.emit("all user names", "TEST")
+      // io.in(roomName).emit("all user names", {"users" : alluserNames.sort()})
     })
     // socket.broadcast.emit("all user names", {"users" : Object.keys(currentUsers).sort()})
   });
+  // socket.broadcast.emit(/* ... */);
 
 
 
@@ -161,6 +166,8 @@ io.on("connection", (socket) => {
     // 클라이언트에 이벤트를 전달.
     // 클라이언트에서는 RECEIVE_MESSAGE 이벤트 리스너를 가지고 있어서 그쪽 콜백 함수가 또 실행됌. 서버구현 마치고 클라이언트 구현은 나중에.
     console.log(`JOIN_ROOM is fired with data: ${JSON.stringify(responseData)}`);
+    // io.to(roomName).emit("all user names", "jasklefjl;ksajv@@@@@")
+
   });
 
   socket.on("UPDATE_NICKNAME", requestData => {
@@ -193,12 +200,12 @@ io.on("connection", (socket) => {
   //////////////////////////// currentUsers 오브젝트에서 종료되는 유저 삭제
   socket.on("disconnect", () => {
     // console.log("disconnected id", socket.id)
-    console.log("CURRENT USERS", currentUsers);
+    console.log("CURRENT USERS", currentUsers); //2
     Object.keys(currentUsers).forEach((username) => {
       if (currentUsers[username] === socket.id) {
         delete currentUsers[socket.id];
         console.log("DELETE DISCONNECT USER DATA FROM currentusers OBJ", currentUsers);
-      }
+      } 
     });
     const alluserNames = Object.keys(currentUsers)
     alluserNames.forEach(username => {

@@ -4,7 +4,8 @@ import { createContext } from "react";
 import socketIo from "socket.io-client";
 // import dayjs from 'react-dayjs';
 // export const socket = socketIo(process.env.REACT_APP_BACK_URL);
-export const socket = socketIo(process.env.REACT_APP_BACK_URL);
+// export const socket = socketIo(process.env.REACT_APP_BACK_URL); //io()
+export const socket = socketIo(); //io()
 export const SocketContext = createContext(socket); //G
 
 // socket.on("connect", () => { //GABRIEL
@@ -22,6 +23,9 @@ export const SOCKET_EVENT = {
   SEND_MESSAGE: "SEND_MESSAGE",
   RECEIVE_MESSAGE: "RECEIVE_MESSAGE",
 };
+
+
+
 
 //makeMessage
 export const makeMessage = pongData => {

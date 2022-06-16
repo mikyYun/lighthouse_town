@@ -61,6 +61,11 @@ function App() {
     // socket.on("all user names", (obj) => {
     //   console.log("지금 로그인 되어있는 유저", obj.users)
     // })
+    console.log("BEFOER ALL")
+    socket.on("all user names", (obj) => {
+      // alert(JSON.stringify(obj.users))
+      console.log("지금 로그인 되어있는 유저", obj.users)
+    })
 
     setSocket(socket);
     return () => {
@@ -96,11 +101,11 @@ function App() {
     socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username });
   };
 
-  const getAllUsers = () => {
-    socket && socket.on("all user names", (obj) => {
-      console.log("지금 로그인 되어있는 유저", obj.users)
-    })
-  }
+  // const getAllUsers = () => {
+  //   socket && socket.on("all user names", (obj) => {
+  //     console.log("지금 로그인 되어있는 유저", obj.users)
+  //   })
+  // }
 //////////////////////////////////////////////
 // socket update
 // const { io } = require("socket.io-client");
@@ -117,7 +122,7 @@ const sendData = (state) => {
         <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
         {/* <Route path='/login' element="Logout" /> */}
         {/* <Route path='/sockets' element={<Sockets />} /> */}
-        <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} sendData={sendData} getAllUsers={getAllUsers()} setUser={createSocketIdNameObject} />} />
+        <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} sendData={sendData} setUser={createSocketIdNameObject} />} />
         <Route path='/chat' element={<Chat />} />
       </Routes>
     </div>
