@@ -5,6 +5,7 @@ import Characters from "./helper/Characters";
 // import boyImage from "./game_img/boy1.png";
 import townWall from "./game_img/collision_data.js/townWall";
 import selectAvatar from "./helper/selecAvatar";
+// import { socket } from "./service/socket";
 import { SocketContext } from "../App";
 
 // const { io } = require("socket.io-client");
@@ -14,7 +15,7 @@ const Canvas = (props) => {
   const canvasRef = useRef(null);
   const [usersPosition, setUsersPosition] = useState();
   const [userCharacters, setUserCharacters] = useState([]);
-  const { socket } = useContext(SocketContext)
+  const {socket} = useContext(SocketContext)
   const username = props.username; //moon
   const avatar = props.avatar;  //1
   const userData = {
@@ -30,7 +31,6 @@ const Canvas = (props) => {
   // get other users data from the server
   setInterval(() => {
     socket.on('sendData', data => {
-      // console.log("CANVAS SOCKET", socket)
       // console.log('data', data);
       setUsersPosition(data);
     })
@@ -178,6 +178,7 @@ const Canvas = (props) => {
       // socket.emit('sendData', userChar.state)
       // console.log('sendData', userChar.state)
       // sendMessage("SEND")
+      // sendData(userChar.state) // socket.emit("sendData", userChar.state)
     });
     window.addEventListener("keyup", () => {
       userChar.stop()
@@ -195,7 +196,6 @@ const Canvas = (props) => {
       // setInterval(() => {
     //   socket.on('init', msg => console.log('msg', msg))
     //   socket.emit('sendData', userChar.state)
-    // sendData(userChar.state) // socket.emit("sendData", userChar.state)
     //   socket.on('backData', data => console.log('data', data))
     // } ,1000)
 
