@@ -6,7 +6,8 @@ import { SocketContext } from '../App.js'
 
 function MessageForm({ nickname }) {
   const [typingMessage, setTypingMessage] = useState("");
-  const socket = useContext(SocketContext);
+  const {socket} = useContext(SocketContext);
+  console.log("MESSAGE", socket)
   //  socket, socket_event object
   // textarea에서 텍스트를 입력하면 typingMessage state를 변경합니다.
   const handleChangeTypingMessage = useCallback(event => {
