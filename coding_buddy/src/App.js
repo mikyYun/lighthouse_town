@@ -1,15 +1,12 @@
 import React , {useContext } from 'react';
 import './App.css';
-import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { useState, useCallback, useEffect, useRef } from "react";
+
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 // import { socket, SocketContext, SOCKET_EVENT } from "./components/service/socket";
 import Chat from "./components/Chat";
 import { SocketContext } from './components/service/socket';
 import Cookies from 'universal-cookie';
-// usehistory
-
-// import Navbar from './components/Navbar';
-// import Sockets from './components/Sockets';
 import Game from './components/Game';
 import Layout from './components/Layout';
 import Register from './components/Register';
@@ -17,15 +14,17 @@ import Login from './components/Login';
 // import {} from './components/service/socket'
 // const { io } = require("socket.io-client");
 
-
 function App() {
   const navigate = useNavigate();
   const socket = useContext(SocketContext)
   // // 쿠키 세팅
   // const [socket, setSocket] = useState();
+  const [room, setRoom] = useState('plaza');
+  const [nickname, setNickname] = useState('')
   const cookies = new Cookies();
   let location = useLocation();
   useEffect(() => {
+    setRoom(location.pathname.split("/").splice(2)[0])
     // ga()
     console.log("location check", location.pathname);
     console.log(clearCookies);
@@ -41,9 +40,10 @@ function App() {
       console.log("CONNECTED");
     });
 
-    socket.on("REGISTRATIPN SUCCESS", (userdame) => {
+    socket.on("REGISTRATIPN SUCCESS", (username) => {
       console.log("cookie set after register");
-      cookies.set("email", userdame);
+      cookies.set("email", username);
+      console.log("username", username)
       navigate("/game");
     });
 
@@ -65,7 +65,9 @@ function App() {
     socket.on("all user names", (obj) => {
       // alert(JSON.stringify(obj.users))
       console.log("지금 로그인 되어있는 유저", obj.users)
+
     })
+
 
     // socket.on('sendData', data => {
     //   console.log('data', data);
@@ -86,16 +88,16 @@ function App() {
 
   const clearCookies = () => {
     const all_cookies = cookies.getAll();
-    console.log("@@@@@@@", all_cookies);
     // if (all_cookies.length > 0) {
     Object.keys(all_cookies).forEach((each) => {
-      console.log("each", each);
       cookies.remove(each);
     });
   };
 
   const createSocketIdNameObject = (username) => {
     socket && socket.emit("SET USERNAME", { "socketID": socket.id, "username": username });
+    // socket && socket.emit("REGISTERED", val); //if socket exists, then emit
+
   };
 
   const sendMessage = () => {
@@ -111,16 +113,15 @@ function App() {
   //     console.log("지금 로그인 되어있는 유저", obj.users)
   //   })
   // }
-//////////////////////////////////////////////
-// socket update
-// const { io } = require("socket.io-client");
+  //////////////////////////////////////////////
+  // socket update
+  // const { io } = require("socket.io-client");
 
-const sendData = (state) => {
-  // setInterval(() => {
+  const sendData = (state) => {
     socket && socket.emit("sendData", state)
-  // }, 1000)
-}
-////////////////////////////////////////////////////
+    // socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username })
+  }
+  ////////////////////////////////////////////////////
   return (
     <div className='main'>
       <Routes>
@@ -129,14 +130,12 @@ const sendData = (state) => {
         <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
         {/* <Route path='/login' element="Logout" /> */}
         {/* <Route path='/sockets' element={<Sockets />} /> */}
-        <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} sendData={sendData} setUser={createSocketIdNameObject} />} />
+        <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} sendData={sendData} setUser={createSocketIdNameObject} room={room} nickname={nickname} />} />
         <Route path='/chat' element={<Chat />} />
+        <Route path={`/game/${room}`} element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} />} />
       </Routes>
     </div>
   );
 
-
-
 }
-
 export default App;

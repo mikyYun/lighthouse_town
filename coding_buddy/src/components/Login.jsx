@@ -1,27 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Cookies from "universal-cookie";
-import { Routes, Route, useNavigate } from "react-router-dom";
-// import Navbar from "./Navbar";
-import Layout from "./Layout";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import './Login.scss'
 
-
 export default function Login(props) {
+
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const setUser = props.setUser
-  // console.log("!!!!!!!!!!", props)
-
-  const [username, setUsername] = useState("");
-
   const cookies = new Cookies();
   const navigate = useNavigate()
-
   const goRegister = () => {
     navigate('/register')
   }
-
   const goChat = (username, avatar) => {
     console.log('user', username, avatar)
     const data = [username, avatar]
@@ -29,22 +21,17 @@ export default function Login(props) {
   }
 
   return (
-    // <>
-    // {/* <Navbar click={props.click}/> */}
-    // {/* <Layout /> */}
     <form id="form_login" action="/game" method="GET" runat="server">
-      {/* <form id="form_login" action="/game" method="GET"  runat="server"  onSubmit={(e) => e.preventDefault()}> */}
       <div>
         <span>EMAIL : </span>
         <input
           // name="email"
-          id="register_email"
+          id="login_email"
           rows="1"
           placeholder="EMAIL"
           type="email"
           value={userEmail}
           onChange={(e) => {
-            // console.log(e.target.value);
             setUserEmail(e.target.value);
           }}
         ></input>
@@ -53,14 +40,12 @@ export default function Login(props) {
         <span>PASSWORD :{" "}</span>
         <input
           // name="password"
-
-          id="register_password"
+          id="login_password"
           rows="1"
           placeholder="PASSWORD"
           type="password"
           value={userPassword}
           onChange={(e) => {
-            // console.log(e.target.value);
             setUserPassword(e.target.value);
           }}
         ></input>
@@ -70,15 +55,17 @@ export default function Login(props) {
         type="submit"
         onClick={(e) => {
           const loginInfo = { userEmail, userPassword }
+          cookies.set("username", userEmail)
           axios
-            .post("http://localhost:8000/login", loginInfo)
+            .post("/login", loginInfo)
             .then((res) => {
               if (res.data) {
                 // console.log("1", res);
                 setUser(res.data.userName) // pass username so that server set username and socketid as key:value pair
                 console.log("res.data", res.data);
-                cookies.set("email", res.data);
+                cookies.set("userdata", res.data);
                 goChat(res.data.userName, res.data.avatar)
+                // props.setNickname(res.data.userName)
               } else {
                 console.log("no matching user")
                 alert("Invalid information. Please confirm your email and password")
@@ -109,7 +96,7 @@ export default function Login(props) {
       >
         Login
       </button>
-      <button className="btn" onClick={goRegister}>New here ?</button>
+      <button className="btn" onClick={goRegister}>New here?</button>
     </form>
     // </>
   );

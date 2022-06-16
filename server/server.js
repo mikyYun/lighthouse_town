@@ -29,19 +29,12 @@ const pool = new Pool({
   port: process.env.PGPORT
 });
 
-// const SOCKET_EVENT = {
-//   JOIN_ROOM: "JOIN_ROOM",
-//   UPDATE_NICKNAME: "UPDATE_NICKNAME",
-//   SEND_MESSAGE: "SEND_MESSAGE",
-//   RECEIVE_MESSAGE: "RECEIVE_MESSAGE",
-// };
-
 //G. socket(server)
 //G. create a new instance of a socket handler
 //G. and passing io as an argument.
 //G. io is the Server.
 
-app.use(cors()); // cors 미들웨어 사용
+app.use(cors());
 app.use(sessionMiddleware);
 app.use(bodyParser.json());
 app.use(
@@ -67,14 +60,11 @@ io.on("connection", (socket) => {
   session.save();
 
   // use object
-
   // socket.emit("init", {data: 'hello world'})
   socket.on('sendData', data => {
     console.log('sendData', data) // print on server
     // add userid from data
     users[data.username] = data
-    // console.log('users',users)
-    // setInterval inside here
     io.emit('sendData', users)
 
   });
@@ -92,24 +82,18 @@ io.on("connection", (socket) => {
   // });
 
   // socketID and username matching
-  // socket.on("SET USERNAME", (socketID, username) => {
-  socket.on("SET USERNAME", (obj) => {
-    // console.log("SETSETSET", obj);
+  socket.on("SET USERNAME", (obj) => { //Login.jsx 의 setUser(res.data.userName)
     const username = obj.username;
     const socketid = obj.socketID;
-    // console.log(socketid);
-    // console.log(username);
+
     currentUsers[username] = socketid;
     // socket.join(loginRoom)
     const alluserNames = Object.keys(currentUsers) // {username : socket.id}
-    // console.log("current USERS", currentUsers, alluserNames)
     console.log("AFTER LOGIN, SET USER NAME AND SOCKET ID PAIR", currentUsers);
-    // 1, 2, 3, 4 => 1, 1, 2, 3, 4, 5
     alluserNames.forEach(each => { // each = moon, mike, heesoo
       console.log("THIS iS NAME", each, "CURRENT USERS", currentUsers[each])
       // const sortedName = alluserNames.sort()
-      io.to(currentUsers[each]).emit("all user names", {"users" : alluserNames})
-      // console.log("BETWEEN")
+      io.to(currentUsers[each]).emit("all user names", { "users": alluserNames }) // App.jsx 로 보내기
       // io.to(roomName).emit("all user names", "jasklefjl;ksajv@@@@@")
       // io.emit("all user names", "TEST")
       // io.in(roomName).emit("all user names", {"users" : alluserNames.sort()})
@@ -117,8 +101,6 @@ io.on("connection", (socket) => {
     // socket.broadcast.emit("all user names", {"users" : Object.keys(currentUsers).sort()})
   });
   // socket.broadcast.emit(/* ... */);
-
-
 
   // receive message
   socket.on("NEW MESSAGE", (e) => {
@@ -145,7 +127,7 @@ io.on("connection", (socket) => {
     socket.to(targetSocketId).emit("PRIVATE MESSAGE", { "message": msg, from: username });
   });
 
-  /////////////////////// ADDED FROM socket/index.js
+  /* ADDED FROM socket/index.js */
 
   socket.on("JOIN_ROOM", requestData => {
     // 콜백함수의 파라미터는 클라이언트에서 보내주는 데이터.
@@ -193,7 +175,7 @@ io.on("connection", (socket) => {
     console.log(`"SEND_MESSAGE" is fired with data: ${JSON.stringify(responseData)}`);
   });
 
-  //////////////////////////// currentUsers 오브젝트에서 종료되는 유저 삭제
+  /* currentUsers 오브젝트에서 종료되는 유저 삭제 */
   socket.on("disconnect", () => {
     // console.log("disconnected id", socket.id)
     console.log("CURRENT USERS", currentUsers); //2
@@ -201,19 +183,17 @@ io.on("connection", (socket) => {
       if (currentUsers[username] === socket.id) {
         delete currentUsers[socket.id];
         console.log("DELETE DISCONNECT USER DATA FROM currentusers OBJ", currentUsers);
-      } 
+      }
     });
     const alluserNames = Object.keys(currentUsers)
     alluserNames.forEach(username => {
-      socket.to(currentUsers[username]).emit("all user names", {"users" : alluserNames})
+      socket.to(currentUsers[username]).emit("all user names", { "users": alluserNames })
     })
     // delete currentUsers[socket.id];
   });
 });
 
-
-// 서버에서 app.get 으로 가는건 서버의 루트(local..) / .... 으로 감
-app.get("/", (req, res) => { // server url -> 8000
+app.get("/", (req, res) => { // 8000
   res.json({ test: "start" });
 });
 
@@ -225,6 +205,7 @@ app.post("/login", (req, res) => {
 
   const email = req.body.userEmail;
   const password = req.body.userPassword;
+
   // and password.. userName=$1 AND userpassword=$2
   return pool.query("SELECT * FROM users WHERE email=$1 AND password=$2", [email, password], (err, res_1) => {
     if (err) throw err;
@@ -247,7 +228,7 @@ app.post("/login", (req, res) => {
           const loginUserData = {
             userName, avatar, userLanguages
           };
-          res.status(201).send(loginUserData);
+          res.status(201).send(loginUserData); //object - username, avatar, language
         } else {
           console.log("No available language", res_2.rows);
         }
@@ -257,6 +238,7 @@ app.post("/login", (req, res) => {
     }
   });
 });
+
 //"/login" => local 8000/login
 app.post("/register", (req, res) => {
   console.log("post register request", req.body);
@@ -272,6 +254,7 @@ app.post("/register", (req, res) => {
   const userEmail = req.body.userInfo.userEmail;
   const userLanguages = req.body.userInfo.userLanguages;
   const userAvatar = req.body.userInfo.userAvatar;
+  console.log("userPassword", userPassword)
   pool.query("SELECT * FROM users WHERE username = $1 OR email = $2", [userName, userEmail], (err, res_1) => {
     if (err) throw err;
     console.log(res_1.rows[0]);
@@ -295,10 +278,6 @@ app.post("/register", (req, res) => {
     });
   });
   res.status(201).send({ userName, userEmail, userLanguages, userAvatar });
-
-
-
-
 });
 
 httpServer.listen(PORT, () => {
