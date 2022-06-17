@@ -29,15 +29,17 @@ export default function Game(props) {
   // if (location.state === null) alert("hey")
 
   // if (location.state !== null) {
+
+  console.log("location", location)
   return (
     <>
       {/* <Layout /> */}
       <div className="main-container">
         {/* {(location.state === null) && navigate("/")} */}
         {/* <Canvas username={location.state[0] || 'guest'} avatar={location.state[1]} sendData={props.sendData} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} /> */}
-        <Canvas username={location.state?.[0]} avatar={location.state?.[1]} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} sendData={props.sendData} />
-
-        <Chat username={location.state[0]} room={props.room} handleSubmitNickname={props.handleSubmitNickname} nickname={props.nickname} />
+        <Canvas username={props.nickname} avatar={location.state?.[1]} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} sendData={props.sendData} />
+        {/* console.log('location.state', location.state) */}
+        <Chat username={props.nickname} room={props.room} handleSubmitNickname={props.handleSubmitNickname} nickname={props.nickname} />
       </div>
     </>
   );
