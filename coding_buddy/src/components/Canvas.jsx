@@ -1,11 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import mapImage from "./game_img/town-map.png";
 // import girlImage from "./game_img/girl1.png";
 import Characters from "./helper/Characters";
 // import boyImage from "./game_img/boy1.png";
 import townWall from "./game_img/collision_data.js/townWall";
 import selectAvatar from "./helper/selecAvatar";
-import { socket } from "./service/socket";
+// import { socket } from "./service/socket";
+import { SocketContext } from "../App";
 
 // const { io } = require("socket.io-client");
 // const socket = io('http://localhost:3000')
@@ -14,7 +15,7 @@ const Canvas = (props) => {
   const canvasRef = useRef(null);
   const [usersPosition, setUsersPosition] = useState();
   const [userCharacters, setUserCharacters] = useState([]);
-
+  const { socket } = useContext(SocketContext)
   const username = props.username; //moon
   const avatar = props.avatar;  //1
   const userData = {
@@ -23,14 +24,10 @@ const Canvas = (props) => {
     y: 150,
   }
   const userChar = new Characters(userData)
-  // console.log('userChar', userChar)
-
-
-  // let otherUserChars = [];
   // get other users data from the server
   setInterval(() => {
     socket.on('sendData', data => {
-      console.log('data', data);
+      // console.log('data', data);
       setUsersPosition(data);
     })
   }, 1000)
@@ -72,40 +69,36 @@ const Canvas = (props) => {
 
   useEffect(() => {
     for (let name in usersPosition) {
-      console.log(name) // moon, heesoo, mike
+      console.log('NAME - Canvas.js', name) // moon, heesoo, mike
       // 만약에 이름이 나랑 같지 않고
       if (name !== userData.username) {
-        console.log('first', userCharacters)
+        console.log('first - Canvas.js', userCharacters)
         if (userCharacters.length === 0) {
-          console.log('second', userCharacters)
+          console.log('second - Canvas.js ', userCharacters)
           let char = new Characters(usersPosition[name])
           setUserCharacters(prev => [...prev, char])
-          console.log('third', userCharacters)
+          console.log('third - Canvas.js', userCharacters)
           // otherUserChars.push(char);
         } else {
           // once updated, draw the canvas!
-          console.log('inside else')
+          console.log('inside else - Canvas.js')
           userCharacters.forEach(char => {
             if (char.state.username !== name) {
               let char = new Characters(usersPosition[name])
-              console.log('new Char', char)
+              console.log('new Char - Canvas.js', char)
               setUserCharacters(prev => [...prev, char])
-              console.log('userChar state', userCharacters)
+              console.log('userCharacters - Canvas.js', userCharacters)
             }
           })
         }
       }
     }
-
-    // console.log('otheruserchars',otherUserChars[0])
   }, [usersPosition])
 
 
   const sendMessage = props.sendMessage
   const sendPrivateMessage = props.sendPrivateMessage
   const sendData = props.sendData
-  // console.log("THIS", sendMessage)
-  // console.log("THAT", sendPrivateMessage)
   useEffect(() => {
     //make collision wall
     // console.log(townWall.length)
@@ -113,9 +106,7 @@ const Canvas = (props) => {
     for (let i = 0; i < townWall.length; i += 70) {
       collisionTownMap.push(townWall.splice(i, i + 70))
     }
-
     // console.log(collisionTownMap)
-
     // put step function
     // canvas, ctx only in this useEffect
     const canvas = canvasRef.current;
@@ -177,6 +168,7 @@ const Canvas = (props) => {
       // socket.emit('sendData', userChar.state)
       // console.log('sendData', userChar.state)
       // sendMessage("SEND")
+      // sendData(userChar.state) // socket.emit("sendData", userChar.state)
     });
     window.addEventListener("keyup", () => {
       userChar.stop()
@@ -190,13 +182,14 @@ const Canvas = (props) => {
 
     // pass function
     // window.requestAnimationFrame(() => gameLoop(ctx, canvas, characters, mapImg));
+    document.addEventListener("mousedown", () => {
+      // setInterval(() => {
+      //   socket.on('init', msg => console.log('msg', msg))
+      //   socket.emit('sendData', userChar.state)
+      //   socket.on('backData', data => console.log('data', data))
+      // } ,1000)
 
-    //   setInterval(() => {
-    //   socket.on('init', msg => console.log('msg', msg))
-    //   socket.emit('sendData', userChar.state)
-    sendData(userChar.state) // socket.emit("sendData", userChar.state)
-    //   socket.on('backData', data => console.log('data', data))
-    // } ,1000)
+    })
 
 
     return () => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './App.css';
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -7,83 +7,53 @@ import Game from './components/Game';
 import Layout from './components/Layout';
 import Register from './components/Register';
 import Login from './components/Login';
-
 import { socket } from './components/service/socket.js'
 import { createContext } from "react";
 export const SocketContext = createContext(socket); // going to Recipient.jsx
 function App() {
   const navigate = useNavigate();
+  const socket = useContext(SocketContext)
+  // // 쿠키 세팅
+  // const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
-  const [nickname, setNickname] = useState('');
   const [online, setOnline] = useState([{ value: 'all', label: 'all' }]);
-  const cookies = new Cookies();
-  let location = useLocation();
+  const cookies = new Cookies()
+  const location = useLocation();
+  const nickname = location.state?.[0] || '';
   useEffect(() => {
     setRoom(location.pathname.split("/").splice(2)[0])
-    // ga()
-    console.log("location check", location.pathname);
     if (location.pathname !== "/game") clearCookies();
   }, [location.pathname]);
 
   useEffect(() => {
-    // const socket = io();
-    console.log('socket', socket)
     socket.on("connect", () => {
       console.log("App.js: socket server connected.");
-      console.log("My socket ID", socket.id);
-      console.log("CONNECTED");
     });
 
-    socket.on("REGISTRATIPN SUCCESS", (username) => {
+    socket.on("REGISTRATION SUCCESS", (userInfo) => {
       console.log("cookie set after register");
-      cookies.set("email", username);
-      console.log("username", username)
+      cookies.set("email", userInfo);
       navigate("/game");
     });
 
-    socket.on("PASS", (e) => {
-      console.log(e);
-    });
-
-    socket.on("PRIVATE MESSAGE", (e) => {
-      console.log(e); //coming from server
-    });
-
-    socket.on("init", msg => console.log("msg", msg)) //coming from server
+    socket.on("init", msg => console.log("msg - App.js", msg)) //coming from server
     socket.on("backData", data => console.log("data", data)) //coming from server
 
     socket.on("all user names", (obj) => {
-      console.log("지금 로그인 되어있는 유저 line 61 - App.js", obj.users) // obj.users = [user1, user2]
-      obj.users.forEach(name => {
-        const valueAndLabel = { value: name, label: name }
-        console.log("valueAndLabel", valueAndLabel)
-        setOnline(prev => [...prev, valueAndLabel])
-      })
+      console.log("지금 로그인 되어있는 유저 line 55 - App.js", obj.users)
+      // obj.users = [user1, user2] => [{value: name, label: name } {}]
+      const usersOnline = obj.users.map(name => ({ value: name, label: name }))
+      usersOnline.unshift({ value: "all", label: "all" })
+      console.log('usersOnline - App.js', usersOnline)// [{}, {}, {}]
+      setOnline(usersOnline)
     }) // this works
 
-
-    // console.log("BEFOER ALL")
-    // socket.on("all user names", (obj) => {
-    //   // alert(JSON.stringify(obj.users))
-    //   console.log("지금 로그인 되어있는 유저 - obj.users (App.jsx)", obj.users)
-
-    // })
-
-
-    // socket.on('sendData', data => {
-    //   console.log('data', data);
-    //   setUsersPosition(data);
-    // })
-
-    // setSocket(socket);
     return () => {
       socket.disconnect();
-      // clearCookies()
     }; // => prevent memory leak..
   }, []);
 
   const RegistrationChecker = (val) => {
-    console.log('ref');
     socket && socket.emit("REGISTERED", val);
   };
 
@@ -98,7 +68,6 @@ function App() {
   const createSocketIdNameObject = (username) => {
     socket && socket.emit("SET USERNAME", { "socketID": socket.id, "username": username });
     // socket && socket.emit("REGISTERED", val); //if socket exists, then emit
-
   };
 
   const sendMessage = () => {
@@ -109,21 +78,11 @@ function App() {
     socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username });
   };
 
-  // const getAllUsers = () => {
-  //   socket && socket.on("all user names", (obj) => {
-  //     console.log("지금 로그인 되어있는 유저", obj.users)
-  //   })
-  // }
-  ////////////////////////////////////////////
-  // socket update
-  // const { io } = require("socket.io-client");
-
   const sendData = (state) => {
     socket && socket.emit("sendData", state)
-    // socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username })
   }
-  return (
 
+  return (
     <SocketContext.Provider value={{ socket, online, nickname }} >
       <div className='main'>
         <Routes>

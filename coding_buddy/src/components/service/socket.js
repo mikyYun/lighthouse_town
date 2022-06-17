@@ -21,30 +21,28 @@ export const SOCKET_EVENT = {
   JOIN_ROOM: "JOIN_ROOM",
   UPDATE_NICKNAME: "UPDATE_NICKNAME",
   SEND_MESSAGE: "SEND_MESSAGE",
-  RECEIVE_MESSAGE: "RECEIVE_MESSAGE",
+  RECEIVE_MESSAGE: "RECEIVE_MESSAGE"
 };
 
 //makeMessage
-export const makeMessage = pongData => {
-  const { prevNickname, nickname, content, type, time } = pongData;
+export const makePublicMessage = pongData => {
+  const { nickname, content, type, time } = pongData;
+  // @@@@ socket > index.js 에서 time: new Date(),
   let nicknameLabel;
   let contentLabel = "";
-  console.log("inside makeMessage")
   switch (type) {
     case SOCKET_EVENT.JOIN_ROOM: {
       contentLabel = `${nickname} has joined the room.`;
       break;
     }
-    case SOCKET_EVENT.UPDATE_NICKNAME: {
-      contentLabel = `User's name has been changed.\n ${prevNickname} => ${nickname}.`;
-      break;
-    }
+
     case SOCKET_EVENT.SEND_MESSAGE: {
-      console.log('socket_event.send_message')
-      contentLabel = String(content);
+      console.log(`${nickname} has sent a public message.`)
+      contentLabel = String(content); //보내는 메세지
       nicknameLabel = nickname;
       break;
     }
+
     default:
   }
 
@@ -55,3 +53,30 @@ export const makeMessage = pongData => {
   };
 };
 
+export const makePrivateMessage = pongData => {
+  const { recipient, nickname, content, type, time } = pongData;
+  let contentLabel = "";
+
+  switch (type) {
+    case "PRIVATE": {
+      console.log(`${nickname} has sent a private message.`)
+      contentLabel = String(content);  //보내는 메세지
+      // nicknameLabel = nickname;
+      // recipientLabel = recipient;
+      break;
+    }
+    // case SOCKET_EVENT.SEND_MESSAGE: {
+    //   contentLabel = String(content);
+    //   nicknameLabel = nickname;
+    //   break;
+    // }
+    default:
+  }
+
+  return {
+    nickname, //보내는 사람 이름
+    content: contentLabel,  //보내는 메세지
+    recipient: recipient.value  //recipient object의 value {value: moon, label: moon}
+    // time: dayjs(time).format("HH:mm"),
+  };
+};

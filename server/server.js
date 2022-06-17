@@ -61,17 +61,16 @@ io.on("connection", (socket) => {
 
   // use object
   // socket.emit("init", {data: 'hello world'})
-  socket.on("sendData", (data) => {
-    users[data.username] = data;
-    io.emit("sendData", users);
-  });
+  socket.on('sendData', data => {
+    console.log('sendData', data) // print on server
+    // add userid from data
+    users[data.username] = data
+    io.emit('sendData', users)
 
-  console.log("socket.on", socket.on);
-  console.log("a user connected: ", socket.id);
+  });
 
   socket.emit("init", { data: "hello world" });
   // socket.on('sendData', data => {
-  //   console.log(data);
   //   // add userid from data
   //   const users = [];
   //   users.push(data);
@@ -84,10 +83,11 @@ io.on("connection", (socket) => {
     const username = obj.username;
     const socketid = obj.socketID;
 
+
     currentUsers[username] = socketid;
     // socket.join(loginRoom)
     const alluserNames = Object.keys(currentUsers); // {username : socket.id}
-    console.log("AFTER LOGIN, SET USER NAME AND SOCKET ID PAIR", currentUsers);
+    // console.log("AFTER LOGIN, SET USER NAME AND SOCKET ID PAIR", currentUsers);
     alluserNames.forEach((name) => {
       // name = moon, mike, heesoo
       console.log("USERNAME: ", name, "CURRENT USERS:", currentUsers[name]);
@@ -112,22 +112,40 @@ io.on("connection", (socket) => {
     // socket.broadcast.emit("PASS", "to all users") // works
   });
 
-  socket.on("PRIVATE MESSAGE", (obj) => {
-    // e = {target: username, message: "message"}
+  socket.on("PRIVATE", (obj) => {
+    // obj = {nickname, content: "", recipient: recipient}
+    // nickname = 보내는사람
+    // content = 내용
+    // recipient = 받는사람
     // const Name target
-    const msg = obj.message;
-    const targetName = obj.target;
-    // const senderId = obj.senderID;
-    const username = obj.username;
-    console.log(targetName);
-    console.log(currentUsers);
+    const responseData = {
+      ...obj,
+      type: "PRIVATE",
+      time: new Date()
+    }
+    // const content = obj.content;
+    // const recipient = obj.recipient;
+    // , { message: content, from: nickname });
+    // const nickname = obj.nickname;
+    // const content = obj.content;
+    const recipient = obj.recipient;
+    const senderSocketID = obj.senderSocketId;
+    // const nickname = obj.nickname;
+    // console.log(targetName);
     // let targetSocketId;
 
-    const targetSocketId = currentUsers[targetName]; // get target's socketid
+    // currentUsers = {name: socketId}
 
-    socket
-      .to(targetSocketId)
-      .emit("PRIVATE MESSAGE", { message: msg, from: username });
+    // const senderSocketId = currentUsers[]
+    const recipientSocketId = currentUsers[recipient.value]; // get target's socketid
+    console.log("SENDERSOCKETID", senderSocketID)
+    console.log(currentUsers) //////
+    io
+      .to(recipientSocketId)
+      .emit("PRIVATE", responseData);
+    io
+      .to(senderSocketID)
+      .emit("PRIVATE", responseData)
   });
 
   /* ADDED FROM socket/index.js */
@@ -142,6 +160,8 @@ io.on("connection", (socket) => {
       type: "JOIN_ROOM",
       time: new Date(),
     };
+
+
     // "room 1"에는 이벤트타입과 서버에서 받은 시각을 덧붙여 데이터를 그대로 전송.
     io.to(roomName).emit("RECEIVE_MESSAGE", responseData);
     // 클라이언트에 이벤트를 전달.
@@ -167,7 +187,6 @@ io.on("connection", (socket) => {
   // receive.message는 ChatRoom.jsx 에서 defined
   // --------------- SEND MESSAGE ---------------
   socket.on("SEND_MESSAGE", (requestData) => {
-    console.log("I got a message");
     //emiting back to receive message in line 67
     const responseData = {
       ...requestData,
@@ -178,30 +197,44 @@ io.on("connection", (socket) => {
     io.emit("RECEIVE_MESSAGE", responseData);
     //responseData = chat message
     //@@@@@@ ChatRoom.jsx line 21
-    console.log(
-      `"SEND_MESSAGE" is fired with data: ${JSON.stringify(responseData)}`
-    );
+    // console.log(
+    //   `"SEND_MESSAGE" is fired with data: ${JSON.stringify(responseData)}`
+    // );
   });
 
   /* 오브젝트에서 종료되는 유저 삭제 */
-  socket.on("disconnect", () => {
+  socket.on("disconnect", (e) => {
     // console.log("disconnected id", socket.id)
-    console.log("CURRENT USERS", currentUsers); //2
-    Object.keys(currentUsers).forEach((username) => {
-      if (currentUsers[username] === socket.id) {
-        delete currentUsers[socket.id];
-        console.log(
-          "DELETE DISCONNECT USER DATA FROM currentusers OBJ",
-          currentUsers
-        );
-      }
-    });
-    const alluserNames = Object.keys(currentUsers);
-    alluserNames.forEach((username) => {
-      socket
-        .to(currentUsers[username])
-        .emit("all user names", { users: alluserNames }); //sending an object of all your names it to Recipient.js
-    });
+    // currentUsers[username] = socketid;
+    // socket.join(loginRoom)
+    // const alluserNames = Object.keys(currentUsers); // {username : socket.id}
+    // console.log("AFTER LOGIN, SET USER NAME AND SOCKET ID PAIR", currentUsers);
+    // alluserNames.forEach((name) => {
+    //   // name = moon, mike, heesoo
+    //   console.log("USERNAME: ", name, "CURRENT USERS:", currentUsers[name]);
+    //   // const sortedName = alluserNames.sort()
+    //   io.to(currentUsers[name]).emit("all user names", { "users": alluserNames }) // App.jsx & Recipients.jsx 로 보내기
+    // }); // {"users": [name1, name2] }
+
+
+
+    // Object.keys(currentUsers).forEach((username) => {
+    //   if (currentUsers[username] === socket.id) {
+    //     delete currentUsers[socket.id];
+    //     console.log(
+    //       "DELETE DISCONNECT USER DATA FROM currentusers OBJ",
+    //       currentUsers
+    //     );
+    //   }
+    // });
+    // const alluserNames = Object.keys(currentUsers);
+    // alluserNames.forEach((name) => {
+    //   console.log("USERNAME: ", name, "CURRENT USERS:", currentUsers[name]);
+    //   // const sortedName = alluserNames.sort()
+    //   io
+    //     .to(currentUsers[name])
+    //     .emit("all user names", { "users": alluserNames }) // App.jsx & Recipients.jsx 로 보내기
+    // }); // {"users": [name1, name2] }
     // delete currentUsers[socket.id];
   });
 });
@@ -214,7 +247,7 @@ app.get("/", (req, res) => {
 // 로그인 정보 리퀘스트 .. 진행중
 app.post("/login", (req, res) => {
   // client sending
-  console.log("login request", req.body);
+  // console.log("login request", req.body);
   // req.body = {userEmail: '', userPassword: ''}
 
   const email = req.body.userEmail;
@@ -242,7 +275,7 @@ app.post("/login", (req, res) => {
             const userLanguages = [];
             if (err) throw err;
             if (res_2.rows.length > 0) {
-              console.log("find user's languages", res_2.rows);
+              // console.log("find user's languages", res_2.rows);
               res_2.rows.forEach((obj) => {
                 userLanguages.push(obj.language_id);
               });
@@ -268,13 +301,6 @@ app.post("/login", (req, res) => {
 //"/login" => local 8000/login
 app.post("/register", (req, res) => {
   console.log("post register request", req.body);
-  // req.body = userInfo = {
-  //   userName,
-  //   userPassword,
-  //   userEmail,
-  //   userLanguages,
-  //   userAvatar,
-  // };
   const userName = req.body.userInfo.userName;
   const userPassword = req.body.userInfo.userPassword;
   const userEmail = req.body.userInfo.userEmail;

@@ -44,9 +44,17 @@ module.exports = function (socketIo) {
         time: new Date(),
       };
       // "room 1"에는 이벤트타입과 서버에서 받은 시각을 덧붙여 데이터를 그대로 전송.
+
       socketIo.to(roomName).emit("RECEIVE_MESSAGE", responseData);
-      // 클라이언트에 이벤트를 전달.
-      // 클라이언트에서는 RECEIVE_MESSAGE 이벤트 리스너를 가지고 있어서 그쪽 콜백 함수가 또 실행됌. 서버구현 마치고 클라이언트 구현은 나중에.
+      // 클라이언트 로 이벤트를 전달.
+      // 클라이언트에서는 RECEIVE_MESSAGE 이벤트 리스너를 가지고 있어서 그쪽 콜백 함수가 또 실행됌.
+
+      /* App.js:
+      useEffect(() => {
+      socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceivePublicMessage); // 이벤트 리스너 - 퍼블릭 메세지
+      socket.on("PRIVATE", handleReceivePrivateMessage); // 이벤트 리스너 - 프라이빗 메세지
+      */
+
       console.log(`JOIN_ROOM is fired with data: ${JSON.stringify(responseData)}`);
     });
 
@@ -64,7 +72,6 @@ module.exports = function (socketIo) {
     // receive.message는 ChatRoom.jsx 에서 defined 
     // --------------- SEND MESSAGE ---------------
     client.on(SOCKET_EVENT.SEND_MESSAGE, requestData => {
-      console.log('I got a message')
       //emiting back to receive message in line 67
       const responseData = {
         ...requestData,
