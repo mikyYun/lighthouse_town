@@ -155,7 +155,6 @@ const Canvas = (props) => {
     return (
         <div className="game-container">
             <canvas className="game-canvas" ref={canvasRef}></canvas>
-            {userCharacters[props.username].state.username}
         </div>
     );
 };

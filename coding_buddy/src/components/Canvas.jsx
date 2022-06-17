@@ -26,7 +26,6 @@ const Canvas = (props) => {
   }
   const userChar = new Characters(userData)
 
-
   console.log('usersPosition', usersPosition) //가장 처음에는 undefined 여야함.
 
 

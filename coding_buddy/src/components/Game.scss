@@ -1,14 +1,18 @@
 
 .main-container {
   width: 100%;
+  height: 100vh;
   display: flex;
 }
 
 .game-container {
-  width: 70%;
-  margin: 0 auto;
+  position: relative;
+  width: 80vw;
+  height: 100vh;
+  background: url(./game_img/town-map.png) no-repeat;
+  transform: scale(0.8);
+  image-rendering: pixelated;
 }
-
 .chatroom {
   width: 30%;
   margin: 0;
