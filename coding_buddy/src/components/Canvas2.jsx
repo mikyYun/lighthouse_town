@@ -32,8 +32,8 @@ const Canvas = (props) => {
         function step () {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // draw background map
-        ctx.drawImage(mapImg, 0, 0);
+            // draw background map
+            ctx.drawImage(mapImg, 0, 0);
 
         // userCharacters.forEach(userChar => {
         //     // Walking...
@@ -57,44 +57,41 @@ const Canvas = (props) => {
             // const updatedUserCharacters = {...userCharacters};
 
 
-            if (typeof userCharacters.moon !== 'undefined') {
-                if (userCharacters.moon.state.isMoving) {
-                    frameCount++;
-                    if (frameCount >= framelimit) {
-                        frameCount = 0;
-                        userCharacters.moon.incrementLoopIndex();
-                    }
-                }
-                userCharacters.moon.drawFrame(ctx);
-
-                // Text on head.
-                ctx.fillText(userCharacters.moon.state.username, userCharacters.moon.state.x + 20, userCharacters.moon.state.y + 10)
-                ctx.fillStyle = 'purple';
-            }
-
-            // for(const userChar in userCharacters) {
-            //     // console.log(userCharacters[userChar].state.username, userCharacters[userChar]);
-            //      // Walking...
-            //     if (userCharacters[userChar].state.isMoving) {
+            // if (typeof userCharacters.moon !== 'undefined') {
+            //     if (userCharacters.moon.state.isMoving) {
             //         frameCount++;
             //         if (frameCount >= framelimit) {
-            //           frameCount = 0;
-            //           userCharacters[userChar].incrementLoopIndex();
+            //             frameCount = 0;
+            //             userCharacters.moon.incrementLoopIndex();
             //         }
-            //       }
-            //     userCharacters[userChar].drawFrame(ctx);
+            //     }
+            //     userCharacters.moon.drawFrame(ctx);
 
             //     // Text on head.
-            //     ctx.fillText(userCharacters[userChar].state.username, userCharacters[userChar].state.x + 20, userCharacters[userChar].state.y + 10)
+            //     ctx.fillText(userCharacters.moon.state.username, userCharacters.moon.state.x + 20, userCharacters.moon.state.y + 10)
             //     ctx.fillStyle = 'purple';
             // }
 
+            for(const userChar in userCharacters) {
+                // console.log(userCharacters[userChar].state.username, userCharacters[userChar]);
+                 // Walking...
+                if (userCharacters[userChar].state.isMoving) {
+                    frameCount++;
+                    if (frameCount >= framelimit) {
+                      frameCount = 0;
+                      userCharacters[userChar].incrementLoopIndex();
+                    }
+                  }
+                userCharacters[userChar].drawFrame(ctx);
+
+                // Text on head.
+                ctx.fillText(userCharacters[userChar].state.username, userCharacters[userChar].state.x + 20, userCharacters[userChar].state.y + 10)
+                ctx.fillStyle = 'purple';
+            }
 
             // setUserCharacters(updatedUserCharacters);
-        //}
-
-        window.requestAnimationFrame(step);
-    }
+            window.requestAnimationFrame(step);
+        }
 
     window.requestAnimationFrame(step);
 
@@ -155,6 +152,7 @@ const Canvas = (props) => {
     return (
         <div className="game-container">
             <canvas className="game-canvas" ref={canvasRef}></canvas>
+
         </div>
     );
 };
