@@ -31,19 +31,8 @@
 }
 
 textarea.form-control {
-  // height: auto
+  height: auto
 }
 div.d-flex.flex-row {
-  // height: auto;
-}
-
-div.chat-window.card {
-  overflow: scroll;
-  max-height: 100px;
-  // overflow-y: auto;
-}
-
-div.d-flex.flex-row {
-  // overflow: auto;
-  max-height: max-content;
+  height: auto;
 }
