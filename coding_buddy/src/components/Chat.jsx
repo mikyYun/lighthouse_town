@@ -8,7 +8,7 @@ export default function Chat(props) {
     // every component underneath Chat.jsx will be able to access this contexts.
     <>
       <div className="d-flex flex-column chatroom">
-        <Recipient />
+        <Recipient nickname={props.username} />
         <ChatRoom nickname={props.username} room={props.room} />
       </div>
       {/* // </SocketContext.Provider> */}

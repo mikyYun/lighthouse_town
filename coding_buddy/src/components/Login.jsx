@@ -15,7 +15,7 @@ export default function Login(props) {
     navigate('/register')
   }
   const goChat = (username, avatar) => {
-    console.log('user', username, avatar)
+    // console.log('user', username, avatar)
     const data = [username, avatar]
     navigate('/game', { state: data })
   }

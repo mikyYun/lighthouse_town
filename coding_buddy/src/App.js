@@ -16,14 +16,14 @@ function App() {
   // // 쿠키 세팅
   // const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
-  const [nickname, setNickname] = useState('');
   const [online, setOnline] = useState([{ value: 'all', label: 'all' }]);
-  const cookies = new Cookies();
-  let location = useLocation();
+  const cookies = new Cookies()
+  const location = useLocation();
+  const nickname = location.state?.[0] || '';
+  // console.log('location.state[0]', location.state[0])
   useEffect(() => {
     setRoom(location.pathname.split("/").splice(2)[0])
-    // ga()
-    console.log("location check", location.pathname);
+    // console.log("location.pathname", location.pathname);
     if (location.pathname !== "/game") clearCookies();
   }, [location.pathname]);
 
@@ -55,14 +55,14 @@ function App() {
     socket.on("backData", data => console.log("data", data)) //coming from server
 
     socket.on("all user names", (obj) => {
-      console.log("지금 로그인 되어있는 유저 line 61 - App.js", obj.users)
+      console.log("지금 로그인 되어있는 유저 line 55 - App.js", obj.users)
       // obj.users = [user1, user2] => [{value: name, label: name } {}]
       const usersOnline = obj.users.map(name => ({ value: name, label: name }))
       console.log('usersOnline', usersOnline)
       setOnline(usersOnline)
     }) // this works
 
-    /*MIKE
+    /* MIKE
     setSocket(socket);
       console.log("지금 로그인 되어있는 유저 line 61 - App.js", obj.users) // obj.users = [user1, user2]
       obj.users.forEach(name => {
@@ -76,6 +76,7 @@ function App() {
       })
     })
     */
+
     return () => {
       socket.disconnect();
     }; // => prevent memory leak..
@@ -112,6 +113,7 @@ function App() {
   const sendData = (state) => {
     // socket && socket.emit("sendData", state)
   }
+
   return (
 
     <SocketContext.Provider value={{ socket, online, nickname }} >
