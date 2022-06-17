@@ -4,7 +4,7 @@ import { SocketContext } from '../App.js'
 
 function Recipient(props) {
   const { online } = useContext(SocketContext)
-  const {nickname, recipient, setRecipient} = props
+  const { nickname, recipient, setRecipient } = props
   // const recipient = props.recipient
   // const setRecipient = props.setRecipient
   console.log("ONLINE - RECIPIENT.JSX", online)
@@ -18,7 +18,7 @@ function Recipient(props) {
         type="text"
         id="recipient-dropdown"
         maxLength={12}
-        value={recipient!==null && recipient || {value: "all", label: "all"}}
+        value={recipient !== null && (recipient || { value: "all", label: "all" })}
         defaultValue={recipient}
         onChange={setRecipient}
         options={onlineOthers}

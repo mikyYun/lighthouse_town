@@ -60,14 +60,12 @@ io.on("connection", (socket) => {
   session.save();
 
   socket.on("reconnection?", (e) => {
-    let reconnection = true
+    // let reconnection = true
     console.log("THIS IS RECONNECTION", e)
     // e.username, e.newSocketId
     // console.log("before",currentUsers)
     if (currentUsers[e.username]) {
-      // 현재 currentUsers 에 같은 유저네임이 존재하면 => 사용중인 유저네임 && disconnect 되지 않았음
-      // console.log("this user are in used")
-      // !reconnection
+      // 현재 currentUsers 에 같은 유저네임이 존재하면 => 사용중인 유저네임 && disconnect 되지 않았다면
       socket.emit("DENY CONNECTION", false)
       // callback("return")
     } else {
@@ -89,8 +87,9 @@ io.on("connection", (socket) => {
   // socketID and username matching
   socket.on("SET USERNAME", (obj) => {
     //Login.jsx 의 setUser(res.data.userName)
-    const {username, socketid} = obj;
-    // const socketid = obj.socketID;
+    // const {username, socketid} = obj;
+    const socketid = obj.socketID;
+    const username = obj.username
     // if (currentUsers[username]) {
     //   socket.emit("DENY CONNECTION", false)
     // } else {

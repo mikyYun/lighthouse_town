@@ -6,6 +6,7 @@ import boyImage from "./game_img/boy1.png";
 import townWall from "./game_img/collision_data.js/townWall";
 import selectAvatar from "./helper/selecAvatar";
 import  { SocketContext } from '../App';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Canvas = (props) => {
     const { socket } = useContext(SocketContext)
@@ -17,6 +18,16 @@ const Canvas = (props) => {
             y: 150
         }
     )});
+    const navigate = useNavigate()
+    const location = useLocation()
+    const roomLists = {
+      html: "/game/html",
+      css: "/game/css",
+      javascript: "/game/js",
+      react: "/game/react",
+      ruby: "/game/ruby"
+    }
+
 
     useEffect(() => {
 
@@ -88,6 +99,15 @@ const Canvas = (props) => {
 
 
     });
+    // window.addEventListener("click", () => {
+    //   console.log(userCharacters[props.username].state.x)
+    // })
+    if (userCharacters[props.username].state.x === 400 && userCharacters[props.username].state.y === 400) {
+      navigate(roomLists.ruby)
+    }
+      //     page = React.createElement('div', {}, "Language Page")
+      // }
+
 
     // if user hit the specific position -> redirect to the page
     // let page;

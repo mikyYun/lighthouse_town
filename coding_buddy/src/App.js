@@ -22,7 +22,7 @@ function App() {
   const location = useLocation();
   const nickname = location.state?.[0] || '';
   // console.log('location.state[0]', location.state[0])
-  const urlLists = ["/game"];
+  const urlLists = ["/game", "/game/ruby"];
   useEffect(() => {
     setRoom(location.pathname.split("/").splice(2)[0]);
     // console.log("location.pathname", location.pathname);
@@ -36,23 +36,27 @@ function App() {
       // if (location.pathname === "/game") {
         // navigate("/")
       // }
-      console.log("App.js: socket server connected.", all_cookies.email);
+      console.log("App.js: socket server connected.", all_cookies);
       // console.log("My socket ID", socket.id);
       console.log("CONNECTED");
       // 유저데이터가 아직 삭제되지 않았고, 게임페이지 리로드 한 경우 서버랑 연결하고 currentUser update in server
       if (all_cookies.userdata) {
         // 쿠키 존재하면 리커넥트 요청
         socket.emit("reconnection?", { username: all_cookies.userdata.userName, newSocketId: socket.id });
+        // socket.on("DENY CONNECTION", (e) => {
+        //   clearCookies()
+        //   navigate("/")
+        // })
       } else {
         // 쿠키 없으면 홈으로
         navigate("/")
       }
-    });
+    }, []);
 
-    socket.on("DENY CONNECTION", (e) => {
-      clearCookies()
-      navigate("/")
-    })
+    // socket.on("DENY CONNECTION", (e) => {
+    //   clearCookies()
+    //   navigate("/")
+    // })
 
     socket.on("REGISTRATION SUCCESS", (userInfo) => {
       console.log("cookie set after register");
