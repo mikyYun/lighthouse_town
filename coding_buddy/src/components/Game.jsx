@@ -27,6 +27,7 @@ export default function Game(props) {
   // console.log('inside game',location.state)  //username
   // console.log('inside game',location.state.userName)  //username
   // if (location.state === null) alert("hey")
+
   // if (location.state !== null) {
   return (
     <>
