@@ -30,8 +30,9 @@ function MessageForm({ nickname, recipient }) {
     if (recipient.value !== "all") {
       socket.emit("PRIVATE", {
         nickname,
-        content: typingMessage,
-        recipient: recipient
+        content : typingMessage,
+        recipient : recipient,
+        senderSocketId : socket.id
       })
     } else {
       socket.emit(SOCKET_EVENT.SEND_MESSAGE, {
@@ -43,7 +44,7 @@ function MessageForm({ nickname, recipient }) {
     console.log("hi gabriel")
     // state값은 공백으로 변경해줍니다.
     setTypingMessage("");
-  }, [socket, nickname, typingMessage]);
+  }, [socket, nickname, typingMessage, recipient]);
 
   // document.addEventListener("keydown", () => {
   //   console.log("this is a target", recipient)

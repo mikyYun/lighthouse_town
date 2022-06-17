@@ -133,21 +133,26 @@ io.on("connection", (socket) => {
   // const nickname = obj.nickname;
 
 
-    const content = obj.content;
+    // const content = obj.content;
     const recipient = obj.recipient;
-    // const senderId = obj.senderID;
-    const nickname = obj.nickname;
+    const senderSocketID = obj.senderSocketId;
+    // const nickname = obj.nickname;
     // console.log(targetName);
-    console.log("PRIVATE MESSAGE", obj);
+    // console.log("PRIVATE MESSAGE", obj);
     // let targetSocketId;
 
     // currentUsers = {name: socketId}
+
+    // const senderSocketId = currentUsers[]
     const recipientSocketId = currentUsers[recipient.value]; // get target's socketid
-    console.log("SOCKETID", recipientSocketId)
+    console.log("SENDERSOCKETID", senderSocketID)
     console.log(currentUsers) //////
     io
       .to(recipientSocketId)
       .emit("PRIVATE", responseData);
+    io
+      .to(senderSocketID)
+      .emit("PRIVATE", responseData)
   });
 
   /* ADDED FROM socket/index.js */
@@ -200,9 +205,9 @@ io.on("connection", (socket) => {
     io.emit("RECEIVE_MESSAGE", responseData);
     //responseData = chat message
     //@@@@@@ ChatRoom.jsx line 21
-    console.log(
-      `"SEND_MESSAGE" is fired with data: ${JSON.stringify(responseData)}`
-    );
+    // console.log(
+    //   `"SEND_MESSAGE" is fired with data: ${JSON.stringify(responseData)}`
+    // );
   });
 
   /* 오브젝트에서 종료되는 유저 삭제 */
