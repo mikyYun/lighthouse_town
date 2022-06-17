@@ -108,7 +108,7 @@ function App() {
 
 
   const sendData = (state) => {
-    socket && socket.emit("sendData", state) //passing this down to game
+    // socket && socket.emit("sendData", state)
   }
 
   return (

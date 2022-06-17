@@ -31,7 +31,7 @@ const Canvas = (props) => {
   // get other users data from the server
   setInterval(() => {
     socket.on('sendData', data => {
-      console.log('data', data);
+      // console.log('data', data);
       setUsersPosition(data);
     })
   }, 1000)
@@ -175,7 +175,7 @@ const Canvas = (props) => {
     // console.log(Char)
     window.addEventListener("keydown", e => {
       userChar.move(e)
-      socket.emit('sendData', userChar.state)
+      // socket.emit('sendData', userChar.state)
       // console.log('sendData', userChar.state)
       // sendMessage("SEND")
       // sendData(userChar.state) // socket.emit("sendData", userChar.state)
