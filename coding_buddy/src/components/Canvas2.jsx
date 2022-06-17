@@ -6,6 +6,7 @@ import boyImage from "./game_img/boy1.png";
 import townWall from "./game_img/collision_data.js/townWall";
 import selectAvatar from "./helper/selecAvatar";
 import  { SocketContext } from '../App';
+import ReactDOM from 'react-dom'
 
 const Canvas = (props) => {
     const { socket } = useContext(SocketContext)
@@ -149,10 +150,16 @@ const Canvas = (props) => {
         setUserCharacters(newCharactersData);
     });
 
-    return (
-        <div className="game-container">
-            <canvas className="game-canvas" ref={canvasRef}></canvas>
+    // if user hit the specific position -> redirect to the page
+    let page;
+    if (userCharacters[props.username].state.x === 440 && userCharacters[props.username].state.y === 130) {
+        page = React.createElement('div', {}, "Language Page")
+    }
 
+    return (
+        <div className="game-container" >
+            <canvas className="game-canvas" ref={canvasRef}></canvas>
+            {page}
         </div>
     );
 };
