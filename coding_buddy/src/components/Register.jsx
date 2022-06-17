@@ -34,9 +34,7 @@ export default function Register(props) {
 
   return (
     <div className="register-form">
-      {/* <Layout /> */}
-      <form action="/login" method="GET" id="form_registration">
-
+      <form id="form_registration" onSubmit={e => e.preventDefault()}>
         <div className="field">
           <span>EMAIL :{" "}</span>    {/* 이안에 뭐가 들어갈껀가요? */}
           <input
@@ -174,21 +172,15 @@ export default function Register(props) {
               userLanguages,
               userAvatar,
             };
-            axios
+            axios // client talking to the server. Asynchronous. if it doesn't happen .post, 
               .post("/register", { userInfo })
-                .then(res => {
-                  if (res.data) {
-                    console.log(res.data)
-                    props.submitRegistrationInfo(res.data);
-                    cookies.set("username", res.data)
-                    navigate("/game")
-                  } else {
-
-                  }
-                })
-            e.preventDefault();
-            // })
-            // cookies.set("username", username);
+              .then(res => {
+                // console.log(res.data)
+                props.submitRegistrationInfo(res.data);
+                cookies.set("username", res.data)
+                navigate("/game")
+              }).catch(error => console.log(error)
+              )
           }}
         >
           Register
