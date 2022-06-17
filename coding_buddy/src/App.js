@@ -1,4 +1,4 @@
-import React , {useContext } from 'react';
+import React, { useContext } from 'react';
 import './App.css';
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -7,33 +7,45 @@ import Game from './components/Game';
 import Layout from './components/Layout';
 import Register from './components/Register';
 import Login from './components/Login';
-import { socket } from './components/service/socket.js'
+import { socket } from './components/service/socket.js';
 import { createContext } from "react";
 export const SocketContext = createContext(socket); // going to Recipient.jsx
 function App() {
   const navigate = useNavigate();
-  const socket = useContext(SocketContext)
+  const socket = useContext(SocketContext);
   // // 쿠키 세팅
   // const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
   const [online, setOnline] = useState([{ value: 'all', label: 'all' }]);
-  const cookies = new Cookies()
+  const cookies = new Cookies();
   const location = useLocation();
   const nickname = location.state?.[0] || '';
   // console.log('location.state[0]', location.state[0])
+  const urlLists = ["/game"];
   useEffect(() => {
-    setRoom(location.pathname.split("/").splice(2)[0])
+    setRoom(location.pathname.split("/").splice(2)[0]);
     // console.log("location.pathname", location.pathname);
-    if (location.pathname !== "/game") clearCookies();
+    if (!urlLists.includes(location.pathname)) clearCookies();
   }, [location.pathname]);
 
   useEffect(() => {
     // const socket = io();
     // console.log('socket', socket)
     socket.on("connect", () => {
-      console.log("App.js: socket server connected.");
+      const all_cookies = cookies.getAll();
+      //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
+      // if (location.pathname === "/game") {
+        // navigate("/")
+      // }
+      console.log("App.js: socket server connected.", all_cookies.email);
       // console.log("My socket ID", socket.id);
       console.log("CONNECTED");
+      // 유저데이터가 아직 삭제되지 않았고, 게임페이지 리로드 한 경우 서버랑 연결하고 currentUser update in server
+      if (all_cookies.userdata) {
+        socket.emit("reconnection?", { username: all_cookies.userdata.userName, newSocketId: socket.id });
+      } else {
+        navigate("/")
+      }
     });
 
     socket.on("REGISTRATIPN SUCCESS", (userInfo) => {
@@ -52,17 +64,17 @@ function App() {
     //   console.log(e); //coming from server
     // });
 
-    socket.on("init", msg => console.log("msg", msg)) //coming from server
-    socket.on("backData", data => console.log("data", data)) //coming from server
+    socket.on("init", msg => console.log("msg", msg)); //coming from server
+    socket.on("backData", data => console.log("data", data)); //coming from server
 
     socket.on("all user names", (obj) => {
-      console.log("지금 로그인 되어있는 유저 line 55 - App.js", obj.users)
+      console.log("지금 로그인 되어있는 유저 line 55 - App.js", obj.users);
       // obj.users = [user1, user2] => [{value: name, label: name } {}]
-      const usersOnline = obj.users.map(name => ({ value: name, label: name }))
-      usersOnline.unshift({value: "all", label: "all"})
-      console.log('usersOnline', usersOnline)// [{}, {}, {}]
-      setOnline(usersOnline)
-    }) // this works
+      const usersOnline = obj.users.map(name => ({ value: name, label: name }));
+      usersOnline.unshift({ value: "all", label: "all" });
+      console.log('usersOnline', usersOnline);// [{}, {}, {}]
+      setOnline(usersOnline);
+    }); // this works
 
     return () => {
       socket.disconnect();
@@ -98,8 +110,8 @@ function App() {
 
 
   const sendData = (state) => {
-    socket && socket.emit("sendData", state)
-  }
+    socket && socket.emit("sendData", state);
+  };
 
   return (
 

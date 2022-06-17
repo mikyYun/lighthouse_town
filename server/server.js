@@ -59,6 +59,14 @@ io.on("connection", (socket) => {
   const session = socket.request.session;
   session.save();
 
+  socket.on("reconnection?", (e) => {
+    console.log("THIS IS RECONNECTION", e)
+    // e.username, e.newSocketId
+    console.log("before",currentUsers)
+    currentUsers[e.username] = e.newSocketId
+    console.log("@@@@@@@@@@@@@after", currentUsers)
+  })
+
   // use object
   // socket.emit("init", {data: 'hello world'})
   socket.on('sendData', data => {
