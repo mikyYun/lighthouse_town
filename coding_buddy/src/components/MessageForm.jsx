@@ -36,9 +36,9 @@ function MessageForm({ nickname, recipient }) {
     setTypingMessage("");
   }, [socket, nickname, typingMessage]);
 
-  document.addEventListener("keydown", () => {
-    console.log("this is a target", recipient)
-  })
+  // document.addEventListener("keydown", () => {
+  //   console.log("this is a target", recipient)
+  // })
 
 
   return (
