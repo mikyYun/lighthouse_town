@@ -70,10 +70,13 @@ function ChatRoom(props) {
       </div>
       <div className="chat-window card" ref={chatWindow}>
         {messages.map((message, index) => {
-          const { nickname, content, time, recipient } = message;
+          const { nickname, content, time } = message;
+          let recipient = ''
+          message.recipient ? recipient = message.recipient : recipient = 'all'
+
           return (
             <div key={index} className="d-flex flex-row">
-              {nickname && <div className="message-nickname">{nickname} to {recipient}: </div>}
+              {nickname && <div className="message-nickname">{nickname} to {recipient}:  </div>}
               {/* {recipient && <div className="recipient-name"> */}
               {/* To: {recipient} </div>} */}
               <div>{content}</div>
