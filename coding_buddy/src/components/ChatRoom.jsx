@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useContext, useRef } from "react";
 import MessageForm from "./MessageForm";
 import "./ChatRoom.scss";
-import { SOCKET_EVENT, makeMessage } from "./service/socket";
+import { SOCKET_EVENT, makeMessage, makePrivateMessage } from "./service/socket";
 import { SocketContext } from "../App.js";
 
 function ChatRoom(props) {
@@ -26,8 +26,19 @@ function ChatRoom(props) {
   // @@@@ Message.Form line 26 & socket > index.js line 68
   const handleReceiveMessage = useCallback(
     (pongData) => {
-      console.log("PRIVATE in CLIENT")
+      // console.log("PRIVATE in CLIENT")
       const newMessage = makeMessage(pongData);
+      // makeMessage 는 service > socket.js 에 있음.
+      setMessages((messages) => [...messages, newMessage]); //????이해안됌
+      moveScrollToReceiveMessage();
+    },
+    [moveScrollToReceiveMessage] //????이해안됌
+  );
+
+  const handleReceivePrivateMessage = useCallback(
+    (pongData) => {
+      console.log("PRIVATE in CLIENT")
+      const newMessage = makePrivateMessage(pongData);
       // makeMessage 는 service > socket.js 에 있음.
       setMessages((messages) => [...messages, newMessage]); //????이해안됌
       moveScrollToReceiveMessage();
@@ -47,7 +58,7 @@ function ChatRoom(props) {
     console.log("are you receiving?");
     socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); // 이벤트 리스너 설치
 
-    socket.on("PRIVATE", handleReceiveMessage); // 이벤트 리스너 설치
+    socket.on("PRIVATE", handleReceivePrivateMessage); // 이벤트 리스너 설치
     return () => {
       socket.disconnect()
       // socket.off(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); // 이벤트 리스너 해제
@@ -73,10 +84,13 @@ function ChatRoom(props) {
       </div>
       <div className="chat-window card" ref={chatWindow}>
         {messages.map((message, index) => {
-          const { nickname, content, time } = message;
+          const { nickname, content, time, recipient } = message;
+          console.log("THIS is nickname for private message", nickname, recipient)
           return (
             <div key={index} className="d-flex flex-row">
               {nickname && <div className="message-nickname">{nickname}: </div>}
+              {/* {recipient && <div className="recipient-name"> */}
+                {/* To: {recipient} </div>} */}
               <div>{content}</div>
               <div className="time">{time}</div>
             </div>

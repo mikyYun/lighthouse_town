@@ -21,7 +21,8 @@ export const SOCKET_EVENT = {
   JOIN_ROOM: "JOIN_ROOM",
   UPDATE_NICKNAME: "UPDATE_NICKNAME",
   SEND_MESSAGE: "SEND_MESSAGE",
-  RECEIVE_MESSAGE: "RECEIVE_MESSAGE",
+  RECEIVE_MESSAGE: "RECEIVE_MESSAGE"
+  // PRIVATE_MESSAGE: "PRIVATE"
 };
 
 //makeMessage
@@ -45,6 +46,11 @@ export const makeMessage = pongData => {
       nicknameLabel = nickname;
       break;
     }
+    case SOCKET_EVENT.PRIVATE_MESSAGE: {
+      console.log('PRIVATE MESSAGE')
+      contentLabel = String(content);
+      nicknameLabel = nickname;
+    }
     default:
   }
 
@@ -55,3 +61,39 @@ export const makeMessage = pongData => {
   };
 };
 
+export const makePrivateMessage = pongData => {
+  const { recipient, nickname, content, type, time } = pongData;
+  // let nicknameLabel;
+  let contentLabel = "";
+  let recipientLabel = recipient
+  console.log("inside makeMessage", recipientLabel)
+  switch (type) {
+    case "PRIVATE": {
+      contentLabel = `${nickname} has sent a private message.`;
+      console.log(contentLabel)
+      contentLabel = String(content);
+      // nicknameLabel = nickname;
+      // recipientLabel = recipient;
+      break;
+    }
+    // case SOCKET_EVENT.SEND_MESSAGE: {
+    //   console.log('socket_event.send_message')
+    //   contentLabel = String(content);
+    //   nicknameLabel = nickname;
+    //   break;
+    // }
+    // case SOCKET_EVENT.PRIVATE_MESSAGE: {
+    //   console.log('PRIVATE MESSAGE')
+    //   contentLabel = String(content);
+    //   nicknameLabel = nickname;
+    // }
+    default:
+  }
+
+  return {
+    nickname,
+    content: contentLabel,
+    recipient: recipient.value
+    // time: dayjs(time).format("HH:mm"),
+  };
+};

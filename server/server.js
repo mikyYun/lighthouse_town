@@ -87,6 +87,7 @@ io.on("connection", (socket) => {
     const username = obj.username;
     const socketid = obj.socketID;
 
+    
     currentUsers[username] = socketid;
     // socket.join(loginRoom)
     const alluserNames = Object.keys(currentUsers); // {username : socket.id}
@@ -121,6 +122,17 @@ io.on("connection", (socket) => {
     // content = 내용
     // recipient = 받는사람
     // const Name target
+    const responseData = {
+      ...obj,
+      type: "PRIVATE",
+      time: new Date()
+    }
+  // const content = obj.content;
+  // const recipient = obj.recipient;
+  // , { message: content, from: nickname });
+  // const nickname = obj.nickname;
+
+
     const content = obj.content;
     const recipient = obj.recipient;
     // const senderId = obj.senderID;
@@ -135,7 +147,7 @@ io.on("connection", (socket) => {
     console.log(currentUsers) //////
     io
       .to(recipientSocketId)
-      .emit("PRIVATE", { message: content, from: nickname });
+      .emit("PRIVATE", responseData);
   });
 
   /* ADDED FROM socket/index.js */
@@ -150,6 +162,8 @@ io.on("connection", (socket) => {
       type: "JOIN_ROOM",
       time: new Date(),
     };
+
+
     // "room 1"에는 이벤트타입과 서버에서 받은 시각을 덧붙여 데이터를 그대로 전송.
     io.to(roomName).emit("RECEIVE_MESSAGE", responseData);
     // 클라이언트에 이벤트를 전달.
