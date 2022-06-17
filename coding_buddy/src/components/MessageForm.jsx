@@ -17,7 +17,7 @@ function MessageForm({ nickname, recipient }) {
   // 버튼을 누르면 실행합니다.
   const handleSendMesssage = useCallback(() => {
     // 공백을 trim()으로 제거합니다.
-    console.log("handleSendMesssage", handleSendMesssage)
+    // console.log("handleSendMesssage", handleSendMesssage)
     const noContent = typingMessage.trim() === "";
 
     // 아무 메시지도 없으면 아무 일도 발생하지 않습니다.
@@ -25,12 +25,21 @@ function MessageForm({ nickname, recipient }) {
       console.log("no content received")
       return;
     }
-    console.log("socket", socket)
+    console.log("socket", recipient)
     // @@@@ 메시지가 있으면 nickname과 message를 SEND_MESSAGE 이벤트 타입과 함께 소켓 서버로 (socket > index. js) 전송합니다.
-    socket.emit(SOCKET_EVENT.SEND_MESSAGE, {
-      nickname,
-      content: typingMessage,
-    });
+    if (recipient.value !== "all") {
+      socket.emit("PRIVATE", {
+        nickname,
+        content: typingMessage,
+        recipient: recipient
+      })
+    } else {
+      socket.emit(SOCKET_EVENT.SEND_MESSAGE, {
+        nickname,
+        content: typingMessage,
+      });
+    }
+
     console.log("hi gabriel")
     // state값은 공백으로 변경해줍니다.
     setTypingMessage("");

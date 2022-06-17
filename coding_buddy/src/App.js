@@ -48,7 +48,7 @@ function App() {
     // });
 
     // for DM
-    // socket.on("PRIVATE MESSAGE", (e) => {
+    // socket.on("PRIVATE", (e) => {
     //   console.log(e); //coming from server
     // });
 

@@ -3,7 +3,7 @@ import ChatRoom from "./ChatRoom";
 
 import Recipient from "./Recipient";
 export default function Chat(props) {
-  const [recipient, setRecipient] = useState(null);
+  const [recipient, setRecipient] = useState({value: "all", label: "all"});
 
 
   return (

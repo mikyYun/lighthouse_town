@@ -115,22 +115,27 @@ io.on("connection", (socket) => {
     // socket.broadcast.emit("PASS", "to all users") // works
   });
 
-  socket.on("PRIVATE MESSAGE", (obj) => {
-    // e = {target: username, message: "message"}
+  socket.on("PRIVATE", (obj) => {
+    // obj = {nickname, content: "", recipient: recipient}
+    // nickname = 보내는사람
+    // content = 내용
+    // recipient = 받는사람
     // const Name target
-    const msg = obj.message;
-    const targetName = obj.target;
+    const content = obj.content;
+    const recipient = obj.recipient;
     // const senderId = obj.senderID;
-    const username = obj.username;
-    console.log(targetName);
-    console.log(currentUsers);
+    const nickname = obj.nickname;
+    // console.log(targetName);
+    console.log("PRIVATE MESSAGE", obj);
     // let targetSocketId;
 
-    const targetSocketId = currentUsers[targetName]; // get target's socketid
-
-    socket
-      .to(targetSocketId)
-      .emit("PRIVATE MESSAGE", { message: msg, from: username });
+    // currentUsers = {name: socketId}
+    const recipientSocketId = currentUsers[recipient.value]; // get target's socketid
+    console.log("SOCKETID", recipientSocketId)
+    console.log(currentUsers) //////
+    io
+      .to(recipientSocketId)
+      .emit("PRIVATE", { message: content, from: nickname });
   });
 
   /* ADDED FROM socket/index.js */

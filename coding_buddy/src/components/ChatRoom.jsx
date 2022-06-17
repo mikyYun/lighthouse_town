@@ -26,6 +26,7 @@ function ChatRoom(props) {
   // @@@@ Message.Form line 26 & socket > index.js line 68
   const handleReceiveMessage = useCallback(
     (pongData) => {
+      console.log("PRIVATE in CLIENT")
       const newMessage = makeMessage(pongData);
       // makeMessage 는 service > socket.js 에 있음.
       setMessages((messages) => [...messages, newMessage]); //????이해안됌
@@ -46,10 +47,23 @@ function ChatRoom(props) {
     console.log("are you receiving?");
     socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); // 이벤트 리스너 설치
 
+    socket.on("PRIVATE", handleReceiveMessage); // 이벤트 리스너 설치
     return () => {
-      socket.off(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); // 이벤트 리스너 해제
+      socket.disconnect()
+      // socket.off(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); // 이벤트 리스너 해제
     };
   }, [socket, handleReceiveMessage]);
+
+
+  // useEffect(() => {
+  //   console.log("are you receiving private message?");
+  //   socket.on("PRIVATE", handleReceiveMessage); // 이벤트 리스너 설치
+
+  //   return () => {
+  //     socket.off("PRIVATE", handleReceiveMessage); // 이벤트 리스너 해제
+  //   };
+  // }, [socket, handleReceiveMessage]);
+
 
   console.log("hello this is chat message", messages);
   return (
