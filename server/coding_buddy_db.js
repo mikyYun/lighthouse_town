@@ -15,7 +15,7 @@ const getUsers = (req, res) => {
   pool.query("SELECT * FROM users ORDER BY id ASC", (err, result) => {
     if (err) throw err;
     res.status(200).json(result.rows);
-    console.log(result.rows)
+    console.log("result.rows - coding_buddy_db.js", result.rows)
     return result.rows
   });
 };

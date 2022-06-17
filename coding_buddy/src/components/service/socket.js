@@ -41,13 +41,11 @@ export const makeMessage = pongData => {
       break;
     }
     case SOCKET_EVENT.SEND_MESSAGE: {
-      console.log('socket_event.send_message')
       contentLabel = String(content);
       nicknameLabel = nickname;
       break;
     }
     case SOCKET_EVENT.PRIVATE_MESSAGE: {
-      console.log('PRIVATE MESSAGE')
       contentLabel = String(content);
       nicknameLabel = nickname;
     }
@@ -77,13 +75,11 @@ export const makePrivateMessage = pongData => {
       break;
     }
     // case SOCKET_EVENT.SEND_MESSAGE: {
-    //   console.log('socket_event.send_message')
     //   contentLabel = String(content);
     //   nicknameLabel = nickname;
     //   break;
     // }
     // case SOCKET_EVENT.PRIVATE_MESSAGE: {
-    //   console.log('PRIVATE MESSAGE')
     //   contentLabel = String(content);
     //   nicknameLabel = nickname;
     // }

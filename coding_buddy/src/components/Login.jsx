@@ -15,7 +15,6 @@ export default function Login(props) {
     navigate('/register')
   }
   const goChat = (username, avatar) => {
-    // console.log('user', username, avatar)
     const data = [username, avatar]
     navigate('/game', { state: data })
   }
@@ -60,14 +59,13 @@ export default function Login(props) {
             .post("/login", loginInfo)
             .then((res) => {
               if (res.data) {
-                // console.log("1", res);
                 setUser(res.data.userName) // pass username so that server set username and socketid as key:value pair
-                console.log("res.data", res.data);
+                console.log("res.data - Login.js", res.data);
                 cookies.set("userdata", res.data);
                 goChat(res.data.userName, res.data.avatar)
                 // props.setNickname(res.data.userName)
               } else {
-                console.log("no matching user")
+                console.log("no matching user - Login.js")
                 alert("Invalid information. Please confirm your email and password")
               }
             });

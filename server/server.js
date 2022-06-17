@@ -69,12 +69,8 @@ io.on("connection", (socket) => {
 
   });
 
-  console.log("socket.on", socket.on);
-  console.log("a user connected: ", socket.id);
-
   socket.emit("init", { data: "hello world" });
   // socket.on('sendData', data => {
-  //   console.log(data);
   //   // add userid from data
   //   const users = [];
   //   users.push(data);
@@ -87,11 +83,11 @@ io.on("connection", (socket) => {
     const username = obj.username;
     const socketid = obj.socketID;
 
-    
+
     currentUsers[username] = socketid;
     // socket.join(loginRoom)
     const alluserNames = Object.keys(currentUsers); // {username : socket.id}
-    console.log("AFTER LOGIN, SET USER NAME AND SOCKET ID PAIR", currentUsers);
+    // console.log("AFTER LOGIN, SET USER NAME AND SOCKET ID PAIR", currentUsers);
     alluserNames.forEach((name) => {
       // name = moon, mike, heesoo
       console.log("USERNAME: ", name, "CURRENT USERS:", currentUsers[name]);
@@ -127,10 +123,10 @@ io.on("connection", (socket) => {
       type: "PRIVATE",
       time: new Date()
     }
-  // const content = obj.content;
-  // const recipient = obj.recipient;
-  // , { message: content, from: nickname });
-  // const nickname = obj.nickname;
+    // const content = obj.content;
+    // const recipient = obj.recipient;
+    // , { message: content, from: nickname });
+    // const nickname = obj.nickname;
 
 
     // const content = obj.content;
@@ -194,7 +190,6 @@ io.on("connection", (socket) => {
   // receive.message는 ChatRoom.jsx 에서 defined
   // --------------- SEND MESSAGE ---------------
   socket.on("SEND_MESSAGE", (requestData) => {
-    console.log("I got a message");
     //emiting back to receive message in line 67
     const responseData = {
       ...requestData,
@@ -212,7 +207,6 @@ io.on("connection", (socket) => {
 
   /* 오브젝트에서 종료되는 유저 삭제 */
   socket.on("disconnect", (e) => {
-    console.log("DISCONNECT", this.id)
     // console.log("disconnected id", socket.id)
     // currentUsers[username] = socketid;
     // socket.join(loginRoom)
@@ -227,7 +221,6 @@ io.on("connection", (socket) => {
 
 
 
-    console.log("CURRENT USERS", currentUsers); //2
     // Object.keys(currentUsers).forEach((username) => {
     //   if (currentUsers[username] === socket.id) {
     //     delete currentUsers[socket.id];
@@ -257,7 +250,7 @@ app.get("/", (req, res) => {
 // 로그인 정보 리퀘스트 .. 진행중
 app.post("/login", (req, res) => {
   // client sending
-  console.log("login request", req.body);
+  // console.log("login request", req.body);
   // req.body = {userEmail: '', userPassword: ''}
 
   const email = req.body.userEmail;
@@ -285,7 +278,7 @@ app.post("/login", (req, res) => {
             const userLanguages = [];
             if (err) throw err;
             if (res_2.rows.length > 0) {
-              console.log("find user's languages", res_2.rows);
+              // console.log("find user's languages", res_2.rows);
               res_2.rows.forEach((obj) => {
                 userLanguages.push(obj.language_id);
               });

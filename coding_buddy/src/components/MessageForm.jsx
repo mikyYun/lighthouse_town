@@ -6,21 +6,18 @@ import { SocketContext } from '../App.js'
 
 function MessageForm({ nickname, recipient }) {
   const [typingMessage, setTypingMessage] = useState("");
-  const {socket} = useContext(SocketContext);
+  const { socket } = useContext(SocketContext);
   console.log("MESSAGE", socket)
-  //  socket, socket_event object
+  // socket, socket_event object
   // textarea에서 텍스트를 입력하면 typingMessage state를 변경합니다.
   const handleChangeTypingMessage = useCallback(event => {
     setTypingMessage(event.target.value);
   }, []);
 
-  // 버튼을 누르면 실행합니다.
+
   const handleSendMesssage = useCallback(() => {
-    // 공백을 trim()으로 제거합니다.
-    // console.log("handleSendMesssage", handleSendMesssage)
     const noContent = typingMessage.trim() === "";
 
-    // 아무 메시지도 없으면 아무 일도 발생하지 않습니다.
     if (noContent) {
       console.log("no content received")
       return;
@@ -30,9 +27,9 @@ function MessageForm({ nickname, recipient }) {
     if (recipient.value !== "all") {
       socket.emit("PRIVATE", {
         nickname,
-        content : typingMessage,
-        recipient : recipient,
-        senderSocketId : socket.id
+        content: typingMessage,
+        recipient: recipient,
+        senderSocketId: socket.id
       })
     } else {
       socket.emit(SOCKET_EVENT.SEND_MESSAGE, {
@@ -50,7 +47,6 @@ function MessageForm({ nickname, recipient }) {
   //   console.log("this is a target", recipient)
   // })
 
-
   return (
     <form className="card">
       <div className="align-items-center">
@@ -64,12 +60,8 @@ function MessageForm({ nickname, recipient }) {
         <button
           type="button"
           className="btn btn-primary send-btn"
-          // onClick={handleSendMesssage}
           onClick={handleSendMesssage}
-            // console.log("REC", recipient)
-          
-        >
-          SEND
+        >SEND
         </button>
       </div>
     </form>
