@@ -15,7 +15,6 @@ export default function Login(props) {
     navigate('/register')
   }
   const goChat = (username, avatar) => {
-    // console.log('user', username, avatar)
     const data = [username, avatar]
     navigate('/game', { state: data })
   }
@@ -59,39 +58,19 @@ export default function Login(props) {
           axios
             .post("/login", loginInfo)
             .then((res) => {
-              if (res.data) {
-                // console.log("1", res);
+              if (res.data.userName) {
                 setUser(res.data.userName) // pass username so that server set username and socketid as key:value pair
-                console.log("res.data", res.data);
+                console.log("res.data - Login.js", res.data);
                 cookies.set("userdata", res.data);
                 goChat(res.data.userName, res.data.avatar)
                 // props.setNickname(res.data.userName)
               } else {
-                console.log("no matching user")
+                console.log(res.data)
+                console.log("no matching user - Login.js")
                 alert("Invalid information. Please confirm your email and password")
               }
             });
-          // useEffect(() => {
-          // })
-          // console.log(res)
-          // console.log("CLICKED");
-          // const userDataForCookies = loginHandler({
-          //   userEmail,
-          //   userPassword,
-          // });
-          // userDataForCookies.then((data) => {
-          //   cookies.set("email", data);
-          //   console.log("LOGIN DATA", data);
-          // });
-          // console.log("got response", userDataForCookies);
-          // console.log("setting cookies");
           e.preventDefault();
-
-          // cookies.set("password", userPassword);
-
-          // socket.emit("LOGIN", { userData }).catch(err => console.log(err))
-          // <Redirect to="/game" />;
-          // 데이터 validation ... is true? else preventdefault
         }}
       >
         Login

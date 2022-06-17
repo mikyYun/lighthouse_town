@@ -26,31 +26,26 @@ export const SOCKET_EVENT = {
 };
 
 //makeMessage
-export const makeMessage = pongData => {
-  const { prevNickname, nickname, content, type, time } = pongData;
+export const makePublicMessage = pongData => {
+  const { nickname, content, type, time } = pongData;
   let nicknameLabel;
   let contentLabel = "";
-  console.log("inside makeMessage")
   switch (type) {
     case SOCKET_EVENT.JOIN_ROOM: {
       contentLabel = `${nickname} has joined the room.`;
       break;
     }
-    case SOCKET_EVENT.UPDATE_NICKNAME: {
-      contentLabel = `User's name has been changed.\n ${prevNickname} => ${nickname}.`;
-      break;
-    }
+
     case SOCKET_EVENT.SEND_MESSAGE: {
-      console.log('socket_event.send_message')
       contentLabel = String(content);
       nicknameLabel = nickname;
       break;
     }
-    case SOCKET_EVENT.PRIVATE_MESSAGE: {
-      console.log('PRIVATE MESSAGE')
-      contentLabel = String(content);
-      nicknameLabel = nickname;
-    }
+    // case SOCKET_EVENT.PRIVATE_MESSAGE: {
+    //   contentLabel = String(content);
+    //   nicknameLabel = nickname;
+    //   break;
+    // }
     default:
   }
 
@@ -65,8 +60,7 @@ export const makePrivateMessage = pongData => {
   const { recipient, nickname, content, type, time } = pongData;
   // let nicknameLabel;
   let contentLabel = "";
-  let recipientLabel = recipient
-  console.log("inside makeMessage", recipientLabel)
+
   switch (type) {
     case "PRIVATE": {
       contentLabel = `${nickname} has sent a private message.`;
@@ -77,13 +71,11 @@ export const makePrivateMessage = pongData => {
       break;
     }
     // case SOCKET_EVENT.SEND_MESSAGE: {
-    //   console.log('socket_event.send_message')
     //   contentLabel = String(content);
     //   nicknameLabel = nickname;
     //   break;
     // }
     // case SOCKET_EVENT.PRIVATE_MESSAGE: {
-    //   console.log('PRIVATE MESSAGE')
     //   contentLabel = String(content);
     //   nicknameLabel = nickname;
     // }

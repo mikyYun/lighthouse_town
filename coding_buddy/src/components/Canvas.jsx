@@ -15,7 +15,7 @@ const Canvas = (props) => {
   const canvasRef = useRef(null);
   const [usersPosition, setUsersPosition] = useState();
   const [userCharacters, setUserCharacters] = useState([]);
-  const {socket} = useContext(SocketContext)
+  const { socket } = useContext(SocketContext)
   const username = props.username; //moon
   const avatar = props.avatar;  //1
   const userData = {
@@ -24,10 +24,6 @@ const Canvas = (props) => {
     y: 150,
   }
   const userChar = new Characters(userData)
-  // console.log('userChar', userChar)
-
-
-  // let otherUserChars = [];
   // get other users data from the server
   setInterval(() => {
     socket.on('sendData', data => {
@@ -73,7 +69,7 @@ const Canvas = (props) => {
 
   useEffect(() => {
     for (let name in usersPosition) {
-      console.log(name) // moon, heesoo, mike
+      console.log('NAME - Canvas.js', name) // moon, heesoo, mike
       // 만약에 이름이 나랑 같지 않고
       if (name.username !== userData.username) {
         console.log('first', userCharacters.length) // 처음은 빈 어레이
@@ -82,7 +78,7 @@ const Canvas = (props) => {
         // 이름이 같지 않으면 이게 나와야하는데,
         // moon 으로 로그인해서 움직이면 userData.username 이 moon이라고 나와
         if (userCharacters.length === 0) {
-          console.log('second', userCharacters)
+          console.log('second - Canvas.js ', userCharacters)
           let char = new Characters(usersPosition[name])
           setUserCharacters([char])
           // userCharacters.push(char)
@@ -96,25 +92,20 @@ const Canvas = (props) => {
           userCharacters.forEach(char => {
             if (char.state.username !== name.username) {
               let char = new Characters(usersPosition[name])
-              // char.src = selectAvatar(2)
-              console.log('new Char', char)
+              console.log('new Char - Canvas.js', char)
               // setUserCharacters(prev => [...prev, char])
-              // console.log('userChar state', userCharacters)
+              console.log('userCharacters - Canvas.js', userCharacters)
             }
           })
         }
       }
     }
-
-    // console.log('otheruserchars',otherUserChars[0])
   }, [usersPosition])
 
 
   const sendMessage = props.sendMessage
   const sendPrivateMessage = props.sendPrivateMessage
   const sendData = props.sendData
-  // console.log("THIS", sendMessage)
-  // console.log("THAT", sendPrivateMessage)
   useEffect(() => {
     //make collision wall
     // console.log(townWall.length)
@@ -122,9 +113,7 @@ const Canvas = (props) => {
     for (let i = 0; i < townWall.length; i += 70) {
       collisionTownMap.push(townWall.splice(i, i + 70))
     }
-
     // console.log(collisionTownMap)
-
     // put step function
     // canvas, ctx only in this useEffect
     const canvas = canvasRef.current;
@@ -203,10 +192,10 @@ const Canvas = (props) => {
     // window.requestAnimationFrame(() => gameLoop(ctx, canvas, characters, mapImg));
     document.addEventListener("mousedown", () => {
       // setInterval(() => {
-    //   socket.on('init', msg => console.log('msg', msg))
-    //   socket.emit('sendData', userChar.state)
-    //   socket.on('backData', data => console.log('data', data))
-    // } ,1000)
+      //   socket.on('init', msg => console.log('msg', msg))
+      //   socket.emit('sendData', userChar.state)
+      //   socket.on('backData', data => console.log('data', data))
+      // } ,1000)
 
     })
 

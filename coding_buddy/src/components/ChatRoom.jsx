@@ -1,18 +1,18 @@
 import { useState, useCallback, useEffect, useContext, useRef } from "react";
 import MessageForm from "./MessageForm";
 import "./ChatRoom.scss";
-import { SOCKET_EVENT, makeMessage, makePrivateMessage } from "./service/socket";
+import { SOCKET_EVENT, makePublicMessage, makePrivateMessage } from "./service/socket";
 import { SocketContext } from "../App.js";
 
 function ChatRoom(props) {
   const { socket } = useContext(SocketContext)
   const { nickname, recipient } = props;
   const [messages, setMessages] = useState([]);
-  // const recipient = props.recipient;
+
   const chatWindow = useRef(null);
-  console.log("props", props);
-  console.log("nickname", nickname);
-  // 새 메시지를 받으면 스크롤을 이동하는 함수
+  console.log("props - Chatroom.js", props);
+  console.log("nickname - Chatroom.js", nickname);
+
   const moveScrollToReceiveMessage = useCallback(() => {
     if (chatWindow.current) {
       chatWindow.current.scrollTo({
@@ -24,30 +24,26 @@ function ChatRoom(props) {
 
   // RECEIVE_MESSAGE 이벤트 콜백: messages state에 데이터를 추가합니다.
   // @@@@ Message.Form line 26 & socket > index.js line 68
-  const handleReceiveMessage = useCallback(
+  const handleReceivePublicMessage = useCallback(
     (pongData) => {
-      // console.log("PRIVATE in CLIENT")
-      const newMessage = makeMessage(pongData);
-      // makeMessage 는 service > socket.js 에 있음.
-      setMessages((messages) => [...messages, newMessage]); //????이해안됌
+      const newPublicMessage = makePublicMessage(pongData);
+      setMessages((messages) => [...messages, newPublicMessage]);
       moveScrollToReceiveMessage();
     },
-    [moveScrollToReceiveMessage] //????이해안됌
+    [moveScrollToReceiveMessage]
   );
 
   const handleReceivePrivateMessage = useCallback(
     (pongData) => {
-      console.log("PRIVATE in CLIENT")
-      const newMessage = makePrivateMessage(pongData);
-      // makeMessage 는 service > socket.js 에 있음.
-      setMessages((messages) => [...messages, newMessage]); //????이해안됌
+      const newPrivateMessage = makePrivateMessage(pongData);
+      setMessages((messages) => [...messages, newPrivateMessage]);
       moveScrollToReceiveMessage();
     },
-    [moveScrollToReceiveMessage] //????이해안됌
+    [moveScrollToReceiveMessage]
   );
 
   useEffect(() => {
-    console.log(messages);
+    console.log("messages - Chatroom.js", messages);
   }, [messages]);
 
   // io.on("conenct" (socket) => {
@@ -55,28 +51,15 @@ function ChatRoom(props) {
   // })
 
   useEffect(() => {
-    console.log("are you receiving?");
-    socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); // 이벤트 리스너 설치
+    socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceivePublicMessage); // 이벤트 리스너 - 퍼블릭 메세지
+    socket.on("PRIVATE", handleReceivePrivateMessage); // 이벤트 리스너 - 프라이빗 메세지
 
-    socket.on("PRIVATE", handleReceivePrivateMessage); // 이벤트 리스너 설치
     return () => {
       socket.disconnect()
       // socket.off(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); // 이벤트 리스너 해제
     };
-  }, [socket, handleReceiveMessage]);
+  }, [socket, handleReceivePublicMessage]); //@@@@ 이거 왜 public message??? private message 는??
 
-
-  // useEffect(() => {
-  //   console.log("are you receiving private message?");
-  //   socket.on("PRIVATE", handleReceiveMessage); // 이벤트 리스너 설치
-
-  //   return () => {
-  //     socket.off("PRIVATE", handleReceiveMessage); // 이벤트 리스너 해제
-  //   };
-  // }, [socket, handleReceiveMessage]);
-
-
-  console.log("hello this is chat message", messages);
   return (
     <div className="d-flex flex-column chat-form">
       <div className="text-box">
@@ -85,19 +68,19 @@ function ChatRoom(props) {
       <div className="chat-window card" ref={chatWindow}>
         {messages.map((message, index) => {
           const { nickname, content, time, recipient } = message;
-          console.log("THIS is nickname for private message", nickname, recipient)
+          console.log("nickname, recipient in Chatroom.js", nickname, recipient)
           return (
             <div key={index} className="d-flex flex-row">
               {nickname && <div className="message-nickname">{nickname}: </div>}
               {/* {recipient && <div className="recipient-name"> */}
-                {/* To: {recipient} </div>} */}
+              {/* To: {recipient} </div>} */}
               <div>{content}</div>
               <div className="time">{time}</div>
             </div>
           );
         })}
       </div>
-      <MessageForm nickname={nickname} recipient={recipient}/>
+      <MessageForm nickname={nickname} recipient={recipient} />
     </div>
   );
 }

@@ -6,7 +6,6 @@ import Cookies from "universal-cookie";
 // step 2. import socket.id-client
 // import socketIoClient from 'socket.io-client';
 const { io } = require("socket.io-client");
-// console.log(io)
 // ip connect to server
 // const socket = io.connect("http://localhost:8000", {
 //   reconnectionDelay: 1000,

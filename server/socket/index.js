@@ -64,7 +64,6 @@ module.exports = function (socketIo) {
     // receive.message는 ChatRoom.jsx 에서 defined 
     // --------------- SEND MESSAGE ---------------
     client.on(SOCKET_EVENT.SEND_MESSAGE, requestData => {
-      console.log('I got a message')
       //emiting back to receive message in line 67
       const responseData = {
         ...requestData,

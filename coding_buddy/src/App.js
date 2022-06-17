@@ -29,8 +29,6 @@ function App() {
   }, [location.pathname]);
 
   useEffect(() => {
-    // const socket = io();
-    // console.log('socket', socket)
     socket.on("connect", () => {
       const all_cookies = cookies.getAll();
       //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
@@ -42,39 +40,36 @@ function App() {
       console.log("CONNECTED");
       // 유저데이터가 아직 삭제되지 않았고, 게임페이지 리로드 한 경우 서버랑 연결하고 currentUser update in server
       if (all_cookies.userdata) {
+        // 쿠키 존재하면 리커넥트 요청
         socket.emit("reconnection?", { username: all_cookies.userdata.userName, newSocketId: socket.id });
       } else {
+        // 쿠키 없으면 홈으로
         navigate("/")
       }
     });
 
-    socket.on("REGISTRATIPN SUCCESS", (userInfo) => {
+    socket.on("DENY CONNECTION", (e) => {
+      clearCookies()
+      navigate("/")
+    })
+
+    socket.on("REGISTRATION SUCCESS", (userInfo) => {
       console.log("cookie set after register");
       cookies.set("email", userInfo);
-      // console.log("username", username)
       navigate("/game");
     });
 
-    // socket.on("PASS", (e) => {
-    //   console.log(e);
-    // });
-
-    // for DM
-    // socket.on("PRIVATE", (e) => {
-    //   console.log(e); //coming from server
-    // });
-
-    socket.on("init", msg => console.log("msg", msg)); //coming from server
-    socket.on("backData", data => console.log("data", data)); //coming from server
+    socket.on("init", msg => console.log("msg - App.js", msg)) //coming from server
+    socket.on("backData", data => console.log("data", data)) //coming from server
 
     socket.on("all user names", (obj) => {
       console.log("지금 로그인 되어있는 유저 line 55 - App.js", obj.users);
       // obj.users = [user1, user2] => [{value: name, label: name } {}]
-      const usersOnline = obj.users.map(name => ({ value: name, label: name }));
-      usersOnline.unshift({ value: "all", label: "all" });
-      console.log('usersOnline', usersOnline);// [{}, {}, {}]
-      setOnline(usersOnline);
-    }); // this works
+      const usersOnline = obj.users.map(name => ({ value: name, label: name }))
+      usersOnline.unshift({ value: "all", label: "all" })
+      console.log('usersOnline - App.js', usersOnline)// [{}, {}, {}]
+      setOnline(usersOnline)
+    }) // this works
 
     return () => {
       socket.disconnect();
@@ -82,7 +77,6 @@ function App() {
   }, []);
 
   const RegistrationChecker = (val) => {
-    console.log('ref');
     socket && socket.emit("REGISTERED", val);
   };
 
@@ -97,7 +91,6 @@ function App() {
   const createSocketIdNameObject = (username) => {
     socket && socket.emit("SET USERNAME", { "socketID": socket.id, "username": username });
     // socket && socket.emit("REGISTERED", val); //if socket exists, then emit
-
   };
 
   const sendMessage = () => {
@@ -108,13 +101,11 @@ function App() {
     socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username });
   };
 
-
   const sendData = (state) => {
     socket && socket.emit("sendData", state);
   };
 
   return (
-
     <SocketContext.Provider value={{ socket, online, nickname }} >
       <div className='main'>
         <Routes>

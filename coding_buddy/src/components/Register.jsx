@@ -22,7 +22,7 @@ export default function Register(props) {
   //   console.log("REG PROPS", props)
   //   props.submitRegistrationInfo("test")
   // })
-  console.log("emit to server", props.submitRegistrationInfo);
+  console.log("emit to server - Register.js", props.submitRegistrationInfo);
   const insertLanguages = (e, id) => {
     const checked = e.target.checked;
     if (checked) {
@@ -46,7 +46,7 @@ export default function Register(props) {
             value={userEmail}
             onChange={(e) => {
               setUserEmail(e.target.value);
-              console.log(e.target.value);
+              console.log("setUserEmail - Register.js", e.target.value);
             }}
           ></input>
         </div>
@@ -61,9 +61,8 @@ export default function Register(props) {
             type="text"
             value={userName}
             onChange={(e) => {
-              console.log(e.target.value);
               if (e.target.value.length < 4) setUserName(e.target.value);
-              console.log("username should be longer than 4 chars");
+              console.log("username should be longer than 4 chars - Register.js");
             }}
           ></input>
         </div>
@@ -80,7 +79,6 @@ export default function Register(props) {
             onChange={(e) => {
               if (e.target.value.length < 4) setUserPassword(e.target.value);
               console.log("password should be longer than 4 chars");
-              console.log(e.target.value);
             }}
           ></input>
         </div>
@@ -95,7 +93,7 @@ export default function Register(props) {
             onChange={(e) => {
               if (e.target.value !== userPassword) {
                 setIncorrectPassword("incorrect_password")
-                console.log("confirmation password is not matched");
+                console.log("confirmation password doesn't match. - Register.js");
               } else {
                 setIncorrectPassword("correct_password")
               }
@@ -175,7 +173,6 @@ export default function Register(props) {
             axios // client talking to the server. Asynchronous. if it doesn't happen .post, 
               .post("/register", { userInfo })
               .then(res => {
-                // console.log(res.data)
                 props.submitRegistrationInfo(res.data);
                 cookies.set("username", res.data)
                 navigate("/game")

@@ -60,11 +60,20 @@ io.on("connection", (socket) => {
   session.save();
 
   socket.on("reconnection?", (e) => {
+    let reconnection = true
     console.log("THIS IS RECONNECTION", e)
     // e.username, e.newSocketId
-    console.log("before",currentUsers)
-    currentUsers[e.username] = e.newSocketId
-    console.log("@@@@@@@@@@@@@after", currentUsers)
+    // console.log("before",currentUsers)
+    if (currentUsers[e.username]) {
+      // 현재 currentUsers 에 같은 유저네임이 존재하면 => 사용중인 유저네임 && disconnect 되지 않았음
+      // console.log("this user are in used")
+      // !reconnection
+      socket.emit("DENY CONNECTION", false)
+      // callback("return")
+    } else {
+      currentUsers[e.username] = e.newSocketId
+    }
+    console.log("@@@@@@@@@@@@@after reconnection", currentUsers)
   })
 
   // use object
@@ -77,12 +86,8 @@ io.on("connection", (socket) => {
 
   });
 
-  console.log("socket.on", socket.on);
-  console.log("a user connected: ", socket.id);
-
   socket.emit("init", { data: "hello world" });
   // socket.on('sendData', data => {
-  //   console.log(data);
   //   // add userid from data
   //   const users = [];
   //   users.push(data);
@@ -92,18 +97,22 @@ io.on("connection", (socket) => {
   // socketID and username matching
   socket.on("SET USERNAME", (obj) => {
     //Login.jsx 의 setUser(res.data.userName)
-    const username = obj.username;
-    const socketid = obj.socketID;
-    currentUsers[username] = socketid;
-    // socket.join(loginRoom)
-    const alluserNames = Object.keys(currentUsers); // {username : socket.id}
-    console.log("AFTER LOGIN, SET USER NAME AND SOCKET ID PAIR", currentUsers);
-    alluserNames.forEach((name) => {
-      // name = moon, mike, heesoo
-      console.log("USERNAME: ", name, "CURRENT USERS:", currentUsers[name]);
-      // const sortedName = alluserNames.sort()
-      io.to(currentUsers[name]).emit("all user names", { "users": alluserNames }); // App.jsx & Recipients.jsx 로 보내기
-    }); // {"users": [name1, name2] }
+    const {username, socketid} = obj;
+    // const socketid = obj.socketID;
+    // if (currentUsers[username]) {
+    //   socket.emit("DENY CONNECTION", false)
+    // } else {
+      currentUsers[username] = socketid;
+      // socket.join(loginRoom)
+      const alluserNames = Object.keys(currentUsers); // {username : socket.id}
+      // console.log("AFTER LOGIN, SET USER NAME AND SOCKET ID PAIR", currentUsers);
+      alluserNames.forEach((name) => {
+        // name = moon, mike, heesoo
+        console.log("USERNAME: ", name, "CURRENT USERS:", currentUsers[name]);
+        // const sortedName = alluserNames.sort()
+        io.to(currentUsers[name]).emit("all user names", { "users": alluserNames }); // App.jsx & Recipients.jsx 로 보내기
+      }); // {"users": [name1, name2] }
+    // }
   });
 
   // receive message
@@ -180,7 +189,6 @@ io.on("connection", (socket) => {
   // receive.message는 ChatRoom.jsx 에서 defined
   // --------------- SEND MESSAGE ---------------
   socket.on("SEND_MESSAGE", (requestData) => {
-    console.log("I got a message");
     //emiting back to receive message in line 67
     const responseData = {
       ...requestData,
@@ -218,7 +226,7 @@ app.get("/", (req, res) => {
 // 로그인 정보 리퀘스트 .. 진행중
 app.post("/login", (req, res) => {
   // client sending
-  console.log("login request", req.body);
+  // console.log("login request", req.body);
   // req.body = {userEmail: '', userPassword: ''}
 
   const email = req.body.userEmail;
@@ -246,7 +254,7 @@ app.post("/login", (req, res) => {
             const userLanguages = [];
             if (err) throw err;
             if (res_2.rows.length > 0) {
-              console.log("find user's languages", res_2.rows);
+              // console.log("find user's languages", res_2.rows);
               res_2.rows.forEach((obj) => {
                 userLanguages.push(obj.language_id);
               });
