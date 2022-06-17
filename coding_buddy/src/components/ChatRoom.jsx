@@ -1,18 +1,18 @@
 import { useState, useCallback, useEffect, useContext, useRef } from "react";
 import MessageForm from "./MessageForm";
 import "./ChatRoom.scss";
-import { SOCKET_EVENT, makeMessage, makePrivateMessage } from "./service/socket";
+import { SOCKET_EVENT, makePublicMessage, makePrivateMessage } from "./service/socket";
 import { SocketContext } from "../App.js";
 
 function ChatRoom(props) {
   const { socket } = useContext(SocketContext)
   const { nickname, recipient } = props;
   const [messages, setMessages] = useState([]);
-  // const recipient = props.recipient;
+
   const chatWindow = useRef(null);
   console.log("props - Chatroom.js", props);
   console.log("nickname - Chatroom.js", nickname);
-  // 새 메시지를 받으면 스크롤을 이동하는 함수
+
   const moveScrollToReceiveMessage = useCallback(() => {
     if (chatWindow.current) {
       chatWindow.current.scrollTo({
@@ -24,11 +24,10 @@ function ChatRoom(props) {
 
   // RECEIVE_MESSAGE 이벤트 콜백: messages state에 데이터를 추가합니다.
   // @@@@ Message.Form line 26 & socket > index.js line 68
-  const handleReceiveMessage = useCallback(
+  const handleReceivePublicMessage = useCallback(
     (pongData) => {
-      const newMessage = makeMessage(pongData);
-      // makeMessage 는 service > socket.js 에 있음.
-      setMessages((messages) => [...messages, newMessage]);
+      const newPublicMessage = makePublicMessage(pongData);
+      setMessages((messages) => [...messages, newPublicMessage]);
       moveScrollToReceiveMessage();
     },
     [moveScrollToReceiveMessage]
@@ -36,9 +35,8 @@ function ChatRoom(props) {
 
   const handleReceivePrivateMessage = useCallback(
     (pongData) => {
-      const newMessage = makePrivateMessage(pongData);
-      // makeMessage 는 service > socket.js 에 있음.
-      setMessages((messages) => [...messages, newMessage]);
+      const newPrivateMessage = makePrivateMessage(pongData);
+      setMessages((messages) => [...messages, newPrivateMessage]);
       moveScrollToReceiveMessage();
     },
     [moveScrollToReceiveMessage]
@@ -53,14 +51,14 @@ function ChatRoom(props) {
   // })
 
   useEffect(() => {
-    socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); // 이벤트 리스너 설치
+    socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceivePublicMessage); // 이벤트 리스너 - 퍼블릭 메세지
+    socket.on("PRIVATE", handleReceivePrivateMessage); // 이벤트 리스너 - 프라이빗 메세지
 
-    socket.on("PRIVATE", handleReceivePrivateMessage); // 이벤트 리스너 설치
     return () => {
       socket.disconnect()
       // socket.off(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); // 이벤트 리스너 해제
     };
-  }, [socket, handleReceiveMessage]);
+  }, [socket, handleReceivePublicMessage]); //@@@@ 이거 왜 public message??? private message 는??
 
   return (
     <div className="d-flex flex-column chat-form">

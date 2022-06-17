@@ -127,14 +127,11 @@ io.on("connection", (socket) => {
     // const recipient = obj.recipient;
     // , { message: content, from: nickname });
     // const nickname = obj.nickname;
-
-
     // const content = obj.content;
     const recipient = obj.recipient;
     const senderSocketID = obj.senderSocketId;
     // const nickname = obj.nickname;
     // console.log(targetName);
-    // console.log("PRIVATE MESSAGE", obj);
     // let targetSocketId;
 
     // currentUsers = {name: socketId}
