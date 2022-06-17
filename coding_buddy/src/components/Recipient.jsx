@@ -6,7 +6,7 @@ function Recipient(props) {
   const { online } = useContext(SocketContext)
   const {nickname, recipient, setRecipient} = props
   // const recipient = props.recipient
-  // const setRecipient = props.setRecipient 
+  // const setRecipient = props.setRecipient
   console.log("ONLINE - RECIPIENT.JSX", online)
   const onlineOthers = online.filter(user => user.value !== nickname)
   return (

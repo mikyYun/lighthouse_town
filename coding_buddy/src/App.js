@@ -10,6 +10,7 @@ import Login from './components/Login';
 import { socket } from './components/service/socket.js';
 import { createContext } from "react";
 export const SocketContext = createContext(socket); // going to Recipient.jsx
+
 function App() {
   const navigate = useNavigate();
   const socket = useContext(SocketContext);

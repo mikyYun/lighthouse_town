@@ -10,8 +10,8 @@ function ChatRoom(props) {
   const [messages, setMessages] = useState([]);
 
   const chatWindow = useRef(null);
-  console.log("props - Chatroom.js", props);
-  console.log("nickname - Chatroom.js", nickname);
+  // console.log("props - Chatroom.js", props);
+  // console.log("nickname - Chatroom.js", nickname);
 
   const moveScrollToReceiveMessage = useCallback(() => {
     if (chatWindow.current) {
@@ -22,8 +22,9 @@ function ChatRoom(props) {
     }
   }, []);
 
-  // RECEIVE_MESSAGE 이벤트 콜백: messages state에 데이터를 추가합니다.
-  // @@@@ Message.Form line 26 & socket > index.js line 68
+  // RECEIVE_MESSAGE 이벤트 콜백: messages state에 데이터를 추가.
+  // MessageForm & socket > index.js
+  // socketIo.to(roomName).emit("RECEIVE_MESSAGE", responseData);
   const handleReceivePublicMessage = useCallback(
     (pongData) => {
       const newPublicMessage = makePublicMessage(pongData);
@@ -57,8 +58,10 @@ function ChatRoom(props) {
     return () => {
       socket.disconnect()
       // socket.off(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); // 이벤트 리스너 해제
+      //@@이거 왜 off 안하고 disconnect로 함?
     };
-  }, [socket, handleReceivePublicMessage]); //@@@@ 이거 왜 public message??? private message 는??
+  }, [socket, handleReceivePublicMessage]);
+  //@@@@ 이거 왜 public message??? private message 는??
 
   return (
     <div className="d-flex flex-column chat-form">
@@ -67,11 +70,13 @@ function ChatRoom(props) {
       </div>
       <div className="chat-window card" ref={chatWindow}>
         {messages.map((message, index) => {
-          const { nickname, content, time, recipient } = message;
-          console.log("nickname, recipient in Chatroom.js", nickname, recipient)
+          const { nickname, content, time } = message;
+          let recipient = ''
+          message.recipient ? recipient = message.recipient : recipient = 'all'
+
           return (
             <div key={index} className="d-flex flex-row">
-              {nickname && <div className="message-nickname">{nickname}: </div>}
+              {nickname && <div className="message-nickname">{nickname} to {recipient}:  </div>}
               {/* {recipient && <div className="recipient-name"> */}
               {/* To: {recipient} </div>} */}
               <div>{content}</div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, ReactDOM } from "react";
 import Canvas from "./Canvas";
 import "./Game.scss";
 import Chat from "./Chat";
@@ -44,12 +44,6 @@ export default function Game(props) {
       </div>
     </>
   );
-  // }
-  // else {
-  //   return (
-  //     <Routes>
-  //       <Route path="/" />
-  //     </Routes>
-  //   )
-  // }
 }
+
+

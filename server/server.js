@@ -86,14 +86,6 @@ io.on("connection", (socket) => {
 
   });
 
-  socket.emit("init", { data: "hello world" });
-  // socket.on('sendData', data => {
-  //   // add userid from data
-  //   const users = [];
-  //   users.push(data);
-  //   socket.broadcast.emit('backData', users);
-  // });
-
   // socketID and username matching
   socket.on("SET USERNAME", (obj) => {
     //Login.jsx 의 setUser(res.data.userName)
