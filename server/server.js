@@ -63,20 +63,16 @@ io.on("connection", (socket) => {
   // socket.emit("init", {data: 'hello world'})
   socket.on("sendData", (data) => {
     users[data.username] = data;
-    io.emit("sendData", users);
+    // setInterval( () => {
+      io.emit("sendData", users);
+    // }, 1000)
   });
 
   console.log("socket.on", socket.on);
   console.log("a user connected: ", socket.id);
 
   socket.emit("init", { data: "hello world" });
-  // socket.on('sendData', data => {
-  //   console.log(data);
-  //   // add userid from data
-  //   const users = [];
-  //   users.push(data);
-  //   socket.broadcast.emit('backData', users);
-  // });
+
 
   // socketID and username matching
   socket.on("SET USERNAME", (obj) => {

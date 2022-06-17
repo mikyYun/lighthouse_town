@@ -13,6 +13,8 @@ const Canvas = (props) => {
   const canvasRef = useRef(null);
   const [usersPosition, setUsersPosition] = useState();
   const [userCharacters, setUserCharacters] = useState([]);
+  const [ctx, setCtx] = useState();
+  const [canvas, setCanvas] = useState();
 
   // create user's character
   const username = props.username; //moon
@@ -25,79 +27,106 @@ const Canvas = (props) => {
   const userChar = new Characters(userData)
 
 
-
-  // get other users data from the server
-  socket.on('sendData', data => {
-    console.log('data', data)
-    delete data[username]
-    setUsersPosition(data)
-    console.log('data', data)
-  })
-
   console.log('usersPosition', usersPosition) //가장 처음에는 undefined 여야함.
 
 
   const isEmpty = (state) => {
     return !state || Object.keys(state).length === 0 ? true : false
   }
-  const createCharacterHandler = (name, char) => {
-    setUserCharacters(prev => ({...prev, [name]: char}))
+  const characterHandler = (name, char) => {
+    console.log('char:', char);
+    setUserCharacters(prev => {
+      const updatedChar = {
+        ...prev,
+        [name]: prev[name].state
+      };
+      updatedChar[name].state = char;
+      return updatedChar;
+    });
   }
 
   const createCharacter = () => {
-    console.log('isEmpty?', isEmpty(usersPosition));
+    // console.log('isEmpty?', isEmpty(usersPosition));
     if (!isEmpty(usersPosition)) {
-      console.log("users are here!!!!!")
-      console.log(usersPosition)
-      console.log(userCharacters)
+      // console.log("users are here!!!!!")
+      // console.log(usersPosition)
+      // console.log(userCharacters)
       // when there is no characters
-      console.log(isEmpty(userCharacters))
+      // console.log(isEmpty(userCharacters))
       if(isEmpty(userCharacters)) {
-        console.log('no character here!!!!', usersPosition)
+        // console.log('no character here!!!!', usersPosition)
         // console.log(usersPosition[Object.keys(usersPosition)])
-        console.log('object keys', Object.keys(usersPosition))
+        // console.log('object keys', Object.keys(usersPosition))
         Object.keys(usersPosition).map( (username, i) => {
           let char = new Characters(usersPosition[Object.keys(usersPosition)[i]]);
-          createCharacterHandler(username, char)  //////////////how can I store name as name variable that I define above???
+          characterHandler(username, char)  //////////////how can I store name as name variable that I define above???
           // console.log('create!!!!!', userCharacters)
         })
         // console.log('char', char)
-    }
+     }
+   }
+    // console.log('inside create char', userCharacters)
   }
-    console.log('inside create char', userCharacters)
+  // createCharacter()
+
+  // const CharacterHandler = (name, char) => {
+  //   setUserCharacters(prev => ({...prev, [name]: char}))
+  // };
+
+  // update user
+  // should check if that character already exsit
+// const updateState = (user) => {
+//   setUserCharacters(prev => (...prev,   ))
+// }
+
+const updateCharacter = () => {
+  // check if useCharacters exist
+  console.log('userCharacters', userCharacters)
+  if (isEmpty(userCharacters)) {
+    console.log('its empty')
+    return
+  }
+  console.log('no its not')
+  if (usersPosition && userCharacters) {
+    console.log(Object.keys(usersPosition))
+    Object.keys(usersPosition).forEach( user => {
+      console.log('user', user) //moon
+      console.log(userCharacters[user])   ///this will be used after fixing it
+      console.log(usersPosition[user])
+      characterHandler(user, usersPosition[user])
+      console.log('afterupdate', userCharacters)
+    })
+  }
 }
-createCharacter()
 
-  // useEffect(() => {
-  //   for (let name in usersPosition) {
-  //     console.log(name) // moon, heesoo, mike
-  //     // 만약에 이름이 나랑 같지 않고
-  //     if (name !== userData.username) {
-  //       console.log('first', userCharacters)
-  //       if (userCharacters.length === 0) {
-  //         console.log('second', userCharacters)
-  //         let char = new Characters(usersPosition[name])
-  //         setUserCharacters(prev => [...prev, char])
-  //         console.log('third', userCharacters)
-  //         // otherUserChars.push(char);
-  //       } else {
-  //         // once updated, draw the canvas!
-  //         console.log('inside else')
-  //         userCharacters.forEach(char => {
-  //           if (char.state.username !== name) {
-  //             let char = new Characters(usersPosition[name])
-  //             console.log('new Char', char)
-  //             setUserCharacters(prev => [...prev, char])
-  //             console.log('userChar state', userCharacters)
-  //           }
-  //         })
-  //       }
-  //     }
-  //   }
+// get other users data from the server
+socket.on('sendData', data => {
+  console.log('data', data)
+  delete data[username]
+  setUsersPosition(data)
+  console.log('data', data)
+  createCharacter()
+  updateCharacter()
+})
 
-  //   // console.log('otheruserchars',otherUserChars[0])
-  // }, [usersPosition])
+useEffect(() => {
+  window.addEventListener("keydown", e => {
+    userChar.move(e)
+    socket.emit('sendData', userChar.state)
+    // console.log('sendData', userChar.state)
+    // sendMessage("SEND")
+  });
+  window.addEventListener("keyup", () => {
+    userChar.stop()
+    socket.emit('sendData', userChar.state)
+    // sendPrivateMessage("moon", "this is private message", username)
+  });
 
+  return () => {
+    window.removeEventListener("keydown", e => userChar.move(e));
+    window.removeEventListener("keyup", () => userChar.stop());
+  };
+} ,[])
 
   const sendMessage = props.sendMessage
   const sendPrivateMessage = props.sendPrivateMessage
@@ -105,103 +134,63 @@ createCharacter()
   // console.log("THIS", sendMessage)
   // console.log("THAT", sendPrivateMessage)
   useEffect(() => {
-    //make collision wall
-    // console.log(townWall.length)
-    const collisionTownMap = []
-    for (let i = 0; i < townWall.length; i += 70) {
-      collisionTownMap.push(townWall.splice(i, i + 70))
-    }
-
-    // console.log(collisionTownMap)
-
     // put step function
     // canvas, ctx only in this useEffect
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
     canvas.width = 1120;
     canvas.height = 640;
+    // setCanvas(canvas);
+    const ctx = canvas.getContext("2d");
+    // setCtx(ctx)
 
     // make background image
     const mapImg = new Image();
     mapImg.src = mapImage;
 
     let frameCount = 0;
-    let framelimit = 10;
-
+    let framelimit = 4;
     function step() {
+      if (ctx && canvas) {
+        // console.log('Beginning of step:', canvas, ctx);
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      // socket.on('sendData', data => {
-      //   // console.log('data', data);
-      //   setUsersPosition(data);
-      // })
-      // go through users array and make each chracters
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-      // walking motion
-      if (userChar.state.isMoving) {
-        frameCount++;
-        if (frameCount >= framelimit) {
-          frameCount = 0;
-          userChar.incrementLoopIndex();
+        // walking motion
+        if (userChar.state.isMoving) {
+          frameCount++;
+          if (frameCount >= framelimit) {
+            frameCount = 0;
+            userChar.incrementLoopIndex();
+          }
         }
+
+        // draw background map
+        ctx.drawImage(mapImg, 0, 0)
+        // login user's character
+        userChar.drawFrame(ctx);
+
+        // draw user character
+
+        ctx.fillText(username, userChar.state.x + 20, userChar.state.y + 10)
+        ctx.fillStyle = 'purple'
+        // console.log('inside step', userCharacters)
+        // console.log('inside step', userCharacters);
+        // console.log('USERCHARS', userCharacters);
+        // console.log('USERSPOS', usersPosition);
+        if (!isEmpty(userCharacters)) {
+          console.log('otheruser',userCharacters[0])
+          userCharacters[0].drawFrame(ctx)
+        }
+        // otherUserChars.forEach(otherUserChar => {
+        //   otherUserChar.drawFrame(ctx)
+        //   ctx.fillText(otherUserChar.state.username, otherUserChar.state.x + 20, otherUserChar.state.y+10)
+        //   ctx.fillStyle = 'purple'
+        // });
       }
-
-      // draw background map
-      ctx.drawImage(mapImg, 0, 0)
-      userChar.drawFrame(ctx);
-
-      // draw user character
-
-      ctx.fillText(username, userChar.state.x + 20, userChar.state.y + 10)
-      ctx.fillStyle = 'purple'
-
-      // console.log('inside step', userCharacters);
-      if (userCharacters.length > 0) {
-        userCharacters[0].drawFrame(ctx)
-      }
-
-      // otherUserChars.forEach(otherUserChar => {
-      //   otherUserChar.drawFrame(ctx)
-      //   ctx.fillText(otherUserChar.state.username, otherUserChar.state.x + 20, otherUserChar.state.y+10)
-      //   ctx.fillStyle = 'purple'
-      // });
-
       window.requestAnimationFrame(step);
     }
+
     // console.log(Char)
     window.requestAnimationFrame(step);
-
-    window.addEventListener("keydown", e => {
-      userChar.move(e)
-      socket.emit('sendData', userChar.state)
-      // console.log('sendData', userChar.state)
-      // sendMessage("SEND")
-    });
-    window.addEventListener("keyup", () => {
-      userChar.stop()
-      socket.emit('sendData', userChar.state)
-      // sendPrivateMessage("moon", "this is private message", username)
-    });
-    // add another
-
-
-
-    // pass function
-    // window.requestAnimationFrame(() => gameLoop(ctx, canvas, characters, mapImg));
-
-    //   setInterval(() => {
-    //   socket.on('init', msg => console.log('msg', msg))
-    //   socket.emit('sendData', userChar.state)
-    sendData(userChar.state) // socket.emit("sendData", userChar.state)
-    //   socket.on('backData', data => console.log('data', data))
-    // } ,1000)
-
-
-    return () => {
-      window.removeEventListener("keydown", e => userChar.move(e));
-      window.removeEventListener("keyup", () => userChar.stop());
-    };
   }, []);
 
   return (

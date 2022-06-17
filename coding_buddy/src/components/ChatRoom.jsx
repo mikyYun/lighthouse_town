@@ -9,8 +9,8 @@ function ChatRoom(props) {
   const { nickname } = props;
   const [messages, setMessages] = useState([]);
   const chatWindow = useRef(null);
-  console.log('props', props)
-  console.log('nickname', nickname)
+  // console.log('props', props)
+  // console.log('nickname', nickname)
   // 새 메시지를 받으면 스크롤을 이동하는 함수
   const moveScrollToReceiveMessage = useCallback(() => {
     if (chatWindow.current) {
@@ -42,7 +42,7 @@ function ChatRoom(props) {
   // })
 
   useEffect(() => {
-    console.log("are you receiving?")
+    // console.log("are you receiving?")
     socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); // 이벤트 리스너 설치
 
     return () => {
@@ -50,7 +50,7 @@ function ChatRoom(props) {
     };
   }, [socket, handleReceiveMessage]);
 
-  console.log('hello this is chat message', messages)
+  // console.log('hello this is chat message', messages)
   return (
     <div className="d-flex flex-column chat-form">
       <div className="text-box">
