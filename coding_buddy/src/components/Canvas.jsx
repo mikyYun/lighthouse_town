@@ -1,209 +1,106 @@
-import React, { useEffect, useRef, useState, useContext } from "react";
+import React, {useEffect, useRef, useState, useContext} from 'react';
 import mapImage from "./game_img/town-map.png";
-// import girlImage from "./game_img/girl1.png";
+import girlImage from "./game_img/girl1.png";
 import Characters from "./helper/Characters";
-// import boyImage from "./game_img/boy1.png";
+import boyImage from "./game_img/boy1.png";
 import townWall from "./game_img/collision_data.js/townWall";
 import selectAvatar from "./helper/selecAvatar";
-// import { socket } from "./service/socket";
-import { SocketContext } from "../App";
-
-// const { io } = require("socket.io-client");
-// const socket = io('http://localhost:3000')
+import  { SocketContext } from '../App';
 
 const Canvas = (props) => {
-  const canvasRef = useRef(null);
-  const [usersPosition, setUsersPosition] = useState();
-  const [userCharacters, setUserCharacters] = useState([]);
-  const { socket } = useContext(SocketContext)
-  const username = props.username; //moon
-  const avatar = props.avatar;  //1
-  const userData = {
-    username: props.username,
-    x: 150,
-    y: 150,
-  }
-  const userChar = new Characters(userData)
-  // get other users data from the server
-  setInterval(() => {
-    socket.on('sendData', data => {
-      // console.log('data', data);
-      setUsersPosition(data);
-    })
-  }, 1000)
+    const { socket } = useContext(SocketContext)
+    const canvasRef = useRef(null);
+    const [userCharacters, setUserCharacters] = useState({
+        [props.username]: new Characters({
+            username: props.username,
+            x: 150,
+            y: 150
+        }
+    )});
 
-  console.log('usersPosition', usersPosition) //가장 처음에는 undefined 여야함.
+    useEffect(() => {
 
-  // useEffect(() => {
-  //   for ( let name in usersPosition) {
-  //     console.log(name) // moon, Park, John
-  //     // 만약에 이름이 나랑 같지 않고
-  //     if (name !== userData.username) {
-  //       let char = new Characters(usersPosition[name])
-  //       setUserCharacters(prev => [...prev, char])
-  //       // if (userCharacters.length === 0) {
-  //       //   let char = new Characters(usersPosition[name])
-  //       //   setUserCharacters( prev => [...prev, char])
-  //       //   // otherUserChars.push(char);
-  //       // } else {
-  //       //   userCharacters.forEach(char => {
-  //       //     if (char.state.username !== name) {
-  //       //       let char = new Characters(usersPosition[name])
-  //       //       setUserCharacters( prev => [...prev, char])
-  //       //     }
-  //       //   })
-  //       // }
-  //     }
-  //   }
+        window.addEventListener("keydown", e => {
+            userCharacters[props.username].move(e);
+            socket.emit('sendData', userCharacters[props.username].state)
+        });
+        window.addEventListener("keyup", () => {
+            userCharacters[props.username].stop()
+            socket.emit('sendData', userCharacters[props.username].state)
+        });
 
-  //   // console.log('otheruserchars',otherUserChars[0])
-  // }, [usersPosition])
+        return () => {
+            window.removeEventListener("keydown", e => userCharacters[0].move(e));
+            window.removeEventListener("keyup", () => userCharacters[0].stop());
+        };
+    } ,[]);
 
-  // remove nested loop
-  // make
-
-  // *******
-  // set characters -> new Character(150, 150) if it doesn't exist
-  // nCharacter.state = {}
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        canvas.width = 1120;
+        canvas.height = 640;
+        const ctx = canvas.getContext("2d");
+        const mapImg = new Image();
+        mapImg.src = mapImage;
 
 
-  useEffect(() => {
-    for (let name in usersPosition) {
-      console.log('NAME - Canvas.js', name) // moon, heesoo, mike
-      // 만약에 이름이 나랑 같지 않고
-      if (name !== userData.username) {
-        console.log('first - Canvas.js', userCharacters)
-        if (userCharacters.length === 0) {
-          console.log('second - Canvas.js ', userCharacters)
-          let char = new Characters(usersPosition[name])
-          setUserCharacters(prev => [...prev, char])
-          console.log('third - Canvas.js', userCharacters)
-          // otherUserChars.push(char);
-        } else {
-          // once updated, draw the canvas!
-          console.log('inside else - Canvas.js')
-          userCharacters.forEach(char => {
-            if (char.state.username !== name) {
-              let char = new Characters(usersPosition[name])
-              console.log('new Char - Canvas.js', char)
-              setUserCharacters(prev => [...prev, char])
-              console.log('userCharacters - Canvas.js', userCharacters)
+        let frameCount = 0;
+        let framelimit = 4;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // draw background map
+        ctx.drawImage(mapImg, 0, 0);
+        for(const userChar in userCharacters) {
+            // console.log(userCharacters[userChar].state.username, userCharacters[userChar]);
+                // Walking...
+            if (userCharacters[userChar].state.isMoving) {
+                frameCount++;
+                if (frameCount >= framelimit) {
+                    frameCount = 0;
+                    userCharacters[userChar].incrementLoopIndex();
+                }
+                }
+                console.log('before drawing')
+            userCharacters[userChar].drawFrame(ctx);
+
+            // Text on head.
+            ctx.fillText(userCharacters[userChar].state.username, userCharacters[userChar].state.x + 20, userCharacters[userChar].state.y + 10)
+            ctx.fillStyle = 'purple';
+        }
+        socket.on('sendData', data => {
+            // console.log('data', data);
+            // delete data[username]
+            // data.shift(); // Remove first item.
+
+            const newCharactersData = data;
+            newCharactersData[props.username] = userCharacters[props.username];
+
+            for(const userChar in newCharactersData) {
+                if (typeof newCharactersData[userChar].username !== 'undefined') {
+                    if (newCharactersData[userChar].username !== props.username) {
+                        newCharactersData[userChar] = new Characters(newCharactersData[userChar]);
+                    }
+                }
             }
-          })
-        }
-      }
-    }
-  }, [usersPosition])
+            setUserCharacters(newCharactersData);
+
+    }, [userCharacters])
 
 
-  const sendMessage = props.sendMessage
-  const sendPrivateMessage = props.sendPrivateMessage
-  const sendData = props.sendData
-  useEffect(() => {
-    //make collision wall
-    // console.log(townWall.length)
-    const collisionTownMap = []
-    for (let i = 0; i < townWall.length; i += 70) {
-      collisionTownMap.push(townWall.splice(i, i + 70))
-    }
-    // console.log(collisionTownMap)
-    // put step function
-    // canvas, ctx only in this useEffect
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    canvas.width = 1120;
-    canvas.height = 640;
-
-    // make background image
-    const mapImg = new Image();
-    mapImg.src = mapImage;
-
-    let frameCount = 0;
-    let framelimit = 10;
-
-    function step() {
-
-      // socket.on('sendData', data => {
-      //   // console.log('data', data);
-      //   setUsersPosition(data);
-      // })
-      // go through users array and make each chracters
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-      // walking motion
-      if (userChar.state.isMoving) {
-        frameCount++;
-        if (frameCount >= framelimit) {
-          frameCount = 0;
-          userChar.incrementLoopIndex();
-        }
-      }
-
-      // draw background map
-      ctx.drawImage(mapImg, 0, 0)
-      userChar.drawFrame(ctx);
-
-      // draw user character
-
-      ctx.fillText(username, userChar.state.x + 20, userChar.state.y + 10)
-      ctx.fillStyle = 'purple'
-
-      // console.log('inside step', userCharacters);
-      if (userCharacters.length > 0) {
-        userCharacters[0].drawFrame(ctx)
-      }
-
-      // otherUserChars.forEach(otherUserChar => {
-      //   otherUserChar.drawFrame(ctx)
-      //   ctx.fillText(otherUserChar.state.username, otherUserChar.state.x + 20, otherUserChar.state.y+10)
-      //   ctx.fillStyle = 'purple'
-      // });
-
-      window.requestAnimationFrame(step);
-    }
-    // console.log(Char)
-    window.addEventListener("keydown", e => {
-      userChar.move(e)
-      // socket.emit('sendData', userChar.state)
-      // console.log('sendData', userChar.state)
-      // sendMessage("SEND")
-      // sendData(userChar.state) // socket.emit("sendData", userChar.state)
     });
-    window.addEventListener("keyup", () => {
-      userChar.stop()
-      // socket.emit('sendData', userChar.state)
-      // sendPrivateMessage("moon", "this is private message", username)
-    });
-    // add another
 
+    // if user hit the specific position -> redirect to the page
+    // let page;
+    // if (userCharacters[props.username].state.x === 440 && userCharacters[props.username].state.y === 130) {
+    //     page = React.createElement('div', {}, "Language Page")
+    // }
 
-    window.requestAnimationFrame(step);
-
-    // pass function
-    // window.requestAnimationFrame(() => gameLoop(ctx, canvas, characters, mapImg));
-    document.addEventListener("mousedown", () => {
-      // setInterval(() => {
-      //   socket.on('init', msg => console.log('msg', msg))
-      //   socket.emit('sendData', userChar.state)
-      //   socket.on('backData', data => console.log('data', data))
-      // } ,1000)
-
-    })
-
-
-    return () => {
-      window.removeEventListener("keydown", e => userChar.move(e));
-      window.removeEventListener("keyup", () => userChar.stop());
-    };
-  }, []);
-
-  return (
-    <div className="game-container">
-      <canvas className="game-canvas" ref={canvasRef}></canvas>
-    </div>
-  );
+    return (
+        <div className="game-container" >
+            <canvas className="game-canvas" ref={canvasRef}></canvas>
+            {/* {page} */}
+        </div>
+    );
 };
-
 
 export default Canvas;

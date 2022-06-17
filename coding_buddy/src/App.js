@@ -10,6 +10,7 @@ import Login from './components/Login';
 import { socket } from './components/service/socket.js'
 import { createContext } from "react";
 export const SocketContext = createContext(socket); // going to Recipient.jsx
+
 function App() {
   const navigate = useNavigate();
   const socket = useContext(SocketContext)
@@ -27,13 +28,6 @@ function App() {
 
   useEffect(() => {
     socket.on("connect", () => {
-      console.log("App.js: socket server connected.");
-    });
-
-    socket.on("REGISTRATION SUCCESS", (userInfo) => {
-      console.log("cookie set after register");
-      cookies.set("email", userInfo);
-      navigate("/game");
     });
 
     socket.on("init", msg => console.log("msg - App.js", msg)) //coming from server

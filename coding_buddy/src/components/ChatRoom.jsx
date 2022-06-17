@@ -23,7 +23,7 @@ function ChatRoom(props) {
   }, []);
 
   // RECEIVE_MESSAGE 이벤트 콜백: messages state에 데이터를 추가.
-  // MessageForm & socket > index.js 
+  // MessageForm & socket > index.js
   // socketIo.to(roomName).emit("RECEIVE_MESSAGE", responseData);
   const handleReceivePublicMessage = useCallback(
     (pongData) => {
