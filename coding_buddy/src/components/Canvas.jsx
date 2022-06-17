@@ -192,12 +192,14 @@ const Canvas = (props) => {
 
     // pass function
     // window.requestAnimationFrame(() => gameLoop(ctx, canvas, characters, mapImg));
-
-    //   setInterval(() => {
+    document.addEventListener("mousedown", () => {
+      // setInterval(() => {
     //   socket.on('init', msg => console.log('msg', msg))
     //   socket.emit('sendData', userChar.state)
     //   socket.on('backData', data => console.log('data', data))
     // } ,1000)
+
+    })
 
 
     return () => {

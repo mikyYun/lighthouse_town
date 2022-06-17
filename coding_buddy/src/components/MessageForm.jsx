@@ -54,8 +54,11 @@ function MessageForm({ nickname, recipient }) {
         <button
           type="button"
           className="btn btn-primary send-btn"
-          onClick={handleSendMesssage} 
-          // get message and send to server
+          // onClick={handleSendMesssage}
+          onClick={() => {
+            handleSendMesssage
+            console.log("REC", recipient)
+          }}
         >
           SEND
         </button>

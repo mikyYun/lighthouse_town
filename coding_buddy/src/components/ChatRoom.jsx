@@ -5,10 +5,10 @@ import { SOCKET_EVENT, makeMessage } from "./service/socket";
 import { SocketContext } from "../App.js";
 
 function ChatRoom(props) {
-  const { socket } = useContext(SocketContext);
-  const { nickname } = props;
+  const { socket } = useContext(SocketContext)
+  const { nickname, recipient } = props;
   const [messages, setMessages] = useState([]);
-  const recipient = props.recipient;
+  // const recipient = props.recipient;
   const chatWindow = useRef(null);
   console.log("props", props);
   console.log("nickname", nickname);

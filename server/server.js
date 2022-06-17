@@ -61,9 +61,12 @@ io.on("connection", (socket) => {
 
   // use object
   // socket.emit("init", {data: 'hello world'})
-  socket.on("sendData", (data) => {
-    users[data.username] = data;
-    io.emit("sendData", users);
+  socket.on('sendData', data => {
+    console.log('sendData', data) // print on server
+    // add userid from data
+    users[data.username] = data
+    io.emit('sendData', users)
+
   });
 
   console.log("socket.on", socket.on);

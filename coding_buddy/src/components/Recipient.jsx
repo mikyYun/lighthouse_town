@@ -1,16 +1,14 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import Select from 'react-select';
 import { SocketContext } from '../App.js'
 
 function Recipient(props) {
-  // const [recipient, setRecipient] = useState(null);
-  const recipient = props.recipient;
-  const setRecipient = props.setRecipient
-  // setRecipient("hey")
   const { online } = useContext(SocketContext)
+  const {nickname, recipient, setRecipient} = props
+  // const recipient = props.recipient
+  // const setRecipient = props.setRecipient 
   console.log("ONLINE - RECIPIENT.JSX", online)
-  const onlineOthers = online.filter(user => user.value !== props.nickname)
-  // console.log()
+  const onlineOthers = online.filter(user => user.value !== nickname)
   return (
     <div className="card d-flex flex-row align-items-center" >
       <label htmlFor="user-name-input" style={{ width: 290 }}>

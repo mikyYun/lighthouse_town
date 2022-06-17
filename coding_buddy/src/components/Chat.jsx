@@ -3,8 +3,9 @@ import ChatRoom from "./ChatRoom";
 
 import Recipient from "./Recipient";
 export default function Chat(props) {
-  const [recipient, setRecipient] = useState(null)
-  console.log("IN CHAT", recipient)
+  const [recipient, setRecipient] = useState(null);
+
+
   return (
     // <SocketContext.Provider value={socket} users={nickname}>
     // should be in the top in component tree. app.js

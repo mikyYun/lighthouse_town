@@ -1,4 +1,4 @@
-import React from 'react';
+import React , {useContext } from 'react';
 import './App.css';
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -12,6 +12,9 @@ import { createContext } from "react";
 export const SocketContext = createContext(socket); // going to Recipient.jsx
 function App() {
   const navigate = useNavigate();
+  const socket = useContext(SocketContext)
+  // // 쿠키 세팅
+  // const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
   const [online, setOnline] = useState([{ value: 'all', label: 'all' }]);
   const cookies = new Cookies()
