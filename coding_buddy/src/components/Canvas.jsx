@@ -35,14 +35,18 @@ const Canvas = (props) => {
   }
   const characterHandler = (name, char) => {
     console.log('char:', char);
-    setUserCharacters(prev => {
-      const updatedChar = {
-        ...prev,
-        [name]: prev[name].state
-      };
-      updatedChar[name].state = char;
-      return updatedChar;
-    });
+    if (userCharacters) {
+      setUserCharacters(prev => {
+        const updatedChar = {
+          ...prev,
+          [name]: prev[name].state
+        };
+        updatedChar[name].state = char;
+        return updatedChar;
+      });
+    }
+    // setUserCharacters(prev => ...prev, name: char)
+
   }
 
   const createCharacter = () => {
@@ -60,7 +64,6 @@ const Canvas = (props) => {
         Object.keys(usersPosition).map( (username, i) => {
           let char = new Characters(usersPosition[Object.keys(usersPosition)[i]]);
           characterHandler(username, char)  //////////////how can I store name as name variable that I define above???
-          // console.log('create!!!!!', userCharacters)
         })
         // console.log('char', char)
      }
@@ -128,9 +131,9 @@ useEffect(() => {
   };
 } ,[])
 
-  const sendMessage = props.sendMessage
-  const sendPrivateMessage = props.sendPrivateMessage
-  const sendData = props.sendData
+  // const sendMessage = props.sendMessage
+  // const sendPrivateMessage = props.sendPrivateMessage
+  // const sendData = props.sendData
   // console.log("THIS", sendMessage)
   // console.log("THAT", sendPrivateMessage)
   useEffect(() => {
