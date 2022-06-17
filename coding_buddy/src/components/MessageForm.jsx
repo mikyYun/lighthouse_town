@@ -55,10 +55,9 @@ function MessageForm({ nickname, recipient }) {
           type="button"
           className="btn btn-primary send-btn"
           // onClick={handleSendMesssage}
-          onClick={() => {
-            handleSendMesssage
-            console.log("REC", recipient)
-          }}
+          onClick={handleSendMesssage}
+            // console.log("REC", recipient)
+          
         >
           SEND
         </button>

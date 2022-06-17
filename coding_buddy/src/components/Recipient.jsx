@@ -18,7 +18,7 @@ function Recipient(props) {
         type="text"
         id="recipient-dropdown"
         maxLength={12}
-        value={recipient}
+        value={recipient!==null && recipient || {value: "all", label: "all"}}
         defaultValue={recipient}
         onChange={setRecipient}
         options={onlineOthers}

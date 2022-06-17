@@ -59,7 +59,8 @@ function App() {
       console.log("지금 로그인 되어있는 유저 line 55 - App.js", obj.users)
       // obj.users = [user1, user2] => [{value: name, label: name } {}]
       const usersOnline = obj.users.map(name => ({ value: name, label: name }))
-      console.log('usersOnline', usersOnline)
+      usersOnline.unshift({value: "all", label: "all"})
+      console.log('usersOnline', usersOnline)// [{}, {}, {}]
       setOnline(usersOnline)
     }) // this works
 
