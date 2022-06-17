@@ -1,16 +1,17 @@
 import { useState, useCallback, useEffect, useContext, useRef } from "react";
 import MessageForm from "./MessageForm";
-import './ChatRoom.scss'
+import "./ChatRoom.scss";
 import { SOCKET_EVENT, makeMessage } from "./service/socket";
-import { SocketContext } from '../App.js'
+import { SocketContext } from "../App.js";
 
 function ChatRoom(props) {
-  const { socket } = useContext(SocketContext)
+  const { socket } = useContext(SocketContext);
   const { nickname } = props;
   const [messages, setMessages] = useState([]);
+  const recipient = props.recipient;
   const chatWindow = useRef(null);
-  console.log('props', props)
-  console.log('nickname', nickname)
+  console.log("props", props);
+  console.log("nickname", nickname);
   // 새 메시지를 받으면 스크롤을 이동하는 함수
   const moveScrollToReceiveMessage = useCallback(() => {
     if (chatWindow.current) {
@@ -23,26 +24,26 @@ function ChatRoom(props) {
 
   // RECEIVE_MESSAGE 이벤트 콜백: messages state에 데이터를 추가합니다.
   // @@@@ Message.Form line 26 & socket > index.js line 68
-  const handleReceiveMessage = useCallback(pongData => {
-
-    const newMessage = makeMessage(pongData);
-    // makeMessage 는 service > socket.js 에 있음.
-    setMessages(messages => [...messages, newMessage]); //????이해안됌
-    moveScrollToReceiveMessage();
-  },
+  const handleReceiveMessage = useCallback(
+    (pongData) => {
+      const newMessage = makeMessage(pongData);
+      // makeMessage 는 service > socket.js 에 있음.
+      setMessages((messages) => [...messages, newMessage]); //????이해안됌
+      moveScrollToReceiveMessage();
+    },
     [moveScrollToReceiveMessage] //????이해안됌
   );
 
   useEffect(() => {
-    console.log(messages)
-  }, [messages])
+    console.log(messages);
+  }, [messages]);
 
   // io.on("conenct" (socket) => {
   //   socket.cfjasdklf
   // })
 
   useEffect(() => {
-    console.log("are you receiving?")
+    console.log("are you receiving?");
     socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); // 이벤트 리스너 설치
 
     return () => {
@@ -50,7 +51,7 @@ function ChatRoom(props) {
     };
   }, [socket, handleReceiveMessage]);
 
-  console.log('hello this is chat message', messages)
+  console.log("hello this is chat message", messages);
   return (
     <div className="d-flex flex-column chat-form">
       <div className="text-box">
@@ -68,7 +69,7 @@ function ChatRoom(props) {
           );
         })}
       </div>
-      <MessageForm nickname={nickname} />
+      <MessageForm nickname={nickname} recipient={recipient}/>
     </div>
   );
 }

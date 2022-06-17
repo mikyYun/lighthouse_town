@@ -184,24 +184,40 @@ io.on("connection", (socket) => {
   });
 
   /* 오브젝트에서 종료되는 유저 삭제 */
-  socket.on("disconnect", () => {
+  socket.on("disconnect", (e) => {
+    console.log("DISCONNECT", this.id)
     // console.log("disconnected id", socket.id)
+    // currentUsers[username] = socketid;
+    // socket.join(loginRoom)
+    // const alluserNames = Object.keys(currentUsers); // {username : socket.id}
+    // console.log("AFTER LOGIN, SET USER NAME AND SOCKET ID PAIR", currentUsers);
+    // alluserNames.forEach((name) => {
+    //   // name = moon, mike, heesoo
+    //   console.log("USERNAME: ", name, "CURRENT USERS:", currentUsers[name]);
+    //   // const sortedName = alluserNames.sort()
+    //   io.to(currentUsers[name]).emit("all user names", { "users": alluserNames }) // App.jsx & Recipients.jsx 로 보내기
+    // }); // {"users": [name1, name2] }
+
+
+
     console.log("CURRENT USERS", currentUsers); //2
-    Object.keys(currentUsers).forEach((username) => {
-      if (currentUsers[username] === socket.id) {
-        delete currentUsers[socket.id];
-        console.log(
-          "DELETE DISCONNECT USER DATA FROM currentusers OBJ",
-          currentUsers
-        );
-      }
-    });
-    const alluserNames = Object.keys(currentUsers);
-    alluserNames.forEach((username) => {
-      socket
-        .to(currentUsers[username])
-        .emit("all user names", { users: alluserNames }); //sending an object of all your names it to Recipient.js
-    });
+    // Object.keys(currentUsers).forEach((username) => {
+    //   if (currentUsers[username] === socket.id) {
+    //     delete currentUsers[socket.id];
+    //     console.log(
+    //       "DELETE DISCONNECT USER DATA FROM currentusers OBJ",
+    //       currentUsers
+    //     );
+    //   }
+    // });
+    // const alluserNames = Object.keys(currentUsers);
+    // alluserNames.forEach((name) => {
+    //   console.log("USERNAME: ", name, "CURRENT USERS:", currentUsers[name]);
+    //   // const sortedName = alluserNames.sort()
+    //   io
+    //     .to(currentUsers[name])
+    //     .emit("all user names", { "users": alluserNames }) // App.jsx & Recipients.jsx 로 보내기
+    // }); // {"users": [name1, name2] }
     // delete currentUsers[socket.id];
   });
 });

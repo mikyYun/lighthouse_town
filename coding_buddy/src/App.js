@@ -26,27 +26,28 @@ function App() {
 
   useEffect(() => {
     // const socket = io();
-    console.log('socket', socket)
+    // console.log('socket', socket)
     socket.on("connect", () => {
       console.log("App.js: socket server connected.");
-      console.log("My socket ID", socket.id);
+      // console.log("My socket ID", socket.id);
       console.log("CONNECTED");
     });
 
-    socket.on("REGISTRATIPN SUCCESS", (username) => {
+    socket.on("REGISTRATIPN SUCCESS", (userInfo) => {
       console.log("cookie set after register");
-      cookies.set("email", username);
-      console.log("username", username)
+      cookies.set("email", userInfo);
+      // console.log("username", username)
       navigate("/game");
     });
 
-    socket.on("PASS", (e) => {
-      console.log(e);
-    });
+    // socket.on("PASS", (e) => {
+    //   console.log(e);
+    // });
 
-    socket.on("PRIVATE MESSAGE", (e) => {
-      console.log(e); //coming from server
-    });
+    // for DM
+    // socket.on("PRIVATE MESSAGE", (e) => {
+    //   console.log(e); //coming from server
+    // });
 
     socket.on("init", msg => console.log("msg", msg)) //coming from server
     socket.on("backData", data => console.log("data", data)) //coming from server
@@ -58,21 +59,6 @@ function App() {
       console.log('usersOnline', usersOnline)
       setOnline(usersOnline)
     }) // this works
-
-    /* MIKE
-    setSocket(socket);
-      console.log("지금 로그인 되어있는 유저 line 61 - App.js", obj.users) // obj.users = [user1, user2]
-      obj.users.forEach(name => {
-        const valueAndLabel = { value: name, label: name }
-        console.log("valueAndLabel", valueAndLabel)
-        if (online.includes(valueAndLabel)) {
-          setOnline([valueAndLabel])
-        } else {
-          setOnline(prev => [...prev, valueAndLabel])
-        }
-      })
-    })
-    */
 
     return () => {
       socket.disconnect();
