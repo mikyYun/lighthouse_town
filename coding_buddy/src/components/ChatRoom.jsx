@@ -6,7 +6,7 @@ import { SocketContext } from '../App.js'
 
 function ChatRoom(props) {
   const { socket } = useContext(SocketContext)
-  const { nickname } = props;
+  const { nickname, recipient } = props;
   const [messages, setMessages] = useState([]);
   const chatWindow = useRef(null);
   console.log('props', props)
@@ -68,7 +68,7 @@ function ChatRoom(props) {
           );
         })}
       </div>
-      <MessageForm nickname={nickname} />
+      <MessageForm nickname={nickname} recipient={recipient}/>
     </div>
   );
 }
