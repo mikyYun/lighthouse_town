@@ -75,23 +75,31 @@ const Canvas = (props) => {
     for (let name in usersPosition) {
       console.log(name) // moon, heesoo, mike
       // 만약에 이름이 나랑 같지 않고
-      if (name !== userData.username) {
-        console.log('first', userCharacters)
+      if (name.username !== userData.username) {
+        console.log('first', userCharacters.length) // 처음은 빈 어레이
+        console.log("firstcheck", userData.username) // 현재 유저
+        console.log("secondcheck", name) // 현재 유저
+        // 이름이 같지 않으면 이게 나와야하는데,
+        // moon 으로 로그인해서 움직이면 userData.username 이 moon이라고 나와
         if (userCharacters.length === 0) {
           console.log('second', userCharacters)
           let char = new Characters(usersPosition[name])
-          setUserCharacters(prev => [...prev, char])
-          console.log('third', userCharacters)
-          // otherUserChars.push(char);
+          setUserCharacters([char])
+          // userCharacters.push(char)
+          console.log("userCharacters length", userCharacters.length)
+          // // userCharacters increase infinite
+          // console.log('third', userCharacters)
+          // // otherUserChars.push(char);
         } else {
           // once updated, draw the canvas!
-          console.log('inside else')
+          console.log('inside else', userCharacters)
           userCharacters.forEach(char => {
-            if (char.state.username !== name) {
+            if (char.state.username !== name.username) {
               let char = new Characters(usersPosition[name])
+              // char.src = selectAvatar(2)
               console.log('new Char', char)
-              setUserCharacters(prev => [...prev, char])
-              console.log('userChar state', userCharacters)
+              // setUserCharacters(prev => [...prev, char])
+              // console.log('userChar state', userCharacters)
             }
           })
         }
@@ -126,6 +134,7 @@ const Canvas = (props) => {
 
     // make background image
     const mapImg = new Image();
+    // mapImg.src = selectAvatar(2);
     mapImg.src = mapImage;
 
     let frameCount = 0;
@@ -175,14 +184,14 @@ const Canvas = (props) => {
     // console.log(Char)
     window.addEventListener("keydown", e => {
       userChar.move(e)
-      // socket.emit('sendData', userChar.state)
+      socket.emit('sendData', userChar.state)
       // console.log('sendData', userChar.state)
       // sendMessage("SEND")
       // sendData(userChar.state) // socket.emit("sendData", userChar.state)
     });
     window.addEventListener("keyup", () => {
       userChar.stop()
-      // socket.emit('sendData', userChar.state)
+      socket.emit('sendData', userChar.state)
       // sendPrivateMessage("moon", "this is private message", username)
     });
     // add another
