@@ -22,12 +22,12 @@ export const SOCKET_EVENT = {
   UPDATE_NICKNAME: "UPDATE_NICKNAME",
   SEND_MESSAGE: "SEND_MESSAGE",
   RECEIVE_MESSAGE: "RECEIVE_MESSAGE"
-  // PRIVATE_MESSAGE: "PRIVATE"
 };
 
 //makeMessage
 export const makePublicMessage = pongData => {
   const { nickname, content, type, time } = pongData;
+  // @@@@ socket > index.js 에서 time: new Date(),
   let nicknameLabel;
   let contentLabel = "";
   switch (type) {
@@ -37,15 +37,12 @@ export const makePublicMessage = pongData => {
     }
 
     case SOCKET_EVENT.SEND_MESSAGE: {
-      contentLabel = String(content);
+      console.log(`${nickname} has sent a public message.`)
+      contentLabel = String(content); //보내는 메세지
       nicknameLabel = nickname;
       break;
     }
-    // case SOCKET_EVENT.PRIVATE_MESSAGE: {
-    //   contentLabel = String(content);
-    //   nicknameLabel = nickname;
-    //   break;
-    // }
+
     default:
   }
 
@@ -58,14 +55,12 @@ export const makePublicMessage = pongData => {
 
 export const makePrivateMessage = pongData => {
   const { recipient, nickname, content, type, time } = pongData;
-  // let nicknameLabel;
   let contentLabel = "";
 
   switch (type) {
     case "PRIVATE": {
-      contentLabel = `${nickname} has sent a private message.`;
-      console.log(contentLabel)
-      contentLabel = String(content);
+      console.log(`${nickname} has sent a private message.`)
+      contentLabel = String(content);  //보내는 메세지
       // nicknameLabel = nickname;
       // recipientLabel = recipient;
       break;
@@ -75,17 +70,13 @@ export const makePrivateMessage = pongData => {
     //   nicknameLabel = nickname;
     //   break;
     // }
-    // case SOCKET_EVENT.PRIVATE_MESSAGE: {
-    //   contentLabel = String(content);
-    //   nicknameLabel = nickname;
-    // }
     default:
   }
 
   return {
-    nickname,
-    content: contentLabel,
-    recipient: recipient.value
+    nickname, //보내는 사람 이름
+    content: contentLabel,  //보내는 메세지
+    recipient: recipient.value  //recipient object의 value {value: moon, label: moon}
     // time: dayjs(time).format("HH:mm"),
   };
 };
