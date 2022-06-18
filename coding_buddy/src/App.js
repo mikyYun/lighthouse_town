@@ -7,8 +7,10 @@ import Game from './components/Game';
 import Layout from './components/Layout';
 import Register from './components/Register';
 import Login from './components/Login';
+
 import { socket } from './components/service/socket.js';
 import { createContext } from "react";
+
 export const SocketContext = createContext(socket); // going to Recipient.jsx
 
 function App() {
@@ -30,11 +32,28 @@ function App() {
   }, [location.pathname]);
 
   useEffect(() => {
+
+
+/* serversided 
+    socket.on("disconnect", () => {
+      console.log("DISCONNECT", socket.id);
+      const alluserNames = Object.keys(currentUsers);
+      alluserNames.forEach((name) => {
+        if (currentUsers[name] === socket.id)
+          delete currentUsers[name];
+      }); // {"users": [name1, name2] }
+      console.log("DISCONNECT - CURRENT USERS", currentUsers);
+      io.emit("all user names", { "users": alluserNames }); // App.jsx & Recipients.jsx 로 보내기
+    });
+*/
+
+    
+    //frontend 
     socket.on("connect", () => {
       const all_cookies = cookies.getAll();
       //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
       // if (location.pathname === "/game") {
-        // navigate("/")
+      // navigate("/")
       // }
       console.log("App.js: socket server connected.", all_cookies.email);
       // console.log("My socket ID", socket.id);
@@ -105,7 +124,6 @@ function App() {
   const sendData = (state) => {
     socket && socket.emit("sendData", state);
   };
-
   return (
     <SocketContext.Provider value={{ socket, online, nickname }} >
       <div className='main'>
@@ -113,7 +131,7 @@ function App() {
           <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
           <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
           <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
-          <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} sendData={sendData} setUser={createSocketIdNameObject} room={room} nickname={nickname} />} />
+          <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} sendData={sendData} setUser={createSocketIdNameObject} room={room} nickname={nickname} online={online} />} />
           {/* <Route path='/chat' element={<Chat />} /> */}
           <Route path={`/game/${room}`} element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} />} />
         </Routes>
