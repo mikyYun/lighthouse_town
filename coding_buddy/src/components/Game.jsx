@@ -60,7 +60,7 @@ export default function Game(props) {
           handleSubmitNickname={props.handleSubmitNickname}
           nickname={props.nickname}
         />
-        <Online online={props.online} />
+        <Online />
       </div>
     </>
   );
