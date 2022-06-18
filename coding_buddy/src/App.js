@@ -20,7 +20,7 @@ function App() {
   const [online, setOnline] = useState([{ value: 'all', label: 'all' }]);
   const cookies = new Cookies();
   const location = useLocation();
-  const nickname = location.state?.[0] || '';
+  const username = location.state?.[0] || '';
   // console.log('location.state[0]', location.state[0])
   const urlLists = ["/game", "/game/ruby"];
   useEffect(() => {
@@ -34,7 +34,7 @@ function App() {
       const all_cookies = cookies.getAll();
       //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
       // if (location.pathname === "/game") {
-        // navigate("/")
+      // navigate("/")
       // }
       console.log("App.js: socket server connected.", all_cookies);
       // console.log("My socket ID", socket.id);
@@ -49,8 +49,13 @@ function App() {
         // })
       } else {
         // 쿠키 없으면 홈으로
-        navigate("/")
+        navigate("/");
       }
+      // 쿠키는 있는데 현재 사용중인 유저이면 클리어하고 집으로
+      socket.on("DENY CONNECTION", (e) => {
+        // clearCookies();
+        navigate("/");
+      });
     }, []);
 
     // socket.on("DENY CONNECTION", (e) => {
@@ -64,17 +69,19 @@ function App() {
       navigate("/game");
     });
 
-    socket.on("init", msg => console.log("msg - App.js", msg)) //coming from server
-    socket.on("backData", data => console.log("data", data)) //coming from server
+    socket.on("init", msg => console.log("msg - App.js", msg)); //coming from server
+    socket.on("backData", data => console.log("data", data)); //coming from server
 
     socket.on("all user names", (obj) => {
       console.log("지금 로그인 되어있는 유저 line 55 - App.js", obj.users);
       // obj.users = [user1, user2] => [{value: name, label: name } {}]
-      const usersOnline = obj.users.map(name => ({ value: name, label: name }))
-      usersOnline.unshift({ value: "all", label: "all" })
-      console.log('usersOnline - App.js', usersOnline)// [{}, {}, {}]
-      setOnline(usersOnline)
-    }) // this works
+      const usersOnline = obj.users.map(name => ({ value: name, label: name }));
+      usersOnline.unshift({ value: "all", label: "all" });
+      console.log('usersOnline - App.js', usersOnline);//[{}, {}, {}]
+    // const onlineOthers = usersOnline.filter(user => user.value !== nickname)
+      
+      setOnline(usersOnline);
+    }); // this works
 
     return () => {
       socket.disconnect();
@@ -111,13 +118,13 @@ function App() {
   };
 
   return (
-    <SocketContext.Provider value={{ socket, online, nickname }} >
+    <SocketContext.Provider value={{ socket, online, username }} >
       <div className='main'>
         <Routes>
           <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
           <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
           <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
-          <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} sendData={sendData} setUser={createSocketIdNameObject} room={room} nickname={nickname} />} />
+          <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} sendData={sendData} setUser={createSocketIdNameObject} room={room} />} />
           {/* <Route path='/chat' element={<Chat />} /> */}
           <Route path={`/game/${room}`} element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} />} />
         </Routes>
