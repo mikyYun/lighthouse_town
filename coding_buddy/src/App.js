@@ -34,20 +34,20 @@ function App() {
   useEffect(() => {
 
 
-/* serversided 
-    socket.on("disconnect", () => {
-      console.log("DISCONNECT", socket.id);
-      const alluserNames = Object.keys(currentUsers);
-      alluserNames.forEach((name) => {
-        if (currentUsers[name] === socket.id)
-          delete currentUsers[name];
-      }); // {"users": [name1, name2] }
-      console.log("DISCONNECT - CURRENT USERS", currentUsers);
-      io.emit("all user names", { "users": alluserNames }); // App.jsx & Recipients.jsx 로 보내기
-    });
-*/
+    /* serversided 
+        socket.on("disconnect", () => {
+          console.log("DISCONNECT", socket.id);
+          const alluserNames = Object.keys(currentUsers);
+          alluserNames.forEach((name) => {
+            if (currentUsers[name] === socket.id)
+              delete currentUsers[name];
+          }); // {"users": [name1, name2] }
+          console.log("DISCONNECT - CURRENT USERS", currentUsers);
+          io.emit("all user names", { "users": alluserNames }); // App.jsx & Recipients.jsx 로 보내기
+        });
+    */
 
-    
+
     //frontend 
     socket.on("connect", () => {
       const all_cookies = cookies.getAll();
@@ -133,7 +133,7 @@ function App() {
           <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
           <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} sendData={sendData} setUser={createSocketIdNameObject} room={room} nickname={nickname} online={online} />} />
           {/* <Route path='/chat' element={<Chat />} /> */}
-          <Route path={`/game/${room}`} element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} />} />
+          <Route path={`/game/${room}`} element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} room={room} />} />
         </Routes>
       </div>
     </SocketContext.Provider>
