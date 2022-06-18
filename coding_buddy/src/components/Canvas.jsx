@@ -70,6 +70,7 @@ const Canvas = (props) => {
         ctx.fillStyle = "purple";
       }
 
+
       socket.emit("sendData", userCharacters[props.username].state);
     });
 
@@ -105,6 +106,7 @@ const Canvas = (props) => {
     return () => {
       window.removeEventListener("keydown", (e) => userCharacters[0].move(e));
       window.removeEventListener("keyup", () => userCharacters[0].stop());
+      socket.disconnect()
     };
   }, []);
 

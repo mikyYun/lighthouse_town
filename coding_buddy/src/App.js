@@ -4,7 +4,7 @@ import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Cookies from 'universal-cookie';
 import town from './components/game_img/town-map.png';
-import classroom from './components/game_img/classroom.png'
+import classroom from './components/game_img/classroom.png';
 import Game from './components/Game';
 import Layout from './components/Layout';
 import Register from './components/Register';
@@ -22,6 +22,8 @@ function App() {
   // const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
   const [online, setOnline] = useState([{ value: 'all', label: 'all' }]);
+  const [friendList, setFriendList] = useState([])
+
   const cookies = new Cookies();
   const location = useLocation();
   const nickname = location.state?.[0] || '';
@@ -40,7 +42,7 @@ function App() {
     const currentCookies = cookies.getAll();
     console.log("CCCCCCCCCCCCC", cookies.cookies.username);
     // if (cookies.cookies.username) {
-      // navigate('/game');
+    // navigate('/game');
     // }
 
     if (!urlLists.includes(location.pathname)) clearCookies();
@@ -75,6 +77,7 @@ function App() {
       console.log("CONNECTED");
       // 유저데이터가 아직 삭제되지 않았고, 게임페이지 리로드 한 경우 서버랑 연결하고 currentUser update in server
       if (all_cookies.userdata) {
+        // console.log("RECONNECTED"); // when refresh
         // 쿠키 존재하면 리커넥트 요청
         socket.emit("reconnection?", { username: all_cookies.userdata.userName, newSocketId: socket.id });
         // socket.on("DENY CONNECTION", (e) => {
@@ -85,6 +88,8 @@ function App() {
         // 쿠키 없으면 홈으로
         navigate("/");
       }
+      // 유저가 연결될 때 마다 친구리스트 요청
+      // socket.emit("friendsList", {socketID: socket.id})
       // 쿠키는 있는데 현재 사용중인 유저이면 클리어하고 집으로
       socket.on("DENY CONNECTION", (e) => {
         // clearCookies();
@@ -96,6 +101,11 @@ function App() {
     //   clearCookies()
     //   navigate("/")
     // })
+
+    socket.on("friendsListBack", (e => {
+      console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",e.usernames)
+      setFriendList(e.usernames)
+    }))
 
     socket.on("REGISTRATION SUCCESS", (userInfo) => {
       console.log("cookie set after register");
@@ -151,13 +161,17 @@ function App() {
   const sendData = (state) => {
     socket && socket.emit("sendData", state);
   };
+
+
+
+
   return (
-    <SocketContext.Provider value={{ socket, online, nickname }} >
+    <SocketContext.Provider value={{ socket, online, nickname, friendList }} >
       <div className='main'>
         <Routes>
           <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
           <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
-          <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
+          <Route path='/login' element={<Login setUser={createSocketIdNameObject}  />} />
           <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} sendData={sendData} setUser={createSocketIdNameObject} room={room} nickname={nickname} />} />
           {/* <Route path='/chat' element={<Chat />} /> */}
           <Route path={`/game/${room}`} element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} sendData={sendData} setUser={createSocketIdNameObject} room={room} nickname={nickname} />} />

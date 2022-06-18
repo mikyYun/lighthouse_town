@@ -60,6 +60,8 @@ export default function Login(props) {
             .then((res) => {
               if (res.data.userName) {
                 setUser(res.data.userName) // pass username so that server set username and socketid as key:value pair
+                // res.data.friends
+                // setFriends(res.data.friends)
                 console.log("res.data - Login.js", res.data);
                 cookies.set("userdata", res.data);
                 goChat(res.data.userName, res.data.avatar)

@@ -57,10 +57,68 @@ const users = {};
 // store all users' socket id with username key-value pair
 let currentUsers = {}; // => {username : socket.id}
 
+
 io.on("connection", (socket) => {
   const roomName = "room 1";
   const session = socket.request.session;
   session.save();
+
+  socket.on("friendsList", (id) => {
+    // id.socketID = new user's socketid
+    const newSocketID = id.socketID;
+    // check this id is in currentUsers Object
+    const alluserNames = Object.keys(currentUsers);
+    let existUsername;
+    alluserNames.map(username => {
+      if (currentUsers[username] === newSocketID) {
+        // console.log(username)
+        existUsername = username;
+        return;
+      } else {
+        false;
+      }
+    });
+    if (existUsername !== false) {
+      pool.query("SELECT * FROM users",
+        // [existUsername],
+        (err, res_1) => {
+          if (err) throw err;
+          if (res_1.rows[0]) {
+            const allusersTable = res_1.rows;
+            let userID;
+            allusersTable.map(obj => {
+              if (obj.username === existUsername)
+                userID = obj.id;
+            });
+            // user exist
+            // const userID = res_1.rows[0].id;
+            pool.query(
+              // find followers id
+              "SELECT following FROM favorites WHERE followed=$1",
+              [userID],
+              (err, res_2) => {
+                const usernames = [];
+                const followedIds = [];
+                res_2.rows.map(obj => {
+                  followedIds.push(obj.following);
+                });
+                // console.log("!!",Object.keys(allusersTable))
+                allusersTable.map(obj => {
+                  if (followedIds.includes(obj.id)) {
+                    // console.log(obj.id)
+                    usernames.push(obj.username);
+                  }
+                });
+                console.log(usernames);
+                socket.emit("friendsListBack", { usernames: usernames });
+              }
+            );
+          }
+        });
+    }
+  });
+
+
 
   socket.on("reconnection?", (e) => {
     // let reconnection = true
@@ -75,8 +133,8 @@ io.on("connection", (socket) => {
       currentUsers[e.username] = e.newSocketId; // update
       const alluserNames = Object.keys(currentUsers); // get keys arr
       // alluserNames.forEach((name) => {
-        // if (currentUsers[name] === socket.id)
-          // delete currentUsers[name];
+      // if (currentUsers[name] === socket.id)
+      // delete currentUsers[name];
       // }); // {"users": [name1, name2] }
       // 현재유저 이름은 뺌
       // alluserNames.filter(nm => nm !== e.username)
@@ -91,8 +149,8 @@ io.on("connection", (socket) => {
   socket.on('sendData', data => {
     // console.log('sendData', data); // print on server
     // add userid from data
-    users[data.username] = data
-    io.emit('sendData', users) // 다시 Canvas.jsx -> const newCharactersData = data;
+    users[data.username] = data;
+    io.emit('sendData', users); // 다시 Canvas.jsx -> const newCharactersData = data;
   });
 
   // socketID and username matching
@@ -108,7 +166,7 @@ io.on("connection", (socket) => {
     const alluserNames = Object.keys(currentUsers); // {username : socket.id}
     // console.log("AFTER LOGIN, SET USER NAME AND SOCKET ID PAIR", currentUsers);
 
-    console.log("Server.js - currentUsers", currentUsers)
+    console.log("Server.js - currentUsers", currentUsers);
 
     alluserNames.forEach((name) => {
       // name = moon, mike, heesoo
@@ -249,12 +307,14 @@ app.post("/login", (req, res) => {
       console.log(res_1.rows);
       if (res_1.rows[0]) {
         // user exist
+        // get followeds
+        const userID = res_1.rows[0].id;
         const userInfo = res_1.rows[0];
         const userName = userInfo.username;
         const avatar = userInfo.avatar_id;
         console.log(res_1.rows[0]); // id: 3, username: "mike", password: "mike", email: "test2@test.com", avatar_id: 1
-        const userID = res_1.rows[0].id;
         // find languages
+
         pool.query(
           "SELECT * FROM user_language WHERE user_id=$1",
           [userID],
@@ -270,6 +330,7 @@ app.post("/login", (req, res) => {
                 userName,
                 avatar,
                 userLanguages,
+                // friends
               };
               res.status(201).send(loginUserData); //object - username, avatar, language
             } else {
@@ -277,6 +338,8 @@ app.post("/login", (req, res) => {
             }
           }
         );
+
+
       } else {
         // no matching user
         res.status(201).send(false);
@@ -284,6 +347,9 @@ app.post("/login", (req, res) => {
     }
   );
 });
+
+
+// friends
 
 app.post("/register", (req, res) => {
   console.log("post register request", req.body);
@@ -332,63 +398,6 @@ app.post("/register", (req, res) => {
     }
   );
   res.status(201).send({ userName, userEmail, userLanguages, userAvatar });
-});
-
-app.post("/friends", (req, res) => {
-  // client sending
-  // console.log("login request", req.body);
-  // req.body = {userEmail: '', userPassword: ''}
-
-  const username = req.body.username;
-  // const password = req.body.userPassword;
-
-  // and password.. userName=$1 AND userpassword=$2
-  return pool.query(
-    "SELECT id FROM users WHERE username=$1",
-    [username],
-    (err, res_1) => {
-      if (err) throw err;
-      console.log(res_1.rows);
-      if (res_1.rows[0]) {
-        // user exist
-        const userID = res_1.rows[0].id;
-        // const userName = userInfo.username;
-        // const avatar = userInfo.avatar_id;
-        // console.log(res_1.rows[0]); // id: 3, username: "mike", password: "mike", email: "test2@test.com", avatar_id: 1
-        // const userID = res_1.rows[0].id;
-        // find languages
-        pool.query(
-          // find followers id
-          "SELECT following FROM favorites WHERE followed=$1",
-          [userID],
-          (err, res_2) => {
-            const userLanguages = [];
-            console.log(res_2.rows)
-            // if (err) throw err;
-            // // res.rows[0] = 
-            // res_2.rows[0]
-            // if (res_2.rows.length > 0) {
-            //   // console.log("find user's languages", res_2.rows);
-            //   res_2.rows.forEach((obj) => {
-            //     userLanguages.push(obj.language_id);
-            //   });
-            //   const loginUserData = {
-            //     userName,
-            //     avatar,
-            //     userLanguages,
-            //   };
-            //   res.status(201).send(loginUserData); //object - username, avatar, language
-            // } else {
-            //   console.log("No available language", res_2.rows);
-            // }
-          }
-        );
-      } else {
-        // no matching user
-        res.status(201).send(false);
-      }
-    }
-  );
 });
 
 

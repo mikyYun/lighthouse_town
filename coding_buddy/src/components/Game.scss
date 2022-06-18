@@ -57,5 +57,10 @@ div.d-flex.flex-row {
 #friends-list {
   width: 100%;
   background-color: red;
-  height: 50px;
+  height: auto;
+}
+
+.row,
+.col {
+  height: auto;
 }
