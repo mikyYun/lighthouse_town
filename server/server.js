@@ -84,7 +84,7 @@ io.on("connection", (socket) => {
 
   // use object
   // socket.emit("init", {data: 'hello world'})
-  socket.on('sendData', data => {
+  socket.on('sendData', data => { //Canvas.jsx -             socket.emit('sendData', userCharacters[props.username].state) 를 듣는 이벤트리스너. 
     console.log('sendData', data); // print on server
     // add userid from data
     users[data.username] = data
