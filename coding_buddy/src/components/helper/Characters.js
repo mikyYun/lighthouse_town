@@ -1,4 +1,4 @@
-import boyImg from '../game_img/boy1.png'
+import selectAvatar from "./selecAvatar";
 
 const facing = {
   up: 3,
@@ -6,6 +6,7 @@ const facing = {
   left: 1,
   right: 2
 }
+// facing direction
 const cycleLoop = [0,1,2,3];
 class Characters {
 
@@ -14,15 +15,25 @@ class Characters {
       username: config.username,
       x: config.x,
       y: config.y,
-      currentDirection: facing.down,
-      isMoving: false
+      currentDirection: config.currentDirection,
+      frameCount: config.frameCount,
+      avatar: config.avatar
     }
     this.img = new Image();
-    this.img.src = boyImg
-    this.movement_speed = 10;
+    this.img.src = selectAvatar(this.state.avatar)
+    this.movement_speed = 8;
     this.width = 63.5;
     this.height = 63.5;
     this.currentLoopIndex = 0;
+    this.frameLimit = 4;
+  }
+
+  frameDirection = () => {
+    this.state.frameCount += 1;
+    console.log(this.state.frameCount)
+    if (this.state.frameCount >= this.frameLimit) {
+      this.state.frameCount = 0;
+    }
   }
 
   // add websocket
@@ -31,44 +42,48 @@ class Characters {
     if (e.key === 'ArrowUp') {
       // keyPressed.w = true;
       this.state.y -= this.movement_speed;
-      // console.log(this.state.y)
       this.state.currentDirection = facing.up;
-      this.state.isMoving = true;
+      this.state.frameCount += 1;
+      console.log(this.state.frameCount)
+
     }
     if (e.key === 'ArrowLeft') {
       // keyPressed.a = true;
       this.state.x -= this.movement_speed;
       this.state.currentDirection = facing.left;
-      this.state.isMoving = true;
+      this.frameDirection()
+      console.log(this.state.frameCount)
     }
     if (e.key === 'ArrowDown') {
       // keyPressed.s = true;
       this.state.y += this.movement_speed;
       this.state.currentDirection = facing.down;
-      this.state.isMoving = true;
+      this.frameDirection()
+      console.log(this.state.frameCount)
     }
     if (e.key === 'ArrowRight') {
       // keyPressed.d = true;
       this.state.x += this.movement_speed;
       this.state.currentDirection = facing.right;
-      this.state.isMoving = true;
+      this.frameDirection()
+      console.log(this.state.frameCount)
     }
   }
 
   stop = () => {
-    this.state.isMoving = false;
+    this.state.frameCount = 0;
   }
 
-  incrementLoopIndex = () => {
-    this.currentLoopIndex += 1;
-    if (this.currentLoopIndex >= cycleLoop.length) {
-      this.currentLoopIndex = 0;
-    }
-  }
+  // incrementLoopIndex = () => {
+  //   this.currentLoopIndex += 1;
+  //   if (this.currentLoopIndex >= cycleLoop.length) {
+  //     this.currentLoopIndex = 0;
+  //   }
+  // }
 
   drawFrame = (ctx) => {
-    // console.log('inside drawFrame')
-    const frameX = cycleLoop[this.currentLoopIndex];
+    const frameX = cycleLoop[this.state.frameCount];
+    console.log(frameX, this.state.frameCount)
     ctx.drawImage(this.img,
       frameX * this.width, this.state.currentDirection * this.height,
       this.width, this.height,

@@ -2,11 +2,13 @@ import React, { useEffect, ReactDOM, useContext } from "react";
 import Canvas from "./Canvas";
 import "./Game.scss";
 import Chat from "./Chat";
+import Online from "./Online";
+
 import { useLocation, useNavigate } from "react-router-dom";
 import { SocketContext } from "../App";
 export default function Game(props) {
   const navigate = useNavigate()
-  const {username} = useContext(SocketContext)
+  // const {username} = useContext(SocketContext)
   // let loggedIn = false
   // const setUser = props.setUser
   // sendData function from props => props.sendData
@@ -16,7 +18,7 @@ export default function Game(props) {
   // pass the mapimg as props
 
   // @@ Moon: 이거 위에서 destructuring 으로 할수있지않나? 아니면 Context로
-  const sendMessage = props.sendMessage
+  const sendMessage = props.sendessage
   const sendPrivateMessage = props.sendPrivateMessage
 
   // const getAllUsers = props.getAllUsers
@@ -41,8 +43,10 @@ export default function Game(props) {
       <div className="main-container">
         {/* {(location.state === null) && navigate("/")} */}
         {/* <Canvas username={location.state[0] || 'guest'} avatar={location.state[1]} sendData={props.sendData} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} /> */}
-        <Canvas username={username} avatar={location.state?.[1]} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} sendData={props.sendData} />
-        <Chat username={username} room={props.room} handleSubmitNickname={props.handleSubmitNickname} nickname={username} />
+        <Canvas username={props.nickname} avatar={location.state?.[1]} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} sendData={props.sendData} />
+        <Chat username={props.nickname} room={props.room} handleSubmitNickname={props.handleSubmitNickname} nickname={props.nickname}
+        />
+        <Online online={props.online} />
       </div>
     </>
   );

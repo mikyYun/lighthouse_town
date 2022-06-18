@@ -6,10 +6,8 @@
 
 .game-container {
   position: relative;
-  width: 80vw;
-  height: 100vh;
-  background: url(./game_img/town-map.png) no-repeat;
-  transform: scale(0.8);
+  width: 100vw;
+
   image-rendering: pixelated;
 }
 .game-canvas {
@@ -39,4 +37,10 @@ textarea.form-control {
 }
 div.d-flex.flex-row {
   height: auto;
+}
+
+#javascript {
+  position: fixed;
+  top: 15vh;
+  left: 35vw;
 }
