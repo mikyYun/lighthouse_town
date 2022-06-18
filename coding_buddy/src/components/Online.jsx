@@ -14,7 +14,16 @@ export default function Online() {
   return (
     <div className="onlinelist">
       {/* <div className="d-flex flex-column onlinelist"> */}
-  
+      <button
+        className="btn btn-primary"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapseExample"
+        aria-expanded="false"
+        aria-controls="collapseExample"
+      >
+        Friends
+      </button>
       <div className="collapse" id="friends-list">
         <div className="card card-body">heysadfasdfasdfasdfasdfsdaf</div>
       </div>

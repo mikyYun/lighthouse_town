@@ -32,14 +32,15 @@ const Canvas = (props) => {
     react: "/game/react",
     ruby: "/game/ruby",
   };
-  const myChar = userCharacters[props.username].state
-  if (myChar.x > 300 && myChar.y > 300) {
-    navigate(roomLists.javascript)
-  }
-  window.addEventListener("click", () => {
-    console.log("Xposition",myChar.x)
-    console.log("Yposition",myChar.y)
-  })
+// 캐릭터 위치 확인 && url 변경
+  // const myChar = userCharacters[props.username].state
+  // if (myChar.x > 300 && myChar.y > 300) {
+  //   navigate(roomLists.javascript)
+  // }
+  // window.addEventListener("click", () => {
+  //   console.log("Xposition",myChar.x)
+  //   console.log("Yposition",myChar.y)
+  // })
 
 
   console.log("username", props.username);
