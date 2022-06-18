@@ -21,7 +21,8 @@ const Canvas = (props) => {
       avatar: 1,
     }),
   });
-
+  
+  
   const navigate = useNavigate();
   const location = useLocation();
   const roomLists = {
@@ -31,6 +32,16 @@ const Canvas = (props) => {
     react: "/game/react",
     ruby: "/game/ruby",
   };
+  const myChar = userCharacters[props.username].state
+  if (myChar.x > 300 && myChar.y > 300) {
+    navigate(roomLists.javascript)
+  }
+  window.addEventListener("click", () => {
+    console.log("Xposition",myChar.x)
+    console.log("Yposition",myChar.y)
+  })
+
+
   console.log("username", props.username);
   console.log("nickName", nickname);
   useEffect(() => {

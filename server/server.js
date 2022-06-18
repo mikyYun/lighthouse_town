@@ -334,6 +334,66 @@ app.post("/register", (req, res) => {
   res.status(201).send({ userName, userEmail, userLanguages, userAvatar });
 });
 
+app.post("/friends", (req, res) => {
+  // client sending
+  // console.log("login request", req.body);
+  // req.body = {userEmail: '', userPassword: ''}
+
+  const username = req.body.username;
+  // const password = req.body.userPassword;
+
+  // and password.. userName=$1 AND userpassword=$2
+  return pool.query(
+    "SELECT id FROM users WHERE username=$1",
+    [username],
+    (err, res_1) => {
+      if (err) throw err;
+      console.log(res_1.rows);
+      if (res_1.rows[0]) {
+        // user exist
+        const userID = res_1.rows[0].id;
+        // const userName = userInfo.username;
+        // const avatar = userInfo.avatar_id;
+        // console.log(res_1.rows[0]); // id: 3, username: "mike", password: "mike", email: "test2@test.com", avatar_id: 1
+        // const userID = res_1.rows[0].id;
+        // find languages
+        pool.query(
+          // find followers id
+          "SELECT following FROM favorites WHERE followed=$1",
+          [userID],
+          (err, res_2) => {
+            const userLanguages = [];
+            console.log(res_2.rows)
+            // if (err) throw err;
+            // // res.rows[0] = 
+            // res_2.rows[0]
+            // if (res_2.rows.length > 0) {
+            //   // console.log("find user's languages", res_2.rows);
+            //   res_2.rows.forEach((obj) => {
+            //     userLanguages.push(obj.language_id);
+            //   });
+            //   const loginUserData = {
+            //     userName,
+            //     avatar,
+            //     userLanguages,
+            //   };
+            //   res.status(201).send(loginUserData); //object - username, avatar, language
+            // } else {
+            //   console.log("No available language", res_2.rows);
+            // }
+          }
+        );
+      } else {
+        // no matching user
+        res.status(201).send(false);
+      }
+    }
+  );
+});
+
+
+
+
 httpServer.listen(PORT, () => {
   console.log(
     `Server Started on port ${PORT}, ${new Date().toLocaleString()} #####`
