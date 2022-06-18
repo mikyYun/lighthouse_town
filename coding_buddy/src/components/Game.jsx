@@ -2,6 +2,8 @@
 import Canvas from "./Canvas";
 import "./Game.scss";
 import Chat from "./Chat";
+import Online from "./Online";
+
 import { useLocation, useNavigate } from "react-router-dom";
 export default function Game(props) {
   // const navigate = useNavigate()
@@ -40,7 +42,10 @@ export default function Game(props) {
         {/* {(location.state === null) && navigate("/")} */}
         {/* <Canvas username={location.state[0] || 'guest'} avatar={location.state[1]} sendData={props.sendData} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} /> */}
         <Canvas username={props.nickname} avatar={location.state?.[1]} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} sendData={props.sendData} />
-        <Chat username={props.nickname} room={props.room} handleSubmitNickname={props.handleSubmitNickname} nickname={props.nickname} />
+        <Chat username={props.nickname} room={props.room} handleSubmitNickname={props.handleSubmitNickname} nickname={props.nickname}
+        />
+        <Online online={props.online} />
+
       </div>
     </>
   );

@@ -8,7 +8,7 @@ export default function Login(props) {
 
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  const setUser = props.setUser
+  const { setUser } = props
   const cookies = new Cookies();
   const navigate = useNavigate()
   const goRegister = () => {
