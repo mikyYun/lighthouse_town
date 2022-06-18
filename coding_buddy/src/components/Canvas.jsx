@@ -6,11 +6,13 @@ import boyImage from "./game_img/boy1.png";
 import townWall from "./game_img/collision_data.js/townWall";
 import selectAvatar from "./helper/selecAvatar";
 import  { SocketContext } from '../App';
+import { useNavigate } from 'react-router-dom';
 
 
 const Canvas = (props) => {
     const { socket } = useContext(SocketContext)
     const canvasRef = useRef(null);
+    const navigate = useNavigate()
     const [userCharacters, setUserCharacters] = useState({
         [props.username]: new Characters({
             username: props.username,
@@ -120,47 +122,26 @@ const Canvas = (props) => {
             ctx.fillText(userCharacters[userChar].state.username, userCharacters[userChar].state.x + 20, userCharacters[userChar].state.y + 10)
             ctx.fillStyle = 'purple';
         }
-        // socket.on('sendData', data => {
-        //     console.log('data', data);
-        //     const newCharactersData = data;
-        //     newCharactersData[props.username] = userCharacters[props.username];
 
-        //     // console.log('newCharactersData', newCharactersData)
-        //     // console.log('characters', userCharacters )
-
-        //     for(const userChar in newCharactersData) {
-        //         if (typeof newCharactersData[userChar].username !== 'undefined') {
-        //             if (newCharactersData[userChar].username !== props.username) {
-        //                 newCharactersData[userChar] = new Characters(newCharactersData[userChar]);
-        //             }
-        //         }
-        //     }
-        //     setUserCharacters(newCharactersData);
-        // })
     });
 
     // if user hit the specific position -> redirect to the page
-    // const handleClick = () => {
-    //     navigate("/path/to/push");
-    // }
+    const handleClick = () => {
+        navigate("/game/javascript");
+    }
 
-    // let page;
-    // if (userCharacters[props.username].state.x >= 420 && userCharacters[props.username].state.x <= 460
-    //     && userCharacters[props.username].state.y >= 120 && userCharacters[props.username].state.y <= 140 ) {
-    //     console.log("im here!!!!")
-    //     page = React.createElement('button', {onClick=handleClick}, "Language Page")
-    // }
+    let page;
+    if (userCharacters[props.username].state.x >= 420 && userCharacters[props.username].state.x <= 460
+        && userCharacters[props.username].state.y >= 120 && userCharacters[props.username].state.y <= 140 ) {
+        console.log("im here!!!!")
+        page = React.createElement('button', { id:'javascript', onClick : handleClick }, "Language Page")
+    }
 
 
-    // return (
-    //     <div>
-    //         <button onClick={handleClick} type="button" />
-    //     </div>
-    // );
     return (
         <div className="game-container" >
             <canvas className="game-canvas" ref={canvasRef}></canvas>
-            {/* {page} */}
+            {page}
         </div>
     );
 };

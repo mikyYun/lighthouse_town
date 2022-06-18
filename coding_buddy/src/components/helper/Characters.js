@@ -1,6 +1,5 @@
 import selectAvatar from "./selecAvatar";
 
-
 const facing = {
   up: 3,
   down: 0,
