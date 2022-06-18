@@ -3,6 +3,8 @@ import './App.css';
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Cookies from 'universal-cookie';
+import town from './components/game_img/town-map.png';
+import classroom from './components/game_img/classroom.png'
 import Game from './components/Game';
 import Layout from './components/Layout';
 import Register from './components/Register';
@@ -22,7 +24,7 @@ function App() {
   const location = useLocation();
   const nickname = location.state?.[0] || '';
   // console.log('location.state[0]', location.state[0])
-  const urlLists = ["/game"];
+  const urlLists = ["/game", "/game/javascript"];
   useEffect(() => {
     setRoom(location.pathname.split("/").splice(2)[0]);
     // console.log("location.pathname", location.pathname);
@@ -106,6 +108,7 @@ function App() {
     socket && socket.emit("sendData", state);
   };
 
+
   return (
     <SocketContext.Provider value={{ socket, online, nickname }} >
       <div className='main'>
@@ -113,9 +116,23 @@ function App() {
           <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
           <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
           <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
-          <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} sendData={sendData} setUser={createSocketIdNameObject} room={room} nickname={nickname} />} />
+          <Route path='/game' element={<Game
+            sendMessage={sendMessage}
+            sendPrivateMessage={privateMessage}
+            sendData={sendData}
+            setUser={createSocketIdNameObject}
+            room={room}
+            nickname={nickname}
+            map={town}/>} />
           {/* <Route path='/chat' element={<Chat />} /> */}
-          <Route path={`/game/${room}`} element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} />} />
+          <Route path={`/game/javascript`} element={
+            <Game
+            sendPrivateMessage={privateMessage}
+            sendData={sendData}
+            setUser={createSocketIdNameObject}
+            room={room}
+            nickname={nickname}
+            map={classroom}/>} />
         </Routes>
       </div>
     </SocketContext.Provider>

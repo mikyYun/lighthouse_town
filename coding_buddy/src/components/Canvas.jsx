@@ -9,8 +9,9 @@ import  { SocketContext } from '../App';
 import { useNavigate } from 'react-router-dom';
 
 
+
 const Canvas = (props) => {
-    const { socket } = useContext(SocketContext)
+    const { socket, nickname } = useContext(SocketContext)
     const canvasRef = useRef(null);
     const navigate = useNavigate()
     const [userCharacters, setUserCharacters] = useState({
@@ -20,10 +21,12 @@ const Canvas = (props) => {
             y: 150,
             currentDirection: 0,
             frameCount:0,
-            avatar: props.avatar
+            avatar: 1
         }
     )});
 
+    console.log('username', props.username)
+    console.log('nickName', nickname)
     useEffect(() => {
 
         socket.on('connect', () => {
@@ -95,7 +98,7 @@ const Canvas = (props) => {
         const ctx = canvas.getContext("2d");
 
         const mapImg = new Image();
-        mapImg.src = mapImage;
+        mapImg.src = props.map;
         ctx.drawImage(mapImg, 0, 0);
 
         // ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -130,11 +133,18 @@ const Canvas = (props) => {
         navigate("/game/javascript");
     }
 
+    console.log('ROOM', userCharacters)
     let page;
-    if (userCharacters[props.username].state.x >= 420 && userCharacters[props.username].state.x <= 460
-        && userCharacters[props.username].state.y >= 120 && userCharacters[props.username].state.y <= 140 ) {
-        console.log("im here!!!!")
-        page = React.createElement('button', { id:'javascript', onClick : handleClick }, "Language Page")
+    if (userCharacters) {
+        console.log('CharacterExist', userCharacters)
+        console.log('CharacterExist', userCharacters[props.username])
+        console.log('CharacterExist', userCharacters[props.username].state)
+
+        if (userCharacters[props.username].state.x >= 420 && userCharacters[props.username].state.x <= 460
+            && userCharacters[props.username].state.y >= 120 && userCharacters[props.username].state.y <= 140 ) {
+            console.log("im here!!!!")
+            page = React.createElement('button', { id:'javascript', onClick : handleClick }, "Language Page")
+        }
     }
 
 
