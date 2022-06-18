@@ -24,30 +24,43 @@ function App() {
   const location = useLocation();
   const nickname = location.state?.[0] || '';
   // console.log('location.state[0]', location.state[0])
-  const urlLists = ["/game", "/game/ruby"];
+  const urlLists = [
+    "/game",
+    "/game/ruby",
+    "/game/html",
+    "/game/css",
+    "/game/js",
+    //  '/'
+  ];
   useEffect(() => {
     setRoom(location.pathname.split("/").splice(2)[0]);
     // console.log("location.pathname", location.pathname);
+    const currentCookies = cookies.getAll();
+    console.log("CCCCCCCCCCCCC", cookies.cookies.username);
+    // if (cookies.cookies.username) {
+      // navigate('/game');
+    // }
+
     if (!urlLists.includes(location.pathname)) clearCookies();
   }, [location.pathname]);
 
   useEffect(() => {
 
 
-/* serversided 
-    socket.on("disconnect", () => {
-      console.log("DISCONNECT", socket.id);
-      const alluserNames = Object.keys(currentUsers);
-      alluserNames.forEach((name) => {
-        if (currentUsers[name] === socket.id)
-          delete currentUsers[name];
-      }); // {"users": [name1, name2] }
-      console.log("DISCONNECT - CURRENT USERS", currentUsers);
-      io.emit("all user names", { "users": alluserNames }); // App.jsx & Recipients.jsx 로 보내기
-    });
-*/
+    /* serversided 
+        socket.on("disconnect", () => {
+          console.log("DISCONNECT", socket.id);
+          const alluserNames = Object.keys(currentUsers);
+          alluserNames.forEach((name) => {
+            if (currentUsers[name] === socket.id)
+              delete currentUsers[name];
+          }); // {"users": [name1, name2] }
+          console.log("DISCONNECT - CURRENT USERS", currentUsers);
+          io.emit("all user names", { "users": alluserNames }); // App.jsx & Recipients.jsx 로 보내기
+        });
+    */
 
-    
+
     //frontend 
     socket.on("connect", () => {
       const all_cookies = cookies.getAll();
@@ -92,13 +105,14 @@ function App() {
     socket.on("backData", data => console.log("data", data)); //coming from server
 
     socket.on("all user names", (obj) => {
-      console.log("지금 로그인 되어있는 유저 line 55 - App.js", obj.users);
+      console.log("지금 로그인 되어있는 유저 line 95 - App.js", obj.users);
+
       // obj.users = [user1, user2] => [{value: name, label: name } {}]
       const usersOnline = obj.users.map(name => ({ value: name, label: name }));
       usersOnline.unshift({ value: "all", label: "all" });
       console.log('usersOnline - App.js', usersOnline);//[{}, {}, {}]
-    // const onlineOthers = usersOnline.filter(user => user.value !== nickname)
-      
+      // const onlineOthers = usersOnline.filter(user => user.value !== nickname)
+
       setOnline(usersOnline);
     }); // this works
 
@@ -144,7 +158,7 @@ function App() {
           <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
           <Route path='/game' element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} sendData={sendData} setUser={createSocketIdNameObject} room={room} nickname={nickname} online={online} />} />
           {/* <Route path='/chat' element={<Chat />} /> */}
-          <Route path={`/game/${room}`} element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} />} />
+          <Route path={`/game/${room}`} element={<Game sendMessage={sendMessage} sendPrivateMessage={privateMessage} sendData={sendData} setUser={createSocketIdNameObject} room={room} nickname={nickname} online={online} />} />
         </Routes>
       </div>
     </SocketContext.Provider>

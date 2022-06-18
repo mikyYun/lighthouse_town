@@ -75,10 +75,12 @@ io.on("connection", (socket) => {
       currentUsers[e.username] = e.newSocketId; // update
       const alluserNames = Object.keys(currentUsers); // get keys arr
       // alluserNames.forEach((name) => {
-      //   if (currentUsers[name] === socket.id)
-      //     delete currentUsers[name];
+        // if (currentUsers[name] === socket.id)
+          // delete currentUsers[name];
       // }); // {"users": [name1, name2] }
-      // console.log("CURRENT USERS", currentUsers);
+      // 현재유저 이름은 뺌
+      // alluserNames.filter(nm => nm !== e.username)
+      console.log("CURRENT USERS", alluserNames);
       socket.emit("all user names", { "users": alluserNames });
     }
     console.log("@@@@@@@@@@@@@after reconnection", currentUsers);

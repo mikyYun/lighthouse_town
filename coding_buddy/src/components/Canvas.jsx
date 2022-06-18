@@ -18,7 +18,7 @@ const Canvas = (props) => {
             y: 150,
             currentDirection: 0,
             frameCount:0,
-            avatar: props.avatar
+            avatar: 1
         }
     )});
 
