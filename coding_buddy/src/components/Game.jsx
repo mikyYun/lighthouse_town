@@ -5,7 +5,6 @@ import Chat from "./Chat";
 import Online from "./Online";
 
 import { useLocation, useNavigate } from "react-router-dom";
-import { SocketContext } from "../App";
 export default function Game(props) {
   const navigate = useNavigate()
   // const {username} = useContext(SocketContext)
