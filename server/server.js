@@ -63,24 +63,28 @@ io.on("connection", (socket) => {
   session.save();
 
   socket.on("reconnection?", (e) => {
-    let reconnection = true
-    console.log("line 67, THIS IS RECONNECTION", e)
+    // let reconnection = true
+    console.log("THIS IS RECONNECTION", e);
     // e.username, e.newSocketId
     // console.log("before",currentUsers)
     if (currentUsers[e.username]) {
-      // 현재 currentUsers 에 같은 유저네임이 존재하면 => 사용중인 유저네임 && disconnect 되지 않았음
-      // console.log("this user are in used")
-      // !reconnection
-      socket.emit("DENY CONNECTION", false)
+      // 현재 currentUsers 에 같은 유저네임이 존재하면 => 사용중인 유저네임 && disconnect 되지 않았다면
+      socket.emit("DENY CONNECTION", false);
       // callback("return")
     } else {
-      currentUsers[e.username] = e.new
-
-
-
+      currentUsers[e.username] = e.newSocketId; // update
+      const alluserNames = Object.keys(currentUsers); // get keys arr
+      // alluserNames.forEach((name) => {
+        // if (currentUsers[name] === socket.id)
+          // delete currentUsers[name];
+      // }); // {"users": [name1, name2] }
+      // 현재유저 이름은 뺌
+      // alluserNames.filter(nm => nm !== e.username)
+      console.log("CURRENT USERS", alluserNames);
+      socket.emit("all user names", { "users": alluserNames });
     }
-    console.log("@@@@@@@@@@@@@after reconnection", currentUsers)
-  })
+    console.log("@@@@@@@@@@@@@after reconnection", currentUsers);
+  });
 
   // use object
   // socket.emit("init", {data: 'hello world'})

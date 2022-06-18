@@ -1,14 +1,38 @@
-import { useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import Select from 'react-select';
 import { SocketContext } from '../App.js'
 
 function Recipient(props) {
-  const { online } = useContext(SocketContext)
+  let { online } = useContext(SocketContext)
   const { nickname, recipient, setRecipient } = props
+  const [otherUsers, setOtherUsers] = useState([])
+  // other users => dynamic values
   // const recipient = props.recipient
   // const setRecipient = props.setRecipient
   console.log("ONLINE - RECIPIENT.JSX", online)
-  const onlineOthers = online.filter(user => user.value !== nickname)
+  console.log("ONLINE - RECIPIENT.JSX", nickname)
+    console.log("INSIDE", online)
+  
+  // online.map(onlineMember => {
+    // if (onlineMember.value === nickname) delete onlineMember[nickname]
+    // console.log(onlineMember.value === nickname)
+    // console.log("TEST", onlineMember)
+  // })
+  useEffect(() => {
+    const others = online.map(obj => {
+      if (obj.value !== nickname) {
+        delete online.obj
+      }
+    })
+    // setOtherUsers(others)
+  //   // console.log("유저네임",nickname)
+  //   // console.log("유저네임", online)
+    const onlineOthers = online.filter(user => user.value !== nickname)
+    return setOtherUsers(onlineOthers)
+  }, [online])
+  // online.shift()
+  console.log("OUTSIDE", online)
+
   return (
     <div className="card d-flex flex-row align-items-center" >
       <label htmlFor="user-name-input" style={{ width: 290 }}>
@@ -21,7 +45,7 @@ function Recipient(props) {
         value={recipient !== null && (recipient || { value: "all", label: "all" })}
         defaultValue={recipient}
         onChange={setRecipient}
-        options={onlineOthers}
+        options={otherUsers}
       />
     </div>
   );
