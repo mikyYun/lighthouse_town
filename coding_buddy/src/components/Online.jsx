@@ -13,7 +13,7 @@ export default function Chat() {
 
     <>
       <div className="d-flex flex-column onlinelist">
-        hello this is online list
+        <span>Online</span>
         <div>
           {usersOnline}
         </div>
