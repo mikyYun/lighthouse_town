@@ -28,4 +28,5 @@ export default function Friends() {
       </div>
       <MessageForm nickname={nickname} recipient={recipient} />
     </div>
+  )
 }

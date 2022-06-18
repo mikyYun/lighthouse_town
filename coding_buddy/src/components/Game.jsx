@@ -1,12 +1,14 @@
-import React, { useEffect, ReactDOM, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import Canvas from "./Canvas";
 import "./Game.scss";
 import Chat from "./Chat";
 import Online from "./Online";
+import { useLocation } from "react-router-dom";
 
-import { useLocation, useNavigate } from "react-router-dom";
 export default function Game(props) {
-  const navigate = useNavigate()
+  const location = useLocation();
+
+
   // const {username} = useContext(SocketContext)
   // let loggedIn = false
   // const setUser = props.setUser
@@ -22,7 +24,6 @@ export default function Game(props) {
 
   // const getAllUsers = props.getAllUsers
   // getAllUsers()
-  const location = useLocation();
   // useEffect(() => {
   //   if (location.state === null) navigate("/")
   // }, [])
@@ -37,13 +38,27 @@ export default function Game(props) {
   // if (location.state !== null) {
 
   console.log("location", location)
+  console.log("map", props.map)
   return (
     <>
       <div className="main-container">
         {/* {(location.state === null) && navigate("/")} */}
         {/* <Canvas username={location.state[0] || 'guest'} avatar={location.state[1]} sendData={props.sendData} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} /> */}
-        <Canvas username={props.nickname} avatar={location.state?.[1]} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} sendData={props.sendData} />
-        <Chat username={props.nickname} room={props.room} handleSubmitNickname={props.handleSubmitNickname} nickname={props.nickname}
+        <Canvas
+          username={props.nickname}
+          // avatar={location.state?.[1]}
+          avatar={location.state?.[1]}
+          sendMessage={sendMessage}
+          sendPrivateMessage={sendPrivateMessage}
+          room={props.room}
+          sendData={props.sendData}
+          map={props.map}
+        />
+        <Chat
+          username={props.nickname}
+          room={props.room}
+          handleSubmitNickname={props.handleSubmitNickname}
+          nickname={props.nickname}
         />
         <Online />
       </div>

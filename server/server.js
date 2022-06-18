@@ -147,7 +147,7 @@ io.on("connection", (socket) => {
   // use object
   // socket.emit("init", {data: 'hello world'})
   socket.on('sendData', data => {
-    // console.log('sendData', data); // print on server
+    console.log('line 88, sendData (get from client)', data); // print on server
     // add userid from data
     users[data.username] = data;
     io.emit('sendData', users); // 다시 Canvas.jsx -> const newCharactersData = data;
