@@ -17,7 +17,8 @@ const Canvas = (props) => {
             x: 150,
             y: 150,
             currentDirection: 0,
-            frameCount:0
+            frameCount:0,
+            avatar: props.avatar
         }
     )});
 
@@ -35,11 +36,8 @@ const Canvas = (props) => {
 
             for(const userChar in userCharacters) {
 
-                let frameCount = 0;
-                let framelimit = 4;
-
-                console.log(userChar)
-                console.log(userCharacters)
+                // console.log(userChar)
+                // console.log(userCharacters)
                 userCharacters[userChar].drawFrame(ctx);
 
                 // Text on head.
@@ -71,7 +69,6 @@ const Canvas = (props) => {
 
         window.addEventListener("keydown", e => {
             userCharacters[props.username].move(e);
-            // console.log('when sending', userCharacters['heesoo'].state)
             socket.emit('sendData', userCharacters[props.username].state)
         });
         window.addEventListener("keyup", () => {

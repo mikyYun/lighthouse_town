@@ -1,4 +1,5 @@
-import boyImg from '../game_img/boy1.png'
+import selectAvatar from "./selecAvatar";
+
 
 const facing = {
   up: 3,
@@ -16,10 +17,11 @@ class Characters {
       x: config.x,
       y: config.y,
       currentDirection: config.currentDirection,
-      frameCount: config.frameCount
+      frameCount: config.frameCount,
+      avatar: config.avatar
     }
     this.img = new Image();
-    this.img.src = boyImg
+    this.img.src = selectAvatar(this.state.avatar)
     this.movement_speed = 8;
     this.width = 63.5;
     this.height = 63.5;
