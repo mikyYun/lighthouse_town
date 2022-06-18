@@ -16,7 +16,7 @@ function Recipient(props) {
       </label>
       <Select
         type="text"
-        id="recipient-dropdown"
+        id="pdown"
         maxLength={12}
         value={recipient!==null && recipient || {value: "all", label: "all"}}
         defaultValue={recipient}

@@ -66,7 +66,6 @@ io.on("connection", (socket) => {
     // add userid from data
     users[data.username] = data
     io.emit('sendData', users)
-
   });
 
   // socketID and username matching
