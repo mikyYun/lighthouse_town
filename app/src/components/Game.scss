@@ -11,9 +11,17 @@ $list-color: #005366;
 .game-container {
   position: relative;
   width: 80vw;
-
+  background-size: cover;
   image-rendering: pixelated;
 }
+.plaza {
+  background-image: url('./game_img/town-map.png');
+}
+.js {
+  background-image: url('./game_img/classroom.png');
+}
+
+
 .game-canvas {
   width: 100%;
   max-width: 80vw;
@@ -62,7 +70,10 @@ div.d-flex.flex-row {
   font-size: 1.3rem;
   color: white;
   img {
-    width: 15px;
+  background-color: rgb(82, 82, 131);
+    img.user-avatar {
+      width: 15px;
+    }
   }
 }
 

@@ -45,7 +45,8 @@ class Characters {
       this.state.y -= this.movement_speed;
       this.state.currentDirection = facing.up;
       this.state.frameCount += 1;
-      // console.log(this.state.frameCount)
+      console.log(this.state.frameCount)
+      console.log('y: ', this.state.y)
 
     }
     if (e.key === 'ArrowLeft') {

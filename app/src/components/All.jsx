@@ -1,6 +1,5 @@
+///아직 하는중
 import { useState } from "react";
-
-
 export default function Friends() {
 
 

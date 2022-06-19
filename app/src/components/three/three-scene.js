@@ -16,11 +16,11 @@ import RegistrationModel from "./registrationModel";
 
 
 export default function DrawCanvas(props) {
-  console.log(props)
+  // console.log(props)
   return <Canvas>
     <OrbitControls />
     <pointLight visible={true} intensity={1} />
     <RegistrationModel />
   </Canvas>;
-  
+
 }

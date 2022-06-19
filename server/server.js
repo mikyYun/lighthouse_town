@@ -188,24 +188,22 @@ io.on("connection", (socket) => {
     if (!usersInRooms[room]) {
       usersInRooms[room] = {};
     }
-
     // should remove the current user from the previous room
     if (removeFrom) {
-      console.log('Remove', usersInRooms[removeFrom][userState.username]);
       delete usersInRooms[removeFrom][userState.username];
     } else {
       // assign userState into each room
       usersInRooms[room][userState.username] = userState;
     }
 
-    console.log("COMPLETE", usersInRooms)
+    // console.log("COMPLETE", usersInRooms)
     // usersInRooms = {
     //     plaza: { moon: {moons state},
     //              heesoo: {heesoo's state}
     //      }
 
 
-    console.log(usersInRooms)
+    console.log('usersInRooms', usersInRooms)
     io.emit('sendData', { usersInRooms, room }) // 다시 Canvas.jsx -> const newCharactersData = data;
 
 

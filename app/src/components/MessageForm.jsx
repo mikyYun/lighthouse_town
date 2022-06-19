@@ -1,4 +1,4 @@
-import { useState, useCallback, useContext, useRef, useEffect } from "react";
+import { useState, useCallback, useContext, useRef } from "react";
 import { SOCKET_EVENT } from "./service/socket.js";
 import { SocketContext } from "../App.js";
 
@@ -14,6 +14,7 @@ function MessageForm({ nickname, recipient }) {
   const handleChangeTypingMessage = useCallback((event) => {
     setTypingMessage(event.target.value);
   }, []);
+
   const handleSendMesssage = useCallback(() => {
     const noContent = typingMessage.trim() === "";
 
@@ -38,6 +39,10 @@ function MessageForm({ nickname, recipient }) {
     }
     setTypingMessage("");
   }, [socket, nickname, typingMessage, recipient]);
+
+  function chatBubble() {
+
+  }
 
 
   // document.addEventListener("keyup", (e) => {

@@ -16,11 +16,11 @@ export default function Login(props) {
   }
   const goChat = (username, avatar) => {
     const data = [username, avatar]
-    navigate('/game/plaza', { state: data })
+    navigate("/game/plaza", { state: data })
   }
 
   return (
-    <form id="form_login" action="/game" method="GET" runat="server">
+    <form id="form_login" action="/game/plaza" method="GET" runat="server">
       <div>
         <span>EMAIL : </span>
         <input

@@ -6,7 +6,6 @@ import Cookies from 'universal-cookie';
 import town from './components/game_img/town-map.png';
 import classroom from './components/game_img/classroom.png';
 import Game from './components/Game';
-import Layout from './components/Layout';
 import Register from './components/Register';
 import Login from './components/Login';
 import Menu from './components/Menu';
@@ -22,11 +21,12 @@ function App() {
 
   // const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
-  const [online, setOnline] = useState([{ value: 'all', label: 'all', avatar: 1 }]);
+  const [online, setOnline] = useState([{ value: 'all', label: 'all' }]);
   const [friendList, setFriendList] = useState([])
   const [show, setShow] = useState(false);
   const [clicked, setClicked] = useState({})
-  const [recipient, setRecipient] = useState({ value: "all", label: "all", avatar: 1 });
+  const [recipient, setRecipient] = useState({ value: "all", label: "all" });
+  const [user, setUser] = useState({ value: "all", label: "all", avatar: 1 });
 
   // ================= HOOKS =============== //
 
@@ -53,8 +53,9 @@ function App() {
   }
 
   const avatars = {
-    1: "/images/boy-face.png",
-    2: "/images/girl-face.png"
+    0: "./components/game_img/boy-face.png",
+    1: "./components/game_img/boy-face.png",
+    2: "./components/game_img/girl-face.png"
   }
 
   // ================= INTANCES =============== //
@@ -69,7 +70,11 @@ function App() {
   // ================= EFFECTS =============== //
 
   useEffect(() => {
+    setUser({ ...user, avatar: avatars[user.avatar] }) //[user.avatar] is a number (avatar id)
+    // @@@@@@@@@@@@ SUNDAY : WE SHOULD GET A USER FROM THE DATA BASE
+    // @@@@@@@@@@@@ SUNDAY : WE SHOULD ALSO SET AN AVATAR WHEN WE GET AN USER OBJECT.
     // set URL for navigate when enter the house
+    setRoom(location.pathname.split("/").splice(2)[0]);
     setRoom(location.pathname.split("/").splice(2)[0]);
 
     const currentCookies = cookies.getAll();
@@ -87,7 +92,7 @@ function App() {
 
     //frontend
     socket.on("connect", () => {
-      console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!")
+      // console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!")
       const all_cookies = cookies.getAll();
       //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
       // if (location.pathname === "/game") {
@@ -124,18 +129,18 @@ function App() {
     })
 
     socket.on("REGISTRATION SUCCESS", (userInfo) => {
-      cookies.set("email", userInfo, {maxAge: 3600});
+      cookies.set("email", userInfo, { maxAge: 3600 });
       navigate("/game/plaza");
     });
 
     socket.on("init", msg => console.log("msg - App.js", msg)); //coming from server
     socket.on("backData", data => console.log("data", data)); //coming from server
 
-    socket.on("all user names", (obj) => {
+    socket.on("all user names", (obj) => { //@@@SUNDAY: all user objects
       // obj.users = [user1, user2] => [{value: name, label: name } {}]
-      const usersOnline = obj.users.map(name => ({ value: name, label: name, avatar: avatars[1] }));
+      const usersOnline = obj.users.map(name => ({ value: name, label: name, avatar: avatars[1] })); //@@@@ SUNDAY - this should be dynamic and need an avatar from socket.
 
-      usersOnline.unshift({ value: "all", label: "all", avatar: avatars[1] });
+      usersOnline.unshift({ value: "all", label: "all", avatar: avatars[0] });
       // const onlineOthers = usersOnline.filter(user => user.value !== nickname)
 
       setOnline(usersOnline);
@@ -171,13 +176,10 @@ function App() {
     socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username });
   };
 
-  // const sendData = (state) => {
-  //   socket && socket.emit("sendData", state);
-  // };
-
+  console.log('nickname', nickname)
   return (
     <SocketContext.Provider value={{ socket, online, nickname, friendList }} >
-      <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked }} >
+      <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked, user, setUser }} >
 
         {/* clicked -> used in Menu.jsx
     setClicked -> used in Online.jsx */}
@@ -185,7 +187,7 @@ function App() {
         <div className='main'>
           {show && <Menu />}
           <Routes>
-            <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
+            <Route path='/'  element={<Login setUser={createSocketIdNameObject} />} />
             <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
             <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
             <Route path={`/game/${room}`} element={

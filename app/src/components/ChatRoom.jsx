@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useContext, useRef } from "react";
 import MessageForm from "./MessageForm";
+import Avatar from "./Avatar.jsx"
 import "./ChatRoom.scss";
 import { SOCKET_EVENT, makePublicMessage, makePrivateMessage } from "./service/socket";
 import { SocketContext } from "../App.js";
@@ -7,7 +8,7 @@ import { UserListContext } from '../App.js'
 
 function ChatRoom(props) {
   const { socket } = useContext(SocketContext)
-  const { recipient } = useContext(UserListContext);
+  const { recipient, user } = useContext(UserListContext);
   const { nickname } = props
   const [messages, setMessages] = useState([]);
   const chatWindow = useRef(null);
@@ -60,16 +61,15 @@ function ChatRoom(props) {
       </div>
       <div className="chat-window card" ref={chatWindow}>
         {messages.map((message, index) => {
-          const { nickname, content, time } = message;
+          const { nickname, content, time, user } = message;
           let recipient = ''
           message.recipient ? recipient = message.recipient : recipient = 'all'
 
           return (
             <div key={index} className="d-flex flex-row">
               {nickname && <div className="message-nickname">
+                <Avatar url={user.avatar} />
                 {nickname} to {recipient}: </div>}
-              {/* {recipient && <div className="recipient-name"> */}
-              {/* To: {recipient} </div>} */}
               <div>{content}</div>
               <div className="time">{time}</div>
             </div>
