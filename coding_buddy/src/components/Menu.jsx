@@ -1,14 +1,16 @@
 import { useContext } from "react";
-import { SocketContext } from '../App.js'
+import { UserListContext } from '../App.js'
 
 const Menu = () => {
-
-  const { anchorPoint, clicked, setRecipient } = useContext(SocketContext);
+  const { clicked, setRecipient, setShow } = useContext(UserListContext);
 
   return (
-    <ul className="menu" style={{ top: anchorPoint.y, left: anchorPoint.x }}>
+    <ul className="menu">
       <li onClick={''}>Add Friend</li>
-      <li onClick={() => { setRecipient(clicked) }}>Send Message</li>
+      <li onClick={() => {
+        setRecipient(clicked);
+        setShow(false)
+      }}>Send Message</li>
       <li onClick={''}>View Profile</li>
     </ul>
   );

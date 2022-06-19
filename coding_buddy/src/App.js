@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import './App.css';
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import Cookies from 'universal-cookie';
 import town from './components/game_img/town-map.png';
 import classroom from './components/game_img/classroom.png';
@@ -12,11 +12,10 @@ import Login from './components/Login';
 import Menu from './components/Menu';
 import { socket } from './components/service/socket.js';
 import { createContext } from "react";
-
 // import map images
 
 export const SocketContext = createContext(socket); // going to Recipient.jsx
-export const ClickContext = createContext({});
+export const UserListContext = createContext({});
 function App() {
 
   // ================= STATES =============== //
@@ -25,7 +24,6 @@ function App() {
   const [room, setRoom] = useState('plaza');
   const [online, setOnline] = useState([{ value: 'all', label: 'all' }]);
   const [friendList, setFriendList] = useState([])
-  const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
   const [show, setShow] = useState(false);
   const [clicked, setClicked] = useState({})
   const [recipient, setRecipient] = useState({ value: "all", label: "all" });
@@ -58,32 +56,9 @@ function App() {
 
   const cookies = new Cookies();
 
-  // ================= FUNCTIONS =============== //
-
-  const handleContextMenu = useCallback(
-    (event) => {
-      event.preventDefault();
-      setAnchorPoint({ x: event.pageX, y: event.pageY });
-      setShow(true);
-    },
-    [setAnchorPoint, setShow] //function only runs in these cases
-  );
-
-  const handleClick = useCallback(() => (show ? setShow(false) : null), [show]);
-
-  useEffect(() => {
-    document.addEventListener("click", handleClick);
-    document.addEventListener("contextmenu", handleContextMenu);
-    return () => {
-      document.removeEventListener("click", handleClick);
-      document.removeEventListener("contextmenu", handleContextMenu);
-    };
-  });
 
   // const addFriend = () => { }
-  // const sendMessage = () => {
-
-  // }
+  // const sendMessage = () => { }
   // const viewProfile = () => { }
 
   // ================= EFFECTS =============== //
@@ -203,36 +178,31 @@ function App() {
 
   return (
     <SocketContext.Provider value={{ socket, online, nickname, friendList }} >
-      <div className='main'>
-        <Routes>
-          <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
-          <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
-          <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
-          {/* <Route path='/game' element={
-            <Game
-              sendMessage={sendMessage}
-              sendPrivateMessage={privateMessage}
-              sendData={sendData}
-              setUser={createSocketIdNameObject}
-              room={room}
-              nickname={nickname}
-              online={online}
-              map={town} />}
-            /> */}
-          {/* <Route path='/chat' element={<Chat />} /> */}
-          <Route path={`/game/${room}`} element={
-            <Game
-              sendMessage={sendMessage}
-              sendPrivateMessage={privateMessage}
-              sendData={sendData}
-              setUser={createSocketIdNameObject}
-              room={room}
-              nickname={nickname}
-              online={online}
-              map={maps[room]}
-            />} />
-        </Routes>
-      </div>
+      <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked }} >
+
+        {/* clicked -> used in Menu.jsx
+    setClicked -> used in Online.jsx */}
+
+        <div className='main'>
+          {show && <Menu />}
+          <Routes>
+            <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
+            <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
+            <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
+            <Route path={`/game/${room}`} element={
+              <Game
+                sendMessage={sendMessage}
+                sendPrivateMessage={privateMessage}
+                sendData={sendData}
+                setUser={createSocketIdNameObject}
+                room={room}
+                nickname={nickname}
+                online={online}
+                map={maps[room]}
+              />} />
+          </Routes>
+        </div>
+      </UserListContext.Provider>
     </SocketContext.Provider>
   );
 
