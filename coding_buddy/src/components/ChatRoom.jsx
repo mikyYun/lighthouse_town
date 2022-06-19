@@ -68,7 +68,7 @@ function ChatRoom(props) {
 
           return (
             <div key={index} className="d-flex flex-row">
-              {nickname && <div className="message-nickname">{nickname} to {recipient}:  </div>}
+              {nickname && <div className="message-nickname">{nickname} to {recipient}: </div>}
               {/* {recipient && <div className="recipient-name"> */}
               {/* To: {recipient} </div>} */}
               <div>{content}</div>

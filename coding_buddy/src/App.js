@@ -22,11 +22,11 @@ function App() {
 
   // const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
-  const [online, setOnline] = useState([{ value: 'all', label: 'all' }]);
+  const [online, setOnline] = useState([{ value: 'all', label: 'all', avatar: 1 }]);
   const [friendList, setFriendList] = useState([])
   const [show, setShow] = useState(false);
   const [clicked, setClicked] = useState({})
-  const [recipient, setRecipient] = useState({ value: "all", label: "all" });
+  const [recipient, setRecipient] = useState({ value: "all", label: "all", avatar: 1 });
 
   // ================= HOOKS =============== //
 
@@ -50,6 +50,11 @@ function App() {
   const maps = {
     plaza: town,
     js: classroom
+  }
+
+  const avatars = {
+    1: "/images/boy-face.png",
+    2: "/images/girl-face.png"
   }
 
   // ================= INTANCES =============== //
@@ -135,8 +140,9 @@ function App() {
 
     socket.on("all user names", (obj) => {
       // obj.users = [user1, user2] => [{value: name, label: name } {}]
-      const usersOnline = obj.users.map(name => ({ value: name, label: name }));
-      usersOnline.unshift({ value: "all", label: "all" });
+      const usersOnline = obj.users.map(name => ({ value: name, label: "name", avatar: avatars[1] }));
+
+      usersOnline.unshift({ value: "all", label: "all", avatar: avatars[1] });
       // const onlineOthers = usersOnline.filter(user => user.value !== nickname)
 
       setOnline(usersOnline);

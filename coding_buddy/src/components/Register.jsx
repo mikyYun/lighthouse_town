@@ -2,11 +2,7 @@ import React, { useState } from "react";
 // import { RegistrationChecker } from "./helper/RegistrationChecker";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
-import DrawCanvas from "./three/three-scene";
-import Navbar from "./Navbar";
-import Layout from "./Layout";
 import axios from "axios";
-import boyImage from "./game_img/boy1.png"
 import './Register.scss'
 
 export default function Register(props) {

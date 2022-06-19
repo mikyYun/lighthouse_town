@@ -2,6 +2,7 @@ import { useEffect, useContext, useState } from "react";
 import { SocketContext } from "../App.js";
 import { UserListContext } from '../App.js'
 import FriendList from "./FriendsList.jsx";
+import Avatar from "./Avatar.jsx"
 export default function Online() {
   const { online, friendList, socket } = useContext(SocketContext);
   const { setClicked, setShow } = useContext(UserListContext);
@@ -10,7 +11,7 @@ export default function Online() {
   const usersOnline = online.map((obj, i) => <li key={i} onClick={() => {
     setClicked(obj)
     setShow(true)
-  }}> {obj.value} </li>);
+  }}> {<Avatar url={obj.avatar} alt="avatar" />} {obj.value} </li>);
   // const friendsNames = Object.keys(friendList); // [이름, 이름]
 
   // window.addEventListener("click", () => {
@@ -47,16 +48,14 @@ export default function Online() {
     // };
   }, [online]);
   return (
-    <>
-      <div className="onlinelist">
-        {/* <div className="friendsListToggle">Friends</div> */}
-        {/* {friendsListing} */}
-        {/* {friendLanguages} */}
-        <FriendList />
-        <span>Online</span>
-        <div>{usersOnline}</div>
-        {/* </div> */}
-      </div>
-    </>
+    <div className="online-list">
+      {/* <div className="friendsListToggle">Friends</div> */}
+      {/* {friendsListing} */}
+      {/* {friendLanguages} */}
+      <FriendList />
+      <span>Online</span>
+      <div>{usersOnline}</div>
+      {/* </div> */}
+    </div>
   );
 }
