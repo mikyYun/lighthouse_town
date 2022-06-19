@@ -17,7 +17,7 @@ export default function Online() {
   }, [online]);
   return (
     <>
-      <div className="onlinelist">
+      <div className="online-list">
         <FriendList />
         <span>Online</span>
         <div>{usersOnline}</div>

@@ -71,7 +71,7 @@ function App() {
   useEffect(() => {
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
-    
+
     const currentCookies = cookies.getAll();
     // cookies maxAge 3600.
     if (location.pathname === "/" && currentCookies.userdata && currentCookies.userdata && currentCookies["connect.sid"]) {

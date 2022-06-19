@@ -12,9 +12,8 @@ const Canvas = (props) => {
     const { socket, nickname } = useContext(SocketContext);
     const canvasRef = useRef(null);
     const location = useLocation();
-    const name = props.username || location.state
     const [userCharacters, setUserCharacters] = useState({
-        [name]: new Characters({
+        [props.username]: new Characters({
         username: props.username,
         x: 150,
         y: 150,
@@ -140,12 +139,17 @@ const Canvas = (props) => {
         userCharacters[props.username].state.y >= 120 &&
         userCharacters[props.username].state.y <= 140
       ) {
-        setUserCharacters(prev => {
-          delete { ...prev }[props.username];
-          sendData(props.room)
-        })
-        // console.log('after remove', userCharacters)
+        console.log("IM here!!!!!!")
+        // setUserCharacters( prev => {
+        //   const copy = {...prev};
+        //   delete copy[props.username]
+        //   return copy
+        // })
+
+        setUserCharacters({ [props.username]: undefined, ...rest})
+        console.log('after remove', userCharacters)
         handleRoom();
+        sendData(props.room);
       }
       sendData();
       // socket.emit("sendData", userCharacters[props.username].state);
@@ -190,18 +194,9 @@ const Canvas = (props) => {
         userCharacters[userChar].state.y + 10
       );
       ctx.fillStyle = "purple";
-      userCharacters[userChar].drawFrame(ctx);
-
-      // Text on head.
-      ctx.fillText(
-        userCharacters[userChar].state.username,
-        userCharacters[userChar].state.x + 20,
-        userCharacters[userChar].state.y + 10
-      );
-      ctx.fillStyle = "purple";
       // console.log("ROOM", userCharacters);
     }
-  });
+  }, [userCharacters]);
 
   // if user hit the specific position -> redirect to the page
   function handleRoom() {
@@ -209,6 +204,7 @@ const Canvas = (props) => {
   }
 
 
+  console.log("LAST", userCharacters)
   return (
     <div className="game-container">
       <canvas className="game-canvas" ref={canvasRef}></canvas>

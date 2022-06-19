@@ -193,7 +193,7 @@ io.on("connection", (socket) => {
     // }
 
     const { userState, room, removeFrom } = data;
-    console.log('got data', data)
+    // console.log('got data', data)
 
     // should remove the current user from the previous room
     if (removeFrom) {
@@ -213,6 +213,7 @@ io.on("connection", (socket) => {
     // assign userState into each room
     usersInRooms[room][userState.username] = userState;
 
+    console.log(usersInRooms)
     io.emit('sendData', { usersInRooms, room }) // 다시 Canvas.jsx -> const newCharactersData = data;
 
 

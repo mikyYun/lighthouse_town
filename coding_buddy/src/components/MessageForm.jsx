@@ -40,12 +40,12 @@ function MessageForm({ nickname, recipient }) {
   }, [socket, nickname, typingMessage, recipient]);
 
 
-  document.addEventListener("keyup", (e) => {
-    if (e.key === "Enter") {
-      setTextareaDisable(false)
-      focusTextArea.current.focus()
-    }
-  })
+  // document.addEventListener("keyup", (e) => {
+  //   if (e.key === "Enter") {
+  //     setTextareaDisable(false)
+  //     focusTextArea.current.focus()
+  //   }
+  // })
 
   return (
     <form className="card">
