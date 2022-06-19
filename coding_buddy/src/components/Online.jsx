@@ -3,25 +3,25 @@ import { SocketContext } from "../App.js";
 import { ClickContext } from '../App.js'
 import FriendList from "./FriendsList.jsx";
 export default function Online() {
-  const { online, friendList, socket, clicked } = useContext(SocketContext);
+  const { online, friendList, socket } = useContext(SocketContext);
   const { setClicked } = useContext(ClickContext);
   // const [playToggleClassName, setPlayToggleClassName] = useState("friendsListToggle");
   // console.log("online_in_Online.jsx", online);
   const usersOnline = online.map((obj, i) => <li key={i} onClick={() => {
     setClicked(obj)
   }}> {obj.value} </li>);
-  const friendsNames = Object.keys(friendList); // [이름, 이름]
+  // const friendsNames = Object.keys(friendList); // [이름, 이름]
 
-  window.addEventListener("click", () => {
-    for (let obj in friendList) {
-      // console.log(obj)
-      const languages = friendList[obj].languages
-      if (obj === 'mike') {
-        // const results = languages.map(lang => <li key={lang}> {lang}</li>)
-        // return results
-      }
-    }
-  })
+  // window.addEventListener("click", () => {
+  //   for (let obj in friendList) {
+  //     // console.log(obj)
+  //     // const languages = friendList[obj].languages
+  //     if (obj === 'mike') {
+  //       // const results = languages.map(lang => <li key={lang}> {lang}</li>)
+  //       // return results
+  //     }
+  //   }
+  // })
   // const languagesArr = Object.values(friendList)
 
   const listing = (arr) => {

@@ -170,12 +170,12 @@ export default function Register(props) {
               userLanguages,
               userAvatar,
             };
-            axios // client talking to the server. Asynchronous. if it doesn't happen .post, 
+            axios // client talking to the server. Asynchronous. if it doesn't happen .post,
               .post("/register", { userInfo })
               .then(res => {
                 props.submitRegistrationInfo(res.data);
                 cookies.set("username", res.data)
-                navigate("/game")
+                navigate("/game/plaza")
               }).catch(error => console.log(error)
               )
           }}

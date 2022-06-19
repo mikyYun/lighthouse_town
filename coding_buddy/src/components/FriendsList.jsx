@@ -37,7 +37,7 @@ export default function FriendList() {
   return (
     <div className="friendsList">
       <div className="friendsListLabel">Friends</div>
-      {friendsListing}
+      {/* {friendsListing} */}
     </div>
   );
 }

@@ -147,7 +147,7 @@ function App() {
     // })
 
     socket.on("friendsListBack", friendsInfo => {
-      setFriendList(friendsInfo.friendsInfo)
+      setFriendList(friendsInfo)
     })
 
     socket.on("REGISTRATION SUCCESS", (userInfo) => {

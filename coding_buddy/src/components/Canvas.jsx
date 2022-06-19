@@ -206,7 +206,7 @@ const Canvas = (props) => {
         userCharacters[userChar].state.y + 10
       );
       ctx.fillStyle = "purple";
-      console.log("ROOM", userCharacters);
+      // console.log("ROOM", userCharacters);
 
       // console.log(userChar);
       // console.log(userCharacters);
