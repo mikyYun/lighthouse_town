@@ -29,5 +29,19 @@ body {
 }
 
 ul.menu {
-  position: relative;
+  position: absolute;
+  min-width: 10em;
+  min-height: 10em;
+  right: 0;
+  top: 0;
+  z-index: 2;
+  background-color:#bada55;
+  color: white; 
+}
+
+li {
+  cursor: pointer;
+  padding: 0.5em;
+  list-style: none;
+
 }
