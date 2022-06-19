@@ -30,7 +30,7 @@ function App() {
   const nickname = location.state?.[0] || '';
   // console.log('location.state[0]', location.state[0])
   const urlLists = [
-    "/game",
+    "/game/plaza",
     "/game/ruby",
     "/game/html",
     "/game/css",
@@ -167,9 +167,9 @@ function App() {
     socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username });
   };
 
-  const sendData = (state) => {
-    socket && socket.emit("sendData", state);
-  };
+  // const sendData = (state) => {
+  //   socket && socket.emit("sendData", state);
+  // };
 
 
   return (
@@ -195,7 +195,7 @@ function App() {
             <Game
               sendMessage={sendMessage}
               sendPrivateMessage={privateMessage}
-              sendData={sendData}
+              // sendData={sendData}
               setUser={createSocketIdNameObject}
               room={room}
               nickname={nickname}

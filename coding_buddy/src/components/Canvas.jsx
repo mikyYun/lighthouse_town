@@ -11,8 +11,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 const Canvas = (props) => {
     const { socket, nickname } = useContext(SocketContext);
     const canvasRef = useRef(null);
+    const location = useLocation();
+    const name = props.username || location.state
     const [userCharacters, setUserCharacters] = useState({
-        [props.username]: new Characters({
+        [name]: new Characters({
         username: props.username,
         x: 150,
         y: 150,
@@ -226,7 +228,7 @@ const Canvas = (props) => {
 
   // if user hit the specific position -> redirect to the page
   function handleRoom() {
-    navigate(roomLists.javascript);
+    navigate(roomLists.javascript, { state: props.username });
   }
 
 
