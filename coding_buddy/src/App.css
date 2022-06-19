@@ -27,3 +27,7 @@ body {
   height: 100vh;
   padding-top: 1px;
 }
+
+ul.menu {
+  position: relative;
+}
