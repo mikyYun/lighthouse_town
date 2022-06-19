@@ -140,7 +140,7 @@ function App() {
 
     socket.on("all user names", (obj) => {
       // obj.users = [user1, user2] => [{value: name, label: name } {}]
-      const usersOnline = obj.users.map(name => ({ value: name, label: "name", avatar: avatars[1] }));
+      const usersOnline = obj.users.map(name => ({ value: name, label: name, avatar: avatars[1] }));
 
       usersOnline.unshift({ value: "all", label: "all", avatar: avatars[1] });
       // const onlineOthers = usersOnline.filter(user => user.value !== nickname)
