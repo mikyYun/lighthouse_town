@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import './App.css';
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Cookies from 'universal-cookie';
 import town from './components/game_img/town-map.png';
 import classroom from './components/game_img/classroom.png';
@@ -9,6 +9,7 @@ import Game from './components/Game';
 import Layout from './components/Layout';
 import Register from './components/Register';
 import Login from './components/Login';
+import Menu from './components/Menu';
 import { socket } from './components/service/socket.js';
 import { createContext } from "react";
 
@@ -17,16 +18,24 @@ import { createContext } from "react";
 export const SocketContext = createContext(socket); // going to Recipient.jsx
 
 function App() {
-  const navigate = useNavigate();
-  const socket = useContext(SocketContext);
-  // // 쿠키 세팅
+
+  // ================= STATES =============== //
+
   // const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
   const [online, setOnline] = useState([{ value: 'all', label: 'all' }]);
   const [friendList, setFriendList] = useState([])
+  const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
+  const [show, setShow] = useState(false);
 
-  const cookies = new Cookies();
+  // ================= HOOKS =============== //
+
+  const navigate = useNavigate();
+  const socket = useContext(SocketContext);
   const location = useLocation();
+
+  // ================= VARIABLES =============== //
+
   const nickname = location.state?.[0] || '';
   // console.log('location.state[0]', location.state[0])
   const urlLists = [
@@ -43,6 +52,34 @@ function App() {
     plaza: town,
     js: classroom
   }
+
+  // ================= INTANCES =============== //
+
+  const cookies = new Cookies();
+
+  // ================= FUNCTIONS =============== //
+
+  const handleContextMenu = useCallback(
+    (event) => {
+      event.preventDefault();
+      setAnchorPoint({ x: event.pageX, y: event.pageY });
+      setShow(true);
+    },
+    [setAnchorPoint, setShow]
+  );
+
+  const handleClick = useCallback(() => (show ? setShow(false) : null), [show]);
+
+  useEffect(() => {
+    document.addEventListener("click", handleClick);
+    document.addEventListener("contextmenu", handleContextMenu);
+    return () => {
+      document.removeEventListener("click", handleClick);
+      document.removeEventListener("contextmenu", handleContextMenu);
+    };
+  });
+
+  // ================= EFFECTS =============== //
 
   useEffect(() => {
     // set URL for navigate when enter the house
@@ -112,7 +149,7 @@ function App() {
     // })
 
     socket.on("friendsListBack", friendsInfo => {
-      console.log("APP RECEIVED friends lists",friendsInfo.friendsInfo)
+      console.log("APP RECEIVED friends lists", friendsInfo.friendsInfo)
       setFriendList(friendsInfo.friendsInfo)
     })
 
@@ -173,8 +210,9 @@ function App() {
 
 
   return (
-    <SocketContext.Provider value={{ socket, online, nickname, friendList }} >
+    <SocketContext.Provider value={{ socket, online, nickname, friendList, anchorPoint, show }} >
       <div className='main'>
+        {show && <Menu />}
         <Routes>
           <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
           <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
@@ -189,7 +227,7 @@ function App() {
               nickname={nickname}
               online={online}
               map={town} />}
-            />
+          />
           {/* <Route path='/chat' element={<Chat />} /> */}
           <Route path={`/game/${room}`} element={
             <Game
