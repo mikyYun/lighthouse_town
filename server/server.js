@@ -209,15 +209,15 @@ io.on("connection", (socket) => {
     //     plaza: { moon: {moons state},
     //              heesoo: {heesoo's state}
     //      }
+    users[data.username] = data;
 
     // assign userState into each room
-    usersInRooms[room][userState.username] = userState;
+    // usersInRooms[room][userState.username] = userState;
 
     io.emit('sendData', { usersInRooms, room }) // 다시 Canvas.jsx -> const newCharactersData = data;
 
 
     //  OLD CODE BEFORE WAKEEL MENTOR
-    // users[data.username] = data;
   });
 
 
