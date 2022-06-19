@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import './App.css';
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Cookies from 'universal-cookie';
 import town from './components/game_img/town-map.png';
 import classroom from './components/game_img/classroom.png';
@@ -9,26 +9,36 @@ import Game from './components/Game';
 import Layout from './components/Layout';
 import Register from './components/Register';
 import Login from './components/Login';
+import Menu from './components/Menu';
 import { socket } from './components/service/socket.js';
 import { createContext } from "react";
 
 // import map images
 
 export const SocketContext = createContext(socket); // going to Recipient.jsx
-
+export const ClickContext = createContext({});
 function App() {
-  const navigate = useNavigate();
-  const socket = useContext(SocketContext);
-  // // 쿠키 세팅
+
+  // ================= STATES =============== //
+
   // const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
   const [online, setOnline] = useState([{ value: 'all', label: 'all' }]);
   const [friendList, setFriendList] = useState([])
+  const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
+  const [show, setShow] = useState(false);
+  const [clicked, setClicked] = useState({})
+  const [recipient, setRecipient] = useState({ value: "all", label: "all" });
 
-  const cookies = new Cookies();
+  // ================= HOOKS =============== //
+
+  const navigate = useNavigate();
+  const socket = useContext(SocketContext);
   const location = useLocation();
+
+  // ================= VARIABLES =============== //
+
   const nickname = location.state?.[0] || '';
-  // console.log('location.state[0]', location.state[0])
   const urlLists = [
     "/game/plaza",
     "/game/ruby",
@@ -44,15 +54,44 @@ function App() {
     js: classroom
   }
 
+  // ================= INTANCES =============== //
+
+  const cookies = new Cookies();
+
+  // ================= FUNCTIONS =============== //
+
+  const handleContextMenu = useCallback(
+    (event) => {
+      event.preventDefault();
+      setAnchorPoint({ x: event.pageX, y: event.pageY });
+      setShow(true);
+    },
+    [setAnchorPoint, setShow] //function only runs in these cases
+  );
+
+  const handleClick = useCallback(() => (show ? setShow(false) : null), [show]);
+
+  useEffect(() => {
+    document.addEventListener("click", handleClick);
+    document.addEventListener("contextmenu", handleContextMenu);
+    return () => {
+      document.removeEventListener("click", handleClick);
+      document.removeEventListener("contextmenu", handleContextMenu);
+    };
+  });
+
+  // const addFriend = () => { }
+  // const sendMessage = () => {
+
+  // }
+  // const viewProfile = () => { }
+
+  // ================= EFFECTS =============== //
+
   useEffect(() => {
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
-    // console.log("location.pathname", location.pathname);
     const currentCookies = cookies.getAll();
-    // console.log("CCCCCCCCCCCCC", cookies.cookies.username);
-    // if (cookies.cookies.username) {
-    // navigate('/game');
-    // }
 
     if (!urlLists.includes(location.pathname)) clearCookies();
   }, [location.pathname]);
@@ -82,12 +121,8 @@ function App() {
       // if (location.pathname === "/game") {
       // navigate("/")
       // }
-      // console.log("App.js: socket server connected.", all_cookies);
-      // console.log("My socket ID", socket.id);
-      // console.log("CONNECTED");
       // 유저데이터가 아직 삭제되지 않았고, 게임페이지 리로드 한 경우 서버랑 연결하고 currentUser update in server
       if (all_cookies.userdata) {
-        // console.log("RECONNECTED"); // when refresh
         // 쿠키 존재하면 리커넥트 요청
         socket.emit("reconnection?", { username: all_cookies.userdata.userName, newSocketId: socket.id });
         // socket.on("DENY CONNECTION", (e) => {
@@ -113,12 +148,10 @@ function App() {
     // })
 
     socket.on("friendsListBack", friendsInfo => {
-      console.log("APP RECEIVED friends lists",friendsInfo)
       setFriendList(friendsInfo)
     })
 
     socket.on("REGISTRATION SUCCESS", (userInfo) => {
-      // console.log("cookie set after register");
       cookies.set("email", userInfo);
       navigate("/game/plaza");
     });
@@ -127,12 +160,9 @@ function App() {
     socket.on("backData", data => console.log("data", data)); //coming from server
 
     socket.on("all user names", (obj) => {
-      // console.log("지금 로그인 되어있는 유저 line 95 - App.js", obj.users);
-
       // obj.users = [user1, user2] => [{value: name, label: name } {}]
       const usersOnline = obj.users.map(name => ({ value: name, label: name }));
       usersOnline.unshift({ value: "all", label: "all" });
-      // console.log('usersOnline - App.js', usersOnline);//[{}, {}, {}]
       // const onlineOthers = usersOnline.filter(user => user.value !== nickname)
 
       setOnline(usersOnline);
@@ -171,7 +201,6 @@ function App() {
   const sendData = (state) => {
     socket && socket.emit("sendData", state);
   };
-
 
   return (
     <SocketContext.Provider value={{ socket, online, nickname, friendList }} >

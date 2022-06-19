@@ -7,7 +7,7 @@ const facing = {
   right: 2
 }
 // facing direction
-const cycleLoop = [0,1,2,3];
+const cycleLoop = [0, 1, 2, 3];
 class Characters {
 
   constructor(config) {
@@ -30,7 +30,7 @@ class Characters {
 
   frameDirection = () => {
     this.state.frameCount += 1;
-    console.log(this.state.frameCount)
+    // console.log(this.state.frameCount)
     if (this.state.frameCount >= this.frameLimit) {
       this.state.frameCount = 0;
     }
@@ -44,7 +44,7 @@ class Characters {
       this.state.y -= this.movement_speed;
       this.state.currentDirection = facing.up;
       this.state.frameCount += 1;
-      console.log(this.state.frameCount)
+      // console.log(this.state.frameCount)
 
     }
     if (e.key === 'ArrowLeft') {
@@ -52,21 +52,21 @@ class Characters {
       this.state.x -= this.movement_speed;
       this.state.currentDirection = facing.left;
       this.frameDirection()
-      console.log(this.state.frameCount)
+      // console.log(this.state.frameCount)
     }
     if (e.key === 'ArrowDown') {
       // keyPressed.s = true;
       this.state.y += this.movement_speed;
       this.state.currentDirection = facing.down;
       this.frameDirection()
-      console.log(this.state.frameCount)
+      // console.log(this.state.frameCount)
     }
     if (e.key === 'ArrowRight') {
       // keyPressed.d = true;
       this.state.x += this.movement_speed;
       this.state.currentDirection = facing.right;
       this.frameDirection()
-      console.log(this.state.frameCount)
+      // console.log(this.state.frameCount)
     }
   }
 
@@ -83,13 +83,13 @@ class Characters {
 
   drawFrame = (ctx) => {
     const frameX = cycleLoop[this.state.frameCount];
-    console.log(frameX, this.state.frameCount)
+    // console.log(frameX, this.state.frameCount)
     ctx.drawImage(this.img,
       frameX * this.width, this.state.currentDirection * this.height,
       this.width, this.height,
       this.state.x, this.state.y,
       this.width, this.height
-      )
+    )
     // this.update
   }
 };

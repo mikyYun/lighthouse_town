@@ -13,8 +13,8 @@ VALUES
 INSERT INTO users
   (username, password, email, avatar_id)
 VALUES
-  ('john', 'john', 'test3@test.com', 2);
+  ('jordan', 'jordan', 'test3@test.com', 2);
 INSERT INTO users
   (username, password, email, avatar_id)
 VALUES
-  ('zie', 'zie', 'test4@test.com', 2);
+  ('aaron', 'aaron', 'test4@test.com', 2);

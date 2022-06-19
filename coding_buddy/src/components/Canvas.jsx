@@ -9,44 +9,44 @@ import { SocketContext } from "../App";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Canvas = (props) => {
-    const { socket, nickname } = useContext(SocketContext);
-    const canvasRef = useRef(null);
-    const [userCharacters, setUserCharacters] = useState({
-        [props.username]: new Characters({
-        username: props.username,
-        x: 150,
-        y: 150,
-        currentDirection: 0,
-        frameCount: 0,
-        avatar: 1,
-        }),
+  const { socket, nickname } = useContext(SocketContext);
+  const canvasRef = useRef(null);
+  const [userCharacters, setUserCharacters] = useState({
+    [props.username]: new Characters({
+      username: props.username,
+      x: 150,
+      y: 150,
+      currentDirection: 0,
+      frameCount: 0,
+      avatar: 1,
+    }),
+  });
+
+  const navigate = useNavigate();
+  const roomLists = {
+    html: "/game/html",
+    css: "/game/css",
+    javascript: "/game/js",
+    react: "/game/react",
+    ruby: "/game/ruby",
+  };
+  // console.log("username", props.username);
+  // console.log("nickName", nickname);
+  // console.log('userCharacters', userCharacters)
+
+  // const dataset = {
+  //   userState: userCharacters[props.username].state,
+  //   room: [props.room]
+  // }
+
+  // sending data to server
+  const sendData = (removeFromRoom) => {
+    socket.emit("sendData", {
+      userState: userCharacters[props.username].state,
+      room: props.room,
+      removeFrom: removeFromRoom
     });
-
-    const navigate = useNavigate();
-    const roomLists = {
-        html: "/game/html",
-        css: "/game/css",
-        javascript: "/game/js",
-        react: "/game/react",
-        ruby: "/game/ruby",
-    };
-    // console.log("username", props.username);
-    // console.log("nickName", nickname);
-    // console.log('userCharacters', userCharacters)
-
-    // const dataset = {
-    //   userState: userCharacters[props.username].state,
-    //   room: [props.room]
-    // }
-
-    // sending data to server
-    const sendData = (removeFromRoom) => {
-      socket.emit("sendData", {
-        userState: userCharacters[props.username].state,
-        room: props.room,
-        removeFrom: removeFromRoom
-      });
-    }
+  }
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -77,96 +77,98 @@ const Canvas = (props) => {
       // socket.emit("sendData", userCharacters[props.username].state);
     });
 
-  // data = {
-  //   {
-  //     "usersInRooms": {
-  //         "plaza": {
-  //             "moon": {
-  //                 "username": "moon",
-  //                 "x": 158,
-  //                 "y": 150,
-  //                 "currentDirection": 2,
-  //                 "frameCount": 0,
-  //                 "avatar": 1
-  //             },
-  //             "heesoo": {
-  //                 "username": "heesoo",
-  //                 "x": 150,
-  //                 "y": 150,
-  //                 "currentDirection": 0,
-  //                 "frameCount": 0,
-  //                 "avatar": 1
-  //             }
-  //         }
-  //     },
-  //     "room":        "plaza"
+    // data = {
+    //   {
+    //     "usersInRooms": {
+    //         "plaza": {
+    //             "moon": {
+    //                 "username": "moon",
+    //                 "x": 158,
+    //                 "y": 150,
+    //                 "currentDirection": 2,
+    //                 "frameCount": 0,
+    //                 "avatar": 1
+    //             },
+    //             "heesoo": {
+    //                 "username": "heesoo",
+    //                 "x": 150,
+    //                 "y": 150,
+    //                 "currentDirection": 0,
+    //                 "frameCount": 0,
+    //                 "avatar": 1
+    //             }
+    //         }
+    //     },
+    //     "room":        "plaza"
 
-  // }
+    // }
 
-  // userCharacters = {
-//     "moon": Characters()
+    // userCharacters = {
+    //     "moon": Characters()
 
 
     socket.on("sendData", (data) => {
-      console.log("Got from data", data);
-      // console.log(userCharacters)
+      // console.log("data", data);
+      const newCharactersData = data;
+      newCharactersData[props.username] = userCharacters[props.username];
 
-      const newCharacters = {...userCharacters};
+      const newCharacters = { ...userCharacters };
       // set main user character
       newCharacters[props.username] = userCharacters[props.username];
-      console.log("before create New CHARACTERS" , newCharacters)
+      // console.log("before create New CHARACTERS", newCharacters)
 
       const allUsersState = data.usersInRooms[props.room];
-      Object.keys(allUsersState).map( user => {
-        console.log(user)
+      Object.keys(allUsersState).map(user => {
+        // console.log(user)
         if (typeof user !== 'undefined') {
           if (user !== props.username) {
             newCharacters[user] = new Characters(allUsersState[user])
-          }}
-          console.log("New CHARACTERS" , newCharacters)
+          }
+        }
+        // console.log("New CHARACTERS", newCharacters)
       });
 
       setUserCharacters(newCharacters);
-      console.log('AFTER SETTING: ', newCharacters)
+      // console.log('AFTER SETTING: ', newCharacters)
     });
 
 
-      // // console.log('newCharactersData', newCharactersData)
-      // // console.log('characters', userCharacters )
+    // // console.log('newCharactersData', newCharactersData)
+    // // console.log('characters', userCharacters )
 
-      // for (const userChar in newCharactersData) {
-      //   if (typeof newCharactersData[userChar].username !== "undefined") {
-      //     if (newCharactersData[userChar].username !== props.username) {
-      //       newCharactersData[userChar] = new Characters(
-      //         newCharactersData[userChar]
-      //       );
-      //     }
-      //   }
-      // }
-      // setUserCharacters(newCharactersData);
+    // for (const userChar in newCharactersData) {
+    //   if (typeof newCharactersData[userChar].username !== "undefined") {
+    //     if (newCharactersData[userChar].username !== props.username) {
+    //       newCharactersData[userChar] = new Characters(
+    //         newCharactersData[userChar]
+    //       );
+    //     }
+    //   }
+    // }
+    // setUserCharacters(newCharactersData);
     // });
 
 
     window.addEventListener("keydown", (e) => {
-        userCharacters[props.username].move(e);
+      userCharacters[props.username].move(e);
 
-        // move to the JS room
-          if (
-              userCharacters[props.username].state.x >= 420 &&
-              userCharacters[props.username].state.x <= 460 &&
-              userCharacters[props.username].state.y >= 120 &&
-              userCharacters[props.username].state.y <= 140
-              ) {
-                  setUserCharacters( prev => {
-                    delete {...prev}[props.username];
-                    sendData(props.room)
-                  })
-                  console.log('after remove', userCharacters)
-                  handleRoom();
-                }
-          sendData();
-          // socket.emit("sendData", userCharacters[props.username].state);
-      });
+      // move to the JS room
+      if (
+        userCharacters[props.username].state.x >= 420 &&
+        userCharacters[props.username].state.x <= 460 &&
+        userCharacters[props.username].state.y >= 120 &&
+        userCharacters[props.username].state.y <= 140
+      ) {
+        setUserCharacters(prev => {
+          delete { ...prev }[props.username];
+          sendData(props.room)
+        })
+        // console.log('after remove', userCharacters)
+        handleRoom();
+      }
+      sendData();
+      // socket.emit("sendData", userCharacters[props.username].state);
+    });
 
     window.addEventListener("keyup", () => {
       console.log()
@@ -195,22 +197,9 @@ const Canvas = (props) => {
 
     ctx.drawImage(mapImg, 0, 0);
 
-        for (const userChar in userCharacters) {
-          console.log(userChar);
-          console.log(userCharacters);
-          userCharacters[userChar].drawFrame(ctx);
-
-          // Text on head.
-          ctx.fillText(
-            userCharacters[userChar].state.username,
-            userCharacters[userChar].state.x + 20,
-            userCharacters[userChar].state.y + 10
-          );
-          ctx.fillStyle = "purple";
-          console.log("ROOM", userCharacters);
-
-      console.log(userChar);
-      console.log(userCharacters);
+    for (const userChar in userCharacters) {
+      // console.log(userChar);
+      // console.log(userCharacters);
       userCharacters[userChar].drawFrame(ctx);
 
       // Text on head.
@@ -220,7 +209,20 @@ const Canvas = (props) => {
         userCharacters[userChar].state.y + 10
       );
       ctx.fillStyle = "purple";
-      console.log("ROOM", userCharacters);
+      // console.log("ROOM", userCharacters);
+
+      // console.log(userChar);
+      // console.log(userCharacters);
+      userCharacters[userChar].drawFrame(ctx);
+
+      // Text on head.
+      ctx.fillText(
+        userCharacters[userChar].state.username,
+        userCharacters[userChar].state.x + 20,
+        userCharacters[userChar].state.y + 10
+      );
+      ctx.fillStyle = "purple";
+      // console.log("ROOM", userCharacters);
     }
   });
 
