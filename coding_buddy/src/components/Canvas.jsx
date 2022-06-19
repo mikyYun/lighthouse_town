@@ -9,35 +9,32 @@ import { SocketContext } from "../App";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Canvas = (props) => {
-  const { socket, nickname } = useContext(SocketContext);
-  const canvasRef = useRef(null);
-  const [userCharacters, setUserCharacters] = useState({
-    [props.username]: new Characters({
-      username: props.username,
-      x: 150,
-      y: 150,
-      currentDirection: 0,
-      frameCount: 0,
-      avatar: 1,
-    }),
-  });
+    const { socket, nickname } = useContext(SocketContext);
+    const canvasRef = useRef(null);
+    const location = useLocation();
+    const name = props.username || location.state
+    const [userCharacters, setUserCharacters] = useState({
+        [name]: new Characters({
+        username: props.username,
+        x: 150,
+        y: 150,
+        currentDirection: 0,
+        frameCount: 0,
+        avatar: 1,
+        }),
+    });
 
-  const navigate = useNavigate();
-  const roomLists = {
-    html: "/game/html",
-    css: "/game/css",
-    javascript: "/game/js",
-    react: "/game/react",
-    ruby: "/game/ruby",
-  };
-  // console.log("username", props.username);
-  // console.log("nickName", nickname);
-  // console.log('userCharacters', userCharacters)
-
-  // const dataset = {
-  //   userState: userCharacters[props.username].state,
-  //   room: [props.room]
-  // }
+    const navigate = useNavigate();
+    const roomLists = {
+        html: "/game/html",
+        css: "/game/css",
+        javascript: "/game/js",
+        react: "/game/react",
+        ruby: "/game/ruby",
+    };
+    // console.log("username", props.username);
+    // console.log("nickName", nickname);
+    // console.log('userCharacters', userCharacters)
 
   // sending data to server
   const sendData = (removeFromRoom) => {
@@ -133,22 +130,6 @@ const Canvas = (props) => {
     });
 
 
-    // // console.log('newCharactersData', newCharactersData)
-    // // console.log('characters', userCharacters )
-
-    // for (const userChar in newCharactersData) {
-    //   if (typeof newCharactersData[userChar].username !== "undefined") {
-    //     if (newCharactersData[userChar].username !== props.username) {
-    //       newCharactersData[userChar] = new Characters(
-    //         newCharactersData[userChar]
-    //       );
-    //     }
-    //   }
-    // }
-    // setUserCharacters(newCharactersData);
-    // });
-
-
     window.addEventListener("keydown", (e) => {
       userCharacters[props.username].move(e);
 
@@ -209,10 +190,6 @@ const Canvas = (props) => {
         userCharacters[userChar].state.y + 10
       );
       ctx.fillStyle = "purple";
-      // console.log("ROOM", userCharacters);
-
-      // console.log(userChar);
-      // console.log(userCharacters);
       userCharacters[userChar].drawFrame(ctx);
 
       // Text on head.
@@ -228,7 +205,7 @@ const Canvas = (props) => {
 
   // if user hit the specific position -> redirect to the page
   function handleRoom() {
-    navigate(roomLists.javascript);
+    navigate(roomLists.javascript, { state: props.username });
   }
 
 

@@ -183,9 +183,9 @@ function App() {
     socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username });
   };
 
-  const sendData = (state) => {
-    socket && socket.emit("sendData", state);
-  };
+  // const sendData = (state) => {
+  //   socket && socket.emit("sendData", state);
+  // };
 
   return (
     <SocketContext.Provider value={{ socket, online, nickname, friendList }} >
@@ -202,9 +202,10 @@ function App() {
             <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
             <Route path={`/game/${room}`} element={
               <Game
+                username={nickname}
                 sendMessage={sendMessage}
                 sendPrivateMessage={privateMessage}
-                sendData={sendData}
+                // sendData={sendData}
                 setUser={createSocketIdNameObject}
                 room={room}
                 nickname={nickname}
