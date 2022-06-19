@@ -30,7 +30,7 @@ class Characters {
 
   frameDirection = () => {
     this.state.frameCount += 1;
-    console.log(this.state.frameCount)
+    // console.log(this.state.frameCount)
     if (this.state.frameCount >= this.frameLimit) {
       this.state.frameCount = 0;
     }
