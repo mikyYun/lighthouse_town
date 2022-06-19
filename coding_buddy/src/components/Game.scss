@@ -1,3 +1,7 @@
+$base-color: #f7e7be;
+$btn-color: #fe9e84;
+$form-color: #009f92;
+$list-color: #005366;
 
 .main-container {
   width: 80%;
@@ -54,14 +58,16 @@ div.d-flex.flex-row {
   height: 100%;
   right: 0;
   top: 0;
-  background-color: #525283;
+  background-color: $list-color;
+  font-size: 1.3rem;
+  color: white;
   img {
     width: 15px;
   }
 }
 
 .language {
-  background-color: #9999ce;
+  background-color: $list-color;
 }
 .collapsButton {
   width: 100%;
@@ -69,10 +75,10 @@ div.d-flex.flex-row {
 
 .languageDiv {
   padding-left: 10px;
-  font-size: 9px;
+  font-size: 0.6em;
 }
 
 .languageDiv:hover {
   font-size: 15px;
-  background-color: #9999ce;
+  background-color: $base-color;
 }

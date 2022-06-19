@@ -1,7 +1,16 @@
+$base-color: #f7e7be;
+$btn-color: #fe9e84;
+$form-color: #009f92;
+$list-color: #005366;
+
+body{
+  background-color: $base-color;
+}
+
 #form_login {
-  background-color: whitesmoke;
+  background-color: $form-color;
     width: 400px;
-    height: 35vh;
+    height: 300px;
     margin: auto;
     margin-top: 200px;
     padding: 30px;
@@ -18,7 +27,7 @@
 }
 
 .btn {
-  background-color: #bada55;
+  background-color: $btn-color;
   width: 150px;
   margin: 5px
 }

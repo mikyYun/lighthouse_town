@@ -1,7 +1,12 @@
+$base-color: #f7e7be;
+$btn-color: #fe9e84;
+$form-color: #009f92;
+$list-color: #005366;
+
 .register-form {
   width: 35%;
   height: 97vh;
-  background-color: whitesmoke;
+  background-color: $form-color;
   padding: 40px;
   border-radius: 10px;
   box-shadow: 5px 5px #888888;
@@ -29,7 +34,7 @@
 }
 
 .btn {
-  background-color: #bada55;
+  background-color: $btn-color;
   width: 150px;
   margin: 5px
 }
@@ -51,7 +56,7 @@
   justify-content: space-between;
   /* flex-direction: column; */
   align-items: center;
-  background-color: #bada55;
+  background-color: $base-color;
   height: 5rem;
   width: 100%;
 }
