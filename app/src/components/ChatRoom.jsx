@@ -68,7 +68,7 @@ function ChatRoom(props) {
           return (
             <div key={index} className="d-flex flex-row">
               {nickname && <div className="message-nickname">
-                <Avatar url={user.avatar} />
+                {/* <Avatar url={user.avatar} /> */}
                 {nickname} to {recipient}: </div>}
               <div>{content}</div>
               <div className="time">{time}</div>
