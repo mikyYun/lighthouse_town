@@ -30,7 +30,7 @@ function App() {
   const nickname = location.state?.[0] || '';
   // console.log('location.state[0]', location.state[0])
   const urlLists = [
-    "/game",
+    "/game/plaza",
     "/game/ruby",
     "/game/html",
     "/game/css",
