@@ -8,10 +8,8 @@ import { UserListContext } from '../App.js'
 function ChatRoom(props) {
   const { socket } = useContext(SocketContext)
   const { recipient } = useContext(UserListContext);
-
   const { nickname } = props
   const [messages, setMessages] = useState([]);
-
   const chatWindow = useRef(null);
   const moveScrollToReceiveMessage = useCallback(() => {
     if (chatWindow.current) {
@@ -68,7 +66,8 @@ function ChatRoom(props) {
 
           return (
             <div key={index} className="d-flex flex-row">
-              {nickname && <div className="message-nickname">{nickname} to {recipient}:  </div>}
+              {nickname && <div className="message-nickname">
+                {nickname} to {recipient}: </div>}
               {/* {recipient && <div className="recipient-name"> */}
               {/* To: {recipient} </div>} */}
               <div>{content}</div>

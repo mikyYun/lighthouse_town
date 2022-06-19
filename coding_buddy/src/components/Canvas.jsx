@@ -4,7 +4,7 @@ import girlImage from "./game_img/girl1.png";
 import Characters from "./helper/Characters";
 import boyImage from "./game_img/boy1.png";
 import townWall from "./game_img/collision_data.js/townWall";
-import { selectAvatar } from "./helper/selecAvatar";
+import { selectAvatar } from "./helper/selectAvatar";
 import { SocketContext } from "../App";
 import { useNavigate, useLocation } from "react-router-dom";
 
