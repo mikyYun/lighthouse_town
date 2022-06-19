@@ -33,7 +33,8 @@
 }
 
 textarea.form-control {
-  height: auto
+  height: auto;
+  caret-color: transparent;
 }
 div.d-flex.flex-row {
   height: auto;

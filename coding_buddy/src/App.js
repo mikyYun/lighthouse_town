@@ -93,26 +93,16 @@ function App() {
     setRoom(location.pathname.split("/").splice(2)[0]);
     
     const currentCookies = cookies.getAll();
-    if (location.pathname === "/" && currentCookies.userdata && currentCookies.userdata)
-     navigate('/game/plaza');
+    // cookies maxAge 3600.
+    if (location.pathname === "/" && currentCookies.userdata && currentCookies.userdata && currentCookies["connect.sid"]) {
+      navigate('/game/plaza');
+    } else if (!urlLists.includes(location.pathname)) {
+      clearCookies();
+    }
     // if (!urlLists.includes(location.pathname)) clearCookies();
   }, [location.pathname]);
 
   useEffect(() => {
-
-
-    /* serversided
-        socket.on("disconnect", () => {
-          console.log("DISCONNECT", socket.id);
-          const alluserNames = Object.keys(currentUsers);
-          alluserNames.forEach((name) => {
-            if (currentUsers[name] === socket.id)
-              delete currentUsers[name];
-          }); // {"users": [name1, name2] }
-          console.log("DISCONNECT - CURRENT USERS", currentUsers);
-          io.emit("all user names", { "users": alluserNames }); // App.jsx & Recipients.jsx 로 보내기
-        });
-    */
 
 
     //frontend
@@ -211,18 +201,6 @@ function App() {
           <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
           <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
           <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
-          {/* <Route path='/game' element={
-            <Game
-              sendMessage={sendMessage}
-              sendPrivateMessage={privateMessage}
-              sendData={sendData}
-              setUser={createSocketIdNameObject}
-              room={room}
-              nickname={nickname}
-              online={online}
-              map={town} />}
-            /> */}
-          {/* <Route path='/chat' element={<Chat />} /> */}
           <Route path={`/game/${room}`} element={
             <Game
               sendMessage={sendMessage}
