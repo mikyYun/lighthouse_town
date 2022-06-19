@@ -89,6 +89,8 @@ function App() {
 
   useEffect(() => {
 
+    // ================= FUNCTIONS =============== //
+
 
     //frontend
     socket.on("connect", () => {
