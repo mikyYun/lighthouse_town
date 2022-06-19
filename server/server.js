@@ -119,8 +119,8 @@ io.on("connection", (socket) => {
                 pool.query(
                   "SELECT * FROM user_language JOIN languages ON language_id=languages.id", (err, res_3) => {
                     res_3.rows.map(userLanguageID => { // @@ userLanguageName 으로 바꾸고 밑에서 =>// obj.language_name 으로 하기
-                      console.log("THIS", userLanguageID);
-                      console.log(allusersTable);
+                      // console.log("THIS", userLanguageID);
+                      // console.log(allusersTable);
                       const nameMatching = allusersTable.find(obj => obj.id === userLanguageID.user_id).username;
                       if (followedIds.includes(userLanguageID.user_id)) {
                         followedInfo[nameMatching].languages.push(userLanguageID.language_name);

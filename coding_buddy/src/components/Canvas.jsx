@@ -152,7 +152,7 @@ const Canvas = (props) => {
     });
 
     window.addEventListener("keyup", () => {
-      console.log()
+      // console.log()
       userCharacters[props.username].stop();
       // socket.emit("sendData", userCharacters[props.username].state);
       sendData();
