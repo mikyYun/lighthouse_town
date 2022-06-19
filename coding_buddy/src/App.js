@@ -40,7 +40,7 @@ function App() {
     setRoom(location.pathname.split("/").splice(2)[0]);
     // console.log("location.pathname", location.pathname);
     const currentCookies = cookies.getAll();
-    console.log("CCCCCCCCCCCCC", cookies.cookies.username);
+    // console.log("CCCCCCCCCCCCC", cookies.cookies.username);
     // if (cookies.cookies.username) {
     // navigate('/game');
     // }
@@ -72,9 +72,9 @@ function App() {
       // if (location.pathname === "/game") {
       // navigate("/")
       // }
-      console.log("App.js: socket server connected.", all_cookies);
+      // console.log("App.js: socket server connected.", all_cookies);
       // console.log("My socket ID", socket.id);
-      console.log("CONNECTED");
+      // console.log("CONNECTED");
       // 유저데이터가 아직 삭제되지 않았고, 게임페이지 리로드 한 경우 서버랑 연결하고 currentUser update in server
       if (all_cookies.userdata) {
         // console.log("RECONNECTED"); // when refresh
@@ -102,13 +102,13 @@ function App() {
     //   navigate("/")
     // })
 
-    socket.on("friendsListBack", (e => {
-      console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",e.usernames)
-      setFriendList(e.usernames)
-    }))
+    socket.on("friendsListBack", friendsInfo => {
+      console.log("APP RECEIVED friends lists",friendsInfo.friendsInfo)
+      setFriendList(friendsInfo.friendsInfo)
+    })
 
     socket.on("REGISTRATION SUCCESS", (userInfo) => {
-      console.log("cookie set after register");
+      // console.log("cookie set after register");
       cookies.set("email", userInfo);
       navigate("/game");
     });
@@ -117,12 +117,12 @@ function App() {
     socket.on("backData", data => console.log("data", data)); //coming from server
 
     socket.on("all user names", (obj) => {
-      console.log("지금 로그인 되어있는 유저 line 95 - App.js", obj.users);
+      // console.log("지금 로그인 되어있는 유저 line 95 - App.js", obj.users);
 
       // obj.users = [user1, user2] => [{value: name, label: name } {}]
       const usersOnline = obj.users.map(name => ({ value: name, label: name }));
       usersOnline.unshift({ value: "all", label: "all" });
-      console.log('usersOnline - App.js', usersOnline);//[{}, {}, {}]
+      // console.log('usersOnline - App.js', usersOnline);//[{}, {}, {}]
       // const onlineOthers = usersOnline.filter(user => user.value !== nickname)
 
       setOnline(usersOnline);
@@ -161,8 +161,6 @@ function App() {
   const sendData = (state) => {
     socket && socket.emit("sendData", state);
   };
-
-
 
 
   return (

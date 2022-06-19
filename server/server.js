@@ -75,30 +75,32 @@ io.on("connection", (socket) => {
         existUsername = username;
         return;
       } else {
-        false;
+        false; // @@return false 아님?
       }
     });
-    if (existUsername !== false) {
-      pool.query("SELECT * FROM users",
+    if (existUsername !== false) { // @@아니면 이렇게 쓰는 건? if (existUsername)
+      pool.query("SELECT * FROM users", // {id: , username: , password: , email: , avatar: , lan_id: }
         // [existUsername],
         (err, res_1) => {
           if (err) throw err;
-          if (res_1.rows[0]) {
+          if (res_1.rows[0]) { // 테이블이 존재하면
             const allusersTable = res_1.rows;
             let userID;
             allusersTable.map(obj => {
               if (obj.username === existUsername)
-                userID = obj.id;
+                userID = obj.id; // @@obj는 뭐임?
             });
             // user exist
             // const userID = res_1.rows[0].id;
             pool.query(
               // find followers id
               "SELECT following FROM favorites WHERE followed=$1",
+              // {id: , following: , followed: }
               [userID],
               (err, res_2) => {
                 const usernames = [];
-                const followedIds = [];
+                const followedIds = []; // userid[1, 2, 3....]
+                const followedInfo = {};
                 res_2.rows.map(obj => {
                   followedIds.push(obj.following);
                 });
@@ -107,10 +109,37 @@ io.on("connection", (socket) => {
                   if (followedIds.includes(obj.id)) {
                     // console.log(obj.id)
                     usernames.push(obj.username);
+                    followedInfo[obj.username] = {};
+                    followedInfo[obj.username]["languages"] = [];
+                    // followedInfo[obj.username]["email"] = obj.email
                   }
                 });
-                console.log(usernames);
-                socket.emit("friendsListBack", { usernames: usernames });
+                // console.log(usernames);
+                pool.query(
+                  "SELECT * FROM user_language", (err, res_3) => {
+                    res_3.rows.map(userLanguageID => { // @@ userLanguageName 으로 바꾸고 밑에서 =>// obj.language_name 으로 하기
+
+                      const nameMatching = allusersTable.find(obj => obj.id === userLanguageID.user_id).username;
+                      // console.log(nameMatching)
+                      if (followedIds.includes(userLanguageID.user_id)) {
+                        followedInfo[nameMatching].languages.push(userLanguageID.language_id);
+                        // console.log(userLanguageID.language_id)
+                      }
+                    });
+                    // console.log("INFO", followedInfo)
+                    socket.emit("friendsListBack", { friendsInfo: followedInfo });
+
+                    // pool.query(
+                    //   "SELECT * FROM languages",
+                    //   (err, res) => {
+                    //     // console.log(res.rows) // => [{id: 1, language_name: HTML}....]
+
+                    //   }
+                    // )
+
+
+                  }
+                );
               }
             );
           }
