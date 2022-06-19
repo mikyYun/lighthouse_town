@@ -7,7 +7,6 @@ export default function FriendList() {
   const [toggle, setToggle] = useState(false);
   const toggleButton = useCallback(() => setToggle(!toggle))
 
-  // console.log("dfddddddddddddddddd", friendList);
   const friendsListing = friendsNames.map((friendName, i) => {
     const lists = () => {
       if (friendsNames.length > 0) {

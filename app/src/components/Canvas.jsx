@@ -179,11 +179,11 @@ const Canvas = (props) => {
     canvas.height = 640;
     const ctx = canvas.getContext("2d");
 
-    const mapImg = new Image();
-    mapImg.src = props.map;
-    mapImg.onload = () =>{
+    // const mapImg = new Image();
+    // mapImg.src = props.map;
+    // mapImg.onload = () =>{
 
-    ctx.drawImage(mapImg, 0, 0);
+    // ctx.drawImage(mapImg, 0, 0);
 
     for (const userChar in userCharacters) {
       // console.log(userChar);
@@ -199,16 +199,16 @@ const Canvas = (props) => {
       ctx.fillStyle = "purple";
       // console.log("ROOM", userCharacters);
     }
-  }
-  }, [userCharacters]);
-
+  // }
+  // }, [userCharacters]);
+})
   // if user hit the specific position -> redirect to the page
   function handleRoom() {
     navigate(roomLists.javascript, { state: props.username });
   }
 
 
-  console.log("LAST", userCharacters)
+  // console.log("LAST", userCharacters)
   return (
     <div className="game-container">
       <canvas className="game-canvas" ref={canvasRef}></canvas>
