@@ -127,7 +127,7 @@ io.on("connection", (socket) => {
                       }
                     });
                     // console.log("INFO", followedInfo)
-                    socket.emit("friendsListBack", { friendsInfo: followedInfo });
+                    socket.emit("friendsListBack", followedInfo);
 
                     // pool.query(
                     //   "SELECT * FROM languages",

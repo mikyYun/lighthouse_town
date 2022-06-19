@@ -112,8 +112,8 @@ function App() {
     // })
 
     socket.on("friendsListBack", friendsInfo => {
-      console.log("APP RECEIVED friends lists",friendsInfo.friendsInfo)
-      setFriendList(friendsInfo.friendsInfo)
+      console.log("APP RECEIVED friends lists",friendsInfo)
+      setFriendList(friendsInfo)
     })
 
     socket.on("REGISTRATION SUCCESS", (userInfo) => {
