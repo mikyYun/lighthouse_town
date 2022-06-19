@@ -92,7 +92,7 @@ function App() {
 
     //frontend
     socket.on("connect", () => {
-      console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!")
+      // console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!")
       const all_cookies = cookies.getAll();
       //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
       // if (location.pathname === "/game") {
@@ -129,7 +129,7 @@ function App() {
     })
 
     socket.on("REGISTRATION SUCCESS", (userInfo) => {
-      cookies.set("email", userInfo, {maxAge: 3600});
+      cookies.set("email", userInfo, { maxAge: 3600 });
       navigate("/game/plaza");
     });
 

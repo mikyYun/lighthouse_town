@@ -40,7 +40,7 @@ class Characters {
   move = (e) => {
     // console.log('inside move', this)
     if (e.key === 'ArrowUp') {
-      console.log(e.key)
+      // console.log(e.key)
       // keyPressed.w = true;
       this.state.y -= this.movement_speed;
       this.state.currentDirection = facing.up;

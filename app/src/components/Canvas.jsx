@@ -9,31 +9,31 @@ import { SocketContext } from "../App";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Canvas = (props) => {
-    const { socket, nickname } = useContext(SocketContext);
-    const canvasRef = useRef(null);
-    const location = useLocation();
-    const [userCharacters, setUserCharacters] = useState({
-        [props.username]: new Characters({
-        username: props.username,
-        x: 150,
-        y: 150,
-        currentDirection: 0,
-        frameCount: 0,
-        avatar: 1,
-        }),
-    });
+  const { socket, nickname } = useContext(SocketContext);
+  const canvasRef = useRef(null);
+  const location = useLocation();
+  const [userCharacters, setUserCharacters] = useState({
+    [props.username]: new Characters({
+      username: props.username,
+      x: 150,
+      y: 150,
+      currentDirection: 0,
+      frameCount: 0,
+      avatar: 1,
+    }),
+  });
 
-    const navigate = useNavigate();
-    const roomLists = {
-        html: "/game/html",
-        css: "/game/css",
-        javascript: "/game/js",
-        react: "/game/react",
-        ruby: "/game/ruby",
-    };
-    // console.log("username", props.username);
-    // console.log("nickName", nickname);
-    // console.log('userCharacters', userCharacters)
+  const navigate = useNavigate();
+  const roomLists = {
+    html: "/game/html",
+    css: "/game/css",
+    javascript: "/game/js",
+    react: "/game/react",
+    ruby: "/game/ruby",
+  };
+  // console.log("username", props.username);
+  // console.log("nickName", nickname);
+  // console.log('userCharacters', userCharacters)
 
   // sending data to server
   const sendData = (removeFromRoom) => {
@@ -140,15 +140,15 @@ const Canvas = (props) => {
         userCharacters[props.username].state.y >= 120 &&
         userCharacters[props.username].state.y <= 140
       ) {
-        console.log("IM here!!!!!!")
+        // console.log("IM here!!!!!!")
         // setUserCharacters( prev => {
         //   const copy = {...prev};
         //   delete copy[props.username]
         //   return copy
         // })
 
-        setUserCharacters({...userCharacters, [props.username]: undefined})
-        console.log('after remove', userCharacters)
+        setUserCharacters({ ...userCharacters, [props.username]: undefined })
+        // console.log('after remove', userCharacters)
         handleRoom();
         sendData(props.room);
       }
@@ -160,7 +160,7 @@ const Canvas = (props) => {
       // console.log()
       userCharacters[props.username].stop();
       // socket.emit("sendData", userCharacters[props.username].state);
-      if (userCharacters[props.username] !== undefined){
+      if (userCharacters[props.username] !== undefined) {
         sendData();
       }
     });
@@ -181,25 +181,25 @@ const Canvas = (props) => {
 
     const mapImg = new Image();
     mapImg.src = props.map;
-    mapImg.onload = () =>{
+    mapImg.onload = () => {
 
-    ctx.drawImage(mapImg, 0, 0);
+      ctx.drawImage(mapImg, 0, 0);
 
-    for (const userChar in userCharacters) {
-      // console.log(userChar);
-      // console.log(userCharacters);
-      userCharacters[userChar].drawFrame(ctx);
+      for (const userChar in userCharacters) {
+        // console.log(userChar);
+        // console.log(userCharacters);
+        userCharacters[userChar].drawFrame(ctx);
 
-      // Text on head.
-      ctx.fillText(
-        userCharacters[userChar].state.username,
-        userCharacters[userChar].state.x + 20,
-        userCharacters[userChar].state.y + 10
-      );
-      ctx.fillStyle = "purple";
-      // console.log("ROOM", userCharacters);
+        // Text on head.
+        ctx.fillText(
+          userCharacters[userChar].state.username,
+          userCharacters[userChar].state.x + 20,
+          userCharacters[userChar].state.y + 10
+        );
+        ctx.fillStyle = "purple";
+        // console.log("ROOM", userCharacters);
+      }
     }
-  }
   }, [userCharacters]);
 
   // if user hit the specific position -> redirect to the page
@@ -208,7 +208,7 @@ const Canvas = (props) => {
   }
 
 
-  console.log("LAST", userCharacters)
+  // console.log("LAST", userCharacters)
   return (
     <div className="game-container">
       <canvas className="game-canvas" ref={canvasRef}></canvas>
