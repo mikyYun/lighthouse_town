@@ -4,6 +4,7 @@ import { SocketContext } from '../App.js'
 
 function Recipient() {
   let { nickname, online, recipient, setRecipient } = useContext(SocketContext)
+
   const [otherUsers, setOtherUsers] = useState([])
   // other users => dynamic values
   // const recipient = props.recipient

@@ -16,7 +16,7 @@ import { createContext } from "react";
 // import map images
 
 export const SocketContext = createContext(socket); // going to Recipient.jsx
-
+export const ClickContext = createContext({});
 function App() {
 
   // ================= STATES =============== //
@@ -221,41 +221,44 @@ function App() {
 
 
   return (
-    <SocketContext.Provider value={{ socket, online, nickname, friendList, anchorPoint, show, recipient, setRecipient, clicked, setClicked }} >
-      {/* clicked -> used in Menu.jsx
+    <SocketContext.Provider value={{ socket, online, nickname, friendList, anchorPoint, show, recipient, setRecipient, clicked }} >
+      <ClickContext.Provider value={{ setClicked }} >
+
+        {/* clicked -> used in Menu.jsx
     setClicked -> used in Online.jsx */}
-      {/* @@@@ ASK MENTOR TO REFACTOR ChatContext.Provider LATER WITH BABE*/}
-      <div className='main'>
-        {show && <Menu />}
-        <Routes>
-          <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
-          <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
-          <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
-          <Route path='/game' element={
-            <Game
-              sendMessage={sendMessage}
-              sendPrivateMessage={privateMessage}
-              sendData={sendData}
-              setUser={createSocketIdNameObject}
-              room={room}
-              nickname={nickname}
-              online={online}
-              map={town} />}
-          />
-          {/* <Route path='/chat' element={<Chat />} /> */}
-          <Route path={`/game/${room}`} element={
-            <Game
-              sendMessage={sendMessage}
-              sendPrivateMessage={privateMessage}
-              sendData={sendData}
-              setUser={createSocketIdNameObject}
-              room={room}
-              nickname={nickname}
-              online={online}
-              map={maps[room]}
-            />} />
-        </Routes>
-      </div>
+
+        <div className='main'>
+          {show && <Menu />}
+          <Routes>
+            <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
+            <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
+            <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
+            <Route path='/game' element={
+              <Game
+                sendMessage={sendMessage}
+                sendPrivateMessage={privateMessage}
+                sendData={sendData}
+                setUser={createSocketIdNameObject}
+                room={room}
+                nickname={nickname}
+                online={online}
+                map={town} />}
+            />
+            {/* <Route path='/chat' element={<Chat />} /> */}
+            <Route path={`/game/${room}`} element={
+              <Game
+                sendMessage={sendMessage}
+                sendPrivateMessage={privateMessage}
+                sendData={sendData}
+                setUser={createSocketIdNameObject}
+                room={room}
+                nickname={nickname}
+                online={online}
+                map={maps[room]}
+              />} />
+          </Routes>
+        </div>
+      </ClickContext.Provider>
     </SocketContext.Provider>
   );
 
