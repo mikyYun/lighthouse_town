@@ -54,6 +54,7 @@ io.use((socket, next) => {
 io.adapter(createAdapter(pool));
 
 const users = {};
+const usersInRooms = {};
 // store all users' socket id with username key-value pair
 let currentUsers = {}; // => {username : socket.id}
 
@@ -127,7 +128,7 @@ io.on("connection", (socket) => {
                       }
                     });
                     // console.log("INFO", followedInfo)
-                    socket.emit("friendsListBack", { friendsInfo: followedInfo });
+                    socket.emit("friendsListBack", followedInfo);
 
                     // pool.query(
                     //   "SELECT * FROM languages",
@@ -175,11 +176,52 @@ io.on("connection", (socket) => {
   // use object
   // socket.emit("init", {data: 'hello world'})
   socket.on('sendData', data => {
-    // console.log('line 88, sendData (get from client)', data); // print on server
-    // add userid from data
-    users[data.username] = data;
-    io.emit('sendData', users); // 다시 Canvas.jsx -> const newCharactersData = data;
+
+    // data =
+    //   {
+    //     "userState": {
+    //         "username": "moon",
+    //         "x": 246,
+    //         "y": 238,
+    //         "currentDirection": 1,
+    //         "frameCount": 0,
+    //         "avatar": 1
+    //     },
+    //     "room": [
+    //         "plaza"
+    //     ]
+    // }
+
+    const { userState, room, removeFrom } = data;
+    console.log('got data', data)
+
+    // should remove the current user from the previous room
+    if (removeFrom) {
+      console.log('Remove', usersInRooms[removeFrom][userState.username])
+      delete usersInRooms[removeFrom][userState.username]
+    }
+
+    // inside of usersInRooms, if there is no room key, add the room key in it
+    if (!usersInRooms[room]) {
+      usersInRooms[room] = {}
+    }
+    // usersInRooms = {
+    //     plaza: { moon: {moons state},
+    //              heesoo: {heesoo's state}
+    //      }
+
+    // assign userState into each room
+    usersInRooms[room][userState.username] = userState;
+
+    io.emit('sendData', { usersInRooms, room }) // 다시 Canvas.jsx -> const newCharactersData = data;
+
+
+    //  OLD CODE BEFORE WAKEEL MENTOR
+    // users[data.username] = data;
   });
+
+
+
 
   // socketID and username matching
   socket.on("SET USERNAME", (obj) => {
@@ -424,6 +466,63 @@ app.post("/register", (req, res) => {
     }
   );
   res.status(201).send({ userName, userEmail, userLanguages, userAvatar });
+});
+
+app.post("/friends", (req, res) => {
+  // client sending
+  // console.log("login request", req.body);
+  // req.body = {userEmail: '', userPassword: ''}
+
+  const username = req.body.username;
+  // const password = req.body.userPassword;
+
+  // and password.. userName=$1 AND userpassword=$2
+  return pool.query(
+    "SELECT id FROM users WHERE username=$1",
+    [username],
+    (err, res_1) => {
+      if (err) throw err;
+      console.log(res_1.rows);
+      if (res_1.rows[0]) {
+        // user exist
+        const userID = res_1.rows[0].id;
+        // const userName = userInfo.username;
+        // const avatar = userInfo.avatar_id;
+        // console.log(res_1.rows[0]); // id: 3, username: "mike", password: "mike", email: "test2@test.com", avatar_id: 1
+        // const userID = res_1.rows[0].id;
+        // find languages
+        pool.query(
+          // find followers id
+          "SELECT following FROM favorites WHERE followed=$1",
+          [userID],
+          (err, res_2) => {
+            const userLanguages = [];
+            console.log(res_2.rows)
+            // if (err) throw err;
+            // // res.rows[0] =
+            // res_2.rows[0]
+            // if (res_2.rows.length > 0) {
+            //   // console.log("find user's languages", res_2.rows);
+            //   res_2.rows.forEach((obj) => {
+            //     userLanguages.push(obj.language_id);
+            //   });
+            //   const loginUserData = {
+            //     userName,
+            //     avatar,
+            //     userLanguages,
+            //   };
+            //   res.status(201).send(loginUserData); //object - username, avatar, language
+            // } else {
+            //   console.log("No available language", res_2.rows);
+            // }
+          }
+        );
+      } else {
+        // no matching user
+        res.status(201).send(false);
+      }
+    }
+  );
 });
 
 

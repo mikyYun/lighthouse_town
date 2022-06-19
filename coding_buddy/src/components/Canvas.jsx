@@ -32,7 +32,21 @@ const Canvas = (props) => {
   };
   // console.log("username", props.username);
   // console.log("nickName", nickname);
-  // console.log("userCharacters", userCharacters);
+  // console.log('userCharacters', userCharacters)
+
+  // const dataset = {
+  //   userState: userCharacters[props.username].state,
+  //   room: [props.room]
+  // }
+
+  // sending data to server
+  const sendData = (removeFromRoom) => {
+    socket.emit("sendData", {
+      userState: userCharacters[props.username].state,
+      room: props.room,
+      removeFrom: removeFromRoom
+    });
+  }
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -58,29 +72,82 @@ const Canvas = (props) => {
           );
           ctx.fillStyle = "purple";
         }
-      };
-      socket.emit("sendData", userCharacters[props.username].state);
+      }
+      sendData()
+      // socket.emit("sendData", userCharacters[props.username].state);
     });
+
+    // data = {
+    //   {
+    //     "usersInRooms": {
+    //         "plaza": {
+    //             "moon": {
+    //                 "username": "moon",
+    //                 "x": 158,
+    //                 "y": 150,
+    //                 "currentDirection": 2,
+    //                 "frameCount": 0,
+    //                 "avatar": 1
+    //             },
+    //             "heesoo": {
+    //                 "username": "heesoo",
+    //                 "x": 150,
+    //                 "y": 150,
+    //                 "currentDirection": 0,
+    //                 "frameCount": 0,
+    //                 "avatar": 1
+    //             }
+    //         }
+    //     },
+    //     "room":        "plaza"
+
+    // }
+
+    // userCharacters = {
+    //     "moon": Characters()
+
 
     socket.on("sendData", (data) => {
       // console.log("data", data);
       const newCharactersData = data;
       newCharactersData[props.username] = userCharacters[props.username];
 
-      // console.log('newCharactersData', newCharactersData)
-      // console.log('characters', userCharacters )
+      const newCharacters = { ...userCharacters };
+      // set main user character
+      newCharacters[props.username] = userCharacters[props.username];
+      // console.log("before create New CHARACTERS", newCharacters)
 
-      for (const userChar in newCharactersData) {
-        if (typeof newCharactersData[userChar].username !== "undefined") {
-          if (newCharactersData[userChar].username !== props.username) {
-            newCharactersData[userChar] = new Characters(
-              newCharactersData[userChar]
-            );
+      const allUsersState = data.usersInRooms[props.room];
+      Object.keys(allUsersState).map(user => {
+        // console.log(user)
+        if (typeof user !== 'undefined') {
+          if (user !== props.username) {
+            newCharacters[user] = new Characters(allUsersState[user])
           }
         }
-      }
-      setUserCharacters(newCharactersData);
+        // console.log("New CHARACTERS", newCharacters)
+      });
+
+      setUserCharacters(newCharacters);
+      // console.log('AFTER SETTING: ', newCharacters)
     });
+
+
+    // // console.log('newCharactersData', newCharactersData)
+    // // console.log('characters', userCharacters )
+
+    // for (const userChar in newCharactersData) {
+    //   if (typeof newCharactersData[userChar].username !== "undefined") {
+    //     if (newCharactersData[userChar].username !== props.username) {
+    //       newCharactersData[userChar] = new Characters(
+    //         newCharactersData[userChar]
+    //       );
+    //     }
+    //   }
+    // }
+    // setUserCharacters(newCharactersData);
+    // });
+
 
     window.addEventListener("keydown", (e) => {
       userCharacters[props.username].move(e);
@@ -92,25 +159,31 @@ const Canvas = (props) => {
         userCharacters[props.username].state.y >= 120 &&
         userCharacters[props.username].state.y <= 140
       ) {
-        const removedUserChars = delete userCharacters[props.username];
-        setUserCharacters(removedUserChars);
-        // console.log("after remove", userCharacters);
+        setUserCharacters(prev => {
+          delete { ...prev }[props.username];
+          sendData(props.room)
+        })
+        // console.log('after remove', userCharacters)
         handleRoom();
       }
-
-      socket.emit("sendData", userCharacters[props.username].state);
+      sendData();
+      // socket.emit("sendData", userCharacters[props.username].state);
     });
+
     window.addEventListener("keyup", () => {
+      console.log()
       userCharacters[props.username].stop();
-      socket.emit("sendData", userCharacters[props.username].state);
+      // socket.emit("sendData", userCharacters[props.username].state);
+      sendData();
     });
 
     return () => {
       window.removeEventListener("keydown", (e) => userCharacters[0].move(e));
       window.removeEventListener("keyup", () => userCharacters[0].stop());
-      // socket.disconnect()
     };
+
   }, []);
+
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -125,8 +198,18 @@ const Canvas = (props) => {
     ctx.drawImage(mapImg, 0, 0);
 
     for (const userChar in userCharacters) {
-      let frameCount = 0;
-      let framelimit = 4;
+      // console.log(userChar);
+      // console.log(userCharacters);
+      userCharacters[userChar].drawFrame(ctx);
+
+      // Text on head.
+      ctx.fillText(
+        userCharacters[userChar].state.username,
+        userCharacters[userChar].state.x + 20,
+        userCharacters[userChar].state.y + 10
+      );
+      ctx.fillStyle = "purple";
+      console.log("ROOM", userCharacters);
 
       // console.log(userChar);
       // console.log(userCharacters);
@@ -147,21 +230,7 @@ const Canvas = (props) => {
   function handleRoom() {
     navigate(roomLists.javascript);
   }
-  //   console.log('ROOM', userCharacters)
-  //   let page;
-  //   if (
-  //     userCharacters[props.username].state.x >= 420 &&
-  //     userCharacters[props.username].state.x <= 460 &&
-  //     userCharacters[props.username].state.y >= 120 &&
-  //     userCharacters[props.username].state.y <= 140
-  //   ) {
-  //     console.log("im here!!!!");
-  //     page = React.createElement(
-  //       "button",
-  //       { id: "javascript", onClick: handleClick },
-  //       "Language Page"
-  //     );
-  //   }
+
 
   return (
     <div className="game-container">

@@ -40,7 +40,7 @@ function App() {
 
   const nickname = location.state?.[0] || '';
   const urlLists = [
-    "/game",
+    "/game/plaza",
     "/game/ruby",
     "/game/html",
     "/game/css",
@@ -152,7 +152,7 @@ function App() {
 
     socket.on("REGISTRATION SUCCESS", (userInfo) => {
       cookies.set("email", userInfo);
-      navigate("/game");
+      navigate("/game/plaza");
     });
 
     socket.on("init", msg => console.log("msg - App.js", msg)); //coming from server
@@ -202,6 +202,7 @@ function App() {
   };
 
   return (
+<<<<<<< HEAD
     <SocketContext.Provider value={{ socket, online, nickname, friendList, anchorPoint, show, recipient, setRecipient, clicked }} >
       <ClickContext.Provider value={{ setClicked }} >
 
@@ -240,6 +241,39 @@ function App() {
           </Routes>
         </div>
       </ClickContext.Provider>
+=======
+    <SocketContext.Provider value={{ socket, online, nickname, friendList }} >
+      <div className='main'>
+        <Routes>
+          <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
+          <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
+          <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
+          {/* <Route path='/game' element={
+            <Game
+              sendMessage={sendMessage}
+              sendPrivateMessage={privateMessage}
+              sendData={sendData}
+              setUser={createSocketIdNameObject}
+              room={room}
+              nickname={nickname}
+              online={online}
+              map={town} />}
+            /> */}
+          {/* <Route path='/chat' element={<Chat />} /> */}
+          <Route path={`/game/${room}`} element={
+            <Game
+              sendMessage={sendMessage}
+              sendPrivateMessage={privateMessage}
+              sendData={sendData}
+              setUser={createSocketIdNameObject}
+              room={room}
+              nickname={nickname}
+              online={online}
+              map={maps[room]}
+            />} />
+        </Routes>
+      </div>
+>>>>>>> faa928d86c8a758d3e15231179bba9a31cafaafa
     </SocketContext.Provider>
   );
 
