@@ -6,7 +6,7 @@ const Menu = () => {
   console.log('clicked', clicked)
   return (
     <ul className="menu">
-      <li className="add-friend" onClick={''}>Add Friend</li>
+      <li className="add-friend" onClick={() => { }}>Add Friend</li>
       <li className="send-message" onClick={() => {
         setRecipient(clicked);
         console.log('clicked in Menu', clicked)
