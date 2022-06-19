@@ -40,8 +40,7 @@ function MessageForm({ nickname, recipient }) {
   }, [socket, nickname, typingMessage, recipient]);
 
 
-
-  document.addEventListener("keydown", (e) => {
+  document.addEventListener("keyup", (e) => {
     if (e.key === "Enter") {
       setTextareaDisable(false)
       focusTextArea.current.focus()
