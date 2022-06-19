@@ -1,4 +1,4 @@
-import { useState, useCallback, useContext } from "react";
+import { useState, useCallback, useContext, useRef, useEffect } from "react";
 import { SOCKET_EVENT } from "./service/socket.js";
 import { SocketContext } from "../App.js";
 
@@ -7,6 +7,8 @@ import { SocketContext } from "../App.js";
 function MessageForm({ nickname, recipient }) {
   const [typingMessage, setTypingMessage] = useState("");
   const { socket } = useContext(SocketContext);
+  const [textareaDisable, setTextareaDisable] = useState(true)
+  const focusTextArea = useRef()
   // socket, socket_event object
   // textarea에서 텍스트를 입력하면 typingMessage state를 변경합니다.
   const handleChangeTypingMessage = useCallback((event) => {
@@ -37,17 +39,29 @@ function MessageForm({ nickname, recipient }) {
     setTypingMessage("");
   }, [socket, nickname, typingMessage, recipient]);
 
+
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      setTextareaDisable(false)
+      focusTextArea.current.focus()
+    }
+  })
+
   return (
     <form className="card">
       <div className="align-items-center">
         <textarea
-          // ref={focusTextArea}
-          // disabled={textareaDisable}
+          ref={focusTextArea}
+          readOnly={textareaDisable}
           className="form-control"
           maxLength={400}
-          // autoFocus
           value={typingMessage}
           onChange={handleChangeTypingMessage}
+          onMouseDown={() => {
+            setTextareaDisable(false)
+            focusTextArea.current.focus()
+          }}
         />
         <button
           type="button"
