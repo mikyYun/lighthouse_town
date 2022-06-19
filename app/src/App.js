@@ -99,7 +99,7 @@ function App() {
       // navigate("/")
       // }
       // 유저데이터가 아직 삭제되지 않았고, 게임페이지 리로드 한 경우 서버랑 연결하고 currentUser update in server
-      if (all_cookies.userdata) {
+      if ((location.pathname !== "/register") && all_cookies.userdata) {
         // 쿠키 존재하면 리커넥트 요청
         socket.emit("reconnection?", { username: all_cookies.userdata.userName, newSocketId: socket.id });
         // socket.on("DENY CONNECTION", (e) => {
