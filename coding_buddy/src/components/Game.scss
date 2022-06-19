@@ -11,7 +11,9 @@
   image-rendering: pixelated;
 }
 .game-canvas {
-  width: 100%
+  width: 100%;
+  max-width: 80vw;
+  max-height: 70vh;
 }
 .chatroom {
   width: 100%;
@@ -52,8 +54,25 @@ div.d-flex.flex-row {
   height: 100%;
   right: 0;
   top: 0;
-  background-color: rgb(82, 82, 131);
+  background-color: #525283;
   img {
     width: 15px;
   }
+}
+
+.language {
+  background-color: #9999ce;
+}
+.collapsButton {
+  width: 100%;
+}
+
+.languageDiv {
+  padding-left: 10px;
+  font-size: 9px;
+}
+
+.languageDiv:hover {
+  font-size: 15px;
+  background-color: #9999ce;
 }

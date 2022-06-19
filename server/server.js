@@ -53,7 +53,6 @@ io.use((socket, next) => {
 
 io.adapter(createAdapter(pool));
 
-const users = {};
 const usersInRooms = {};
 // store all users' socket id with username key-value pair
 let currentUsers = {}; // => {username : socket.id}
@@ -117,28 +116,18 @@ io.on("connection", (socket) => {
                 });
                 // console.log(usernames);
                 pool.query(
-                  "SELECT * FROM user_language", (err, res_3) => {
+                  "SELECT * FROM user_language JOIN languages ON language_id=languages.id", (err, res_3) => {
                     res_3.rows.map(userLanguageID => { // @@ userLanguageName 으로 바꾸고 밑에서 =>// obj.language_name 으로 하기
-
+                      // console.log("THIS", userLanguageID);
+                      // console.log(allusersTable);
                       const nameMatching = allusersTable.find(obj => obj.id === userLanguageID.user_id).username;
-                      // console.log(nameMatching)
                       if (followedIds.includes(userLanguageID.user_id)) {
-                        followedInfo[nameMatching].languages.push(userLanguageID.language_id);
+                        followedInfo[nameMatching].languages.push(userLanguageID.language_name);
                         // console.log(userLanguageID.language_id)
                       }
                     });
                     // console.log("INFO", followedInfo)
                     socket.emit("friendsListBack", followedInfo);
-
-                    // pool.query(
-                    //   "SELECT * FROM languages",
-                    //   (err, res) => {
-                    //     // console.log(res.rows) // => [{id: 1, language_name: HTML}....]
-
-                    //   }
-                    // )
-
-
                   }
                 );
               }
@@ -193,25 +182,28 @@ io.on("connection", (socket) => {
     // }
 
     const { userState, room, removeFrom } = data;
-    // console.log('got data', data)
-
-    // should remove the current user from the previous room
-    if (removeFrom) {
-      console.log('Remove', usersInRooms[removeFrom][userState.username])
-      delete usersInRooms[removeFrom][userState.username]
-    }
+    console.log('got data', data);
 
     // inside of usersInRooms, if there is no room key, add the room key in it
     if (!usersInRooms[room]) {
-      usersInRooms[room] = {}
+      usersInRooms[room] = {};
     }
+
+    // should remove the current user from the previous room
+    if (removeFrom) {
+      console.log('Remove', usersInRooms[removeFrom][userState.username]);
+      delete usersInRooms[removeFrom][userState.username];
+    } else {
+      // assign userState into each room
+      usersInRooms[room][userState.username] = userState;
+    }
+
+    console.log("COMPLETE", usersInRooms)
     // usersInRooms = {
     //     plaza: { moon: {moons state},
     //              heesoo: {heesoo's state}
     //      }
 
-    // assign userState into each room
-    usersInRooms[room][userState.username] = userState;
 
     console.log(usersInRooms)
     io.emit('sendData', { usersInRooms, room }) // 다시 Canvas.jsx -> const newCharactersData = data;
@@ -469,12 +461,7 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/friends", (req, res) => {
-  // client sending
-  // console.log("login request", req.body);
-  // req.body = {userEmail: '', userPassword: ''}
-
   const username = req.body.username;
-  // const password = req.body.userPassword;
 
   // and password.. userName=$1 AND userpassword=$2
   return pool.query(
@@ -482,39 +469,15 @@ app.post("/friends", (req, res) => {
     [username],
     (err, res_1) => {
       if (err) throw err;
-      console.log(res_1.rows);
       if (res_1.rows[0]) {
         // user exist
         const userID = res_1.rows[0].id;
-        // const userName = userInfo.username;
-        // const avatar = userInfo.avatar_id;
-        // console.log(res_1.rows[0]); // id: 3, username: "mike", password: "mike", email: "test2@test.com", avatar_id: 1
-        // const userID = res_1.rows[0].id;
-        // find languages
         pool.query(
           // find followers id
           "SELECT following FROM favorites WHERE followed=$1",
           [userID],
           (err, res_2) => {
             const userLanguages = [];
-            console.log(res_2.rows)
-            // if (err) throw err;
-            // // res.rows[0] =
-            // res_2.rows[0]
-            // if (res_2.rows.length > 0) {
-            //   // console.log("find user's languages", res_2.rows);
-            //   res_2.rows.forEach((obj) => {
-            //     userLanguages.push(obj.language_id);
-            //   });
-            //   const loginUserData = {
-            //     userName,
-            //     avatar,
-            //     userLanguages,
-            //   };
-            //   res.status(201).send(loginUserData); //object - username, avatar, language
-            // } else {
-            //   console.log("No available language", res_2.rows);
-            // }
           }
         );
       } else {
@@ -524,9 +487,6 @@ app.post("/friends", (req, res) => {
     }
   );
 });
-
-
-
 
 httpServer.listen(PORT, () => {
   console.log(

@@ -1,9 +1,11 @@
-import { useEffect, useContext, useState } from "react";
+import { useEffect, useCallback, useContext, useState } from "react";
 import { SocketContext } from "../App.js";
-
+import { PanelGroup } from "bootstrap";
 export default function FriendList() {
   const { online, friendList, socket } = useContext(SocketContext);
   const friendsNames = Object.keys(friendList); // [이름, 이름]
+  const [toggle, setToggle] = useState(false);
+  const toggleButton = useCallback(() => setToggle(!toggle))
 
   console.log("dfddddddddddddddddd", friendList);
   const friendsListing = friendsNames.map((friendName, i) => {
@@ -13,19 +15,29 @@ export default function FriendList() {
           console.log(friendList[friendName].languages);
           const languages = friendList[friendName].languages;
           return languages.map((lang, index) => (
-            <div key={index}>
+            // <div key={index} className="language collapse" id="collapseExample">
+            // <div key={index} className="card card-body">
+              <div key={index} className="languageDiv">
               {lang}
-            </div>
+              </div>
+            // </div>
+            // </div>
           ));
         }
       }
     };
     return (
       <div key={i}>
-        <div>
-          {/* {friendName} */}
+        <div
+        // btn-primary 
+          className="btn btn-primary collaps"
+          onClick={toggleButton}
+        >
+          <div>{friendName}</div>
         </div>
-          {lists()}
+          <div className="languageLists">
+            {lists()}
+          </div>
       </div>
     );
   });
