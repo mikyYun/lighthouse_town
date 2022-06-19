@@ -22,11 +22,12 @@ function App() {
 
   // const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
-  const [online, setOnline] = useState([{ value: 'all', label: 'all', avatar: 1 }]);
+  const [online, setOnline] = useState([{ value: 'all', label: 'all' }]);
   const [friendList, setFriendList] = useState([])
   const [show, setShow] = useState(false);
   const [clicked, setClicked] = useState({})
-  const [recipient, setRecipient] = useState({ value: "all", label: "all", avatar: 1 });
+  const [recipient, setRecipient] = useState({ value: "all", label: "all" });
+  const [user, setUser] = useState({ value: "all", label: "all", avatar: 1 });
 
   // ================= HOOKS =============== //
 
@@ -53,6 +54,7 @@ function App() {
   }
 
   const avatars = {
+    0: "/images/boy-face.png",
     1: "/images/boy-face.png",
     2: "/images/girl-face.png"
   }
@@ -69,6 +71,9 @@ function App() {
   // ================= EFFECTS =============== //
 
   useEffect(() => {
+    setUser({ ...user, avatar: avatars[user.avatar] }) //[user.avatar] is a number (avatar id) 
+    // @@@@@@@@@@@@ SUNDAY : WE SHOULD GET A USER FROM THE DATA BASE
+    // @@@@@@@@@@@@ SUNDAY : WE SHOULD ALSO SET AN AVATAR WHEN WE GET AN USER OBJECT.
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
     const currentCookies = cookies.getAll();
@@ -138,11 +143,11 @@ function App() {
     socket.on("init", msg => console.log("msg - App.js", msg)); //coming from server
     socket.on("backData", data => console.log("data", data)); //coming from server
 
-    socket.on("all user names", (obj) => {
+    socket.on("all user names", (obj) => { //@@@SUNDAY: all user objects
       // obj.users = [user1, user2] => [{value: name, label: name } {}]
-      const usersOnline = obj.users.map(name => ({ value: name, label: name, avatar: avatars[1] }));
+      const usersOnline = obj.users.map(name => ({ value: name, label: name, avatar: avatars[1] })); //@@@@ SUNDAY - this should be dynamic and need an avatar from socket. 
 
-      usersOnline.unshift({ value: "all", label: "all", avatar: avatars[1] });
+      usersOnline.unshift({ value: "all", label: "all", avatar: avatars[0] });
       // const onlineOthers = usersOnline.filter(user => user.value !== nickname)
 
       setOnline(usersOnline);
@@ -184,7 +189,7 @@ function App() {
 
   return (
     <SocketContext.Provider value={{ socket, online, nickname, friendList }} >
-      <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked }} >
+      <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked, user, setUser }} >
 
         {/* clicked -> used in Menu.jsx
     setClicked -> used in Online.jsx */}
