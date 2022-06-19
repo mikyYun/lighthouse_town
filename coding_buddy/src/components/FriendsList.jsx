@@ -23,7 +23,7 @@ export default function FriendList() {
     return (
       <div key={i}>
         <div>
-          {/* {friendName} */}
+          {friendName}
         </div>
           {lists()}
       </div>

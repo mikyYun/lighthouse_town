@@ -117,28 +117,18 @@ io.on("connection", (socket) => {
                 });
                 // console.log(usernames);
                 pool.query(
-                  "SELECT * FROM user_language", (err, res_3) => {
+                  "SELECT * FROM user_language JOIN languages ON language_id=languages.id", (err, res_3) => {
                     res_3.rows.map(userLanguageID => { // @@ userLanguageName 으로 바꾸고 밑에서 =>// obj.language_name 으로 하기
-
+                      console.log("THIS", userLanguageID)
+                      console.log(allusersTable)
                       const nameMatching = allusersTable.find(obj => obj.id === userLanguageID.user_id).username;
-                      // console.log(nameMatching)
                       if (followedIds.includes(userLanguageID.user_id)) {
-                        followedInfo[nameMatching].languages.push(userLanguageID.language_id);
+                        followedInfo[nameMatching].languages.push(userLanguageID.language_name);
                         // console.log(userLanguageID.language_id)
                       }
                     });
                     // console.log("INFO", followedInfo)
                     socket.emit("friendsListBack", followedInfo);
-
-                    // pool.query(
-                    //   "SELECT * FROM languages",
-                    //   (err, res) => {
-                    //     // console.log(res.rows) // => [{id: 1, language_name: HTML}....]
-
-                    //   }
-                    // )
-
-
                   }
                 );
               }
