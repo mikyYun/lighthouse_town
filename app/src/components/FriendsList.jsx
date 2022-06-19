@@ -11,14 +11,14 @@ export default function FriendList() {
     const lists = () => {
       if (friendsNames.length > 0) {
         if (friendList[friendName].languages) {
-          console.log(friendList[friendName].languages);
+          // console.log(friendList[friendName].languages);
           const languages = friendList[friendName].languages;
           return languages.map((lang, index) => (
             // <div key={index} className="language collapse" id="collapseExample">
             // <div key={index} className="card card-body">
-              <div key={index} className="languageDiv">
+            <div key={index} className="languageDiv">
               {lang}
-              </div>
+            </div>
             // </div>
             // </div>
           ));
@@ -28,15 +28,15 @@ export default function FriendList() {
     return (
       <div key={i}>
         <div
-        // btn-primary 
+          // btn-primary 
           className="btn btn-primary collaps"
           onClick={toggleButton}
         >
           <div>{friendName}</div>
         </div>
-          <div className="languageLists">
-            {lists()}
-          </div>
+        <div className="languageLists">
+          {lists()}
+        </div>
       </div>
     );
   });

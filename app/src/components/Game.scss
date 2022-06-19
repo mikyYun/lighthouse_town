@@ -50,12 +50,14 @@ div.d-flex.flex-row {
 }
 
 .online-list {
+
   position: absolute;
   width: 20%;
   height: 100%;
   right: 0;
   top: 0;
-  background-color: rgb(82, 82, 131);
+  background-color: #808080;
+  color: white;
   img.user-avatar {
     width: 15px;
   }

@@ -61,14 +61,15 @@ function ChatRoom(props) {
       </div>
       <div className="chat-window card" ref={chatWindow}>
         {messages.map((message, index) => {
-          const { nickname, content, time } = message;
+          const { nickname, content, time, user } = message;
           let recipient = ''
           message.recipient ? recipient = message.recipient : recipient = 'all'
 
           return (
             <div key={index} className="d-flex flex-row">
               {nickname && <div className="message-nickname">
-                <Avatar url={user.avatar} /> {nickname} to {recipient}: </div>}
+                {/* <Avatar url={user.avatar} /> */}
+                {nickname} to {recipient}: </div>}
               <div>{content}</div>
               <div className="time">{time}</div>
             </div>
