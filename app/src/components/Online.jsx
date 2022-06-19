@@ -1,4 +1,4 @@
-import { useEffect, useContext, useState } from "react";
+import { useEffect, useContext } from "react";
 import { SocketContext } from "../App.js";
 import { UserListContext } from '../App.js'
 import FriendList from "./FriendsList.jsx";

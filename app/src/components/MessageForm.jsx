@@ -1,4 +1,4 @@
-import { useState, useCallback, useContext, useRef, useEffect } from "react";
+import { useState, useCallback, useContext, useRef } from "react";
 import { SOCKET_EVENT } from "./service/socket.js";
 import { SocketContext } from "../App.js";
 
