@@ -1,6 +1,4 @@
-import { useState } from "react";
 import ChatRoom from "./ChatRoom";
-import { SocketContext } from '../App.js'
 import Recipient from "./Recipient";
 export default function Chat(props) {
   // const [recipient, setRecipient] = useState({ value: "all", label: "all" });

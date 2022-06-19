@@ -3,9 +3,12 @@ import MessageForm from "./MessageForm";
 import "./ChatRoom.scss";
 import { SOCKET_EVENT, makePublicMessage, makePrivateMessage } from "./service/socket";
 import { SocketContext } from "../App.js";
+import { UserListContext } from '../App.js'
 
 function ChatRoom(props) {
-  const { socket, recipient } = useContext(SocketContext)
+  const { socket } = useContext(SocketContext)
+  const { recipient } = useContext(UserListContext);
+
   const { nickname } = props
   const [messages, setMessages] = useState([]);
 
