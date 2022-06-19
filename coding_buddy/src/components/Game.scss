@@ -46,13 +46,16 @@ div.d-flex.flex-row {
   left: 35vw;
 }
 
-.onlinelist {
+.online-list {
   position: absolute;
   width: 20%;
   height: 100%;
   right: 0;
   top: 0;
   background-color: rgb(82, 82, 131);
+  img {
+    width: 15px;
+  }
 }
 
 .friendsListToggle {

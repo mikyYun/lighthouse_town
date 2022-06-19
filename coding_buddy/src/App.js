@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import './App.css';
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import Cookies from 'universal-cookie';
 import town from './components/game_img/town-map.png';
 import classroom from './components/game_img/classroom.png';
@@ -12,23 +12,21 @@ import Login from './components/Login';
 import Menu from './components/Menu';
 import { socket } from './components/service/socket.js';
 import { createContext } from "react";
-
 // import map images
 
 export const SocketContext = createContext(socket); // going to Recipient.jsx
-export const ClickContext = createContext({});
+export const UserListContext = createContext({});
 function App() {
 
   // ================= STATES =============== //
 
   // const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
-  const [online, setOnline] = useState([{ value: 'all', label: 'all' }]);
+  const [online, setOnline] = useState([{ value: 'all', label: 'all', avatar: 1 }]);
   const [friendList, setFriendList] = useState([])
-  const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
   const [show, setShow] = useState(false);
   const [clicked, setClicked] = useState({})
-  const [recipient, setRecipient] = useState({ value: "all", label: "all" });
+  const [recipient, setRecipient] = useState({ value: "all", label: "all", avatar: 1 });
 
   // ================= HOOKS =============== //
 
@@ -54,36 +52,18 @@ function App() {
     js: classroom
   }
 
+  const avatars = {
+    1: "/images/boy-face.png",
+    2: "/images/girl-face.png"
+  }
+
   // ================= INTANCES =============== //
 
   const cookies = new Cookies();
 
-  // ================= FUNCTIONS =============== //
-
-  const handleContextMenu = useCallback(
-    (event) => {
-      event.preventDefault();
-      setAnchorPoint({ x: event.pageX, y: event.pageY });
-      setShow(true);
-    },
-    [setAnchorPoint, setShow] //function only runs in these cases
-  );
-
-  const handleClick = useCallback(() => (show ? setShow(false) : null), [show]);
-
-  useEffect(() => {
-    document.addEventListener("click", handleClick);
-    document.addEventListener("contextmenu", handleContextMenu);
-    return () => {
-      document.removeEventListener("click", handleClick);
-      document.removeEventListener("contextmenu", handleContextMenu);
-    };
-  });
 
   // const addFriend = () => { }
-  // const sendMessage = () => {
-
-  // }
+  // const sendMessage = () => { }
   // const viewProfile = () => { }
 
   // ================= EFFECTS =============== //
@@ -153,8 +133,9 @@ function App() {
 
     socket.on("all user names", (obj) => {
       // obj.users = [user1, user2] => [{value: name, label: name } {}]
-      const usersOnline = obj.users.map(name => ({ value: name, label: name }));
-      usersOnline.unshift({ value: "all", label: "all" });
+      const usersOnline = obj.users.map(name => ({ value: name, label: name, avatar: avatars[1] }));
+
+      usersOnline.unshift({ value: "all", label: "all", avatar: avatars[1] });
       // const onlineOthers = usersOnline.filter(user => user.value !== nickname)
 
       setOnline(usersOnline);
@@ -190,30 +171,38 @@ function App() {
     socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username });
   };
 
-  const sendData = (state) => {
-    socket && socket.emit("sendData", state);
-  };
+  // const sendData = (state) => {
+  //   socket && socket.emit("sendData", state);
+  // };
 
   return (
     <SocketContext.Provider value={{ socket, online, nickname, friendList }} >
-      <div className='main'>
-        <Routes>
-          <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
-          <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
-          <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
-          <Route path={`/game/${room}`} element={
-            <Game
-              sendMessage={sendMessage}
-              sendPrivateMessage={privateMessage}
-              sendData={sendData}
-              setUser={createSocketIdNameObject}
-              room={room}
-              nickname={nickname}
-              online={online}
-              map={maps[room]}
-            />} />
-        </Routes>
-      </div>
+      <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked }} >
+
+        {/* clicked -> used in Menu.jsx
+    setClicked -> used in Online.jsx */}
+
+        <div className='main'>
+          {show && <Menu />}
+          <Routes>
+            <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
+            <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
+            <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
+            <Route path={`/game/${room}`} element={
+              <Game
+                username={nickname}
+                sendMessage={sendMessage}
+                sendPrivateMessage={privateMessage}
+                // sendData={sendData}
+                setUser={createSocketIdNameObject}
+                room={room}
+                nickname={nickname}
+                online={online}
+                map={maps[room]}
+              />} />
+          </Routes>
+        </div>
+      </UserListContext.Provider>
     </SocketContext.Provider>
   );
 

@@ -1,10 +1,11 @@
 import { useEffect, useContext, useState } from "react";
 import { SocketContext } from "../App.js";
-import { ClickContext } from '../App.js'
+import { UserListContext } from '../App.js'
 import FriendList from "./FriendsList.jsx";
+import Avatar from "./Avatar.jsx"
 export default function Online() {
   const { online, friendList, socket } = useContext(SocketContext);
-  const { setClicked } = useContext(ClickContext);
+  const { setClicked, setShow } = useContext(UserListContext);
   // const [playToggleClassName, setPlayToggleClassName] = useState("friendsListToggle");
   // console.log("online_in_Online.jsx", online);
   const usersOnline = online.map((obj, i) => <li key={i} onClick={() => {

@@ -1,9 +1,12 @@
 import { useState, useContext, useEffect } from "react";
 import Select from 'react-select';
 import { SocketContext } from '../App.js'
+import { UserListContext } from '../App.js'
 
 function Recipient() {
-  let { nickname, online, recipient, setRecipient } = useContext(SocketContext)
+  let { nickname, online } = useContext(SocketContext)
+  const { recipient, setRecipient } = useContext(UserListContext);
+
 
   const [otherUsers, setOtherUsers] = useState([])
   // other users => dynamic values

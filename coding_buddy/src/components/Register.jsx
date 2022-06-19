@@ -2,11 +2,7 @@ import React, { useState } from "react";
 // import { RegistrationChecker } from "./helper/RegistrationChecker";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
-import DrawCanvas from "./three/three-scene";
-import Navbar from "./Navbar";
-import Layout from "./Layout";
 import axios from "axios";
-import boyImage from "./game_img/boy1.png"
 import './Register.scss'
 
 export default function Register(props) {
@@ -170,12 +166,12 @@ export default function Register(props) {
               userLanguages,
               userAvatar,
             };
-            axios // client talking to the server. Asynchronous. if it doesn't happen .post, 
+            axios // client talking to the server. Asynchronous. if it doesn't happen .post,
               .post("/register", { userInfo })
               .then(res => {
                 props.submitRegistrationInfo(res.data);
                 cookies.set("username", res.data)
-                navigate("/game")
+                navigate("/game/plaza")
               }).catch(error => console.log(error)
               )
           }}

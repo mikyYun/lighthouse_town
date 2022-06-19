@@ -1,4 +1,4 @@
-import selectAvatar from "./selecAvatar";
+import selectAvatar from "./selectAvatar";
 
 const facing = {
   up: 3,
