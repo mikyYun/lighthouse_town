@@ -16,7 +16,6 @@ export default function FriendList() {
             <div key={index}>
               {lang}
             </div>
-            // );
           ));
         }
       }

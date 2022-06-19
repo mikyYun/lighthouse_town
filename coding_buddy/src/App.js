@@ -91,9 +91,11 @@ function App() {
   useEffect(() => {
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
+    
     const currentCookies = cookies.getAll();
-
-    if (!urlLists.includes(location.pathname)) clearCookies();
+    if (location.pathname === "/" && currentCookies.userdata && currentCookies.userdata)
+     navigate('/game/plaza');
+    // if (!urlLists.includes(location.pathname)) clearCookies();
   }, [location.pathname]);
 
   useEffect(() => {
@@ -152,7 +154,7 @@ function App() {
     })
 
     socket.on("REGISTRATION SUCCESS", (userInfo) => {
-      cookies.set("email", userInfo);
+      cookies.set("email", userInfo, {maxAge: 3600});
       navigate("/game/plaza");
     });
 

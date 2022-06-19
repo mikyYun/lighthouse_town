@@ -63,7 +63,7 @@ export default function Login(props) {
                 // res.data.friends
                 // setFriends(res.data.friends)
                 // console.log("res.data - Login.js", res.data);
-                cookies.set("userdata", res.data);
+                cookies.set("userdata", res.data, {maxAge: 3600});
                 goChat(res.data.userName, res.data.avatar)
                 // props.setNickname(res.data.userName)
               } else {
