@@ -27,6 +27,7 @@ function App() {
   const [friendList, setFriendList] = useState([])
   const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
   const [show, setShow] = useState(false);
+  const [recipient, setRecipient] = useState({ value: "all", label: "all" });
 
   // ================= HOOKS =============== //
 
@@ -78,6 +79,12 @@ function App() {
       document.removeEventListener("contextmenu", handleContextMenu);
     };
   });
+
+  // const addFriend = () => { }
+  // const sendMessage = () => {
+
+  // }
+  // const viewProfile = () => { }
 
   // ================= EFFECTS =============== //
 
@@ -210,7 +217,9 @@ function App() {
 
 
   return (
-    <SocketContext.Provider value={{ socket, online, nickname, friendList, anchorPoint, show }} >
+    <SocketContext.Provider value={{ socket, online, nickname, friendList, anchorPoint, show, recipient, setRecipient }} >
+      {/* @@@@ ASK MENTOR TO REFACTOR ChatContext.Provider */}
+
       <div className='main'>
         {show && <Menu />}
         <Routes>

@@ -5,8 +5,8 @@ import { SOCKET_EVENT, makePublicMessage, makePrivateMessage } from "./service/s
 import { SocketContext } from "../App.js";
 
 function ChatRoom(props) {
-  const { socket } = useContext(SocketContext)
-  const { nickname, recipient } = props;
+  const { socket, recipient } = useContext(SocketContext)
+  const { nickname } = props
   const [messages, setMessages] = useState([]);
 
   const chatWindow = useRef(null);
