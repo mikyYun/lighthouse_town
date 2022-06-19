@@ -5,7 +5,7 @@ import FriendList from "./FriendsList.jsx";
 
 export default function Online() {
   const { online, friendList, socket } = useContext(SocketContext);
-  const usersOnline = online.map((obj) => <li key={obj.value}>{obj.value}</li>);
+  const usersOnline = online.map((obj, i) => <li key={i}>{obj.value}</li>);
   // const friendsNames = Object.keys(friendList); // [이름, 이름]
 
   // // window.addEventListener("click", () => {
