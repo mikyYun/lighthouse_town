@@ -54,6 +54,7 @@ io.use((socket, next) => {
 io.adapter(createAdapter(pool));
 
 const users = {};
+const usersInRooms = {};
 // store all users' socket id with username key-value pair
 let currentUsers = {}; // => {username : socket.id}
 
@@ -89,12 +90,48 @@ io.on("connection", (socket) => {
   // use object
   // socket.emit("init", {data: 'hello world'})
   socket.on('sendData', data => {
-    console.log('line 88, sendData (get from client)', data); // print on server
-    // add userid from data
-    users[data.username] = data
-    console.log('line91, users data', users)
-    io.emit('sendData', users) // 다시 Canvas.jsx -> const newCharactersData = data;
+
+  // data =
+  //   {
+  //     "userState": {
+  //         "username": "moon",
+  //         "x": 246,
+  //         "y": 238,
+  //         "currentDirection": 1,
+  //         "frameCount": 0,
+  //         "avatar": 1
+  //     },
+  //     "room": [
+  //         "plaza"
+  //     ]
+  // }
+
+    const { userState, room, removeFrom } = data;
+    console.log('got data', data )
+
+     // should remove the current user from the previous room
+     if (removeFrom) {
+      console.log('Remove', usersInRooms[removeFrom][userState.username])
+      delete usersInRooms[removeFrom][userState.username]
+    }
+
+     // inside of usersInRooms, if there is no room key, add the room key in it
+     if (!usersInRooms[room]){
+      usersInRooms[room] = {}
+    }
+    // usersInRooms = {
+    //     plaza: { moon: {moons state},
+    //              heesoo: {heesoo's state}
+    //      }
+
+    // assign userState into each room
+    usersInRooms[room][userState.username] = userState;
+
+    io.emit('sendData', { usersInRooms, room }) // 다시 Canvas.jsx -> const newCharactersData = data;
   });
+
+
+
 
   // socketID and username matching
   socket.on("SET USERNAME", (obj) => {
@@ -366,7 +403,7 @@ app.post("/friends", (req, res) => {
             const userLanguages = [];
             console.log(res_2.rows)
             // if (err) throw err;
-            // // res.rows[0] = 
+            // // res.rows[0] =
             // res_2.rows[0]
             // if (res_2.rows.length > 0) {
             //   // console.log("find user's languages", res_2.rows);

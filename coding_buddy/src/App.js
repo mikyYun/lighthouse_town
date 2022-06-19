@@ -109,7 +109,7 @@ function App() {
     socket.on("REGISTRATION SUCCESS", (userInfo) => {
       console.log("cookie set after register");
       cookies.set("email", userInfo);
-      navigate("/game");
+      navigate("/game/plaza");
     });
 
     socket.on("init", msg => console.log("msg - App.js", msg)); //coming from server
@@ -167,7 +167,7 @@ function App() {
           <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
           <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
           <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
-          <Route path='/game' element={
+          {/* <Route path='/game' element={
             <Game
               sendMessage={sendMessage}
               sendPrivateMessage={privateMessage}
@@ -177,7 +177,7 @@ function App() {
               nickname={nickname}
               online={online}
               map={town} />}
-            />
+            /> */}
           {/* <Route path='/chat' element={<Chat />} /> */}
           <Route path={`/game/${room}`} element={
             <Game

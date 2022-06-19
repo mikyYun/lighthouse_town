@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { SocketContext } from "../App";
 import Canvas from "./Canvas";
 import "./Game.scss";
 import Chat from "./Chat";
@@ -7,6 +8,7 @@ import { useLocation } from "react-router-dom";
 
 export default function Game(props) {
   const location = useLocation();
+  const { nickname } = useContext(SocketContext);
 
 
   // const {username} = useContext(SocketContext)
@@ -39,13 +41,14 @@ export default function Game(props) {
 
   console.log("location", location)
   console.log("map", props.map)
+  console.log('username in GAME', nickname)
   return (
     <>
       <div className="main-container">
         {/* {(location.state === null) && navigate("/")} */}
         {/* <Canvas username={location.state[0] || 'guest'} avatar={location.state[1]} sendData={props.sendData} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} /> */}
         <Canvas
-          username={props.nickname}
+          username={nickname}
           // avatar={location.state?.[1]}
           avatar={location.state?.[1]}
           sendMessage={sendMessage}
