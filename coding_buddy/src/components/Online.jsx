@@ -1,44 +1,60 @@
-import { useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import { SocketContext } from "../App.js";
 import Select from "react-select";
+import FriendList from "./FriendsList.jsx";
 
 export default function Online() {
-  const { online } = useContext(SocketContext);
-  console.log("online_in_Online.jsx", online);
+  const { online, friendList, socket } = useContext(SocketContext);
   const usersOnline = online.map((obj) => <li key={obj.value}>{obj.value}</li>);
-  // const friendsList = online.map((name) => <a>{name.value}</a>);
+  // const friendsNames = Object.keys(friendList); // [이름, 이름]
 
-  // console.log("david", usersOnline);
+  // // window.addEventListener("click", () => {
+  // const listing = (friendName) => {
+  //   for (let obj in friendList) {
+  //     // console.log("OBJECT",obj, friendName)
+  //     const languages = friendList[obj].languages
+  //     if (obj === friendName) {
+  //       languages.map(lang => {
+  //         {console.log(lang)}
+  //         // <li key={lang}>
+  //           return {lang}
+  //         {/* </li> */}
+  //       })
+  //     }
+  //   }
+  // }
 
-  // console.log("Online.jsx - online", online);
+  // const friendsListing = friendsNames.map((friendName) => (
+  //   <>
+  //     <ol key={friendName}>{friendName} </ol>
+  //     {/* <div> */}
+  //     <li>
+  //       {listing(friendName)}
+  //     </li>
+  //     {/* </div> */}
+  //   </>
+  // ));
+
+
+  // useEffect(() => {
+  //   socket.emit("friendsList", { socketID: socket.id });
+  //   // console.log("ONLINE USEEFFECT");
+
+  //   // return () => {
+  //   //   socket.disconnect();
+  //   // };
+  // }, [online]);
   return (
-    <div className="onlinelist">
-      {/* <div className="d-flex flex-column onlinelist"> */}
-      <button
-        className="btn btn-primary"
-        type="button"
-        data-toggle="collapse"
-        data-target="#collapseExample"
-        aria-expanded="false"
-        aria-controls="collapseExample"
-      >
-        Friends
-      </button>
-      <div className="collapse" id="friends-list">
-        <div className="card card-body">heysadfasdfasdfasdfasdfsdaf</div>
+    <>
+      <div className="onlinelist">
+        {/* <div className="friendsListToggle">Friends</div> */}
+        {/* {friendsListing} */}
+        {/* {friendLanguages} */}
+        <FriendList />
+        <span>Online</span>
+        <div>{usersOnline}</div>
+        {/* </div> */}
       </div>
-      <div className="card d-flex flex-row align-items-center friends-list-div">
-        {/* <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Friends
-          </button> */}
-
-        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          {/* {usersOnline} */}
-        </div>
-      </div>
-      <span>Online</span>
-      <div>{usersOnline}</div>
-      {/* </div> */}
-    </div>
+    </>
   );
 }

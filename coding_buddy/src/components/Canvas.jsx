@@ -58,8 +58,8 @@ const Canvas = (props) => {
       const mapImg = new Image();
       mapImg.src = props.map;
       mapImg.onload = () => {
-          ctx.drawImage(mapImg, 0, 0);
-          for (const userChar in userCharacters) {
+        ctx.drawImage(mapImg, 0, 0);
+        for (const userChar in userCharacters) {
           // console.log(userChar)
           // console.log(userCharacters)
           userCharacters[userChar].drawFrame(ctx);
@@ -167,18 +167,18 @@ const Canvas = (props) => {
           sendData();
           // socket.emit("sendData", userCharacters[props.username].state);
       });
-      window.addEventListener("keyup", () => {
-        console.log()
-        userCharacters[props.username].stop();
-        // socket.emit("sendData", userCharacters[props.username].state);
-        sendData();
-      });
 
-      return () => {
-        window.removeEventListener("keydown", (e) => userCharacters[0].move(e));
-        window.removeEventListener("keyup", () => userCharacters[0].stop());
-      };
+    window.addEventListener("keyup", () => {
+      console.log()
+      userCharacters[props.username].stop();
+      // socket.emit("sendData", userCharacters[props.username].state);
+      sendData();
+    });
 
+    return () => {
+      window.removeEventListener("keydown", (e) => userCharacters[0].move(e));
+      window.removeEventListener("keyup", () => userCharacters[0].stop());
+    };
 
   }, []);
 
@@ -193,7 +193,7 @@ const Canvas = (props) => {
     mapImg.src = props.map;
     // mapImg.onload = () =>{
 
-        ctx.drawImage(mapImg, 0, 0);
+    ctx.drawImage(mapImg, 0, 0);
 
         for (const userChar in userCharacters) {
           console.log(userChar);
@@ -209,29 +209,26 @@ const Canvas = (props) => {
           ctx.fillStyle = "purple";
           console.log("ROOM", userCharacters);
 
+      console.log(userChar);
+      console.log(userCharacters);
+      userCharacters[userChar].drawFrame(ctx);
 
+      // Text on head.
+      ctx.fillText(
+        userCharacters[userChar].state.username,
+        userCharacters[userChar].state.x + 20,
+        userCharacters[userChar].state.y + 10
+      );
+      ctx.fillStyle = "purple";
+      console.log("ROOM", userCharacters);
     }
   });
 
   // if user hit the specific position -> redirect to the page
   function handleRoom() {
     navigate(roomLists.javascript);
-  };
-//   console.log('ROOM', userCharacters)
-//   let page;
-//   if (
-//     userCharacters[props.username].state.x >= 420 &&
-//     userCharacters[props.username].state.x <= 460 &&
-//     userCharacters[props.username].state.y >= 120 &&
-//     userCharacters[props.username].state.y <= 140
-//   ) {
-//     console.log("im here!!!!");
-//     page = React.createElement(
-//       "button",
-//       { id: "javascript", onClick: handleClick },
-//       "Language Page"
-//     );
-//   }
+  }
+
 
   return (
     <div className="game-container">

@@ -54,8 +54,11 @@ div.d-flex.flex-row {
   background-color: rgb(82, 82, 131);
 }
 
-#friends-list {
+.friendsListToggle {
   width: 100%;
   background-color: red;
-  height: 50px;
+  height: auto;
+}
+.friendsListToggle:hover {
+  background-color: blue;
 }
