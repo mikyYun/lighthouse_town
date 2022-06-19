@@ -10,9 +10,6 @@ function ChatRoom(props) {
   const [messages, setMessages] = useState([]);
 
   const chatWindow = useRef(null);
-  // console.log("props - Chatroom.js", props);
-  // console.log("nickname - Chatroom.js", nickname);
-
   const moveScrollToReceiveMessage = useCallback(() => {
     if (chatWindow.current) {
       chatWindow.current.scrollTo({
@@ -42,14 +39,6 @@ function ChatRoom(props) {
     },
     [moveScrollToReceiveMessage]
   );
-
-  useEffect(() => {
-    console.log("messages - Chatroom.js", messages);
-  }, [messages]);
-
-  // io.on("conenct" (socket) => {
-  //   socket.cfjasdklf
-  // })
 
   useEffect(() => {
     socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceivePublicMessage); // 이벤트 리스너 - 퍼블릭 메세지

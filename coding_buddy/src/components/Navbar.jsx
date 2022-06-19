@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-has-content */
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Link } from "react-router-dom";
 // import Cookies from "universal-cookie";
@@ -5,7 +6,6 @@ const logo = require("../img/lighthouse.png");
 
 let clearCookie = false;
 function Navbar(props) {
-  console.log("nav", props)
   // const [history, setHistory] = useState();
   // const cookies = new Cookies();
   // const currentCookie = Object.keys(cookies.getAll());
@@ -15,7 +15,7 @@ function Navbar(props) {
       <Link to="/" >
         <img className="logo_img" src={logo} alt="Lighthouse"></img>
       </Link>
-      <a href="djsaf.facebook.sdfkajle"></a>
+      <a href="random"></a>
       <p className="nav_home">
         <Link to="/" >
           Home
@@ -41,7 +41,7 @@ function Navbar(props) {
       {/* <p className="nav_logout"> */}
       <form method="get" action="/">
         <button
-          // 
+        // 
         >
           Logout
         </button>

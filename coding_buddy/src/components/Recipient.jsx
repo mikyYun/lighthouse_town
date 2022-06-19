@@ -23,8 +23,6 @@ function Recipient() {
     const onlineOthers = online.filter(user => user.value !== nickname)
     return setOtherUsers(onlineOthers)
   }, [online, nickname])
-  // online.shift()
-  console.log("OUTSIDE", online)
 
   return (
     <div className="card d-flex flex-row align-items-center" >

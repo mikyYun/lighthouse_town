@@ -30,9 +30,9 @@ const Canvas = (props) => {
     react: "/game/react",
     ruby: "/game/ruby",
   };
-  console.log("username", props.username);
-  console.log("nickName", nickname);
-  console.log("userCharacters", userCharacters);
+  // console.log("username", props.username);
+  // console.log("nickName", nickname);
+  // console.log("userCharacters", userCharacters);
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -63,7 +63,7 @@ const Canvas = (props) => {
     });
 
     socket.on("sendData", (data) => {
-      console.log("data", data);
+      // console.log("data", data);
       const newCharactersData = data;
       newCharactersData[props.username] = userCharacters[props.username];
 
@@ -94,7 +94,7 @@ const Canvas = (props) => {
       ) {
         const removedUserChars = delete userCharacters[props.username];
         setUserCharacters(removedUserChars);
-        console.log("after remove", userCharacters);
+        // console.log("after remove", userCharacters);
         handleRoom();
       }
 
@@ -128,8 +128,8 @@ const Canvas = (props) => {
       let frameCount = 0;
       let framelimit = 4;
 
-      console.log(userChar);
-      console.log(userCharacters);
+      // console.log(userChar);
+      // console.log(userCharacters);
       userCharacters[userChar].drawFrame(ctx);
 
       // Text on head.
@@ -139,7 +139,7 @@ const Canvas = (props) => {
         userCharacters[userChar].state.y + 10
       );
       ctx.fillStyle = "purple";
-      console.log("ROOM", userCharacters);
+      // console.log("ROOM", userCharacters);
     }
   });
 

@@ -22,7 +22,7 @@ export default function Register(props) {
   //   console.log("REG PROPS", props)
   //   props.submitRegistrationInfo("test")
   // })
-  console.log("emit to server - Register.js", props.submitRegistrationInfo);
+  // console.log("emit to server - Register.js", props.submitRegistrationInfo);
   const insertLanguages = (e, id) => {
     const checked = e.target.checked;
     if (checked) {
@@ -46,7 +46,7 @@ export default function Register(props) {
             value={userEmail}
             onChange={(e) => {
               setUserEmail(e.target.value);
-              console.log("setUserEmail - Register.js", e.target.value);
+              // console.log("setUserEmail - Register.js", e.target.value);
             }}
           ></input>
         </div>
