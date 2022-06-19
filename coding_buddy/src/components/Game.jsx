@@ -39,9 +39,6 @@ export default function Game(props) {
 
   // if (location.state !== null) {
 
-  console.log("location", location)
-  console.log("map", props.map)
-  console.log('username in GAME', nickname)
   return (
     <>
       <div className="main-container">

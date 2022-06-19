@@ -24,7 +24,7 @@ export default function RegistrationModel() {
     new GLTFLoader().load(filePath, gltf => {
       // 보이는 화면 회전
       gltf.scene.rotation._x = -0.2;
-      console.log(gltf);
+      // console.log(gltf);
       const scale = gltf.scene.scale;
       gltf.scene.traverse(child => {
         child.castShadow = true;
@@ -37,7 +37,7 @@ export default function RegistrationModel() {
 
       const action1 = mixer.clipAction(clip1);
       const action2 = mixer.clipAction(clip2);
-      console.log(mixer);
+      // console.log(mixer);
       setModel(gltf);
       scene.add(gltf.scene);
       animate = () => {

@@ -7,7 +7,6 @@ import { SocketContext } from '../App.js'
 function MessageForm({ nickname, recipient }) {
   const [typingMessage, setTypingMessage] = useState("");
   const { socket } = useContext(SocketContext);
-  console.log("MESSAGE", socket)
   // socket, socket_event object
   // textarea에서 텍스트를 입력하면 typingMessage state를 변경합니다.
   const handleChangeTypingMessage = useCallback(event => {
@@ -22,7 +21,7 @@ function MessageForm({ nickname, recipient }) {
       console.log("no content received")
       return;
     }
-    console.log("socket", recipient)
+    // console.log("socket", recipient)
     // @@@@ 메시지가 있으면 nickname과 message를 SEND_MESSAGE 이벤트 타입과 함께 소켓 서버로 (socket > index. js) 전송합니다.
     if (recipient.value !== "all") {
       socket.emit("PRIVATE", {
@@ -38,14 +37,8 @@ function MessageForm({ nickname, recipient }) {
       });
     }
 
-    console.log("hi gabriel")
-    // state값은 공백으로 변경해줍니다.
     setTypingMessage("");
   }, [socket, nickname, typingMessage, recipient]);
-
-  // document.addEventListener("keydown", () => {
-  //   console.log("this is a target", recipient)
-  // })
 
   return (
     <form className="card">
