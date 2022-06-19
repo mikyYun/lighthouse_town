@@ -11,8 +11,6 @@ export default function Online() {
   const removeSelfAndAll = online.filter(obj => 
     obj.value !== "all" && obj.value !== nickname
   )
-  console.log("REMOVED",removeSelfAndAll)
-  console.log(online)
   const usersOnline = removeSelfAndAll.map((obj, i) => (<li className="users-online" key={i} onClick={() => {
     setClicked(obj)
     setShow(true) // 클릭 뒤 사라지게
