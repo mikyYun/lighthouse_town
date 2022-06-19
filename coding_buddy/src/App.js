@@ -76,30 +76,23 @@ function App() {
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD ALSO SET AN AVATAR WHEN WE GET AN USER OBJECT.
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
-    const currentCookies = cookies.getAll();
 
-    if (!urlLists.includes(location.pathname)) clearCookies();
+    const currentCookies = cookies.getAll();
+    // cookies maxAge 3600.
+    if (location.pathname === "/" && currentCookies.userdata && currentCookies.userdata && currentCookies["connect.sid"]) {
+      navigate('/game/plaza');
+    } else if (!urlLists.includes(location.pathname)) {
+      clearCookies();
+    }
+    // if (!urlLists.includes(location.pathname)) clearCookies();
   }, [location.pathname]);
 
   useEffect(() => {
 
 
-    /* serversided
-        socket.on("disconnect", () => {
-          console.log("DISCONNECT", socket.id);
-          const alluserNames = Object.keys(currentUsers);
-          alluserNames.forEach((name) => {
-            if (currentUsers[name] === socket.id)
-              delete currentUsers[name];
-          }); // {"users": [name1, name2] }
-          console.log("DISCONNECT - CURRENT USERS", currentUsers);
-          io.emit("all user names", { "users": alluserNames }); // App.jsx & Recipients.jsx 로 보내기
-        });
-    */
-
-
     //frontend
     socket.on("connect", () => {
+      console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!")
       const all_cookies = cookies.getAll();
       //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
       // if (location.pathname === "/game") {
@@ -136,7 +129,7 @@ function App() {
     })
 
     socket.on("REGISTRATION SUCCESS", (userInfo) => {
-      cookies.set("email", userInfo);
+      cookies.set("email", userInfo, {maxAge: 3600});
       navigate("/game/plaza");
     });
 
