@@ -130,22 +130,6 @@ const Canvas = (props) => {
     });
 
 
-    // // console.log('newCharactersData', newCharactersData)
-    // // console.log('characters', userCharacters )
-
-    // for (const userChar in newCharactersData) {
-    //   if (typeof newCharactersData[userChar].username !== "undefined") {
-    //     if (newCharactersData[userChar].username !== props.username) {
-    //       newCharactersData[userChar] = new Characters(
-    //         newCharactersData[userChar]
-    //       );
-    //     }
-    //   }
-    // }
-    // setUserCharacters(newCharactersData);
-    // });
-
-
     window.addEventListener("keydown", (e) => {
       userCharacters[props.username].move(e);
 
@@ -206,10 +190,6 @@ const Canvas = (props) => {
         userCharacters[userChar].state.y + 10
       );
       ctx.fillStyle = "purple";
-      // console.log("ROOM", userCharacters);
-
-      // console.log(userChar);
-      // console.log(userCharacters);
       userCharacters[userChar].drawFrame(ctx);
 
       // Text on head.
