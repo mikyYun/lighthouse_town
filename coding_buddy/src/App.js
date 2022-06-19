@@ -27,6 +27,7 @@ function App() {
   const [friendList, setFriendList] = useState([])
   const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
   const [show, setShow] = useState(false);
+  const [clicked, setClicked] = useState({})
   const [recipient, setRecipient] = useState({ value: "all", label: "all" });
 
   // ================= HOOKS =============== //
@@ -66,7 +67,7 @@ function App() {
       setAnchorPoint({ x: event.pageX, y: event.pageY });
       setShow(true);
     },
-    [setAnchorPoint, setShow]
+    [setAnchorPoint, setShow] //function only runs in these cases
   );
 
   const handleClick = useCallback(() => (show ? setShow(false) : null), [show]);
@@ -215,11 +216,15 @@ function App() {
     socket && socket.emit("sendData", state);
   };
 
+  console.log('CLIKED', clicked)
+
+
 
   return (
-    <SocketContext.Provider value={{ socket, online, nickname, friendList, anchorPoint, show, recipient, setRecipient }} >
-      {/* @@@@ ASK MENTOR TO REFACTOR ChatContext.Provider */}
-
+    <SocketContext.Provider value={{ socket, online, nickname, friendList, anchorPoint, show, recipient, setRecipient, clicked, setClicked }} >
+      {/* clicked -> used in Menu.jsx
+    setClicked -> used in Online.jsx */}
+      {/* @@@@ ASK MENTOR TO REFACTOR ChatContext.Provider LATER WITH BABE*/}
       <div className='main'>
         {show && <Menu />}
         <Routes>

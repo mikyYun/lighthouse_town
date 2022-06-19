@@ -3,10 +3,13 @@ import { SocketContext } from "../App.js";
 import Select from "react-select";
 
 export default function Online() {
-  const { online, friendList, socket } = useContext(SocketContext);
+  const { online, friendList, socket, setClicked } = useContext(SocketContext);
   // const [playToggleClassName, setPlayToggleClassName] = useState("friendsListToggle");
   // console.log("online_in_Online.jsx", online);
-  const usersOnline = online.map((obj) => <li key={obj.value}>{obj.value}</li>);
+  const usersOnline = online.map((obj) => <li onClick={() => {
+    setClicked(obj)
+  }
+  } key={obj.value} > {obj.value} </li>);
   const friendsNames = Object.keys(friendList); // [이름, 이름]
 
   window.addEventListener("click", () => {
