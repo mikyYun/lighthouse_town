@@ -26,9 +26,9 @@ export const SOCKET_EVENT = {
 
 //makeMessage
 export const makePublicMessage = pongData => {
-  const { nickname, content, type, time } = pongData;
+  const { nickname, content, type, time, user } = pongData;
   // @@@@ socket > index.js 에서 time: new Date(),
-  let nicknameLabel;
+  // let nicknameLabel;
   let contentLabel = "";
   switch (type) {
     case SOCKET_EVENT.JOIN_ROOM: {
@@ -39,7 +39,7 @@ export const makePublicMessage = pongData => {
     case SOCKET_EVENT.SEND_MESSAGE: {
       console.log(`${nickname} has sent a public message.`)
       contentLabel = String(content); //보내는 메세지
-      nicknameLabel = nickname;
+      // nicknameLabel = nickname;
       break;
     }
 
@@ -47,14 +47,15 @@ export const makePublicMessage = pongData => {
   }
 
   return {
-    nickname: nicknameLabel,
+    nickname,
     content: contentLabel,
+    user
     // time: dayjs(time).format("HH:mm"),
   };
 };
 
 export const makePrivateMessage = pongData => {
-  const { recipient, nickname, content, type, time } = pongData;
+  const { recipient, nickname, content, type, time, user } = pongData;
   let contentLabel = "";
 
   switch (type) {
@@ -76,7 +77,8 @@ export const makePrivateMessage = pongData => {
   return {
     nickname, //보내는 사람 이름
     content: contentLabel,  //보내는 메세지
-    recipient: recipient.value  //recipient object의 value {value: moon, label: moon}
+    recipient: recipient.value,  //recipient object의 value {value: moon, label: moon}
     // time: dayjs(time).format("HH:mm"),
+    user,
   };
 };
