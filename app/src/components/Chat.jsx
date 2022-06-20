@@ -11,7 +11,7 @@ export default function Chat(props) {
     <>
       <div className="d-flex flex-column chatroom">
         <Recipient />
-        <ChatRoom nickname={props.username} room={props.room} recipient={''} />
+        <ChatRoom username={props.username} room={props.room} recipient={''} />
 
       </div>
       {/* // </SocketContext.Provider> */}

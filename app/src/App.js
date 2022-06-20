@@ -36,7 +36,7 @@ function App() {
   const location = useLocation();
 
   // ================= VARIABLES =============== //
-
+  console.log("LOCATION", location)
   const nickname = location.state?.[0] || '';
   const urlLists = [
     "/game/plaza",
@@ -52,13 +52,13 @@ function App() {
     plaza: town,
     js: classroom
   }
-
   const avatars = {
     0: "/images/boy1-face.png",
     1: "/images/boy2-face.png",
     2: "/images/girl1-face.png",
     3: "/images/girl2-face.png"
   }
+  console.log(avatars)
 
   // ================= INTANCES =============== //
 
@@ -95,7 +95,7 @@ function App() {
 
     //frontend
     socket.on("connect", () => {
-      // console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!")
+      console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!")
       const all_cookies = cookies.getAll();
       //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
       // if (location.pathname === "/game") {
@@ -132,7 +132,7 @@ function App() {
     })
 
     socket.on("REGISTRATION SUCCESS", (userInfo) => {
-      cookies.set("email", userInfo, { maxAge: 3600 });
+      cookies.set("email", userInfo, {maxAge: 3600});
       navigate("/game/plaza");
     });
 
@@ -191,7 +191,7 @@ function App() {
     setClicked -> used in Online.jsx */}
 
         <div className='main'>
-          {show && <Menu />}
+          {show && <Menu username={nickname}/>}
           <Routes>
             <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
             <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
@@ -204,7 +204,7 @@ function App() {
                 // sendData={sendData}
                 setUser={createSocketIdNameObject}
                 room={room}
-                nickname={nickname}
+                // nickname={nickname}
                 online={online}
                 map={maps[room]}
               />} />

@@ -55,10 +55,10 @@ export default function Game(props) {
           map={props.map}
         />
         <Chat
-          username={props.nickname}
+          username={props.username}
           room={props.room}
           handleSubmitNickname={props.handleSubmitNickname}
-          nickname={props.nickname}
+          // nickname={props.username}
         />
         <Online />
       </div>
