@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useContext, useState } from "react";
 import { SocketContext, UserListContext } from "../App.js";
 import { PanelGroup } from "bootstrap";
+import { useLocation } from "react-router-dom";
 
 export default function FriendList() {
   // const { online,  socket } = useContext(SocketContext);
@@ -10,7 +11,8 @@ export default function FriendList() {
   const toggleButton = useCallback(() => setToggle(!toggle));
   const [updateFriend, setUpdateFriend] = useState();
   const friendsNames = Object.keys(friendList); // [이름, 이름]
-
+  const location = useLocation()
+  const userID = location.state?.[3]
   const friendsListing = friendsNames.map((friendName, i) => {
     const lists = () => {
       // console.log("LIST", friendList);
@@ -35,7 +37,8 @@ export default function FriendList() {
   });
 
   useEffect(() => {
-    socket.emit("friendsList", { newSocketID: socket.id, user });
+    socket.emit("friendsList", { newSocketID: socket.id, user, userID });
+    // console.log("USER", userID)
     // user is an object
     return () => {
       socket.disconnect();

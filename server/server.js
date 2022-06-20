@@ -69,7 +69,7 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
   const session = socket.request.session;
   session.save();
 
-  socket.on("friendsList", ({ newSocketID, user }) => {
+  socket.on("friendsList", ({ newSocketID, user, userID }) => {
     // check this id is in currentUsers Object
     const alluserNames = Object.keys(currentUsers);
 
@@ -86,11 +86,12 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
     //   }
     // });
 
-    if (!currentUser) return res.send('USER NOT FOUND - server.js') //@@upgrade later @mike 
+    //@@upgrade later @mike 
+    if (!currentUser) return res.send('USER NOT FOUND - server.js') 
 
 
-    pool.query("SELECT * from users JOIN favorites WHERE added_by = id" //@@mike revisit //maybe JOIN languages too 
-      ,
+    //@@mike revisit //maybe JOIN languages too 
+    pool.query("SELECT * from users JOIN favorites WHERE added_by=$1",[userID],
       // {id: , username: , password: , email: , avatar: , lan_id: }
       (err, res_1) => {
         if (err) throw err;
@@ -105,7 +106,7 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
             [user.id],
             (err, res_2) => {
               const usernames = [];
-              const addededInfo = {};
+              const addedInfo = {};
               const addedIds = res_2.rows.map(obj => obj.added);
               allusersTable.map(obj => {
                 if (addedIds.includes(obj.id)) {
@@ -116,7 +117,12 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
                 }
               });
               pool.query(
-                "SELECT * FROM user_language JOIN languages ON language_id=languages.id", (err, res_3) => {
+                `SELECT  users.id, users.username, languages.id, languages.language_name 
+                FROM users 
+                JOIN user_language 
+                ON users.id=user_language.user_id 
+                JOIN languages 
+                ON user_language.language_id=languages.id`, (err, res_3) => {
                   res_3.rows.map(userLanguageID => { // @@ userLanguageName 으로 바꾸고 밑에서 =>// obj.language_name 으로 하기
                     // console.log("THIS", userLanguageID);
                     // console.log(allusersTable);
