@@ -219,7 +219,8 @@ function App() {
     });
   };
 
-  const createSocketIdNameObject = (username) => {
+  const createSocketIdNameObject = (username) => { //WORKS
+    console.log('socket - app.js', socket)
     socket && socket.emit("SET USERNAME", { "socketID": socket.id, "username": username });
     // socket && socket.emit("REGISTERED", val); //if socket exists, then emit
   };

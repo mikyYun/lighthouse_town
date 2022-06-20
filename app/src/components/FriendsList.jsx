@@ -10,14 +10,14 @@ export default function FriendList() {
   const [toggle, setToggle] = useState(false);
   const toggleButton = useCallback(() => setToggle(!toggle));
   const [updateFriend, setUpdateFriend] = useState();
-  const friendsNames = Object.keys(friendList); // [이름, 이름]
   const location = useLocation()
   const userID = location.state?.[3]
-  const friendsListing = friendsNames.map((friendName, i) => {
+  console.log('FRIENDLIST', friendList)
+  const friendsListing = friendList.map((friend, i) => {
     const lists = () => {
       // console.log("LIST", friendList);
-      if (friendsNames.length > 0 && friendList[friendName].languages) {
-        const languages = friendList[friendName].languages;
+      if (friend.languages.length > 0) {
+        const languages = friend.languages;
         return languages.map((lang, index) => (
           <div key={index} className="languageDiv">
             {lang}
@@ -25,11 +25,10 @@ export default function FriendList() {
         ));
       }
     };
-
     return (
       <div key={i}>
         <div className="btn btn-primary collaps">
-          <div>{friendName}</div>
+          <div>{friend.friend_name}</div>
         </div>
         <div className="languageLists">{lists()}</div>
       </div>
@@ -43,7 +42,7 @@ export default function FriendList() {
     return () => {
       socket.disconnect();
     };
-  }, [socket]);
+  }, [socket, user, userID]);
 
   return (
     <div className="friendsList">
