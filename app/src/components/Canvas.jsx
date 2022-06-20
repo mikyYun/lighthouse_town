@@ -32,7 +32,7 @@ const Canvas = (props) => {
     plaza: '/game/plaza',
     html: "/game/html",
     css: "/game/css",
-    javascript: "/game/js",
+    js: "/game/js",
     react: "/game/react",
     ruby: "/game/ruby",
   };
@@ -121,30 +121,51 @@ const Canvas = (props) => {
       console.log('sent!')
 
       // move to the plaza
-      if (
-        userCharacters[props.username].state.x <= 50 &&
-        userCharacters[props.username].state.y >= 410 &&
-        userCharacters[props.username].state.y <= 450
-      ) {
+      if (props.room !== 'plaza') {
 
-        setUserCharacters({ ...userCharacters, [props.username]: undefined })
-        console.log('after remove', userCharacters[props.username])
-        handleRoom('plaza');
-        sendData('plaza');
+        if (
+          userCharacters[props.username].state.x <= 50 &&
+          userCharacters[props.username].state.y >= 410 &&
+          userCharacters[props.username].state.y <= 450
+          ) {
+
+            setUserCharacters({ ...userCharacters, [props.username]: undefined })
+            console.log('after remove', userCharacters[props.username])
+            handleRoom('plaza');
+            sendData('plaza');
+          }
       }
 
       // move to the JS room
-      if (
-        userCharacters[props.username].state.x >= 420 &&
-        userCharacters[props.username].state.x <= 460 &&
-        userCharacters[props.username].state.y >= 120 &&
-        userCharacters[props.username].state.y <= 140
-      ) {
+      if (props.room !== 'js') {
+        if (
+          userCharacters[props.username].state.x >= 420 &&
+          userCharacters[props.username].state.x <= 460 &&
+          userCharacters[props.username].state.y >= 120 &&
+          userCharacters[props.username].state.y <= 140
+          ) {
 
-        setUserCharacters({ ...userCharacters, [props.username]: undefined })
-        console.log('after remove', userCharacters[props.username])
-        handleRoom('javascript');
-        sendData('js');
+            setUserCharacters({ ...userCharacters, [props.username]: undefined })
+            console.log('after remove', userCharacters[props.username])
+            handleRoom('js');
+            sendData('js');
+          }
+      }
+
+      // move to the ruby room
+      if (props.room !== 'ruby') {
+        if (
+          userCharacters[props.username].state.x >= 710&&
+          userCharacters[props.username].state.x <= 730 &&
+          userCharacters[props.username].state.y >= 490 &&
+          userCharacters[props.username].state.y <= 520
+          ) {
+
+            setUserCharacters({ ...userCharacters, [props.username]: undefined })
+            console.log('after remove', userCharacters[props.username])
+            handleRoom('ruby');
+            sendData('ruby');
+          }
       }
     });
 

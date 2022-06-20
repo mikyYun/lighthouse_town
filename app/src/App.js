@@ -46,7 +46,7 @@ function App() {
     "/game/html",
     "/game/css",
     "/game/js",
-    //  '/'
+     '/'
   ];
 
   // set map for navigate
