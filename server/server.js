@@ -53,10 +53,10 @@ io.use((socket, next) => {
 
 io.adapter(createAdapter(pool));
 
-const usersInRooms = {};
+
 // store all users' socket id with username key-value pair
 let currentUsers = {}; // => {username : socket.id}
-
+const usersInRooms = {};
 
 
 
@@ -166,31 +166,28 @@ io.on("connection", (socket) => {
 
   // use object
   // socket.emit("init", {data: 'hello world'})
+
   socket.on('sendData', data => {
 
     const { userState, room, removeFrom } = data;
-    console.log('got data', data);
 
-    // inside of usersInRooms, if there is no room key, add the room key in it
-    if (!usersInRooms[room]) {
-      usersInRooms[room] = {};
+    // console.log('got data', data);
+    if (!usersInRooms[room]){
+      usersInRooms[room] = {}
     }
-    // should remove the current user from the previous room
-    if (removeFrom) {
-      delete usersInRooms[removeFrom][userState.username];
-    } else {
-      // assign userState into each room
-      usersInRooms[room][userState.username] = userState;
+    // console.log('BEFORE LOOP', usersInRooms);
+     //when usersInRooms have some properties
+     for (const rooms in usersInRooms) {
+      // console.log(usersInRooms[rooms])
+      for (const user in usersInRooms[rooms]){
+        if ( room !== rooms && userState.username === user) {
+          delete usersInRooms[rooms][userState.username]
+        }
+      }
     }
+    usersInRooms[room][userState.username] = userState;
+    // console.log('usersInROMMs', usersInRooms)
 
-    // console.log("COMPLETE", usersInRooms)
-    // usersInRooms = {
-    //     plaza: { moon: {moons state},
-    //              heesoo: {heesoo's state}
-    //      }
-
-
-    // console.log(usersInRooms)
     io.emit('sendData', { usersInRooms, room }); // 다시 Canvas.jsx -> const newCharactersData = data;
 
   });

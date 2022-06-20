@@ -113,60 +113,54 @@ const Canvas = (props) => {
     });   //socket ends
 
     window.addEventListener("keydown", (e) => {
-      console.log("will move")
       userCharacters[props.username].move(e);
       setUserCharacters(userCharacters);
-      console.log('will send data')
       sendData()
-      console.log('sent!')
 
-      // move to the plaza
+      console.log(props.room, "BEFORE MOVING")
+
+      // move to JS
+      if (props.room === 'plaza') {
+        console.log("Im in Plaza")
+        if (
+          userCharacters[props.username].state.x >= 430 &&
+          userCharacters[props.username].state.x <= 450 &&
+          userCharacters[props.username].state.y >= 120 &&
+          userCharacters[props.username].state.y <= 140
+          ) {
+            sendData(props.room);
+            setUserCharacters({ ...userCharacters, [props.username]: undefined })
+            handleRoom('js');
+          }
+
+        // move to Ruby
+        if (
+          userCharacters[props.username].state.x >= 710&&
+          userCharacters[props.username].state.x <= 730 &&
+          userCharacters[props.username].state.y >= 460 &&
+          userCharacters[props.username].state.y <= 480
+          ) {
+            sendData(props.room);
+            setUserCharacters({ ...userCharacters, [props.username]: undefined })
+            handleRoom('ruby');
+          }
+      }
+      // move to the Plaza
       if (props.room !== 'plaza') {
+        console.log("Im in LANG romm ")
 
         if (
           userCharacters[props.username].state.x <= 50 &&
           userCharacters[props.username].state.y >= 410 &&
           userCharacters[props.username].state.y <= 450
           ) {
-
+            sendData(props.room);
             setUserCharacters({ ...userCharacters, [props.username]: undefined })
-            console.log('after remove', userCharacters[props.username])
             handleRoom('plaza');
-            sendData('plaza');
           }
       }
 
-      // move to the JS room
-      if (props.room !== 'js') {
-        if (
-          userCharacters[props.username].state.x >= 420 &&
-          userCharacters[props.username].state.x <= 460 &&
-          userCharacters[props.username].state.y >= 120 &&
-          userCharacters[props.username].state.y <= 140
-          ) {
 
-            setUserCharacters({ ...userCharacters, [props.username]: undefined })
-            console.log('after remove', userCharacters[props.username])
-            handleRoom('js');
-            sendData('js');
-          }
-      }
-
-      // move to the ruby room
-      if (props.room !== 'ruby') {
-        if (
-          userCharacters[props.username].state.x >= 710&&
-          userCharacters[props.username].state.x <= 730 &&
-          userCharacters[props.username].state.y >= 490 &&
-          userCharacters[props.username].state.y <= 520
-          ) {
-
-            setUserCharacters({ ...userCharacters, [props.username]: undefined })
-            console.log('after remove', userCharacters[props.username])
-            handleRoom('ruby');
-            sendData('ruby');
-          }
-      }
     });
 
 
@@ -174,10 +168,10 @@ const Canvas = (props) => {
       // console.log()
       userCharacters[props.username].stop();
       setUserCharacters(userCharacters)
-      console.log('after stop', userCharacters[props.username].state)
-      if (userCharacters[props.username] !== undefined) {
-        sendData();
-      }
+      // console.log('after stop', userCharacters[props.username].state)
+      // if (userCharacters[props.username] !== undefined) {
+      //   sendData();
+      // }
     });
 
     return () => {
@@ -229,8 +223,10 @@ const Canvas = (props) => {
     navigate(roomLists[room], { state: [props.username, props.avatar] });
   };
 
+  console.log('BEFORE FUNC', props.room)
   // sending data to server
   function sendData(removeFromRoom) {
+    console.log('Remove From Here', removeFromRoom)
     socket.emit("sendData", {
       userState: userCharacters[props.username].state,
       room: props.room,

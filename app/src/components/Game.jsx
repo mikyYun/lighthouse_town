@@ -29,6 +29,7 @@ export default function Game(props) {
   // getAllUsers()
   // useEffect(() => {
   //   if (location.state === null) navigate("/")
+
   // }, [])
   // useEffect(() => {
   // console.log("LOCATION", location.state)
