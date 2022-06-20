@@ -121,13 +121,13 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
                     // console.log("THIS", userLanguageID);
                     // console.log(allusersTable);
                     const nameMatching = allusersTable.find(obj => obj.id === userLanguageID.user_id).username;
-                    if (followedIds.includes(userLanguageID.user_id)) {
-                      followedInfo[nameMatching].languages.push(userLanguageID.language_name);
+                    if (addedIds.includes(userLanguageID.user_id)) {
+                      addedInfo[nameMatching].languages.push(userLanguageID.language_name);
                       // console.log(userLanguageID.language_id)
                     }
                   });
                   // console.log("INFO", followedInfo)
-                  socket.emit("friendsListBack", followedInfo);
+                  socket.emit("friendsListBack", addedInfo);
                 }
               );
             }
@@ -527,7 +527,7 @@ app.post("/register", (req, res) => {
 //         const userID = res_1.rows[0].id;
 //         pool.query(
 //           // find followers id
-//           "SELECT added_by FROM favorites WHERE followed=$1",
+//           "SELECT added_by FROM favorites WHERE addedd=$1",
 //           [userID],
 //           (err, res_2) => {
 //             const userLanguages = [];
