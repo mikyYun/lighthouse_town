@@ -11,7 +11,9 @@ import Login from './components/Login';
 import Menu from './components/Menu';
 import { socket } from './components/service/socket.js';
 import { createContext } from "react";
-// import map images
+
+// import character imag
+
 
 export const SocketContext = createContext(socket); // going to Recipient.jsx
 export const UserListContext = createContext({});
@@ -37,6 +39,7 @@ function App() {
   // ================= VARIABLES =============== //
 
   const nickname = location.state?.[0] || '';
+
   const urlLists = [
     "/game/plaza",
     "/game/ruby",
@@ -53,9 +56,9 @@ function App() {
   }
 
   const avatars = {
-    0: "./components/game_img/boy-face.png",
-    1: "./components/game_img/boy-face.png",
-    2: "./components/game_img/girl-face.png"
+    0: "/image/boy-face.png",
+    1:  "/image/boy-face.png",
+    2: "/image/girl-face.png"
   }
 
   // ================= INTANCES =============== //
@@ -187,7 +190,7 @@ function App() {
         <div className='main'>
           {show && <Menu />}
           <Routes>
-            <Route path='/'  element={<Login setUser={createSocketIdNameObject} />} />
+            <Route path='/' element={<Login setUser={createSocketIdNameObject} />} />
             <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
             <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
             <Route path={`/game/${room}`} element={

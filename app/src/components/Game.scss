@@ -1,7 +1,6 @@
-$base-color: #f7e7be;
-$btn-color: #fe9e84;
+$base-color: #1f1f1e;
+$btn-color: #bada55;
 $form-color: #009f92;
-$list-color: #005366;
 
 .main-container {
   width: 80%;
@@ -61,12 +60,13 @@ div.d-flex.flex-row {
 }
 
 .online-list {
+
   position: absolute;
   width: 20%;
   height: 100%;
   right: 0;
   top: 0;
-  background-color: $list-color;
+  background-color: $form-color;
   font-size: 1.3rem;
   color: white;
   img {
@@ -78,7 +78,7 @@ div.d-flex.flex-row {
 }
 
 .language {
-  background-color: $list-color;
+  background-color: $form-color;
 }
 .collapsButton {
   width: 100%;

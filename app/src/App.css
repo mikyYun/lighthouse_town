@@ -2,7 +2,7 @@
 @import url("http://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap");
 
 body {
-  background-color: #bada55;
+  background-color: #1f1f1e;
   /* font-family: 'VT323', monospace; */
   font-family: "Share Tech Mono", monospace;
 }
@@ -35,8 +35,8 @@ ul.menu {
   right: 0;
   top: 0;
   z-index: 2;
-  background-color:#bada55;
-  color: white;
+  background-color: #f4ffd1;
+  color: black;
 }
 
 li {
@@ -46,4 +46,8 @@ li {
 
 }
 
+.users-online:hover{
+  background-color:#bada55;
+  color: black;
+}
 
