@@ -21,7 +21,7 @@ class Characters {
     }
     this.img = new Image();
     this.img.src = selectAvatar(this.state.avatar)
-    this.movement_speed = 8;
+    this.movement_speed = 10;
     this.width = 63.5;
     this.height = 63.5;
     this.currentLoopIndex = 0;

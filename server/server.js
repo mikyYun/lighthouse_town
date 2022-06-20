@@ -53,10 +53,10 @@ io.use((socket, next) => {
 
 io.adapter(createAdapter(pool));
 
-const usersInRooms = {};
+
 // store all users' socket id with username key-value pair
 let currentUsers = {}; // => {username : socket.id}
-
+const usersInRooms = {};
 
 io.on("connection", (socket) => {
   const roomName = "room 1";
@@ -139,7 +139,6 @@ io.on("connection", (socket) => {
   });
 
 
-
   socket.on("reconnection?", (e) => {
     console.log("RECONENCTION REQUEST", e)
     // let reconnection = true
@@ -166,6 +165,7 @@ io.on("connection", (socket) => {
 
   // use object
   // socket.emit("init", {data: 'hello world'})
+
   socket.on('sendData', data => {
 
     const { userState, room, removeFrom } = data;
