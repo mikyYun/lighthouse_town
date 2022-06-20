@@ -75,7 +75,7 @@ io.on("connection", (socket) => {
         existUsername = username;
         return;
       } else {
-        false; // @@return false 아님?
+        return false; // !!@@return false 아님?
       }
     });
     if (existUsername !== false) { // @@아니면 이렇게 쓰는 건? if (existUsername)
@@ -93,16 +93,17 @@ io.on("connection", (socket) => {
             // user exist
             // const userID = res_1.rows[0].id;
             pool.query(
-              // find followers id
-              "SELECT following FROM favorites WHERE followed=$1",
+              // find added(followers) id
+              "SELECT added_by FROM favorites WHERE added=$1",
               // {id: , following: , followed: }
               [userID],
               (err, res_2) => {
+                console.log(res_2.rows)
                 const usernames = [];
                 const followedIds = []; // userid[1, 2, 3....]
                 const followedInfo = {};
                 res_2.rows.map(obj => {
-                  followedIds.push(obj.following);
+                  followedIds.push(obj.added_by);
                 });
                 // console.log("!!",Object.keys(allusersTable))
                 allusersTable.map(obj => {
@@ -140,6 +141,7 @@ io.on("connection", (socket) => {
 
 
   socket.on("reconnection?", (e) => {
+    console.log("RECONENCTION REQUEST", e)
     // let reconnection = true
     // console.log("THIS IS RECONNECTION", e);
     // e.username, e.newSocketId
@@ -242,6 +244,30 @@ io.on("connection", (socket) => {
     }); // {"users": [name1, name2] }
     // }
   });
+
+  // ADD FRIEND
+  // socket.on("add friend", {username, addFreindName})
+  socket.on("add friend", ({username, addFriendName, userID}) => {
+    // console.log("ADD FRIEND", nameObj)
+    pool.query(
+      "SELECT id, username FROM users WHERE username=$1",[addFriendName],
+      (err, res) => {
+        // res.rows => users table [{id: , username: ,....}]
+        const targetID = res.rows[0].id
+        console.log("target users id",targetID)
+        pool.query(
+          "INSERT INTO favorites (added_by, added) VALUES ($1, $2)", [userID, targetID]
+        )
+      }
+    )
+
+    pool.query(
+      "SELECT * FROM favorites",
+      (err, res) => {
+        // console.log(res.rows)
+      }
+    )
+  })
 
   // receive message
   socket.on("NEW MESSAGE", (e) => {
@@ -370,8 +396,8 @@ app.post("/login", (req, res) => {
       if (res_1.rows[0]) {
         // user exist
         // get followeds
-        const userID = res_1.rows[0].id;
         const userInfo = res_1.rows[0];
+        const userID = userInfo.id;
         const userName = userInfo.username;
         const avatar = userInfo.avatar_id;
         // console.log(res_1.rows[0]); // id: 3, username: "mike", password: "mike", email: "test2@test.com", avatar_id: 1
@@ -392,6 +418,7 @@ app.post("/login", (req, res) => {
                 userName,
                 avatar,
                 userLanguages,
+                userID
                 // friends
               };
               res.status(201).send(loginUserData); //object - username, avatar, language
@@ -460,33 +487,33 @@ app.post("/register", (req, res) => {
   res.status(201).send({ userName, userEmail, userLanguages, userAvatar });
 });
 
-app.post("/friends", (req, res) => {
-  const username = req.body.username;
+// app.post("/friends", (req, res) => {
+//   const username = req.body.username;
 
-  // and password.. userName=$1 AND userpassword=$2
-  return pool.query(
-    "SELECT id FROM users WHERE username=$1",
-    [username],
-    (err, res_1) => {
-      if (err) throw err;
-      if (res_1.rows[0]) {
-        // user exist
-        const userID = res_1.rows[0].id;
-        pool.query(
-          // find followers id
-          "SELECT following FROM favorites WHERE followed=$1",
-          [userID],
-          (err, res_2) => {
-            const userLanguages = [];
-          }
-        );
-      } else {
-        // no matching user
-        res.status(201).send(false);
-      }
-    }
-  );
-});
+//   // and password.. userName=$1 AND userpassword=$2
+//   return pool.query(
+//     "SELECT id FROM users WHERE username=$1",
+//     [username],
+//     (err, res_1) => {
+//       if (err) throw err;
+//       if (res_1.rows[0]) {
+//         // user exist
+//         const userID = res_1.rows[0].id;
+//         pool.query(
+//           // find followers id
+//           "SELECT added_by FROM favorites WHERE followed=$1",
+//           [userID],
+//           (err, res_2) => {
+//             const userLanguages = [];
+//           }
+//         );
+//       } else {
+//         // no matching user
+//         res.status(201).send(false);
+//       }
+//     }
+//   );
+// });
 
 httpServer.listen(PORT, () => {
   console.log(
