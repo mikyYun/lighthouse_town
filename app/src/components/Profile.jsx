@@ -39,6 +39,8 @@ export default function Profiles(props) {
       ));
       return (
         <div className={`profile ${username}`} key={ind} style={{display: profileShow}}>
+          {/* 클릭없이 보고싶으면 밑에 있는것 사용 */}
+        {/* <div className={`profile ${username}`} key={ind} style={{display: "inline"}}> */}
           {/* <title> */}
             {title} <br />
             {email}

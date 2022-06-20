@@ -23,10 +23,10 @@ const Menu = (props) => {
         console.log('clicked in Menu', clicked)
         setShow(false); // 클릭 뒤 사라지게
       }}>Send Message</li>
-      <li className="view-profile" onClick={() => {
-        console.log("clicked vie-porifle")
+      <li className="view-profile" onClick={(e) => {
+        console.log("clicked vie-porifle", clicked.value)
         setProfileShow("inline")
-      }}>View Profile</li>
+      }}>View {nickname}'s Profile</li>
     </ul>
   );
 };
