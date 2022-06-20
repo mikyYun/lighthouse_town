@@ -18,6 +18,25 @@ const io = new Server(httpServer, {
   },
 });
 
+// ================ HELPER FUNCS ================= //
+const getUserLang = (userID) => {
+  return pool.query(
+    `SELECT user_id, languages.language_name 
+    from user_language
+
+    JOIN languages 
+    ON languages.id = user_language.language_id
+
+    WHERE user_id = $1`,
+    [userID]
+  )
+    .then((result) => {
+      return result.rows.map((row) => row.language_name) //return array of languages
+    }
+    )
+}
+
+
 const { createAdapter } = require("@socket.io/postgres-adapter"); //app.get, 안써도 socket.io 안에서 직접 postgres 연결이 가능. root path 따로 설정 불필요.
 const sessionMiddleware = session({
   secret: "coding_buddy",
@@ -61,113 +80,84 @@ const usersInRooms = {};
 
 
 io.on("connection", (socket) => { //여기서 이미 socket id generation
-
-
-
-
+  console.log('CLIENT CONNECTED', socket.id)
   const roomName = "plaza";
   const session = socket.request.session;
   session.save();
 
+  //waiting for the client to send the request
   socket.on("friendsList", ({ newSocketID, user, userID }) => {
     // check this id is in currentUsers Object
     const alluserNames = Object.keys(currentUsers);
-
     const currentUser = alluserNames.find((username) => currentUsers[username] === newSocketID)
 
-    // let existUsername;
-    // alluserNames.map(username => {
-    //   if (currentUsers[username] === newSocketID) { // if this user is online, then true
-    //     // console.log(username)
-    //     existUsername = username;
-    //     return;
+    //@@upgrade later @mike 
+    if (!currentUser) return console.log('user not found', 'allusernames', alluserNames, 'newSocketID', newSocketID)
+
+    pool.query(`
+      SELECT users.id, users.username, added_users.id AS friend_id, added_users.username AS friend_name
+
+      FROM users
+
+      JOIN favorites
+      ON users.id = favorites.added_by
+
+      JOIN users added_users
+      ON added_users.id = favorites.added
+
+      WHERE added_by = $1;
+  `, [userID],
+      (err, result) => {
+        if (result.rows[0]) {
+          // if you have friends
+          const allusersTable = result.rows; // [ {friend1}, {friend2} ]
+          const promises = allusersTable.map(
+            async (row) => { //add 'ASYNC' in front of the arrow function.
+              //ASYNC FUNCTION, YOU ARE RETURNING A PROMISE.
+              row.languages = await getUserLang(row.friend_id) //to make it synchronous // returning one promise
+              // we call promise function for all friends. 
+              // we need to ensure to resolve for ALL friends.
+            }
+          )
+          Promise.all(promises) //wait for all promises to resolve
+            .then((res) => {
+              console.log("allusersTable", allusersTable)
+              socket.emit("friendsListBack", allusersTable);
+            })
+        }
+      });
+
+
+    // socket.on("reconnection?", (e) => {
+    //   console.log("RECONENCTION REQUEST", e);
+    //   // let reconnection = true
+    //   // console.log("THIS IS RECONNECTION", e);
+    //   // e.username, e.newSocketId
+    //   // console.log("before",currentUsers)
+    //   if (currentUsers[e.username]) {
+    //     // 현재 currentUsers 에 같은 유저네임이 존재하면 => 사용중인 유저네임 && disconnect 되지 않았다면
+    //     socket.emit("DENY CONNECTION", false);
+    //     // callback("return")
     //   } else {
-    //     return false; // !!@@return false 아님?
+    //     currentUsers[e.username] = e.newSocketId; // update
+    //     const alluserNames = Object.keys(currentUsers); // get keys arr
+    //     // alluserNames.forEach((name) => {
+    //     // if (currentUsers[name] === socket.id)
+    //     // delete currentUsers[name];
+    //     // }); // {"users": [name1, name2] }
+    //     // 현재유저 이름은 뺌
+    //     // alluserNames.filter(nm => nm !== e.username)
+    //     // console.log("CURRENT USERS", alluserNames);
+    //     socket.emit("all user names", { "users": alluserNames });
     //   }
     // });
 
-    //@@upgrade later @mike 
-    if (!currentUser) return res.send('USER NOT FOUND - server.js') 
+    // use object
+    // socket.emit("init", {data: 'hello world'})
 
 
-    //@@mike revisit //maybe JOIN languages too 
-    pool.query("SELECT * from users JOIN favorites WHERE added_by=$1",[userID],
-      // {id: , username: , password: , email: , avatar: , lan_id: }
-      (err, res_1) => {
-        if (err) throw err;
-        if (res_1.rows[0]) { // 테이블이 존재하면
-          const allusersTable = res_1.rows;
-          //array of every user object from db
-          pool.query(
-            // find added(followers) id
-            "SELECT added FROM favorites WHERE added_by=$1", //@mike can remove //then return res.rows
-            //userID = yourself / added_by = yourself / added = friends
-            // {id: , following: , followed: }
-            [user.id],
-            (err, res_2) => {
-              const usernames = [];
-              const addedInfo = {};
-              const addedIds = res_2.rows.map(obj => obj.added);
-              allusersTable.map(obj => {
-                if (addedIds.includes(obj.id)) {
-                  usernames.push(obj.username);
-                  addedInfo[obj.username] = {};
-                  addedInfo[obj.username]["languages"] = [];
-                  // addedInfo[obj.username]["email"] = obj.email
-                }
-              });
-              pool.query(
-                `SELECT  users.id, users.username, languages.id, languages.language_name 
-                FROM users 
-                JOIN user_language 
-                ON users.id=user_language.user_id 
-                JOIN languages 
-                ON user_language.language_id=languages.id`, (err, res_3) => {
-                  res_3.rows.map(userLanguageID => { // @@ userLanguageName 으로 바꾸고 밑에서 =>// obj.language_name 으로 하기
-                    // console.log("THIS", userLanguageID);
-                    // console.log(allusersTable);
-                    const nameMatching = allusersTable.find(obj => obj.id === userLanguageID.user_id).username;
-                    if (addedIds.includes(userLanguageID.user_id)) {
-                      addedInfo[nameMatching].languages.push(userLanguageID.language_name);
-                      // console.log(userLanguageID.language_id)
-                    }
-                  });
-                  // console.log("INFO", followedInfo)
-                  socket.emit("friendsListBack", addedInfo);
-                }
-              );
-            }
-          );
-        }
-      });
-  });
 
-  // socket.on("reconnection?", (e) => {
-  //   console.log("RECONENCTION REQUEST", e);
-  //   // let reconnection = true
-  //   // console.log("THIS IS RECONNECTION", e);
-  //   // e.username, e.newSocketId
-  //   // console.log("before",currentUsers)
-  //   if (currentUsers[e.username]) {
-  //     // 현재 currentUsers 에 같은 유저네임이 존재하면 => 사용중인 유저네임 && disconnect 되지 않았다면
-  //     socket.emit("DENY CONNECTION", false);
-  //     // callback("return")
-  //   } else {
-  //     currentUsers[e.username] = e.newSocketId; // update
-  //     const alluserNames = Object.keys(currentUsers); // get keys arr
-  //     // alluserNames.forEach((name) => {
-  //     // if (currentUsers[name] === socket.id)
-  //     // delete currentUsers[name];
-  //     // }); // {"users": [name1, name2] }
-  //     // 현재유저 이름은 뺌
-  //     // alluserNames.filter(nm => nm !== e.username)
-  //     // console.log("CURRENT USERS", alluserNames);
-  //     socket.emit("all user names", { "users": alluserNames });
-  //   }
-  // });
-
-  // use object
-  // socket.emit("init", {data: 'hello world'})
+  })
 
   socket.on('sendData', data => { //이 data는 어디서옴?
 
@@ -196,12 +186,16 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
 
 
   // socketID and username matching triggered when user login
+
+  //@@THIS IS NOT FIRED
   socket.on("SET USERNAME", (obj) => {
     //Login.jsx 의 setUser(res.data.userName)
+    console.log('obj', obj)
     const { username, socketID } = obj;
     console.log("RECONNECTION", username, socketID)
 
     currentUsers[username] = socketID;
+    console.log('currentusers in server.js', currentUsers)
     pool.query(
       "SELECT id, username AS name, email, avatar_id FROM users",
       (err, res) => {
@@ -361,7 +355,7 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
     io.to(roomName).emit("RECEIVE_MESSAGE", responseData);
 
     console.log(
-      `JOIN_ROOM is fired with data: ${JSON.stringify(responseData)}`
+      `JOIN_ROOM is fired with data: ${JSON.stringify(responseData)} `
     );
     // io.to(roomName).emit("all user names", "jasklefjl;ksajv@@@@@")
   });
@@ -374,7 +368,7 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
     };
     io.to(roomName).emit("RECEIVE_MESSAGE", responseData);
     console.log(
-      `UPDATE_NICKNAME is fired with data: ${JSON.stringify(responseData)}`
+      `UPDATE_NICKNAME is fired with data: ${JSON.stringify(responseData)} `
     );
   });
 
@@ -401,7 +395,7 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
     // console.log("Server.js - DISCONNECT - CURRENT USERS", currentUsers);
     io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기
   });
-});
+});;
 
 //
 app.get("/", (req, res) => {
