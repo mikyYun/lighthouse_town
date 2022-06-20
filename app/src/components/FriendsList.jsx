@@ -30,7 +30,7 @@ export default function FriendList() {
         <div
           // btn-primary 
           className="btn btn-primary collaps"
-          onClick={toggleButton}
+        // onClick={toggleButton}
         >
           <div>{friendName}</div>
         </div>
