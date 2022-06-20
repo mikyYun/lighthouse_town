@@ -5,17 +5,17 @@ import { useLocation } from "react-router-dom";
 const Menu = (props) => {
   const {socket} = useContext(SocketContext)
   const location = useLocation()
-  const { clicked, setRecipient, setShow, nickname, recipient } = useContext(UserListContext);
+  const { clicked, setRecipient, setShow, nickname, recipient, setProfileShow } = useContext(UserListContext);
   // console.log('clicked', clicked)
   const username = props.username
   const userID = location.state?.[3]
+  // setProfileShow
   return (
     <ul className="menu">
       <li className="add friend" onClick={(e) => {
         // console.log(clicked.value) // clicked name
         const addFriendName = clicked.value
-        // console.log("add-friend clicked", username, addFriendName, userID)
-        
+        console.log("add-friend clicked", username, addFriendName, userID)
         socket.emit("add friend", {username, addFriendName, userID})
       }}>Add Friend</li>
       <li className="send-message" onClick={() => {
@@ -25,14 +25,13 @@ const Menu = (props) => {
       }}>Send Message</li>
       <li className="view-profile" onClick={() => {
         console.log("clicked vie-porifle")
+        setProfileShow("inline")
       }}>View Profile</li>
     </ul>
   );
 };
 
 export default Menu;
-// add friend => get obj => send obj to server => server////
-// user_name, target_name // select id FROM users // res.rows[{id: 1, username: name}, {id: 2, username: name2}]
-// let added_by, added
-// res.rows => map / loop -> eachObj.username = user_name => added_by = eachObj.id, added = eachObj.id
-// name = user_name || target_name //
+// CLICK VIEW-PROFILE
+// display table ?
+// element : usernameS, languagesS, avatarS

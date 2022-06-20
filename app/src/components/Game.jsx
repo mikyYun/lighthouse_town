@@ -4,12 +4,13 @@ import Canvas from "./Canvas";
 import "./Game.scss";
 import Chat from "./Chat";
 import Online from "./Online";
+import Profiles from "./Profile.jsx";
+
 import { useLocation } from "react-router-dom";
 
 export default function Game(props) {
   const location = useLocation();
   const { nickname } = useContext(SocketContext);
-
 
   // const {username} = useContext(SocketContext)
   // let loggedIn = false
@@ -21,8 +22,8 @@ export default function Game(props) {
   // pass the mapimg as props
 
   // @@ Moon: 이거 위에서 destructuring 으로 할수있지않나? 아니면 Context로
-  const sendMessage = props.sendessage
-  const sendPrivateMessage = props.sendPrivateMessage
+  const sendMessage = props.sendessage;
+  const sendPrivateMessage = props.sendPrivateMessage;
 
   // const getAllUsers = props.getAllUsers
   // getAllUsers()
@@ -61,6 +62,7 @@ export default function Game(props) {
           // nickname={props.username}
         />
         <Online />
+        <Profiles />
       </div>
     </>
   );

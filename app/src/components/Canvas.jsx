@@ -24,8 +24,8 @@ const Canvas = (props) => {
       avatar: props.avatar,
     }),
   });
-  console.log('username', props.username);
-  console.log('userCharacters', userCharacters)
+  // console.log('username', props.username);
+  // console.log('userCharacters', userCharacters)
 
   const navigate = useNavigate();
   const roomLists = {

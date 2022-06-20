@@ -29,6 +29,8 @@ function App() {
   const [clicked, setClicked] = useState({});
   const [recipient, setRecipient] = useState({ value: "all", label: "all" });
   const [user, setUser] = useState({ value: "all", label: "all", avatar: 1 });
+  const [profiles, setProfiles] = useState({})
+  const [profileShow, setProfileShow] = useState("none");
 
   // ================= HOOKS =============== //
 
@@ -37,9 +39,9 @@ function App() {
   const location = useLocation();
 
   // ================= VARIABLES =============== //
-  console.log("LOCATION", location);
+  // console.log("LOCATION", location);
   const nickname = location.state?.[0] || '';
-
+  console.log("NICKNAME IN APP", nickname)
   const urlLists = [
     "/game/plaza",
     "/game/ruby",
@@ -60,7 +62,7 @@ function App() {
     2: "/images/girl1-face.png",
     3: "/images/girl2-face.png"
   };
-  console.log(avatars);
+  // console.log(avatars);
 
   // ================= INTANCES =============== //
 
@@ -97,7 +99,8 @@ function App() {
 
     //frontend
     socket.on("connect", () => {
-      console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!");
+      // console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!");
+      // console.log("SOCKETID", socket.id)
       const all_cookies = cookies.getAll();
       //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
       // if (location.pathname === "/game") {
@@ -106,7 +109,8 @@ function App() {
       // 유저데이터가 아직 삭제되지 않았고, 게임페이지 리로드 한 경우 서버랑 연결하고 currentUser update in server
       if (all_cookies.userdata) {
         // 쿠키 존재하면 리커넥트 요청
-        socket.emit("reconnection?", { username: all_cookies.userdata.userName, newSocketId: socket.id });
+        socket.emit("SET USERNAME", { username: all_cookies.userdata.userName, socketID: socket.id });
+        // socket.emit("reconnection?", { username: all_cookies.userdata.userName, newSocketId: socket.id });
         // socket.on("DENY CONNECTION", (e) => {
         //   clearCookies()
         //   navigate("/")
@@ -145,7 +149,6 @@ function App() {
     })
 
     socket.on("friendsListBack", friendsInfo => {
-      console.log("INFO", friendsInfo)
       setFriendList(friendsInfo);
     });
 
@@ -157,12 +160,44 @@ function App() {
     socket.on("init", msg => console.log("msg - App.js", msg)); //coming from server
     socket.on("backData", data => console.log("data", data)); //coming from server
 
+    // socket.on("update login users information", ({disconnectedUser}) => {
+    //   // console.log("DISCONNECTED USERNAME", disconnectedUser)
+    //   console.log("THIS", disconnectedUser)
+    //   // const updateProfileLists = () => {
+    //     // delete profiles[disconnectedUser]
+    //   // }
+    //   // setProfiles(prev => ({
+    //   //   [disconnectedUser]: remove,
+    //   //   ...rest
+    //   // }))
+    //   console.log("THIS", profiles)
+    // })
+
+
     socket.on("all user names", (obj) => { //@@@SUNDAY: all user objects
-      // obj.users = [user1, user2] => [{value: name, label: name } {}]
-      const usersOnline = obj.users.map(name => ({ value: name, label: name, avatar: avatars[1] })); //@@@@ SUNDAY - this should be dynamic and need an avatar from socket.
+      // obj => {name: {email:, avatar_id:, languages: [arr]}, {}, {}}
+
+      const loginUsersObject = obj.users
+      // console.log("RECEIVED", loginUsersObject)
+      const loginUserNames = Object.keys(loginUsersObject)
+      const loginUsersInformation = {}
+      const usersOnline = []
+      loginUserNames.map(name => {
+        usersOnline.push({ value: name, label: name, avatar: avatars[loginUsersObject[name].avatar_id]})
+        loginUsersInformation[name] = {
+          name: name,
+          email: loginUsersObject[name].email,
+          languages: loginUsersObject[name].languages,
+          avatar_id: loginUsersObject[name].avatar_id,
+        }
+      }) 
+       //@@@@ SUNDAY - this should be dynamic and need an avatar from socket.
+      // console.log("ONLINE USERS PROFILE SET",loginUsersInformation)
+      setProfiles(loginUsersInformation)
 
       usersOnline.unshift({ value: "all", label: "all", avatar: avatars[0] });
       // const onlineOthers = usersOnline.filter(user => user.value !== nickname)
+
 
       setOnline(usersOnline);
     }); // this works
@@ -197,10 +232,10 @@ function App() {
     socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username });
   };
 
-  console.log('nickname', nickname)
+  // console.log('nickname', nickname)
   return (
     <SocketContext.Provider value={{ socket, online, nickname, friendList }} >
-      <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked, user, setUser }} >
+      <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked, user, setUser, profiles, nickname, setProfiles, profileShow, setProfileShow }} >
 
         {/* clicked -> used in Menu.jsx
     setClicked -> used in Online.jsx */}

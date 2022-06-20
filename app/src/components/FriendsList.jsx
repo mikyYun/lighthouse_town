@@ -8,31 +8,25 @@ export default function FriendList() {
   const { setFriendList } = useContext(UserListContext);
   const [toggle, setToggle] = useState(false);
   const toggleButton = useCallback(() => setToggle(!toggle));
-  const [updateFriend, setUpdateFriend] = useState()
+  const [updateFriend, setUpdateFriend] = useState();
   const friendsNames = Object.keys(friendList); // [이름, 이름]
-
-
 
   const friendsListing = friendsNames.map((friendName, i) => {
     const lists = () => {
-      console.log("LIST", friendList);
-      if (friendsNames.length > 0) {
-        if (friendList[friendName].languages) {
-          const languages = friendList[friendName].languages;
-          return languages.map((lang, index) => (
-            <div key={index} className="languageDiv">
-              {lang}
-            </div>
-          ));
-        }
+      // console.log("LIST", friendList);
+      if (friendsNames.length > 0 && friendList[friendName].languages) {
+        const languages = friendList[friendName].languages;
+        return languages.map((lang, index) => (
+          <div key={index} className="languageDiv">
+            {lang}
+          </div>
+        ));
       }
     };
 
     return (
       <div key={i}>
-        <div
-          className="btn btn-primary collaps"
-        >
+        <div className="btn btn-primary collaps">
           <div>{friendName}</div>
         </div>
         <div className="languageLists">{lists()}</div>
@@ -42,23 +36,9 @@ export default function FriendList() {
 
   useEffect(() => {
     socket.emit("friendsList", { socketID: socket.id });
-
-    // socket.on("friendsListBack", friendsInfo => {
-    //   setFriendList(friendsInfo);
-    // });
-
-    // socket.on("updateFriendsList", ({newFriendName, languages}) => {
-    //   const nameAndLangObj = {}
-    //   nameAndLangObj[newFriendName] = {languages}
-
-    //   setFriendList(prev => ({
-    //     ...prev,
-    //     ...nameAndLangObj,
-    //   }))
-    // });
     return () => {
-      socket.disconnect()
-    }
+      socket.disconnect();
+    };
   }, [socket]);
 
   return (

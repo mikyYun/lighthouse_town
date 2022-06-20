@@ -11,24 +11,68 @@ const pool = new Pool({
 });
 
 
-// user id 로 languages data 불러오기
-const getOneUserLanguages = (id, username) => {
-  pool.query("SELECT * FROM user_language WHERE user_id=$1", [id],
-  (err, res) => {
-    const userLanguageTable = res.rows
-    userLanguageTable.map(row => {
-      return changeToLanguageName(row.id)
-    })
-    return userLanguageTable
-  })
+
+// when user login, pass essential data
+const filterEssentials = function (currentUsers) {
+  pool.query(
+    // this query does not include user who doesn't have languages
+    // "SELECT users.id AS user_id, users.username AS username, email, avatar_id, languages.id AS language_id, language_name FROM users INNER JOIN user_language ON users.id=user_language.user_id INNER JOIN languages ON languages.id=user_language.language_id ORDER BY user_language.id", 
+    // res.rows ==> {user_id:, username: , email:, avatar_id:, language_id:, language_name: }
+    
+    "SELECT id, username, email, avatar_id FROM users",
+    (err, res) => {
+      // res.rows => {id: , username: , email: , avatar_id}
+      const allUsersObj = res.rows
+      pool.query(
+        "SELECT languages.id, user_id, language_name FROM user_language JOIN languages ON language_id=languages.id",
+        (err, res_1) => {
+          // res.rows_1 => {id(languageID): , user_id: , language_name: }
+          const userIDAndLang = res_1.rows
+          allUsersObj.map(user => {
+            if (currentUsers[user.username]) {
+              
+            }
+          })
+        }
+      )
+    }
+    // "SELECT * FROM languages", (err, res) => {
+  
+    // }
+    // "SELECT * FROM languages JOIN user_language ON language_id=languages.id", 
+    // (err, res) => {
+  
+    // }
+  )
+
 }
 
-const changeToLanguageName = (id) => {
-  pool.query("SELECT * FROM languages WHERE id=$1", [id],
-  (err, res) => {
-    return res.rows[0].languageName
-  })
-}
+
+
+
+
+
+
+
+
+// user id 로 languages data 불러오기
+// const getOneUserLanguages = (id, username) => {
+//   pool.query("SELECT * FROM user_language WHERE user_id=$1", [id],
+//   (err, res) => {
+//     const userLanguageTable = res.rows
+//     userLanguageTable.map(row => {
+//       return changeToLanguageName(row.id)
+//     })
+//     return userLanguageTable
+//   })
+// }
+
+// const changeToLanguageName = (id) => {
+//   pool.query("SELECT * FROM languages WHERE id=$1", [id],
+//   (err, res) => {
+//     return res.rows[0].languageName
+//   })
+// }
 
 // 데이터베이스 관리...
 // GET : get all users

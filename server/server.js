@@ -58,6 +58,8 @@ const usersInRooms = {};
 let currentUsers = {}; // => {username : socket.id}
 
 
+
+
 io.on("connection", (socket) => {
   const roomName = "room 1";
   const session = socket.request.session;
@@ -138,31 +140,29 @@ io.on("connection", (socket) => {
     }
   });
 
-
-
-  socket.on("reconnection?", (e) => {
-    console.log("RECONENCTION REQUEST", e);
-    // let reconnection = true
-    // console.log("THIS IS RECONNECTION", e);
-    // e.username, e.newSocketId
-    // console.log("before",currentUsers)
-    if (currentUsers[e.username]) {
-      // 현재 currentUsers 에 같은 유저네임이 존재하면 => 사용중인 유저네임 && disconnect 되지 않았다면
-      socket.emit("DENY CONNECTION", false);
-      // callback("return")
-    } else {
-      currentUsers[e.username] = e.newSocketId; // update
-      const alluserNames = Object.keys(currentUsers); // get keys arr
-      // alluserNames.forEach((name) => {
-      // if (currentUsers[name] === socket.id)
-      // delete currentUsers[name];
-      // }); // {"users": [name1, name2] }
-      // 현재유저 이름은 뺌
-      // alluserNames.filter(nm => nm !== e.username)
-      // console.log("CURRENT USERS", alluserNames);
-      socket.emit("all user names", { "users": alluserNames });
-    }
-  });
+  // socket.on("reconnection?", (e) => {
+  //   console.log("RECONENCTION REQUEST", e);
+  //   // let reconnection = true
+  //   // console.log("THIS IS RECONNECTION", e);
+  //   // e.username, e.newSocketId
+  //   // console.log("before",currentUsers)
+  //   if (currentUsers[e.username]) {
+  //     // 현재 currentUsers 에 같은 유저네임이 존재하면 => 사용중인 유저네임 && disconnect 되지 않았다면
+  //     socket.emit("DENY CONNECTION", false);
+  //     // callback("return")
+  //   } else {
+  //     currentUsers[e.username] = e.newSocketId; // update
+  //     const alluserNames = Object.keys(currentUsers); // get keys arr
+  //     // alluserNames.forEach((name) => {
+  //     // if (currentUsers[name] === socket.id)
+  //     // delete currentUsers[name];
+  //     // }); // {"users": [name1, name2] }
+  //     // 현재유저 이름은 뺌
+  //     // alluserNames.filter(nm => nm !== e.username)
+  //     // console.log("CURRENT USERS", alluserNames);
+  //     socket.emit("all user names", { "users": alluserNames });
+  //   }
+  // });
 
   // use object
   // socket.emit("init", {data: 'hello world'})
@@ -197,31 +197,54 @@ io.on("connection", (socket) => {
 
 
 
-
-  // socketID and username matching
+  // socketID and username matching triggered when user login
   socket.on("SET USERNAME", (obj) => {
     //Login.jsx 의 setUser(res.data.userName)
     const { username, socketID } = obj;
+    console.log("RECONNECTION",username, socketID)
 
-    // if (currentUsers[username]) {
-    //   socket.emit("DENY CONNECTION", false)
-    // } else {
     currentUsers[username] = socketID;
-    // socket.join(loginRoom)
-    const alluserNames = Object.keys(currentUsers); // {username : socket.id}
-    // console.log("AFTER LOGIN, SET USER NAME AND SOCKET ID PAIR", currentUsers);
+    pool.query(
+      "SELECT id, username AS name, email, avatar_id FROM users",
+      (err, res) => {
+        // res.rows => {id: , name: , email: , avatar_id}
+        const allUsersObj = res.rows;
+        pool.query(
+          "SELECT languages.id, user_id, language_name FROM user_language JOIN languages ON language_id=languages.id",
+          (err, res_1) => {
+            // res.rows_1 => {id(languageID): , user_id: , language_name: }
+            const userIDAndLang = res_1.rows;
+            const loginUsersData = {}
+            allUsersObj.map(user => {
+              if (currentUsers[user.name]) {
+                loginUsersData[user.name] = {
+                  // socketID: socketID,
+                  email: user.email,
+                  avatar_id: user.avatar_id,
+                  languages: []
+                }
+                userIDAndLang.map(lang => {
+                  if (user.id === lang.user_id) {
+                    loginUsersData[user.name].languages.push(lang.language_name)
+                  }
+                })
+              }
+            });
+            // console.log(loginUsersData)
+            const alluserNames = Object.keys(loginUsersData);
+            alluserNames.forEach((name) => {
+              io.to(currentUsers[name])
+                .emit("all user names", { "users": loginUsersData });// all user names
+          }
+        );
+      }
+    );
 
-    // console.log("Server.js - currentUsers", currentUsers);
 
-    alluserNames.forEach((name) => {
-      // name = moon, mike, heesoo
-      // console.log("App.js - name: ", name, " App.js - currentUsers: ", currentUsers[name]);
-      // const sortedName = alluserNames.sort()
-      io.to(currentUsers[name])
-        .emit("all user names", { "users": alluserNames });// all user names
-      //@@ App.js -> setOnline(usersOnline)
-
-      // App.jsx & Recipients.jsx 로 보내기
+    // const alluserNames = Object.keys(currentUsers); 
+    // alluserNames.forEach((name) => {
+    //   io.to(currentUsers[name])
+    //     .emit("all user names", { "users": alluserNames });
     }); // {"users": [name1, name2] }
     // }
   });
@@ -249,11 +272,11 @@ io.on("connection", (socket) => {
             res.rows.map(obj => {
               languages.push(obj.language_name);
             });
-            const newFriendLanguageObj = {}
-            newFriendLanguageObj[addFriendName] = {languages}
+            const newFriendLanguageObj = {};
+            newFriendLanguageObj[addFriendName] = { languages };
             // console.log("WHAT", addFriendName, {languages});
             // socket.emit("updateFriendsList", newFriendLanguageObj);
-            socket.emit("updateFriendsList", {newFriendName: addFriendName, languages: languages});
+            socket.emit("updateFriendsList", { newFriendName: addFriendName, languages: languages });
           });
 
 
@@ -383,13 +406,16 @@ io.on("connection", (socket) => {
   /* 오브젝트에서 종료되는 유저 삭제 */
   socket.on("disconnect", () => {
     // console.log("Server.js - DISCONNECT", socket.id);
+    
     const alluserNames = Object.keys(currentUsers);
+    let disconnectedUsername
     alluserNames.forEach((name) => {
       if (currentUsers[name] === socket.id)
         delete currentUsers[name];
+        disconnectedUsername = name
     }); // {"users": [name1, name2] }
     // console.log("Server.js - DISCONNECT - CURRENT USERS", currentUsers);
-    io.emit("all user names", { "users": alluserNames }); // App.jsx & Recipients.jsx 로 보내기
+    io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기
   });
 });
 
