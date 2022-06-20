@@ -128,9 +128,8 @@ const Canvas = (props) => {
           userCharacters[props.username].state.y >= 120 &&
           userCharacters[props.username].state.y <= 140
           ) {
-            setUserCharacters({ ...userCharacters, [props.username]: undefined })
-            console.log(userCharacters)
             sendData(props.room);
+            setUserCharacters({ ...userCharacters, [props.username]: undefined })
             handleRoom('js');
           }
 
@@ -141,9 +140,8 @@ const Canvas = (props) => {
           userCharacters[props.username].state.y >= 460 &&
           userCharacters[props.username].state.y <= 480
           ) {
-            setUserCharacters({ ...userCharacters, [props.username]: undefined })
-            console.log(userCharacters)
             sendData(props.room);
+            setUserCharacters({ ...userCharacters, [props.username]: undefined })
             handleRoom('ruby');
           }
       }
@@ -156,10 +154,8 @@ const Canvas = (props) => {
           userCharacters[props.username].state.y >= 410 &&
           userCharacters[props.username].state.y <= 450
           ) {
-            console.log(props.room)
-            setUserCharacters({ ...userCharacters, [props.username]: undefined })
-            console.log(userCharacters)
             sendData(props.room);
+            setUserCharacters({ ...userCharacters, [props.username]: undefined })
             handleRoom('plaza');
           }
       }
