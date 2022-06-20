@@ -30,7 +30,7 @@ export default function FriendList() {
         <div
           // btn-primary 
           className="btn btn-primary collaps"
-          onClick={toggleButton}
+        // onClick={toggleButton}
         >
           <div>{friendName}</div>
         </div>
@@ -43,7 +43,7 @@ export default function FriendList() {
 
   useEffect(() => {
     socket.emit("friendsList", { socketID: socket.id });
-  }, [online]);
+  }, [socket]);
   return (
     <div className="friendsList">
       <div className="friendsListLabel">Friends</div>

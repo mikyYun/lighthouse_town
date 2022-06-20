@@ -9,7 +9,7 @@ import { UserListContext } from '../App.js'
 function ChatRoom(props) {
   const { socket } = useContext(SocketContext)
   const { recipient, user } = useContext(UserListContext);
-  const { nickname } = props
+  const { username } = props
   const [messages, setMessages] = useState([]);
   const chatWindow = useRef(null);
   const moveScrollToReceiveMessage = useCallback(() => {
@@ -57,26 +57,26 @@ function ChatRoom(props) {
   return (
     <div className="d-flex flex-column chat-form">
       <div className="text-box">
-        <span>{nickname}</span>, Welcome!
+        <span>{username}</span>, Welcome!
       </div>
       <div className="chat-window card" ref={chatWindow}>
         {messages.map((message, index) => {
-          const { nickname, content, time, user } = message;
+          const { username, content, time, user } = message;
           let recipient = ''
           message.recipient ? recipient = message.recipient : recipient = 'all'
 
           return (
             <div key={index} className="d-flex flex-row">
-              {nickname && <div className="message-nickname">
+              {username && <div className="message-nickname">
                 {/* <Avatar url={user.avatar} /> */}
-                {nickname} to {recipient}: </div>}
+                {username} to {recipient}: </div>}
               <div>{content}</div>
               <div className="time">{time}</div>
             </div>
           );
         })}
       </div>
-      <MessageForm nickname={nickname} recipient={recipient} />
+      <MessageForm nickname={username} recipient={recipient} />
     </div>
   );
 }
