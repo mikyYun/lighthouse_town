@@ -17,8 +17,8 @@ const Canvas = (props) => {
   const [userCharacters, setUserCharacters] = useState({
     [props.username]: new Characters({
       username: props.username,
-      x: 150,
-      y: 150,
+      x: 60,
+      y: 420,
       currentDirection: 0,
       frameCount: 0,
       avatar: props.avatar,
@@ -29,6 +29,7 @@ const Canvas = (props) => {
 
   const navigate = useNavigate();
   const roomLists = {
+    plaza: '/game/plaza',
     html: "/game/html",
     css: "/game/css",
     javascript: "/game/js",
@@ -41,32 +42,32 @@ const Canvas = (props) => {
 
 
   useEffect(() => {
+    const canvas = canvasRef.current;
+    canvas.width = 1120;
+    canvas.height = 640;
+    const ctx = canvas.getContext("2d");
 
     socket.on("connect", () => {
-      const canvas = canvasRef.current;
-      canvas.width = 1120;
-      canvas.height = 640;
-      const ctx = canvas.getContext("2d");
 
       // const mapImg = new Image();
       // mapImg.src = props.map;
       // mapImg.onload = () => {
         // ctx.drawImage(mapImg, 0, 0);
 
-        for (const userChar in userCharacters) {
-          console.log('onfirts move',userChar)
-          // console.log(userCharacters)
-          userCharacters[userChar].drawFrame(ctx);
+        // for (const userChar in userCharacters) {
+        //   console.log('onfirts move',userChar)
+        //   // console.log(userCharacters)
+        //   userCharacters[userChar].drawFrame(ctx);
 
-          // Text on head.
-          ctx.font = '20px monospace';
-          ctx.fillText(
-            userCharacters[userChar].state.username,
-            userCharacters[userChar].state.x + 15,
-            userCharacters[userChar].state.y + 10
-            );
-          ctx.fillStyle = "purple";
-        }
+        //   // Text on head.
+        //   ctx.font = '20px monospace';
+        //   ctx.fillText(
+        //     userCharacters[userChar].state.username,
+        //     userCharacters[userChar].state.x + 15,
+        //     userCharacters[userChar].state.y + 10
+        //     );
+        //   ctx.fillStyle = "purple";
+        // }
       // }
       sendData()
       // socket.emit("sendData", userCharacters[props.username].state);
@@ -94,7 +95,22 @@ const Canvas = (props) => {
         setUserCharacters(newCharacters);
         // console.log('AFTER SETTING: ', newCharacters)
       });
-    });
+
+      for (const userChar in userCharacters) {
+        console.log('onfirts move',userChar)
+        // console.log(userCharacters)
+        userCharacters[userChar].drawFrame(ctx);
+
+        // Text on head.
+        ctx.font = '20px monospace';
+        ctx.fillText(
+          userCharacters[userChar].state.username,
+          userCharacters[userChar].state.x + 15,
+          userCharacters[userChar].state.y + 10
+          );
+        ctx.fillStyle = "purple";
+      }
+    });   //socket ends
 
     window.addEventListener("keydown", (e) => {
       console.log("will move")
@@ -103,6 +119,19 @@ const Canvas = (props) => {
       console.log('will send data')
       sendData()
       console.log('sent!')
+
+      // move to the plaza
+      if (
+        userCharacters[props.username].state.x <= 50 &&
+        userCharacters[props.username].state.y >= 410 &&
+        userCharacters[props.username].state.y <= 450
+      ) {
+
+        setUserCharacters({ ...userCharacters, [props.username]: undefined })
+        console.log('after remove', userCharacters[props.username])
+        handleRoom('plaza');
+        sendData('plaza');
+      }
 
       // move to the JS room
       if (
@@ -113,26 +142,26 @@ const Canvas = (props) => {
       ) {
 
         setUserCharacters({ ...userCharacters, [props.username]: undefined })
-        // console.log('after remove', userCharacters)
-        handleRoom();
-        sendData(props.room);
+        console.log('after remove', userCharacters[props.username])
+        handleRoom('javascript');
+        sendData('js');
       }
-      // sendData();
-      // socket.emit("sendData", userCharacters[props.username].state);
     });
+
 
     window.addEventListener("keyup", () => {
       // console.log()
       userCharacters[props.username].stop();
-      // socket.emit("sendData", userCharacters[props.username].state);
+      setUserCharacters(userCharacters)
+      console.log('after stop', userCharacters[props.username].state)
       if (userCharacters[props.username] !== undefined) {
         sendData();
       }
     });
 
     return () => {
-      window.removeEventListener("keydown", (e) => userCharacters[0].move(e));
-      window.removeEventListener("keyup", () => userCharacters[0].stop());
+      // window.removeEventListener("keydown", (e) => userCharacters[0].move(e));
+      // window.removeEventListener("keyup", () => userCharacters[0].stop());
     };
 
   }, []);
@@ -144,6 +173,7 @@ const Canvas = (props) => {
     canvas.height = 640;
     const ctx = canvas.getContext("2d");
 
+    console.log('CHARACTER', userCharacters)
     // const mapImg = new Image();
     // mapImg.src = props.map;
     // mapImg.onload = () => {
@@ -152,20 +182,20 @@ const Canvas = (props) => {
         userCharacters[userChar].drawFrame(ctx);
 
         // Text on head.
-        ctx.font = 'bold 20px monospace';
-        ctx.fillStyle = "black";
-        ctx.fillRect(
-          userCharacters[userChar].state.x,
-          userCharacters[userChar].state.y - 10,
-          80,
-          20
-          )
-        ctx.fillStyle = "white";
-        ctx.fillText(
-          userCharacters[userChar].state.username,
-          userCharacters[userChar].state.x + 10,
-          userCharacters[userChar].state.y + 5
-          )
+        // ctx.font = 'bold 20px monospace';
+        // ctx.fillStyle = "black";
+        // ctx.fillRect(
+        //   userCharacters[userChar].state.x,
+        //   userCharacters[userChar].state.y - 10,
+        //   80,
+        //   20
+        //   )
+        // ctx.fillStyle = "white";
+        // ctx.fillText(
+        //   userCharacters[userChar].state.username,
+        //   userCharacters[userChar].state.x + 10,
+        //   userCharacters[userChar].state.y + 5
+        //   )
 
         }
       // }
@@ -174,8 +204,8 @@ const Canvas = (props) => {
 
   //--------- functions
   // if user hit the specific position -> redirect to the page
-  function handleRoom() {
-    navigate(roomLists.javascript, { state: [props.username, props.avatar] });
+  function handleRoom(room) {
+    navigate(roomLists[room], { state: [props.username, props.avatar] });
   };
 
   // sending data to server

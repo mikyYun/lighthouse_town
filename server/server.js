@@ -168,21 +168,6 @@ io.on("connection", (socket) => {
   // socket.emit("init", {data: 'hello world'})
   socket.on('sendData', data => {
 
-    // data =
-    //   {
-    //     "userState": {
-    //         "username": "moon",
-    //         "x": 246,
-    //         "y": 238,
-    //         "currentDirection": 1,
-    //         "frameCount": 0,
-    //         "avatar": 1
-    //     },
-    //     "room": [
-    //         "plaza"
-    //     ]
-    // }
-
     const { userState, room, removeFrom } = data;
     console.log('got data', data);
 
@@ -198,18 +183,9 @@ io.on("connection", (socket) => {
       usersInRooms[room][userState.username] = userState;
     }
 
-    // console.log("COMPLETE", usersInRooms)
-    // usersInRooms = {
-    //     plaza: { moon: {moons state},
-    //              heesoo: {heesoo's state}
-    //      }
-
-
     console.log('usersInRooms', usersInRooms)
     io.emit('sendData', { usersInRooms, room }) // 다시 Canvas.jsx -> const newCharactersData = data;
 
-
-    //  OLD CODE BEFORE WAKEEL MENTOR
   });
 
 

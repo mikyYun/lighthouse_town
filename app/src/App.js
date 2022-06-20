@@ -86,7 +86,7 @@ function App() {
     if (location.pathname === "/" && currentCookies.userdata && currentCookies.userdata && currentCookies["connect.sid"]) {
       navigate('/game/plaza');
     } else if (!urlLists.includes(location.pathname)) {
-      clearCookies();
+      // clearCookies();
     }
     // if (!urlLists.includes(location.pathname)) clearCookies();
   }, [location.pathname]);
@@ -119,7 +119,7 @@ function App() {
       // 쿠키는 있는데 현재 사용중인 유저이면 클리어하고 집으로
       socket.on("DENY CONNECTION", (e) => {
         // clearCookies();
-        navigate("/");
+        // navigate("/");
       });
     }, []);
 

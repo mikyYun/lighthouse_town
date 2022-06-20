@@ -92,7 +92,21 @@ class Characters {
       this.state.x, this.state.y,
       this.width, this.height
     )
-    // this.update
+    // name over head
+    ctx.font = 'bold 20px monospace';
+    ctx.fillStyle = "grey";
+    ctx.fillRect(
+      this.state.x,
+      this.state - 10,
+      80,
+      20
+      )
+    ctx.fillStyle = "black";
+    ctx.fillText(
+      this.state.username,
+      this.state.x + 10,
+      this.state.y + 5
+      )
   }
 };
 
