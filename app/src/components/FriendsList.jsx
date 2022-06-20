@@ -44,7 +44,7 @@ export default function FriendList() {
 
   useEffect(() => {
     socket.emit("friendsList", { socketID: socket.id });
-  }, [online]);
+  }, [socket]);
   return (
     <div className="friendsList">
       <div className="friendsListLabel">Friends</div>

@@ -31,6 +31,7 @@ const Canvas = (props) => {
     react: "/game/react",
     ruby: "/game/ruby",
   };
+
   // console.log("username", props.username);
   // console.log("nickName", nickname);
   // console.log('userCharacters', userCharacters)

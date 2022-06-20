@@ -14,8 +14,8 @@ export default function Login(props) {
   const goRegister = () => {
     navigate('/register')
   }
-  const goChat = (username, avatar) => {
-    const data = [username, avatar]
+  const goChat = (username, avatar, userLanguages, id) => {
+    const data = [username, avatar, userLanguages, id]
     navigate('/game/plaza', { state: data })
   }
 
@@ -64,7 +64,7 @@ export default function Login(props) {
                 // setFriends(res.data.friends)
                 // console.log("res.data - Login.js", res.data);
                 cookies.set("userdata", res.data, {maxAge: 3600});
-                goChat(res.data.userName, res.data.avatar)
+                goChat(res.data.userName, res.data.avatar, res.data.userLanguages, res.data.userID)
                 // props.setNickname(res.data.userName)
               } else {
                 // console.log(res.data)
