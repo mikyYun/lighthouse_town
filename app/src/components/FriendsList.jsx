@@ -5,7 +5,7 @@ import { PanelGroup } from "bootstrap";
 export default function FriendList() {
   // const { online,  socket } = useContext(SocketContext);
   const { online, friendList, socket } = useContext(SocketContext);
-  const { setFriendList } = useContext(UserListContext);
+  const { user } = useContext(UserListContext);
   const [toggle, setToggle] = useState(false);
   const toggleButton = useCallback(() => setToggle(!toggle));
   const [updateFriend, setUpdateFriend] = useState();
@@ -35,7 +35,8 @@ export default function FriendList() {
   });
 
   useEffect(() => {
-    socket.emit("friendsList", { socketID: socket.id });
+    socket.emit("friendsList", { newSocketID: socket.id, user });
+    // user is an object
     return () => {
       socket.disconnect();
     };

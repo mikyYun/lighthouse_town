@@ -60,84 +60,80 @@ const usersInRooms = {};
 
 
 
-io.on("connection", (socket) => {
-  const roomName = "room 1";
+io.on("connection", (socket) => { //여기서 이미 socket id generation
+
+
+
+
+  const roomName = "plaza";
   const session = socket.request.session;
   session.save();
 
-  socket.on("friendsList", (id) => {
-    // id.socketID = new user's socketid
-    const newSocketID = id.socketID;
+  socket.on("friendsList", ({ newSocketID, user }) => {
     // check this id is in currentUsers Object
     const alluserNames = Object.keys(currentUsers);
-    let existUsername;
-    alluserNames.map(username => {
-      if (currentUsers[username] === newSocketID) {
-        // console.log(username)
-        existUsername = username;
-        return;
-      } else {
-        return false; // !!@@return false 아님?
-      }
-    });
-    if (existUsername !== false) { // @@아니면 이렇게 쓰는 건? if (existUsername)
-      pool.query("SELECT * FROM users", // {id: , username: , password: , email: , avatar: , lan_id: }
-        // [existUsername],
-        (err, res_1) => {
-          if (err) throw err;
-          if (res_1.rows[0]) { // 테이블이 존재하면
-            const allusersTable = res_1.rows;
-            let userID;
-            allusersTable.map(obj => {
-              if (obj.username === existUsername)
-                userID = obj.id; // @@obj는 뭐임?
-            });
-            // user exist
-            // const userID = res_1.rows[0].id;
-            pool.query(
-              // find added(followers) id
-              "SELECT added_by FROM favorites WHERE added=$1",
-              // {id: , following: , followed: }
-              [userID],
-              (err, res_2) => {
-                // console.log(res_2.rows)
-                const usernames = [];
-                const followedIds = []; // userid[1, 2, 3....]
-                const followedInfo = {};
-                res_2.rows.map(obj => {
-                  followedIds.push(obj.added_by);
-                });
-                // console.log("!!",Object.keys(allusersTable))
-                allusersTable.map(obj => {
-                  if (followedIds.includes(obj.id)) {
-                    // console.log(obj.id)
-                    usernames.push(obj.username);
-                    followedInfo[obj.username] = {};
-                    followedInfo[obj.username]["languages"] = [];
-                    // followedInfo[obj.username]["email"] = obj.email
-                  }
-                });
-                // console.log(usernames);
-                pool.query(
-                  "SELECT * FROM user_language JOIN languages ON language_id=languages.id", (err, res_3) => {
-                    res_3.rows.map(userLanguageID => { // @@ userLanguageName 으로 바꾸고 밑에서 =>// obj.language_name 으로 하기
-                      // console.log("THIS", userLanguageID);
-                      // console.log(allusersTable);
-                      const nameMatching = allusersTable.find(obj => obj.id === userLanguageID.user_id).username;
-                      if (followedIds.includes(userLanguageID.user_id)) {
-                        followedInfo[nameMatching].languages.push(userLanguageID.language_name);
-                        // console.log(userLanguageID.language_id)
-                      }
-                    });
-                    // console.log("INFO", followedInfo)
-                    socket.emit("friendsListBack", followedInfo);
-                  }
-                );
-              }
-            );
-          }
-        });
-    }
+
+    const currentUser = alluserNames.find((username) => currentUsers[username] === newSocketID)
+
+    // let existUsername;
+    // alluserNames.map(username => {
+    //   if (currentUsers[username] === newSocketID) { // if this user is online, then true
+    //     // console.log(username)
+    //     existUsername = username;
+    //     return;
+    //   } else {
+    //     return false; // !!@@return false 아님?
+    //   }
+    // });
+
+    if (!currentUser) return res.send('USER NOT FOUND - server.js') //@@upgrade later @mike 
+
+
+    pool.query("SELECT * from users JOIN favorites WHERE added_by = id" //@@mike revisit //maybe JOIN languages too 
+      ,
+      // {id: , username: , password: , email: , avatar: , lan_id: }
+      (err, res_1) => {
+        if (err) throw err;
+        if (res_1.rows[0]) { // 테이블이 존재하면
+          const allusersTable = res_1.rows;
+          //array of every user object from db
+          pool.query(
+            // find added(followers) id
+            "SELECT added FROM favorites WHERE added_by=$1", //@mike can remove //then return res.rows
+            //userID = yourself / added_by = yourself / added = friends
+            // {id: , following: , followed: }
+            [user.id],
+            (err, res_2) => {
+              const usernames = [];
+              const addededInfo = {};
+              const addedIds = res_2.rows.map(obj => obj.added);
+              allusersTable.map(obj => {
+                if (addedIds.includes(obj.id)) {
+                  usernames.push(obj.username);
+                  addedInfo[obj.username] = {};
+                  addedInfo[obj.username]["languages"] = [];
+                  // addedInfo[obj.username]["email"] = obj.email
+                }
+              });
+              pool.query(
+                "SELECT * FROM user_language JOIN languages ON language_id=languages.id", (err, res_3) => {
+                  res_3.rows.map(userLanguageID => { // @@ userLanguageName 으로 바꾸고 밑에서 =>// obj.language_name 으로 하기
+                    // console.log("THIS", userLanguageID);
+                    // console.log(allusersTable);
+                    const nameMatching = allusersTable.find(obj => obj.id === userLanguageID.user_id).username;
+                    if (followedIds.includes(userLanguageID.user_id)) {
+                      followedInfo[nameMatching].languages.push(userLanguageID.language_name);
+                      // console.log(userLanguageID.language_id)
+                    }
+                  });
+                  // console.log("INFO", followedInfo)
+                  socket.emit("friendsListBack", followedInfo);
+                }
+              );
+            }
+          );
+        }
+      });
   });
 
   // socket.on("reconnection?", (e) => {
@@ -167,21 +163,20 @@ io.on("connection", (socket) => {
   // use object
   // socket.emit("init", {data: 'hello world'})
 
-  socket.on('sendData', data => {
+  socket.on('sendData', data => { //이 data는 어디서옴?
 
-    const { userState, room, removeFrom } = data;
+    const { userState, room, removeFrom } = data; // 이 room은 어디서 어떻게 define 돼있음?
 
     // console.log('got data', data);
-    if (!usersInRooms[room]){
+    if (!usersInRooms[room]) {
       usersInRooms[room] = {}
     }
-    // console.log('BEFORE LOOP', usersInRooms);
-     //when usersInRooms have some properties
-     for (const rooms in usersInRooms) {
+    //when usersInRooms have some properties
+    for (const rooms in usersInRooms) {
       // console.log(usersInRooms[rooms])
-      for (const user in usersInRooms[rooms]){
-        if ( room !== rooms && userState.username === user) {
-          delete usersInRooms[rooms][userState.username]
+      for (const user in usersInRooms[rooms]) { //이건 왜 room아니고 rooms 임?
+        if (room !== rooms && userState.username === user) {
+          delete usersInRooms[rooms][userState.username] //뭐하는 코드?
         }
       }
     }
@@ -198,7 +193,7 @@ io.on("connection", (socket) => {
   socket.on("SET USERNAME", (obj) => {
     //Login.jsx 의 setUser(res.data.userName)
     const { username, socketID } = obj;
-    console.log("RECONNECTION",username, socketID)
+    console.log("RECONNECTION", username, socketID)
 
     currentUsers[username] = socketID;
     pool.query(
@@ -232,17 +227,17 @@ io.on("connection", (socket) => {
             alluserNames.forEach((name) => {
               io.to(currentUsers[name])
                 .emit("all user names", { "users": loginUsersData });// all user names
+            }
+            );
           }
         );
-      }
-    );
 
 
-    // const alluserNames = Object.keys(currentUsers); 
-    // alluserNames.forEach((name) => {
-    //   io.to(currentUsers[name])
-    //     .emit("all user names", { "users": alluserNames });
-    }); // {"users": [name1, name2] }
+        // const alluserNames = Object.keys(currentUsers); 
+        // alluserNames.forEach((name) => {
+        //   io.to(currentUsers[name])
+        //     .emit("all user names", { "users": alluserNames });
+      }); // {"users": [name1, name2] }
     // }
   });
 
@@ -349,21 +344,16 @@ io.on("connection", (socket) => {
   /* ADDED FROM socket/index.js */
 
   socket.on("JOIN_ROOM", (requestData) => {
-    // 콜백함수의 파라미터는 클라이언트에서 보내주는 데이터.
-    // 이 데이터를 소켓 서버에 던져줌.
-    // 소켓서버는 데이터를 받아 콜백함수를 실행.
-    socket.join(roomName); // user를 "room 1" 방에 참가시킴.
+
+    socket.join(roomName); // user를 "plaza" 방에 참가시킴.
     const responseData = {
       ...requestData,
       type: "JOIN_ROOM",
       time: new Date(),
     };
 
-
-    // "room 1"에는 이벤트타입과 서버에서 받은 시각을 덧붙여 데이터를 그대로 전송.
     io.to(roomName).emit("RECEIVE_MESSAGE", responseData);
-    // 클라이언트에 이벤트를 전달.
-    // 클라이언트에서는 RECEIVE_MESSAGE 이벤트 리스너를 가지고 있어서 그쪽 콜백 함수가 또 실행됌. 서버구현 마치고 클라이언트 구현은 나중에.
+
     console.log(
       `JOIN_ROOM is fired with data: ${JSON.stringify(responseData)}`
     );
@@ -382,34 +372,25 @@ io.on("connection", (socket) => {
     );
   });
 
-  // receive.message는 ChatRoom.jsx 에서 defined
   // --------------- SEND MESSAGE ---------------
   socket.on("SEND_MESSAGE", (requestData) => {
-    //emiting back to receive message in line 67
     const responseData = {
       ...requestData,
       type: "SEND_MESSAGE",
       time: new Date(),
     };
-    // SVGPreserveAspectRatio.to(roomName).emit
     io.emit("RECEIVE_MESSAGE", responseData);
-    //responseData = chat message
-    //@@@@@@ ChatRoom.jsx line 21
-    // console.log(
-    //   `"SEND_MESSAGE" is fired with data: ${JSON.stringify(responseData)}`
-    // );
+
   });
 
   /* 오브젝트에서 종료되는 유저 삭제 */
   socket.on("disconnect", () => {
-    // console.log("Server.js - DISCONNECT", socket.id);
-    
     const alluserNames = Object.keys(currentUsers);
     let disconnectedUsername
     alluserNames.forEach((name) => {
       if (currentUsers[name] === socket.id)
         delete currentUsers[name];
-        disconnectedUsername = name
+      disconnectedUsername = name
     }); // {"users": [name1, name2] }
     // console.log("Server.js - DISCONNECT - CURRENT USERS", currentUsers);
     io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기

@@ -24,7 +24,7 @@ function App() {
   // const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
   const [online, setOnline] = useState([{ value: 'all', label: 'all' }]);
-  const [friendList, setFriendList] = useState([]);
+  const [friendList, setFriendList] = useState([]); // all friends
   const [show, setShow] = useState(false);
   const [clicked, setClicked] = useState({});
   const [recipient, setRecipient] = useState({ value: "all", label: "all" });
@@ -48,7 +48,7 @@ function App() {
     "/game/html",
     "/game/css",
     "/game/js",
-     '/'
+    '/'
   ];
 
   // set map for navigate
@@ -109,7 +109,7 @@ function App() {
       // 유저데이터가 아직 삭제되지 않았고, 게임페이지 리로드 한 경우 서버랑 연결하고 currentUser update in server
       if (all_cookies.userdata) {
         // 쿠키 존재하면 리커넥트 요청
-        socket.emit("SET USERNAME", { username: all_cookies.userdata.userName, socketID: socket.id });
+        socket.emit("SET USERNAME", { username: all_cookies.userdata.userName, socketID: socket.id }); //maybe undefined
         // socket.emit("reconnection?", { username: all_cookies.userdata.userName, newSocketId: socket.id });
         // socket.on("DENY CONNECTION", (e) => {
         //   clearCookies()
@@ -139,9 +139,9 @@ function App() {
     //     newFriendInfo
     //   }));
     // });
-    socket.on("updateFriendsList", ({newFriendName, languages}) => {
+    socket.on("updateFriendsList", ({ newFriendName, languages }) => {
       const nameAndLangObj = {}
-      nameAndLangObj[newFriendName] = {languages}
+      nameAndLangObj[newFriendName] = { languages }
       setFriendList((prev) => ({
         ...prev,
         ...nameAndLangObj
@@ -183,15 +183,15 @@ function App() {
       const loginUsersInformation = {}
       const usersOnline = []
       loginUserNames.map(name => {
-        usersOnline.push({ value: name, label: name, avatar: avatars[loginUsersObject[name].avatar_id]})
+        usersOnline.push({ value: name, label: name, avatar: avatars[loginUsersObject[name].avatar_id] })
         loginUsersInformation[name] = {
           name: name,
           email: loginUsersObject[name].email,
           languages: loginUsersObject[name].languages,
           avatar_id: loginUsersObject[name].avatar_id,
         }
-      }) 
-       //@@@@ SUNDAY - this should be dynamic and need an avatar from socket.
+      })
+      //@@@@ SUNDAY - this should be dynamic and need an avatar from socket.
       // console.log("ONLINE USERS PROFILE SET",loginUsersInformation)
       setProfiles(loginUsersInformation)
 
