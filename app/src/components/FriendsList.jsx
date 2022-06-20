@@ -1,49 +1,66 @@
 import { useEffect, useCallback, useContext, useState } from "react";
-import { SocketContext } from "../App.js";
+import { SocketContext, UserListContext } from "../App.js";
 import { PanelGroup } from "bootstrap";
+
 export default function FriendList() {
+  // const { online,  socket } = useContext(SocketContext);
   const { online, friendList, socket } = useContext(SocketContext);
-  const friendsNames = Object.keys(friendList); // [이름, 이름]
+  const { setFriendList } = useContext(UserListContext);
   const [toggle, setToggle] = useState(false);
-  const toggleButton = useCallback(() => setToggle(!toggle))
+  const toggleButton = useCallback(() => setToggle(!toggle));
+  const [updateFriend, setUpdateFriend] = useState()
+  const friendsNames = Object.keys(friendList); // [이름, 이름]
+
+
 
   const friendsListing = friendsNames.map((friendName, i) => {
     const lists = () => {
+      console.log("LIST", friendList);
       if (friendsNames.length > 0) {
         if (friendList[friendName].languages) {
-          // console.log(friendList[friendName].languages);
           const languages = friendList[friendName].languages;
           return languages.map((lang, index) => (
-            // <div key={index} className="language collapse" id="collapseExample">
-            // <div key={index} className="card card-body">
             <div key={index} className="languageDiv">
               {lang}
             </div>
-            // </div>
-            // </div>
           ));
         }
       }
     };
+
     return (
       <div key={i}>
         <div
-          // btn-primary 
           className="btn btn-primary collaps"
-        // onClick={toggleButton}
         >
           <div>{friendName}</div>
         </div>
-        <div className="languageLists">
-          {lists()}
-        </div>
+        <div className="languageLists">{lists()}</div>
       </div>
     );
   });
 
   useEffect(() => {
     socket.emit("friendsList", { socketID: socket.id });
+
+    // socket.on("friendsListBack", friendsInfo => {
+    //   setFriendList(friendsInfo);
+    // });
+
+    // socket.on("updateFriendsList", ({newFriendName, languages}) => {
+    //   const nameAndLangObj = {}
+    //   nameAndLangObj[newFriendName] = {languages}
+
+    //   setFriendList(prev => ({
+    //     ...prev,
+    //     ...nameAndLangObj,
+    //   }))
+    // });
+    return () => {
+      socket.disconnect()
+    }
   }, [socket]);
+
   return (
     <div className="friendsList">
       <div className="friendsListLabel">Friends</div>

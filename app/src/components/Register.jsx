@@ -170,7 +170,7 @@ export default function Register(props) {
               .post("/register", { userInfo })
               .then(res => {
                 props.submitRegistrationInfo(res.data);
-                cookies.set("username", res.data)
+                cookies.set("username", res.data, {maxAge: 3600})
                 navigate("/game/plaza")
               }).catch(error => console.log(error)
               )
