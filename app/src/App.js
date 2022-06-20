@@ -54,9 +54,10 @@ function App() {
   }
 
   const avatars = {
-    0: "/images/boy-face.png",
-    1: "/images/boy-face.png",
-    2: "/images/girl-face.png"
+    0: "/images/boy1-face.png",
+    1: "/images/boy2-face.png",
+    2: "/images/girl1-face.png",
+    3: "/images/girl2-face.png"
   }
 
   // ================= INTANCES =============== //
