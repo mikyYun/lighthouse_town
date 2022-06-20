@@ -53,9 +53,10 @@ function App() {
     js: classroom
   }
   const avatars = {
-    0: "/game_img/boy1-face.png",
-    1: "/game_img/boy2-face.png",
-    2: "/game_img/girl-face.png"
+    0: "/images/boy1-face.png",
+    1: "/images/boy2-face.png",
+    2: "/images/girl1-face.png",
+    3: "/images/girl2-face.png"
   }
   console.log(avatars)
 
