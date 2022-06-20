@@ -141,8 +141,6 @@ io.on("connection", (socket) => {
     }
   });
 
-
-
   socket.on("reconnection?", (e) => {
     console.log("RECONENCTION REQUEST", e)
     // let reconnection = true
@@ -424,7 +422,7 @@ app.post("/login", (req, res) => {
                 userID
                 // friends
               };
-              res.status(201).send(loginUserData); //object - username, avatar, language
+              return res.status(201).send(loginUserData); //object - username, avatar, language
             } else {
               console.log("No available language", res_2.rows);
             }
@@ -434,7 +432,7 @@ app.post("/login", (req, res) => {
 
       } else {
         // no matching user
-        res.status(201).send(false);
+        return res.status(201).send(false);
       }
     }
   );
@@ -443,7 +441,7 @@ app.post("/login", (req, res) => {
 
 // friends
 
-app.post("/register", (req, response) => {
+app.post("/register", (req, res) => {
   const userName = req.body.userInfo.userName;
   const userPassword = req.body.userInfo.userPassword;
   const userEmail = req.body.userInfo.userEmail;
@@ -453,26 +451,30 @@ app.post("/register", (req, response) => {
   pool.query(
     //check if user already exists in DB during registration
     "SELECT * FROM users WHERE username = $1 OR email = $2", [userName, userEmail])
-    .then((res) => {
-      if (res.rows[0]) throw new Error('User already registered');
+    .then((response) => {
+      // break promise chain early by throwing error
+      if (response.rows[0]) return Promise.reject(('User already registered')); // option 1?
+      // throw res.status(409).send('User already registered'); // option 2
+
       return pool.query(
         "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [userName, userPassword, userEmail, userAvatar])
-      // * means we are returning the 'user' entry to the next .then
+      // "RETURNING *" means we are returning the new 'user' entry to the next .then
     })
-    .then((res) => {
-      // console.log("new user registered");
-      const newUser = { ...res.rows[0], languages: userLanguages }
+    .then((response) => {
+      const { username, avatar_id, id } = response.rows[0]
+      const userData = [username, avatar_id, userLanguages, id]
+
       userLanguages.forEach((lang_id) => {
         pool.query(
           "INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *",
-          [newUser.id, lang_id]
+          [response.rows[0].id, lang_id]
         )
       })
-      response.status(201).send(newUser) // sending it back to the client
+      // sending user info back to Register.jsx (as res.data)
+      res.status(201).send(userData);
     })
-  //we have catch in the client with axios.
-})
-
+    .catch((e) => { console.error(e); })
+});
 
 
 // app.post("/friends", (req, res) => {

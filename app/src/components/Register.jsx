@@ -57,6 +57,7 @@ export default function Register(props) {
             type="text"
             value={userName}
             onChange={(e) => {
+              setUserName(e.target.value)
             }}
           ></input>
         </div>
@@ -164,12 +165,20 @@ export default function Register(props) {
               userLanguages,
               userAvatar,
             };
-            axios // client talking to the server. Asynchronous. if it doesn't happen .post,
-              .post("/register", { userInfo })
+
+            // client talking to the server. Asynchronous. if it doesn't happen .post,
+            axios.post("/register", { userInfo })
               .then(res => {
-                props.submitRegistrationInfo(res.data); //? to confirm
-                cookies.set("username", res.data.username) //?to confirm
-                navigate("/game/plaza")
+                // props.submitRegistrationInfo(res.data);
+
+                cookies.set("userdata", {
+                  userName,
+                  userEmail,
+                  userLanguages,
+                  userAvatar,
+                }, { maxAge: 3600 });
+                console.log('res.data - register.jsx', res.data)
+                navigate("/game/plaza", { state: res.data })  //@JORDAN: create data boject with lowercase username
               })
               .catch(error => console.log(error))
           }}

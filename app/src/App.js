@@ -64,7 +64,6 @@ function App() {
 
   const cookies = new Cookies();
 
-
   // const addFriend = () => { }
   // const sendMessage = () => { }
   // const viewProfile = () => { }
@@ -80,7 +79,7 @@ function App() {
 
     const currentCookies = cookies.getAll();
     // cookies maxAge 3600.
-    if (location.pathname === "/" && currentCookies.userdata && currentCookies.userdata && currentCookies["connect.sid"]) {
+    if (location.pathname === "/" && currentCookies.userdata && currentCookies["connect.sid"]) {
       navigate('/game/plaza');
     } else if (!urlLists.includes(location.pathname)) {
       clearCookies();
@@ -95,7 +94,6 @@ function App() {
 
     //frontend
     socket.on("connect", () => {
-      console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!")
       const all_cookies = cookies.getAll();
       //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
       // if (location.pathname === "/game") {
@@ -131,10 +129,10 @@ function App() {
       setFriendList(friendsInfo)
     })
 
-    socket.on("REGISTRATION SUCCESS", (userInfo) => {
-      cookies.set("email", userInfo, {maxAge: 3600});
-      navigate("/game/plaza");
-    });
+    // socket.on("REGISTERED", (userInfo) => {
+    //   cookies.set("email", userInfo, { maxAge: 3600 });
+    //   navigate("/game/plaza");
+    // });
 
     socket.on("init", msg => console.log("msg - App.js", msg)); //coming from server
     socket.on("backData", data => console.log("data", data)); //coming from server
@@ -154,9 +152,9 @@ function App() {
     }; // => prevent memory leak..
   }, []);
 
-  const RegistrationChecker = (val) => {
-    socket && socket.emit("REGISTERED", val);
-  };
+  // const RegistrationChecker = (val) => {
+  //   socket && socket.emit("REGISTERED", val);
+  // };
 
   const clearCookies = () => {
     const all_cookies = cookies.getAll();
@@ -191,10 +189,10 @@ function App() {
     setClicked -> used in Online.jsx */}
 
         <div className='main'>
-          {show && <Menu username={nickname}/>}
+          {show && <Menu username={nickname} />}
           <Routes>
             <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
-            <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
+            <Route path='/register' element={<Register submitRegistrationInfo={'RegistrationChecker'} />} />
             <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
             <Route path={`/game/${room}`} element={
               <Game
