@@ -11,10 +11,10 @@ const Menu = (props) => {
   const userID = location.state?.[3]
   return (
     <ul className="menu">
-      <li className="add-friend" onClick={(e) => {
+      <li className="add friend" onClick={(e) => {
         // console.log(clicked.value) // clicked name
-        console.log("add-friend clicked", username, clicked.value)
         const addFriendName = clicked.value
+        console.log("add-friend clicked", username, addFriendName, userID)
         
         socket.emit("add friend", {username, addFriendName, userID})
       }}>Add Friend</li>
