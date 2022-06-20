@@ -23,8 +23,8 @@ const sessionMiddleware = session({
   secret: "coding_buddy",
   cookie: { maxAge: 60000 },
 });
+const { getOneUserLanguages } = require("./coding_buddy_db");
 const { Pool } = require("pg");
-
 const pool = new Pool({
   user: process.env.PGUSER,
   host: process.env.PGHOST,
@@ -140,7 +140,7 @@ io.on("connection", (socket) => {
 
 
   socket.on("reconnection?", (e) => {
-    console.log("RECONENCTION REQUEST", e)
+    console.log("RECONENCTION REQUEST", e);
     // let reconnection = true
     // console.log("THIS IS RECONNECTION", e);
     // e.username, e.newSocketId
@@ -183,8 +183,15 @@ io.on("connection", (socket) => {
       usersInRooms[room][userState.username] = userState;
     }
 
-    console.log('usersInRooms', usersInRooms)
-    io.emit('sendData', { usersInRooms, room }) // 다시 Canvas.jsx -> const newCharactersData = data;
+    // console.log("COMPLETE", usersInRooms)
+    // usersInRooms = {
+    //     plaza: { moon: {moons state},
+    //              heesoo: {heesoo's state}
+    //      }
+
+
+    // console.log(usersInRooms)
+    io.emit('sendData', { usersInRooms, room }); // 다시 Canvas.jsx -> const newCharactersData = data;
 
   });
 
@@ -221,27 +228,68 @@ io.on("connection", (socket) => {
 
   // ADD FRIEND
   // socket.on("add friend", {username, addFreindName})
-  socket.on("add friend", ({username, addFriendName, userID}) => {
+  socket.on("add friend", ({ username, addFriendName, userID }) => {
     // console.log("ADD FRIEND", nameObj)
     pool.query(
-      "SELECT id, username FROM users WHERE username=$1",[addFriendName],
+      "SELECT id, username FROM users WHERE username=$1", [addFriendName],
       (err, res) => {
         // res.rows => users table [{id: , username: ,....}]
-        const targetID = res.rows[0].id
-        console.log("target users id",targetID)
+        const targetID = res.rows[0].id;
+        // console.log("target users id", targetID);
         pool.query(
-          "INSERT INTO favorites (added_by, added) VALUES ($1, $2)", [userID, targetID]
-        )
-      }
-    )
+          "INSERT INTO favorites (added_by, added) VALUES ($2, $1)", [userID, targetID]
+        );
+        // console.log(targetID);
+        /////////////////////////////////////////
+        /////////////////////////////////////////
 
-    pool.query(
-      "SELECT * FROM favorites",
-      (err, res) => {
-        // console.log(res.rows)
+        pool.query("SELECT * FROM user_language JOIN languages ON user_language.language_id=languages.id WHERE user_id=$1", [targetID],
+          (err, res) => {
+            const languages = [];
+            res.rows.map(obj => {
+              languages.push(obj.language_name);
+            });
+            const newFriendLanguageObj = {}
+            newFriendLanguageObj[addFriendName] = {languages}
+            // console.log("WHAT", addFriendName, {languages});
+            // socket.emit("updateFriendsList", newFriendLanguageObj);
+            socket.emit("updateFriendsList", {newFriendName: addFriendName, languages: languages});
+          });
+
+
+        // pool.query("SELECT * FROM user_language WHERE user_id=$1", [targetID],
+        //   (err, res) => {
+        //     const userLanguageTable = res.rows;
+        //     const languageNames = []
+        //     // console.log(row)
+        //     // return changeToLanguageName(row.id);
+        //     userLanguageTable.map(row => {
+        //     return pool.query("SELECT * FROM languages WHERE id=$1", [row.language_id],
+        //     (err, res) => {
+        //           console.log("RES",res.rows[0].language_name)
+        //           return languageNames.push(res.rows[0].language_name)
+        //           // return res.rows[0].languageName;
+        //         });
+        //     });
+        //     console.log("THIS",languageNames)
+        //     // return userLanguageTable;
+        //     socket.emit("updateFriendsList", userLanguageTable)
+        //   });
+        // console.log(getOneUserLanguages(targetID, addFriendName))
+        // getOneUserLanguages(targetID, addFriendName);
+        // this method will return array of language names
+        // send this array to update friendList
+
       }
-    )
-  })
+    );
+
+    // pool.query(
+    //   "SELECT * FROM favorites",
+    //   (err, res) => {
+    //     // console.log(res.rows)
+    //   }
+    // );
+  });
 
   // receive message
   socket.on("NEW MESSAGE", (e) => {
