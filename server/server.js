@@ -92,13 +92,15 @@ io.on("connection", (socket) => {
             });
             // user exist
             // const userID = res_1.rows[0].id;
+
             pool.query(
               // find added(followers) id
               "SELECT added_by FROM favorites WHERE added=$1",
               // {id: , following: , followed: }
               [userID],
               (err, res_2) => {
-                console.log(res_2.rows)
+                if (err) throw err;
+                // console.log(res_2.rows)
                 const usernames = [];
                 const followedIds = []; // userid[1, 2, 3....]
                 const followedInfo = {};
@@ -115,6 +117,7 @@ io.on("connection", (socket) => {
                     // followedInfo[obj.username]["email"] = obj.email
                   }
                 });
+
                 // console.log(usernames);
                 pool.query(
                   "SELECT * FROM user_language JOIN languages ON language_id=languages.id", (err, res_3) => {
@@ -247,14 +250,14 @@ io.on("connection", (socket) => {
 
   // ADD FRIEND
   // socket.on("add friend", {username, addFreindName})
-  socket.on("add friend", ({username, addFriendName, userID}) => {
+  socket.on("add friend", ({ username, addFriendName, userID }) => {
     // console.log("ADD FRIEND", nameObj)
     pool.query(
-      "SELECT id, username FROM users WHERE username=$1",[addFriendName],
+      "SELECT id, username FROM users WHERE username=$1", [addFriendName],
       (err, res) => {
         // res.rows => users table [{id: , username: ,....}]
         const targetID = res.rows[0].id
-        console.log("target users id",targetID)
+        console.log("target users id", targetID)
         pool.query(
           "INSERT INTO favorites (added_by, added) VALUES ($1, $2)", [userID, targetID]
         )
@@ -440,52 +443,37 @@ app.post("/login", (req, res) => {
 
 // friends
 
-app.post("/register", (req, res) => {
+app.post("/register", (req, response) => {
   const userName = req.body.userInfo.userName;
   const userPassword = req.body.userInfo.userPassword;
   const userEmail = req.body.userInfo.userEmail;
   const userLanguages = req.body.userInfo.userLanguages;
   const userAvatar = req.body.userInfo.userAvatar;
+
   pool.query(
-    "SELECT * FROM users WHERE username = $1 OR email = $2",
-    [userName, userEmail],
-    (err, res_1) => {
-      if (err) throw err;
-      // console.log(res_1.rows[0]);
-      if (res_1.rows[0]) return res.status(201).send("existing data");
-    }
-  );
-  pool.query(
-    "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *",
-    [userName, userPassword, userEmail, userAvatar],
-    (err, result) => {
-      if (err) throw err;
-      console.log("new user registered");
-      pool.query(
-        "SELECT id FROM users WHERE username = $1",
-        [userName],
-        (err, res_2) => {
-          // console.log("new user's user ID", res_2.rows);
-          const newUserID = res_2.rows[0].id;
-          userLanguages.forEach((lang_id) => {
-            if (lang_id) {
-              // console.log(lang_id);
-              pool.query(
-                "INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *",
-                [newUserID, lang_id],
-                (err, res_3) => {
-                  if (err) throw err;
-                  console.log("new user's language data added", res_3.rows);
-                }
-              );
-            }
-          });
-        }
-      );
-    }
-  );
-  res.status(201).send({ userName, userEmail, userLanguages, userAvatar });
-});
+    //check if user already exists in DB during registration
+    "SELECT * FROM users WHERE username = $1 OR email = $2", [userName, userEmail])
+    .then((res) => {
+      if (res.rows[0]) throw new Error('User already registered');
+      return pool.query(
+        "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [userName, userPassword, userEmail, userAvatar])
+      // * means we are returning the 'user' entry to the next .then
+    })
+    .then((res) => {
+      // console.log("new user registered");
+      const newUser = { ...res.rows[0], languages: userLanguages }
+      userLanguages.forEach((lang_id) => {
+        pool.query(
+          "INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *",
+          [newUser.id, lang_id]
+        )
+      })
+      response.status(201).send(newUser) // sending it back to the client
+    })
+  //we have catch in the client with axios.
+})
+
+
 
 // app.post("/friends", (req, res) => {
 //   const username = req.body.username;

@@ -57,8 +57,6 @@ export default function Register(props) {
             type="text"
             value={userName}
             onChange={(e) => {
-              if (e.target.value.length < 4) setUserName(e.target.value);
-              console.log("username should be longer than 4 chars - Register.js");
             }}
           ></input>
         </div>
@@ -74,7 +72,7 @@ export default function Register(props) {
             // value={userPassword}
             onChange={(e) => {
               if (e.target.value.length < 4) setUserPassword(e.target.value);
-              console.log("password should be longer than 4 chars");
+              // console.log("password should be longer than 4 chars");
             }}
           ></input>
         </div>
@@ -87,12 +85,12 @@ export default function Register(props) {
             placeholder="PASSWORD_CONFIRMATION"
             type="password"
             onChange={(e) => {
-              if (e.target.value !== userPassword) {
-                setIncorrectPassword("incorrect_password")
-                console.log("confirmation password doesn't match. - Register.js");
-              } else {
-                setIncorrectPassword("correct_password")
-              }
+              // if (e.target.value !== userPassword) {
+              //   setIncorrectPassword("incorrect_password")
+              //   console.log("confirmation password doesn't match. - Register.js");
+              // } else {
+              setIncorrectPassword("correct_password")
+              // }
             }}
           ></input>
         </div>
@@ -169,11 +167,11 @@ export default function Register(props) {
             axios // client talking to the server. Asynchronous. if it doesn't happen .post,
               .post("/register", { userInfo })
               .then(res => {
-                props.submitRegistrationInfo(res.data);
-                cookies.set("username", res.data)
+                props.submitRegistrationInfo(res.data); //? to confirm
+                cookies.set("username", res.data.username) //?to confirm
                 navigate("/game/plaza")
-              }).catch(error => console.log(error)
-              )
+              })
+              .catch(error => console.log(error))
           }}
         >
           Register
