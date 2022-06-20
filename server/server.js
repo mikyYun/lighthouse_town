@@ -59,7 +59,6 @@ let currentUsers = {}; // => {username : socket.id}
 const usersInRooms = {};
 
 
-
 io.on("connection", (socket) => {
   const roomName = "room 1";
   const session = socket.request.session;
