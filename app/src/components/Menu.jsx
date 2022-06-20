@@ -14,7 +14,7 @@ const Menu = (props) => {
       <li className="add friend" onClick={(e) => {
         // console.log(clicked.value) // clicked name
         const addFriendName = clicked.value
-        console.log("add-friend clicked", username, addFriendName, userID)
+        // console.log("add-friend clicked", username, addFriendName, userID)
         
         socket.emit("add friend", {username, addFriendName, userID})
       }}>Add Friend</li>

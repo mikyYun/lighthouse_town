@@ -52,10 +52,10 @@ const Canvas = (props) => {
       canvas.height = 640;
       const ctx = canvas.getContext("2d");
 
-      const mapImg = new Image();
-      mapImg.src = props.map;
-      mapImg.onload = () => {
-        ctx.drawImage(mapImg, 0, 0);
+      // const mapImg = new Image();
+      // mapImg.src = props.map;
+      // mapImg.onload = () => {
+        // ctx.drawImage(mapImg, 0, 0);
         for (const userChar in userCharacters) {
           // console.log(userChar)
           // console.log(userCharacters)
@@ -69,7 +69,7 @@ const Canvas = (props) => {
           );
           ctx.fillStyle = "purple";
         }
-      }
+      // }
       sendData()
       // socket.emit("sendData", userCharacters[props.username].state);
     });

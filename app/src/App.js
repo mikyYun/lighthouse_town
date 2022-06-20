@@ -23,9 +23,9 @@ function App() {
   // const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
   const [online, setOnline] = useState([{ value: 'all', label: 'all' }]);
-  const [friendList, setFriendList] = useState([])
+  const [friendList, setFriendList] = useState([]);
   const [show, setShow] = useState(false);
-  const [clicked, setClicked] = useState({})
+  const [clicked, setClicked] = useState({});
   const [recipient, setRecipient] = useState({ value: "all", label: "all" });
   const [user, setUser] = useState({ value: "all", label: "all", avatar: 1 });
 
@@ -36,7 +36,7 @@ function App() {
   const location = useLocation();
 
   // ================= VARIABLES =============== //
-  console.log("LOCATION", location)
+  console.log("LOCATION", location);
   const nickname = location.state?.[0] || '';
   const urlLists = [
     "/game/plaza",
@@ -51,14 +51,14 @@ function App() {
   const maps = {
     plaza: town,
     js: classroom
-  }
+  };
   const avatars = {
     0: "/images/boy1-face.png",
     1: "/images/boy2-face.png",
     2: "/images/girl1-face.png",
     3: "/images/girl2-face.png"
-  }
-  console.log(avatars)
+  };
+  console.log(avatars);
 
   // ================= INTANCES =============== //
 
@@ -72,7 +72,7 @@ function App() {
   // ================= EFFECTS =============== //
 
   useEffect(() => {
-    setUser({ ...user, avatar: avatars[user.avatar] }) //[user.avatar] is a number (avatar id) 
+    setUser({ ...user, avatar: avatars[user.avatar] }); //[user.avatar] is a number (avatar id) 
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD GET A USER FROM THE DATA BASE
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD ALSO SET AN AVATAR WHEN WE GET AN USER OBJECT.
     // set URL for navigate when enter the house
@@ -80,7 +80,7 @@ function App() {
 
     const currentCookies = cookies.getAll();
     // cookies maxAge 3600.
-    if (location.pathname === "/" && currentCookies.userdata && currentCookies.userdata && currentCookies["connect.sid"]) {
+    if (location.pathname === "/" && currentCookies.userdata && currentCookies["connect.sid"]) {
       navigate('/game/plaza');
     } else if (!urlLists.includes(location.pathname)) {
       clearCookies();
@@ -92,10 +92,9 @@ function App() {
 
     // ================= FUNCTIONS =============== //
 
-
     //frontend
     socket.on("connect", () => {
-      console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!")
+      console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!");
       const all_cookies = cookies.getAll();
       //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
       // if (location.pathname === "/game") {
@@ -127,12 +126,28 @@ function App() {
     //   navigate("/")
     // })
 
-    socket.on("friendsListBack", friendsInfo => {
-      setFriendList(friendsInfo)
+    // socket.on("updateFriendsList", newFriendInfo => {
+    //   setFriendList(prev => ({
+    //     ...prev,
+    //     newFriendInfo
+    //   }));
+    // });
+    socket.on("updateFriendsList", ({newFriendName, languages}) => {
+      const nameAndLangObj = {}
+      nameAndLangObj[newFriendName] = {languages}
+      setFriendList((prev) => ({
+        ...prev,
+        ...nameAndLangObj
+      }))
     })
 
+    socket.on("friendsListBack", friendsInfo => {
+      console.log("INFO", friendsInfo)
+      setFriendList(friendsInfo);
+    });
+
     socket.on("REGISTRATION SUCCESS", (userInfo) => {
-      cookies.set("email", userInfo, {maxAge: 3600});
+      cookies.set("email", userInfo, { maxAge: 3600 });
       navigate("/game/plaza");
     });
 
@@ -191,7 +206,7 @@ function App() {
     setClicked -> used in Online.jsx */}
 
         <div className='main'>
-          {show && <Menu username={nickname}/>}
+          {show && <Menu username={nickname} />}
           <Routes>
             <Route path='/' element={<Layout setUser={createSocketIdNameObject} />} />
             <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />

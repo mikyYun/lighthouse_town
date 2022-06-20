@@ -1,5 +1,6 @@
 const Pool = require('pg').Pool; //postgres
 require("dotenv").config();
+// export default queryMethos = {getOneUserLanguages}
 
 const pool = new Pool({
   user: process.env.PGUSER,
@@ -8,6 +9,26 @@ const pool = new Pool({
   password: process.env.PGPASSWORD,
   port: process.env.PGPORT
 });
+
+
+// user id 로 languages data 불러오기
+const getOneUserLanguages = (id, username) => {
+  pool.query("SELECT * FROM user_language WHERE user_id=$1", [id],
+  (err, res) => {
+    const userLanguageTable = res.rows
+    userLanguageTable.map(row => {
+      return changeToLanguageName(row.id)
+    })
+    return userLanguageTable
+  })
+}
+
+const changeToLanguageName = (id) => {
+  pool.query("SELECT * FROM languages WHERE id=$1", [id],
+  (err, res) => {
+    return res.rows[0].languageName
+  })
+}
 
 // 데이터베이스 관리...
 // GET : get all users
