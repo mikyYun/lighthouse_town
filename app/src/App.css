@@ -28,26 +28,3 @@ body {
   display: flex;
 }
 
-ul.menu {
-  position: absolute;
-  min-width: 10em;
-  min-height: 10em;
-  right: 0;
-  top: 0;
-  z-index: 2;
-  background-color: #f4ffd1;
-  color: black;
-}
-
-li {
-  cursor: pointer;
-  padding: 0.5em;
-  list-style: none;
-
-}
-
-.users-online:hover{
-  background-color:#bada55;
-  color: black;
-}
-

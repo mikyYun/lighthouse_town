@@ -23,15 +23,16 @@ $list-color: #5f436d;
     border-radius: 5px;
     margin: 11px auto;
 
+    :hover {
+        background: #bada55;
+        color: black;
+        border-radius: 5px;
+    }
+
     .name {
         text-align: center;
     }
 
-    :hover {
-        background-color: #bada55;
-        color: black;
-        border-radius: 5px;
-    }
 }
 
 .languageLists {

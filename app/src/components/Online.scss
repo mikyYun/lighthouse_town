@@ -35,43 +35,28 @@ $second-color: #9883c4;
   }
 
 
-
-  .block-friend {
-    display: inline;
-    color: red;
-    font-size: x-small;
-    font-weight: bold;
-  }
-  .add-friend{
-    display: none;
-  }
-
-  .menu-container {
-    width: 100%;
-    background: black;
-    opacity: 50%;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-  }
-
-  .menu {
-    position: absolute;
-    padding: 10px;
-    width: 25%;
-    height: 20vh;
-    right: 0;
-    top: 10vh;
-    z-index: 2;
-    background-color: $main-color;
-
-  }
+.menu {
+    margin: 0 auto;
+    font-size: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: #e2ecc2f5;
+}
 
   li {
+    width: 100%;
     cursor: pointer;
     padding: 0.5em;
     list-style: none;
 
+  }
+  .online-user :hover {
+    background-color: #bada55;
+    color: black;
+    border-radius: 5px;
   }
 
   .users-online:hover{

@@ -52,18 +52,18 @@ export default function Profile(props) {
 
       if (clicked.value === username) {
         return (
-            <div className={'profile'} key={ind} style={{display: profileShow}}>
-            {/* 클릭없이 보고싶으면 밑에 있는것 사용 */}
-            {/* <div className={`profile ${username}`} key={ind} style={{display: "inline"}}> */}
-            {/* <title> */}
-            <div className="profile-name">{title}</div>
+            <div className='profile' key={ind} onClick={props.closeProfile}>
+              {/* 클릭없이 보고싶으면 밑에 있는것 사용 */}
+              {/* <div className={`profile ${username}`} key={ind} style={{display: "inline"}}> */}
+              {/* <title> */}
+              {/* <div className="profile-name">{title}</div> */}
             <div className="profile-email">{email}</div>
-            {/* </title> */}
+              {/* </title> */}
             <div key={ind}>
               <div className="profile-language">{languageLists}</div>
             </div>
 
-            <button onClick={() => {setProfileShow("none")}}>CLOSE</button>
+            {/* <button onClick={() => {setProfileShow("none")}}>CLOSE</button> */}
           </div>
           );
         }
