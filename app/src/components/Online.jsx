@@ -19,7 +19,7 @@ export default function Online(props) {
 
   return (
     <div className="online-list">
-      <FriendList />
+      {/* <FriendList /> */}
       {/* this is doing the emit */}
       <span>Online</span>
       <div>{usersOnline}</div>

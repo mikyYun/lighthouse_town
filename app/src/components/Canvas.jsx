@@ -4,13 +4,14 @@ import Characters from "./helper/Characters";
 import { selectAvatar } from "./helper/selectAvatar";
 import { SocketContext } from "../App";
 import { useNavigate, useLocation } from "react-router-dom";
-import { SOCKET_EVENT, makePublicMessage, makePrivateMessage } from "./service/socket";
+import { SOCKET_EVENT, makePublicMessage, makePrivateMessage, socket } from "./service/socket";
 
 
 const Canvas = (props) => {
   const { socket, nickname } = useContext(SocketContext);
   const canvasRef = useRef(null);
   const location = useLocation();
+  const [msg, setMsg] = useState({});
   const [userCharacters, setUserCharacters] = useState({
     [props.username]: new Characters({
       username: props.username,
@@ -43,6 +44,7 @@ const Canvas = (props) => {
     canvas.height = 640;
     const ctx = canvas.getContext("2d");
 
+
     socket.on("connect", () => {
 
       sendData()
@@ -69,21 +71,27 @@ const Canvas = (props) => {
         setUserCharacters(newCharacters);
       });
 
-      // for (const userChar in userCharacters) {
-      //   console.log('onfirts move', userChar)
-      //   userCharacters[userChar].drawFrame(ctx);
+      for (const userChar in userCharacters) {
+        // console.log('onfirts move',userChar)
+        // console.log(userCharacters)
+        userCharacters[userChar].drawFrame(ctx);
+        userCharacters[userChar].showName(ctx);
 
-      //   // Text on head.
-      //   ctx.font = '20px monospace';
-      //   ctx.fillText(
-      //     userCharacters[userChar].state.username,
-      //     userCharacters[userChar].state.x + 15,
-      //     userCharacters[userChar].state.y + 10
-      //   );
-      //   ctx.fillStyle = "purple";
-      // }
-    });
-    //socket ends
+
+        // Text on head.
+        ctx.font = '20px monospace';
+        ctx.fillText(
+          userCharacters[userChar].state.username,
+          userCharacters[userChar].state.x + 15,
+          userCharacters[userChar].state.y + 10
+        );
+        ctx.fillStyle = "purple";
+      }
+
+
+    });   //socket ends
+
+
 
     window.addEventListener("keydown", (e) => {
       userCharacters[props.username].move(e);
@@ -132,19 +140,42 @@ const Canvas = (props) => {
 
     window.addEventListener("keyup", () => {
       // console.log()
-      userCharacters[props.username].stop();
+      // userCharacters[props.username].stop();
       setUserCharacters(userCharacters)
       // console.log('after stop', userCharacters[props.username].state)
-      // if (userCharacters[props.username] !== undefined) {
-      //   sendData();
-      // }
+      if (userCharacters[props.username] !== undefined) {
+        sendData();
+      }
     });
 
     return () => {
-      // window.removeEventListener("keydown", (e) => userCharacters[0].move(e));
-      // window.removeEventListener("keyup", () => userCharacters[0].stop());
+      window.removeEventListener("keydown", (e) => userCharacters[0].move(e));
+      window.removeEventListener("keyup", () => userCharacters[0].stop());
     };
   }, []);
+
+
+
+  useEffect(() => {
+
+    socket.on("dataToCanvas", data => {
+
+      // when msg comes in, setMsg with its user
+      // setTimeout for setMsg to be ""
+
+      setMsg(prev => ({
+        ...prev,
+        [data.nickname]: data.content
+      }))
+      setTimeout(() => {
+        setMsg(prev => ({
+          ...prev,
+          [data.nickname]: ""
+        }))
+      }, 7000);
+    });
+  }, [socket])
+
 
 
   useEffect(() => {
@@ -153,13 +184,22 @@ const Canvas = (props) => {
     canvas.height = 640;
     const ctx = canvas.getContext("2d");
 
-    const mapImg = new Image();
-    mapImg.src = props.map;
-    mapImg.onload = () => {
-      ctx.drawImage(mapImg, 0, 0, canvas.width, canvas.height);
+    // console.log('CHARACTER', userCharacters)
+    console.log('게임그릴때: ', msg)
+    for (const userChar in userCharacters) {
+      userCharacters[userChar].drawFrame(ctx);
+      userCharacters[userChar].showName(ctx);
+      const msgToShow = msg[userCharacters[userChar].state.username];
+      console.log(msgToShow);
+      if (msgToShow !== undefined) {
+        userCharacters[userChar].showChat(ctx, msgToShow);
+      }
     }
-  }, [userCharacters]
-  );
+
+
+  }, [userCharacters]);
+
+
 
 
   //--------- functions
@@ -178,14 +218,6 @@ const Canvas = (props) => {
     });
   };
 
-  // const handleMessage = useCallback(
-  //   (pondata) => {
-  //     const message =
-  //   }
-  // )
-
-  // }
-  // console.log("LAST", userCharacters)
   return (
     <div className={`game-container ${path}`}>
       <canvas className="game-canvas" ref={canvasRef} ></canvas>

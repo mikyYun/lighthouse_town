@@ -23,9 +23,7 @@ import Menu from './components/Menu';
 //exports
 export const SocketContext = createContext(socket); // going to Recipient.jsx
 export const UserListContext = createContext({});
-
-
-
+export const MsgContext = createContext([]);
 
 function App() {
 
@@ -90,7 +88,7 @@ function App() {
   // ================= EFFECTS =============== //
 
   useEffect(() => {
-    setUser({ ...user, avatar: avatars[user.avatar] }); //[user.avatar] is a number (avatar id) 
+    setUser({ ...user, avatar: avatars[user.avatar] }); //[user.avatar] is a number (avatar id)
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD GET A USER FROM THE DATA BASE
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD ALSO SET AN AVATAR WHEN WE GET AN USER OBJECT.
     // set URL for navigate when enter the house
@@ -266,16 +264,13 @@ function App() {
 
         {/* clicked -> used in Menu.jsx
     setClicked -> used in Online.jsx */}
-
-        <div className='main'>
-          {show && <Menu username={nickname} />}
-          <Routes>
-            <Route path='/' element={<Login setUser={createSocketIdNameObject} />} />
-            <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
-            <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
-            <Route path={`/game/plaza`} element={gamePath} />
-          </Routes>
-        </div>
+        {show && <Menu username={nickname} />}
+        <Routes>
+          <Route path='/' element={<Login setUser={createSocketIdNameObject} />} />
+          <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
+          <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
+          <Route path={`/game/plaza`} element={gamePath} />
+        </Routes>
       </UserListContext.Provider>
     </SocketContext.Provider>
   );

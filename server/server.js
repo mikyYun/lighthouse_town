@@ -386,7 +386,12 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
       time: new Date(),
     };
     io.emit("RECEIVE_MESSAGE", responseData);
-
+    //responseData = chat message
+    //@@@@@@ ChatRoom.jsx line 21
+    // console.log(
+    //   `"SEND_MESSAGE" is fired with data: ${JSON.stringify(responseData)}`
+    // );
+    io.emit("dataToCanvas", responseData);
   });
 
   /* 오브젝트에서 종료되는 유저 삭제 */

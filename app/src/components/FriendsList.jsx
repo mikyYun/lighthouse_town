@@ -46,7 +46,7 @@ export default function FriendList() {
 
   return (
     <div className="friendsList">
-      <div className="friendsListLabel">Friends</div>
+      <div className="friendsListLabel">My Friends</div>
       {friendsListing}
     </div>
   );
