@@ -45,11 +45,11 @@ function App() {
   const nickname = location.state?.[0] || '';
   console.log("NICKNAME IN APP", nickname);
   const subUrlLists = [
-    "/game/plaza",
-    "/game/ruby",
-    "/game/html",
-    "/game/css",
-    "/game/js",
+    "/plaza",
+    "/ruby",
+    "/html",
+    "/css",
+    "/js",
     "/",
   ];
 

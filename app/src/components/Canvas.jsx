@@ -52,11 +52,11 @@ const Canvas = (props) => {
     const ctx = canvas.getContext("2d");
 
 
-    // socket.on("connect", () => {
+    socket.on("connect", () => {
 
       sendData()
       // window.location.reload()
-      // socket.emit("SET USERNAME", { "socketID": socket.id, "username": props.username });
+     
       // socket.emit("sendData", userCharacters[props.username].state);
       socket.on("sendData", (data) => {
         // console.log("data", data);
@@ -101,7 +101,7 @@ const Canvas = (props) => {
       }
 
 
-    // });   //socket ends
+    });   //socket ends
 
 
     window.addEventListener("keydown", (e) => {
@@ -166,7 +166,7 @@ const Canvas = (props) => {
     });
 
     return () => {
-      socket.disconnect()
+      // socket.disconnect()
       window.removeEventListener("keydown", (e) => userCharacters[0].move(e));
       window.removeEventListener("keyup", () => userCharacters[0].stop());
     };
@@ -227,7 +227,7 @@ const Canvas = (props) => {
     // userDataInCookies
     const userLanguages = userDataInCookies.userLanguages
     const userID = userDataInCookies.id
-    navigate(roomLists[room], { state: [props.username, props.avatar, userLanguages, userID], replace: true });
+    navigate(roomLists[room], { state: [props.username, props.avatar, userLanguages, userID] });
   };
 
   // console.log('BEFORE FUNC', props.room)
