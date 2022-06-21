@@ -11,6 +11,7 @@ import { useLocation } from "react-router-dom";
 export default function Game(props) {
   const location = useLocation();
   const { nickname } = useContext(SocketContext);
+  const [msg, setMsg] = useState({});
 
   // const {username} = useContext(SocketContext)
   // let loggedIn = false

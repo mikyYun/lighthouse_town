@@ -238,7 +238,7 @@ io.on("connection", (socket) => {
     );
 
 
-    // const alluserNames = Object.keys(currentUsers); 
+    // const alluserNames = Object.keys(currentUsers);
     // alluserNames.forEach((name) => {
     //   io.to(currentUsers[name])
     //     .emit("all user names", { "users": alluserNames });
@@ -398,12 +398,13 @@ io.on("connection", (socket) => {
     // console.log(
     //   `"SEND_MESSAGE" is fired with data: ${JSON.stringify(responseData)}`
     // );
+    io.emit("dataToCanvas", responseData);
   });
 
   /* 오브젝트에서 종료되는 유저 삭제 */
   socket.on("disconnect", () => {
     // console.log("Server.js - DISCONNECT", socket.id);
-    
+
     const alluserNames = Object.keys(currentUsers);
     let disconnectedUsername
     alluserNames.forEach((name) => {

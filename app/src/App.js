@@ -17,6 +17,7 @@ import { createContext } from "react";
 
 export const SocketContext = createContext(socket); // going to Recipient.jsx
 export const UserListContext = createContext({});
+export const MsgContext = createContext([]);
 function App() {
 
   // ================= STATES =============== //
@@ -76,7 +77,7 @@ function App() {
   // ================= EFFECTS =============== //
 
   useEffect(() => {
-    setUser({ ...user, avatar: avatars[user.avatar] }); //[user.avatar] is a number (avatar id) 
+    setUser({ ...user, avatar: avatars[user.avatar] }); //[user.avatar] is a number (avatar id)
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD GET A USER FROM THE DATA BASE
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD ALSO SET AN AVATAR WHEN WE GET AN USER OBJECT.
     // set URL for navigate when enter the house
@@ -190,7 +191,7 @@ function App() {
           languages: loginUsersObject[name].languages,
           avatar_id: loginUsersObject[name].avatar_id,
         }
-      }) 
+      })
        //@@@@ SUNDAY - this should be dynamic and need an avatar from socket.
       // console.log("ONLINE USERS PROFILE SET",loginUsersInformation)
       setProfiles(loginUsersInformation)
