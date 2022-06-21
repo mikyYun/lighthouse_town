@@ -392,7 +392,7 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
         delete currentUsers[name];
       disconnectedUsername = name
     }); // {"users": [name1, name2] }
-    // console.log("Server.js - DISCONNECT - CURRENT USERS", currentUsers);
+    console.log("Server.js - A USER DISCONNECTED - CURRENT USERS", currentUsers);
     io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기
   });
 });;

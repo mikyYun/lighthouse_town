@@ -62,7 +62,7 @@ export default function Login(props) {
                 setUser(res.data.userName) // pass username so that server set username and socketid as key:value pair
                 // res.data.friends
                 // setFriends(res.data.friends)
-                // console.log("res.data - Login.js", res.data);
+                console.log("res.data - Login.js", res.data);
                 cookies.set("userdata", res.data, { maxAge: 3600 });
                 goChat(res.data.userName, res.data.avatar, res.data.userLanguages, res.data.userID)
                 // props.setNickname(res.data.userName)
