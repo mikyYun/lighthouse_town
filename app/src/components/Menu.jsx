@@ -5,14 +5,20 @@ import { useLocation } from "react-router-dom";
 const Menu = (props) => {
   const {socket, online, friendList} = useContext(SocketContext)
   const location = useLocation()
-  const { clicked, setRecipient, setShow, nickname, recipient, setProfileShow, profiles } = useContext(UserListContext);
+  const { clicked, setRecipient, setShow, nickname, recipient, setProfileShow, profiles, setBlockAddFriendAlert } = useContext(UserListContext);
   // console.log('clicked', clicked)
   const username = props.username
   const userID = location.state?.[3]
-  const [addFriendAlert, setAddFriendAlert ] = useState("newFriend")
+  // const [addFriend, setAddFriend ] = useState("Add")
   // setProfileShow
   console.log("online users", online, userID, profiles)
   const currentFriendsNames = Object.keys(friendList)
+  const blockAddFriend = (str) => {
+    setBlockAddFriendAlert(str)
+    setTimeout(() => {
+      setBlockAddFriendAlert("add-friend")
+    }, 1000);
+  }
 
   return (
     <ul className="menu">
@@ -21,7 +27,7 @@ const Menu = (props) => {
         const addFriendName = clicked.value
         console.log("add-friend clicked", username, addFriendName, userID);
         // if addFriiendName is included in current friends list, block add
-        currentFriendsNames.includes(addFriendName) ? setAddFriendAlert("notANewFriend") : socket.emit("add friend", {username, addFriendName, userID});
+        currentFriendsNames.includes(addFriendName) ? blockAddFriend("block-friend") : socket.emit("add friend", {username, addFriendName, userID});
         // console.log("add-friend clicked", e);
         // socket.emit("add friend", {username, addFriendName, userID});
         setShow(false)
