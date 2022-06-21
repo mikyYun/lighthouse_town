@@ -6,7 +6,7 @@ import Menu from "./Menu.jsx";
 
 export default function Online(props) {
   const { online, socket, nickname } = useContext(SocketContext);
-  const { setShow } = useContext(UserListContext);
+  const { setClicked, setShow, blockAddFriendAlert } = useContext(UserListContext);
   const [showMenu, setShowMenu] = useState(false);
   // const [playToggleClassName, setPlayToggleClassName] = useState("friendsListToggle");
   // console.log("online_in_Online.jsx", online);
@@ -21,6 +21,7 @@ export default function Online(props) {
   const usersOnline = removeSelfAndAll.map((obj, i) =>
     <li className="users-online" key={i} onClick={() => {
       setShowMenu(true);
+      setClicked(obj)
       setShow(true); // 클릭 뒤 사라지게
     }}>
       {<Avatar url={obj.avatar} alt="avatar" />}

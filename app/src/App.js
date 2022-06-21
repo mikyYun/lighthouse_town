@@ -32,6 +32,7 @@ function App() {
   const [user, setUser] = useState({ value: "all", label: "all", avatar: 1 });
   const [profiles, setProfiles] = useState({})
   const [profileShow, setProfileShow] = useState("none");
+  const [blockAddFriendAlert, setBlockAddFriendAlert] = useState("add-friend");
 
   // ================= HOOKS =============== //
 
@@ -236,7 +237,7 @@ function App() {
   // console.log('nickname', nickname)
   return (
     <SocketContext.Provider value={{ socket, online, nickname, friendList }} >
-      <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked, user, setUser, profiles, nickname, setProfiles, profileShow, setProfileShow }} >
+      <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked, user, setUser, profiles, nickname, setProfiles, profileShow, setProfileShow, blockAddFriendAlert, setBlockAddFriendAlert }} >
 
         {/* clicked -> used in Menu.jsx
     setClicked -> used in Online.jsx */}
