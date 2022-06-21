@@ -26,24 +26,25 @@ const Menu = (props) => {
       <li className="add friend" onClick={(e) => {
         // console.log(clicked.value) // clicked name
         const addFriendName = clicked.value
-        console.log("add-friend clicked", username, addFriendName, userID);
+        // console.log("add-friend clicked", username, addFriendName, userID);
         // if addFriiendName is included in current friends list, block add
         currentFriendsNames.includes(addFriendName) ? blockAddFriend("block-friend") : socket.emit("add friend", {username, addFriendName, userID});
         // console.log("add-friend clicked", e);
         // socket.emit("add friend", {username, addFriendName, userID});
-        setShow(false)
+        props.close();
       }}>Add Friend</li>
 
       <li className="send-message" onClick={() => {
         setRecipient(clicked);
-        console.log('clicked in Menu', clicked)
-        setShow(false); // 클릭 뒤 사라지게
+        // console.log('clicked in Menu', clicked)
+        props.close();
       }}>Send Message</li>
 
       <li className="view-profile" onClick={(e) => {
         console.log("clicked vie-porifle", clicked.value)
         setProfileShow("inline");
-        setShow(false);
+        // props.openProfile();
+        props.close();
       }}>View Profile</li>
 
       <button onClick={props.close}>CLOSE</button>
