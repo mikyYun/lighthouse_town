@@ -23,7 +23,7 @@ export default function Online(props) {
       className="users-online"
       // 클릭 뒤 사라지게
       onClick={() => { setShowMenu(true); setShow(true); }}>
-      {<Avatar url={obj.avatar} alt="avatar" />}
+      {<Avatar url={obj.avatarURL} alt="avatar" />}
       {obj.value}
     </li>);
 

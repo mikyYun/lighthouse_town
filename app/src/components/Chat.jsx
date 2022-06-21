@@ -11,10 +11,10 @@ export default function Chat(props) {
     <>
       <div className="d-flex flex-column chatroom">
         <Recipient />
-        <ChatRoom username={props.username} room={props.room} recipient={''} />
+        <ChatRoom username={props.username} room={props.room} />
 
       </div>
       {/* // </SocketContext.Provider> */}
     </>
-  )
+  );
 }

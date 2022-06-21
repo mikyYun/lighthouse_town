@@ -1,8 +1,5 @@
 ///아직 하는중
-import { useState } from "react";
 export default function Friends() {
-
-
   return (
     <div className="d-flex flex-column chat-form">
       <div className="text-box">
@@ -11,8 +8,8 @@ export default function Friends() {
       <div className="chat-window card" ref={chatWindow}>
         {messages.map((message, index) => {
           const { nickname, content, time } = message;
-          let recipient = ''
-          message.recipient ? recipient = message.recipient : recipient = 'all'
+          let recipient = '';
+          message.recipient ? recipient = message.recipient : recipient = 'all';
 
           return (
             <div key={index} className="d-flex flex-row">
@@ -27,5 +24,5 @@ export default function Friends() {
       </div>
       <MessageForm nickname={nickname} recipient={recipient} />
     </div>
-  )
+  );
 }

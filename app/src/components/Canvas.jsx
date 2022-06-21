@@ -1,15 +1,11 @@
 import React, { useEffect, useRef, useState, useContext, useCallback } from "react";
-import mapImage from "./game_img/town-map.png";
-import girlImage from "./game_img/girl1.png";
-import Characters from "./helper/Characters";
-import boyImage from "./game_img/boy1.png";
-import townWall from "./game_img/collision_data.js/townWall";
-import { selectAvatar } from "./helper/selectAvatar";
 import { SocketContext } from "../App";
 import { useNavigate, useLocation } from "react-router-dom";
-import { SOCKET_EVENT, makePublicMessage, makePrivateMessage, socket } from "./service/socket";
+import Characters from "./helper/Characters";
+import selectAvatar from "./helper/selectAvatar";
 
 
+// = main component =
 const Canvas = (props) => {
   const { socket, nickname } = useContext(SocketContext);
   const canvasRef = useRef(null);
@@ -22,7 +18,7 @@ const Canvas = (props) => {
       y: 420,
       currentDirection: 0,
       frameCount: 0,
-      avatar: props.avatar,
+      avatar: selectAvatar(props.avatar || 1),
     }),
   });
 

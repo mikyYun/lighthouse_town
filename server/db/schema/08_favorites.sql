@@ -8,20 +8,14 @@ INSERT INTO favorites (added_by, added)
   VALUES (1, 2);
 INSERT INTO favorites (added_by, added)
   VALUES (1, 3);
-
-
 INSERT INTO favorites (added_by, added)
   VALUES (2, 1);
 INSERT INTO favorites (added_by, added)
   VALUES (2, 4);
-
-
 INSERT INTO favorites (added_by, added)
   VALUES (3, 4);
 INSERT INTO favorites (added_by, added)
   VALUES (3, 5);
-INSERT INTO favorites (added_by, added)
-
 INSERT INTO favorites (added_by, added)
   VALUES (4, 1);
 INSERT INTO favorites (added_by, added)

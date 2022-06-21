@@ -96,10 +96,8 @@ io.on("connection", (socket) => {
                 });
               }
             });
-            // console.log(loginUsersData)
             // currentUsers = {name: socketID}
             const alluserNames = Object.keys(loginUsersData);
-            console.log(loginUsersData);
             alluserNames.forEach((name) => {
               io.to(currentUsers[name]) // socketID
                 .emit("all user names", { "users": loginUsersData });// all user names

@@ -42,7 +42,7 @@ export default function Game(props) {
   // if (location.state === null) alert("hey")
 
   // if (location.state !== null) {
-
+console.log('avatar id', props.avatar);
   return (
 
     <div className='main'>
@@ -52,8 +52,7 @@ export default function Game(props) {
         {/* <Canvas username={location.state[0] || 'guest'} avatar={location.state[1]} sendData={props.sendData} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} /> */}
         <Canvas
           username={nickname}
-          // avatar={location.state?.[1]}
-          avatar={location.state?.[1]}
+          avatar={props.avatar}
           sendMessage={sendMessage}
           sendPrivateMessage={sendPrivateMessage}
           room={props.room}

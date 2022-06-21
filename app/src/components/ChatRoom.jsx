@@ -29,9 +29,10 @@ function ChatRoom(props) {
   // RECEIVE_MESSAGE 이벤트 콜백: messages state에 데이터를 추가.
   // MessageForm & socket > index.js
   // socketIo.to(roomName).emit("RECEIVE_MESSAGE", responseData);
-  const handleReceivePublicMessage = useCallback(
-    (pongData) => {
-      // console.log("PONG", pongData)
+  const handleReceivePublicMessage = useCallback( (pongData) => {
+      console.log("new message received here", pongData)
+      console.log('rooom here', props.room);
+      if (pongData.room === props.room) console.log('true');
       const newPublicMessage = makePublicMessage(pongData);
       setMessages((messages) => [...messages, newPublicMessage]);
       moveScrollToReceiveMessage();
@@ -68,7 +69,7 @@ function ChatRoom(props) {
       </div>
       <div className="chat-window card" ref={chatWindow}>
         {messages.map((message, index) => {
-          const { nickname, content, time, user } = message;
+          const { nickname, content, time } = message;
           let recipient = "";
           message.recipient
             ? (recipient = message.recipient)
@@ -77,7 +78,7 @@ function ChatRoom(props) {
             <div key={index} className="d-flex flex-row">
               {nickname && (
                 <div className="message-nickname">
-                  <Avatar url={message.user?.avatar} />
+                  <Avatar url={message.user?.avatarURL} />
                   {"  "}
                   {nickname} to {recipient}: {content}
                 </div>
@@ -87,7 +88,7 @@ function ChatRoom(props) {
           );
         })}
       </div>
-      <MessageForm nickname={username} recipient={recipient} user={user} />
+      <MessageForm nickname={username} recipient={recipient} room={props.room} user={user} />
     </div>
   );
 

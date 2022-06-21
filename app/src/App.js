@@ -1,28 +1,28 @@
-import React, { useContext } from 'react';
+// = packages =
 import './App.css';
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext, createContext, } from "react";
+import { Routes, Route, useNavigate, useLocation, } from "react-router-dom";
+import { socket } from './components/service/socket.js';
 import Cookies from 'universal-cookie';
-import town from './components/game_img/town-map.png';
-import classroom from './components/game_img/classroom.png';
+
+// = compononents =
 import Game from './components/Game';
 import Register from './components/Register';
 import Login from './components/Login';
-import Menu from './components/Menu';
-import { socket } from './components/service/socket.js';
-import { createContext } from "react";
 
-// import character imag
+// = images =
+import town from './components/game_img/town-map.png';
+import classroom from './components/game_img/classroom.png';
+import lounge from './components/game_img/lounge.png';
 
-
+// = instantiations =
 export const SocketContext = createContext(socket); // going to Recipient.jsx
 export const UserListContext = createContext({});
 export const MsgContext = createContext([]);
+
+// = main component =
 function App() {
-
-  // ================= STATES =============== //
-
-  // const [socket, setSocket] = useState();
+  // ================= STATE =============== //
   const [room, setRoom] = useState('plaza');
   const [online, setOnline] = useState([{ value: 'all', label: 'all' }]);
   const [friendList, setFriendList] = useState([]);
@@ -34,27 +34,22 @@ function App() {
   const [profileShow, setProfileShow] = useState("none");
   const [blockAddFriendAlert, setBlockAddFriendAlert] = useState("add-friend");
 
-  // ================= HOOKS =============== //
-
-  const navigate = useNavigate();
+  // ================= INSTANCES =============== //
+  const cookies = new Cookies();
   const socket = useContext(SocketContext);
+  const navigate = useNavigate();
   const location = useLocation();
 
   // ================= VARIABLES =============== //
   const nickname = location.state?.[0] || '';
-  const urlLists = [
-    "/game/plaza",
-    "/game/ruby",
-    "/game/html",
-    "/game/css",
-    "/game/js",
-    '/'
-  ];
 
   // set map for navigate
   const maps = {
     plaza: town,
-    js: classroom
+    ruby: lounge,
+    html: classroom,
+    css: lounge,
+    js: classroom,
   };
 
   const avatars = {
@@ -64,38 +59,32 @@ function App() {
     4: "/images/girl2-face.png"
   };
 
-  // ================= INTANCES =============== //
-  const cookies = new Cookies();
-
   // ================= EFFECTS =============== //
   useEffect(() => {
-    setUser({ ...user, avatar: avatars[user.avatar] }); //[user.avatar] is a number (avatar id)
+    setUser({ ...user, avatarURL: avatars[user.avatar || 1] }); //[user.avatar] is a number (avatar id)
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD GET A USER FROM THE DATA BASE
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD ALSO SET AN AVATAR WHEN WE GET AN USER OBJECT.
     // set URL for navigate when enter the house
-    setRoom(location.pathname.split("/").splice(2)[0]);
+    const newRoom = location.pathname.split("/").splice(2)[0];
+    if (maps[newRoom]) setRoom(newRoom);
+
     const currentCookies = cookies.getAll();
     // cookies maxAge 3600.
     socket.on("connect", () => {
-      console.log("SOCKET CONNECTED", currentCookies); // everytime refresh
-      if ((location.pathname === "/"
-        || location.pathname === "/login"
+      if ((location.pathname === "/login"
         || location.pathname === "/register"
         || location.pathname === "/game"
         || location.pathname === "/game/plaza")
         && currentCookies.userdata) {
-        // console.log("cookies exist, permision allowed user") // checked
         createSocketIdNameObject(currentCookies.userdata.userName);
         const goChat = (username, avatar, userLanguages, id) => {
           const data = [username, avatar, userLanguages, id];
           navigate('/game/plaza', { state: data });
         };
         goChat(currentCookies.userdata.userName, currentCookies.userdata.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
-        // console.log("LOCATION STATE",location.state) // checked
       }
       if (!currentCookies.userdata) {
         // if (!urlLists.includes(location.pathname)) {
-        console.log("TETSTEST"); // checked
         clearCookies();
         navigate("/");
       }
@@ -103,11 +92,8 @@ function App() {
     // if (!urlLists.includes(location.pathname)) clearCookies();
   }, [location.pathname]);
 
+  // = front end socket connections =
   useEffect(() => {
-
-    // ================= FUNCTIONS =============== //
-
-    //frontend
     socket.on("connect", () => {
       const all_cookies = cookies.getAll();
       //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
@@ -169,8 +155,6 @@ function App() {
     socket.on("backData", data => console.log("data", data)); //coming from server
 
     // socket.on("update login users information", ({disconnectedUser}) => {
-    //   // console.log("DISCONNECTED USERNAME", disconnectedUser)
-    //   console.log("THIS", disconnectedUser)
     //   // const updateProfileLists = () => {
     //     // delete profiles[disconnectedUser]
     //   // }
@@ -178,7 +162,6 @@ function App() {
     //   //   [disconnectedUser]: remove,
     //   //   ...rest
     //   // }))
-    //   console.log("THIS", profiles)
     // })
 
 
@@ -189,7 +172,6 @@ function App() {
       // }
 
       const loginUsersObject = obj.users;
-      // console.log("RECEIVED", loginUsersObject)
       const loginUserNames = Object.keys(loginUsersObject);
       const loginUsersInformation = {};
       const usersOnline = [];
@@ -203,7 +185,6 @@ function App() {
         };
       });
       //@@@@ SUNDAY - this should be dynamic and need an avatar from socket.
-      // console.log("ONLINE USERS PROFILE SET",loginUsersInformation)
       setProfiles(loginUsersInformation);
 
       usersOnline.unshift({ value: "all", label: "all", avatar: avatars[1] });
@@ -213,11 +194,15 @@ function App() {
       setOnline(usersOnline);
     }); // this works
 
+    // clean up function
     return () => {
-      socket.disconnect(); // todo need socket cleanup ?
-    }; // => prevent memory leak..
+      socket.disconnect();  // => prevent memory leak..
+    };
   }, []);
 
+
+
+  // ================= FUNCTIONS =============== //
   const RegistrationChecker = (val) => {
     socket && socket.emit("REGISTERED", val);
   };
@@ -243,6 +228,9 @@ function App() {
     socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username });
   };
 
+
+
+  // = render main App =
   return (
     <SocketContext.Provider value={{ socket, online, nickname, friendList }} >
       <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked, user, setUser, profiles, nickname, setProfiles, profileShow, setProfileShow, blockAddFriendAlert, setBlockAddFriendAlert }} >
@@ -254,22 +242,23 @@ function App() {
           <Route path='/' element={<Login setUser={createSocketIdNameObject} />} />
           <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
           <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
-          <Route path={`/game/${room}`} element={
+          <Route path={`/game/${room}`} element={(
             <Game
               username={nickname}
+              avatar={user.avatar}
               sendMessage={sendMessage}
               sendPrivateMessage={privateMessage}
               // sendData={sendData}
               setUser={createSocketIdNameObject}
               room={room}
-              // nickname={nickname}
               online={online}
               map={maps[room]}
-            />} />
+            />
+          )}
+          />;
         </Routes>
       </UserListContext.Provider>
     </SocketContext.Provider>
   );
-
-}
+};
 export default App;

@@ -1,15 +1,12 @@
-import girlImage from "../game_img/girl1.png";
-import boyImage from "../game_img/boy1.png";
-
-
 const selectAvatar = (num) => {
-  if (num === 1) {
-    return boyImage
-  }
-  if (num === 2) {
-    return girlImage
-  }
+  const avatarPaths = {
+    1: "../game_img/boy1.png",
+    2: "../game_img/boy2.png",
+    1: "../game_img/girl1.png",
+    3: "../game_img/girl2.png",
+  };
 
-}
+  return avatarPaths[num];
+};
 
-export default selectAvatar;
+export default selectAvatar
