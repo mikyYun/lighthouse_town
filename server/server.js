@@ -256,6 +256,7 @@ io.on("connection", (socket) => {
         // res.rows => users table [{id: , username: ,....}]
         const targetID = res.rows[0].id;
         // console.log("target users id", targetID);
+        
         pool.query(
           "INSERT INTO favorites (added_by, added) VALUES ($2, $1)", [userID, targetID]
         );
