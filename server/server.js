@@ -66,11 +66,11 @@ io.on("connection", (socket) => {
   session.save();
 
   // LOGIN USER CONNECTED
-   // socketID and username matching triggered when user login
-   socket.on("SET USERNAME", (obj) => {
+  // socketID and username matching triggered when user login
+  socket.on("SET USERNAME", (obj) => {
     //Login.jsx 의 setUser(res.data.userName)
     const { username, socketID } = obj;
-    console.log("Connected ",username, socketID)
+    console.log("Connected ", username, socketID);
 
     currentUsers[username] = socketID;
     pool.query(
@@ -83,7 +83,7 @@ io.on("connection", (socket) => {
           (err, res_1) => {
             // res.rows_1 => {id(languageID): , user_id: , language_name: }
             const userIDAndLang = res_1.rows;
-            const loginUsersData = {}
+            const loginUsersData = {};
             allUsersObj.map(user => {
               if (currentUsers[user.name]) {
                 loginUsersData[user.name] = {
@@ -91,12 +91,12 @@ io.on("connection", (socket) => {
                   email: user.email,
                   avatar_id: user.avatar_id,
                   languages: []
-                }
+                };
                 userIDAndLang.map(lang => {
                   if (user.id === lang.user_id) {
-                    loginUsersData[user.name].languages.push(lang.language_name)
+                    loginUsersData[user.name].languages.push(lang.language_name);
                   }
-                })
+                });
               }
             });
             // console.log(loginUsersData)
@@ -104,17 +104,17 @@ io.on("connection", (socket) => {
             alluserNames.forEach((name) => {
               io.to(currentUsers[name])
                 .emit("all user names", { "users": loginUsersData });// all user names
+            }
+            );
           }
         );
-      }
-    );
 
 
-    // const alluserNames = Object.keys(currentUsers);
-    // alluserNames.forEach((name) => {
-    //   io.to(currentUsers[name])
-    //     .emit("all user names", { "users": alluserNames });
-    }); // {"users": [name1, name2] }
+        // const alluserNames = Object.keys(currentUsers);
+        // alluserNames.forEach((name) => {
+        //   io.to(currentUsers[name])
+        //     .emit("all user names", { "users": alluserNames });
+      }); // {"users": [name1, name2] }
     // }
   });
 
@@ -220,22 +220,22 @@ io.on("connection", (socket) => {
   // });
 
 
-// FOR USER MOVEMENT (Canvas)
+  // FOR USER MOVEMENT (Canvas)
   socket.on('sendData', data => {
 
     const { userState, room, removeFrom } = data;
 
     // console.log('got data', data);
-    if (!usersInRooms[room]){
-      usersInRooms[room] = {}
+    if (!usersInRooms[room]) {
+      usersInRooms[room] = {};
     }
     // console.log('BEFORE LOOP', usersInRooms);
-     //when usersInRooms have some properties
-     for (const rooms in usersInRooms) {
+    //when usersInRooms have some properties
+    for (const rooms in usersInRooms) {
       // console.log(usersInRooms[rooms])
-      for (const user in usersInRooms[rooms]){
-        if ( room !== rooms && userState.username === user) {
-          delete usersInRooms[rooms][userState.username]
+      for (const user in usersInRooms[rooms]) {
+        if (room !== rooms && userState.username === user) {
+          delete usersInRooms[rooms][userState.username];
         }
       }
     }
@@ -248,7 +248,7 @@ io.on("connection", (socket) => {
 
 
 
-   // ADD FRIEND
+  // ADD FRIEND
   // socket.on("add friend", {username, addFreindName})
   socket.on("add friend", ({ username, addFriendName, userID }) => {
     // console.log("ADD FRIEND", nameObj)
@@ -258,7 +258,7 @@ io.on("connection", (socket) => {
         // res.rows => users table [{id: , username: ,....}]
         const targetID = res.rows[0].id;
         // console.log("target users id", targetID);
-        
+
         pool.query(
           "INSERT INTO favorites (added_by, added) VALUES ($2, $1)", [userID, targetID]
         );
@@ -407,14 +407,14 @@ io.on("connection", (socket) => {
   /* 오브젝트에서 종료되는 유저 삭제 */
   socket.on("disconnect", () => {
     // console.log("Server.js - DISCONNECT", socket.id);
-    console.log('currentUser', currentUsers )
+    console.log('currentUser', currentUsers);
 
     const alluserNames = Object.keys(currentUsers);
-    let disconnectedUsername
+    let disconnectedUsername;
     alluserNames.forEach((name) => {
       if (currentUsers[name] === socket.id)
         delete currentUsers[name];
-        disconnectedUsername = name
+      disconnectedUsername = name;
     }); // {"users": [name1, name2] }
     // console.log("Server.js - DISCONNECT - CURRENT USERS", currentUsers);
     io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기
@@ -496,46 +496,83 @@ app.post("/register", (req, res) => {
   const userEmail = req.body.userInfo.userEmail;
   const userLanguages = req.body.userInfo.userLanguages;
   const userAvatar = req.body.userInfo.userAvatar;
+
   pool.query(
-    "SELECT * FROM users WHERE username = $1 OR email = $2",
-    [userName, userEmail],
-    (err, res_1) => {
-      if (err) throw err;
-      // console.log(res_1.rows[0]);
-      if (res_1.rows[0]) return res.status(201).send("existing data");
-    }
-  );
-  pool.query(
-    "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *",
-    [userName, userPassword, userEmail, userAvatar],
-    (err, result) => {
-      if (err) throw err;
-      console.log("new user registered");
-      pool.query(
-        "SELECT id FROM users WHERE username = $1",
-        [userName],
-        (err, res_2) => {
-          // console.log("new user's user ID", res_2.rows);
-          const newUserID = res_2.rows[0].id;
-          userLanguages.forEach((lang_id) => {
-            if (lang_id) {
-              // console.log(lang_id);
-              pool.query(
-                "INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *",
-                [newUserID, lang_id],
-                (err, res_3) => {
-                  if (err) throw err;
-                  console.log("new user's language data added", res_3.rows);
-                }
-              );
-            }
-          });
-        }
-      );
-    }
-  );
-  res.status(201).send({ userName, userEmail, userLanguages, userAvatar });
+    //check if user al
+    // ready exists in DB during registration
+    "SELECT * FROM users WHERE username = $1 OR email = $2", [userName, userEmail])
+    .then((response) => {
+      // break promise chain early by throwing error
+      if (response.rows[0]) return Promise.reject(('User already registered')); // option 1?
+      // throw res.status(409).send('User already registered'); // option 2
+
+      return pool.query(
+        "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [userName, userPassword, userEmail, userAvatar]);
+      // "RETURNING *" means we are returning the new 'user' entry to the next .then
+    })
+    .then((response) => {
+      const { username, avatar_id, id } = response.rows[0];
+      const userData = [username, avatar_id, userLanguages, id];
+
+      userLanguages.forEach((lang_id) => {
+        pool.query(
+          "INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *",
+          [response.rows[0].id, lang_id]
+        );
+      });
+      // sending user info back to Register.jsx (as res.data)
+      res.status(201).send(userData);
+    })
+    .catch((e) => { console.error(e); });
 });
+
+
+// app.post("/register", (req, res) => {
+//   const userName = req.body.userInfo.userName;
+//   const userPassword = req.body.userInfo.userPassword;
+//   const userEmail = req.body.userInfo.userEmail;
+//   const userLanguages = req.body.userInfo.userLanguages;
+//   const userAvatar = req.body.userInfo.userAvatar;
+//   pool.query(
+//     "SELECT * FROM users WHERE username = $1 OR email = $2",
+//     [userName, userEmail],
+//     (err, res_1) => {
+//       if (err) throw err;
+//       // console.log(res_1.rows[0]);
+//       if (res_1.rows[0]) return res.status(201).send("existing data");
+//     }
+//   );
+//   pool.query(
+//     "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *",
+//     [userName, userPassword, userEmail, userAvatar],
+//     (err, result) => {
+//       if (err) throw err;
+//       console.log("new user registered");
+//       pool.query(
+//         "SELECT id FROM users WHERE username = $1",
+//         [userName],
+//         (err, res_2) => {
+//           // console.log("new user's user ID", res_2.rows);
+//           const newUserID = res_2.rows[0].id;
+//           userLanguages.forEach((lang_id) => {
+//             if (lang_id) {
+//               // console.log(lang_id);
+//               pool.query(
+//                 "INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *",
+//                 [newUserID, lang_id],
+//                 (err, res_3) => {
+//                   if (err) throw err;
+//                   console.log("new user's language data added", res_3.rows);
+//                 }
+//               );
+//             }
+//           });
+//         }
+//       );
+//     }
+//   );
+//   res.status(201).send({ userName, userEmail, userLanguages, userAvatar });
+// });
 
 // app.post("/friends", (req, res) => {
 //   const username = req.body.username;

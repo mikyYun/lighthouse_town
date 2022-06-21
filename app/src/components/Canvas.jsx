@@ -226,7 +226,7 @@ const Canvas = (props) => {
   // sending data to server
   function sendData(removeFromRoom) {
     // console.log('Remove From Here', removeFromRoom)
-    socket.emit("sendData", {
+    socket && socket.emit("sendData", {
       userState: userCharacters[props.username].state,
       room: props.room,
       removeFrom: removeFromRoom

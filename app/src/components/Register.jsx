@@ -34,7 +34,6 @@ export default function Register(props) {
         <div className="field">
           <span>EMAIL :{" "}</span>    {/* 이안에 뭐가 들어갈껀가요? */}
           <input
-            // name="email"
             id="register_email"
             rows="1"
             placeholder="EMAIL"
@@ -50,7 +49,6 @@ export default function Register(props) {
         <div className="field">
           <span> NAME :{" "}</span>
           <input
-            // name="name"
             id="register_name"
             rows="1"
             placeholder="NAME"

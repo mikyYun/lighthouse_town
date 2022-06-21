@@ -29,6 +29,7 @@ export default function Online(props) {
     </li>);
 
   console.log(showMenu)
+  console.log()
 
   useEffect(() => {
     socket.emit("friendsList", { socketID: socket.id });
