@@ -8,6 +8,7 @@ import { selectAvatar } from "./helper/selectAvatar";
 import { SocketContext } from "../App";
 import { useNavigate, useLocation } from "react-router-dom";
 import { SOCKET_EVENT, makePublicMessage, makePrivateMessage, socket } from "./service/socket";
+import Cookies from 'universal-cookie';
 
 
 const Canvas = (props) => {
@@ -25,9 +26,11 @@ const Canvas = (props) => {
       avatar: props.avatar,
     }),
   });
-  // console.log('username', props.username);
+  // console.log('usernameusernameusernameusername', props.username);
   // console.log('userCharacters', userCharacters)
-
+  const cookies = new Cookies()
+  const allCookies = cookies.getAll()
+  const userDataInCookies = allCookies.userdata
   const navigate = useNavigate();
   const roomLists = {
     plaza: '/game/plaza',
@@ -52,6 +55,8 @@ const Canvas = (props) => {
     // socket.on("connect", () => {
 
       sendData()
+      // window.location.reload()
+      // socket.emit("SET USERNAME", { "socketID": socket.id, "username": props.username });
       // socket.emit("sendData", userCharacters[props.username].state);
       socket.on("sendData", (data) => {
         // console.log("data", data);
@@ -161,7 +166,7 @@ const Canvas = (props) => {
     });
 
     return () => {
-      // socket.disconnect()
+      socket.disconnect()
       window.removeEventListener("keydown", (e) => userCharacters[0].move(e));
       window.removeEventListener("keyup", () => userCharacters[0].stop());
     };
@@ -219,7 +224,10 @@ const Canvas = (props) => {
   //--------- functions
   // if user hit the specific position -> redirect to the page
   function handleRoom(room) {
-    navigate(roomLists[room], { state: [props.username, props.avatar] });
+    // userDataInCookies
+    const userLanguages = userDataInCookies.userLanguages
+    const userID = userDataInCookies.id
+    navigate(roomLists[room], { state: [props.username, props.avatar, userLanguages, userID], replace: true });
   };
 
   // console.log('BEFORE FUNC', props.room)

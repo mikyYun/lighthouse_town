@@ -44,13 +44,20 @@ function App() {
   // console.log("LOCATION", location);
   const nickname = location.state?.[0] || '';
   console.log("NICKNAME IN APP", nickname);
-  const urlLists = [
+  const subUrlLists = [
     "/game/plaza",
     "/game/ruby",
     "/game/html",
     "/game/css",
     "/game/js",
-    '/'
+    "/",
+  ];
+
+  const mainUrlLists = [
+    "/",
+    "/game",
+    "/register",
+    "/login",
   ];
 
   // set map for navigate
@@ -86,37 +93,49 @@ function App() {
     const currentCookies = cookies.getAll();
     // cookies maxAge 3600.
     socket.on("connect", () => {
-    console.log("SOCKET CONNECTED", currentCookies); // everytime refresh
-    if ((location.pathname === "/"
-      || location.pathname === "/login"
-      || location.pathname === "/register"
-      || location.pathname === "/game"
-      || location.pathname === "/game/plaza")
-      && currentCookies.userdata) {
+      console.log("SOCKET CONNECTED", currentCookies); // everytime refresh
+      //  if ((mainUrlLists.includes(location.pathname))
+
+      if ((location.pathname === "/"
+        || location.pathname === "/login"
+        || location.pathname === "/register"
+        || location.pathname === "/game"
+        || location.pathname === "/game/plaza")
+        && currentCookies.userdata) {
         // console.log("cookies exist, permision allowed user") // checked
         createSocketIdNameObject(currentCookies.userdata.userName);
-      const goChat = (username, avatar, userLanguages, id) => {
-        const data = [username, avatar, userLanguages, id];
-        navigate('/game/plaza', { state: data });
-      };
-      goChat(currentCookies.userdata.userName, currentCookies.userdata.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
-      // console.log("LOCATION STATE",location.state) // checked
-    }
-    if (!currentCookies.userdata) {
-      // if (!urlLists.includes(location.pathname)) {
-      console.log("TETSTEST"); // checked
-      clearCookies();
-      navigate("/");
-    }
-  })
+        const goChat = (username, avatar, userLanguages, id) => {
+          const data = [username, avatar, userLanguages, id];
+          navigate('/game/plaza', { state: data });
+        };
+        goChat(currentCookies.userdata.userName, currentCookies.userdata.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
+        // console.log("LOCATION STATE",location.state) // checked
+      }
+      // if (subUrlLists.includes(location.pathname)) {
+      //   console.log("IN GAME")
+      // createSocketIdNameObject(currentCookies.userdata.userName);
+      // const goChat = (username, avatar, userLanguages, id) => {
+      //   // const data = [username, avatar, userLanguages, id];
+      //   // navigate('/game/plaza', { state: data });
+      // };
+      // goChat(currentCookies.userdata.userName, currentCookies.userdata.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
+      // }
+      if (!currentCookies.userdata) {
+        // if (!urlLists.includes(location.pathname)) {
+        console.log("TETSTEST"); // checked
+        clearCookies();
+        navigate("/");
+      }
+    });
     // if (!urlLists.includes(location.pathname)) clearCookies();
+    // window.location.reload()
   }, [location.pathname]);
 
   useEffect(() => {
 
     // ================= FUNCTIONS =============== //
 
- 
+
     // socket.on("DENY CONNECTION", (e) => {
     //   clearCookies()
     //   navigate("/")
@@ -236,6 +255,7 @@ function App() {
           <Route path='/' element={<Login setUser={createSocketIdNameObject} />} />
           <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
           <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
+          {/* <Route path={`/game/js`} element={ */}
           <Route path={`/game/${room}`} element={
             <Game
               username={nickname}

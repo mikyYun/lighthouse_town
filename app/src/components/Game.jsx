@@ -11,8 +11,13 @@ import FriendList from "./FriendsList";
 
 export default function Game(props) {
   const location = useLocation();
-  const { nickname } = useContext(SocketContext);
+  const { nickname, socket } = useContext(SocketContext);
   const [msg, setMsg] = useState({});
+  console.log('usernameusernameusernameusername');
+
+  useEffect(() => {
+    socket.emit("SET USERNAME", { "socketID": 123123, "username": nickname });
+  }, [location])
 
   // const {username} = useContext(SocketContext)
   // let loggedIn = false

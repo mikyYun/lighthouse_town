@@ -61,6 +61,7 @@ const usersInRooms = {};
 
 // OPEN SOCKET
 io.on("connection", (socket) => {
+  
   const roomName = "room 1";
   const session = socket.request.session;
   session.save();
@@ -70,6 +71,7 @@ io.on("connection", (socket) => {
   socket.on("SET USERNAME", (obj) => {
     //Login.jsx 의 setUser(res.data.userName)
     const { username, socketID } = obj;
+    console.log("RECIEVED DATA", username, socketID)
     // only work after login not refresh
     // console.log("Connected ", username, socketID); 
     // after refresh, socketid undefined
