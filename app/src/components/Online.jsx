@@ -13,7 +13,7 @@ export default function Online(props) {
   const removeSelfAndAll = online.filter(obj =>
     obj.value !== "all" && obj.value !== nickname
   )
-
+  console.log("ONLINE",online)
   const closeMenu = () => {
     setShowMenu(false)
   }
@@ -28,8 +28,7 @@ export default function Online(props) {
       {obj.value}
     </li>);
 
-  console.log(showMenu)
-  console.log()
+  // console.log(showMenu)
 
   useEffect(() => {
     socket.emit("friendsList", { socketID: socket.id });

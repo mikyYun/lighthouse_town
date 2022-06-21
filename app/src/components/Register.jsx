@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import './Register.scss'
+import "./Register.scss";
 
 export default function Register(props) {
   const [userEmail, setUserEmail] = useState();
@@ -11,9 +11,12 @@ export default function Register(props) {
   const [userPassword, setUserPassword] = useState();
   const [userLanguages, setUserLanguages] = useState([]);
   const [userAvatar, setUserAvatar] = useState();
-  const [incorrectPassword, setIncorrectPassword] = useState("correct_password")
+  const [incorrectPassword, setIncorrectPassword] =
+    useState("correct_password");
+  const [checked, setChecked] = useState(false)
+  const [registerFormCheck, setRegisterFormCheck] = []
   const cookies = new Cookies();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   // window.addEventListener("click", (e) => {
   //   console.log("REG PROPS", props)
   //   props.submitRegistrationInfo("test")
@@ -28,11 +31,34 @@ export default function Register(props) {
     }
   };
 
+  const languageLists = {
+    html: "HTML",
+    css: "CSS",
+    javascript: "Javascript",
+    react: "React",
+    ruby: "Ruby",
+  };
+  const makeLanguageLists = Object.keys(languageLists).map(
+    (language, index) => {
+      return (
+        <li>
+          <input
+            type="checkbox"
+            id={language}
+            value={languageLists[language]}
+            onChange={(e) => insertLanguages(e, index + 1)}
+          />
+          <label>{languageLists[language]}</label>
+        </li>
+      );
+    }
+  );
+
   return (
     <div className="register-form">
-      <form id="form_registration" onSubmit={e => e.preventDefault()}>
+      <form id="form_registration" onSubmit={(e) => e.preventDefault()}>
         <div className="field">
-          <span>EMAIL :{" "}</span>    {/* 이안에 뭐가 들어갈껀가요? */}
+          <span>EMAIL : </span> {/* 이안에 뭐가 들어갈껀가요? */}
           <input
             id="register_email"
             rows="1"
@@ -47,7 +73,7 @@ export default function Register(props) {
         </div>
 
         <div className="field">
-          <span> NAME :{" "}</span>
+          <span> NAME : </span>
           <input
             id="register_name"
             rows="1"
@@ -56,13 +82,15 @@ export default function Register(props) {
             value={userName}
             onChange={(e) => {
               if (e.target.value.length < 4) setUserName(e.target.value);
-              console.log("username should be longer than 4 chars - Register.js");
+              console.log(
+                "username should be longer than 4 chars - Register.js"
+              );
             }}
           ></input>
         </div>
 
         <div className="field">
-          <span> PASSWORD :{" "}</span>
+          <span> PASSWORD : </span>
           <input
             // name="password"
             id="register_password"
@@ -71,13 +99,16 @@ export default function Register(props) {
             type="password"
             // value={userPassword}
             onChange={(e) => {
-              if (e.target.value.length < 4) setUserPassword(e.target.value);
-              console.log("password should be longer than 4 chars");
+              if (e.target.value.length < 4) {
+                console.log("password should be longer than 4 chars");
+                console.log(e.target.value)
+              }
+              setUserPassword(e.target.value)
             }}
           ></input>
         </div>
         <div className="field">
-          <span> CONFIRM PASSWORD :{" "}</span>
+          <span> CONFIRM PASSWORD : </span>
           <input
             // name="password_confirmation"
             id="register_password_confirmation"
@@ -86,38 +117,26 @@ export default function Register(props) {
             type="password"
             onChange={(e) => {
               if (e.target.value !== userPassword) {
-                setIncorrectPassword("incorrect_password")
-                console.log("confirmation password doesn't match. - Register.js");
+                console.log(userPassword)
+                setIncorrectPassword("incorrect_password");
+                console.log(
+                  "confirmation password doesn't match. - Register.js"
+                );
               } else {
-                setIncorrectPassword("correct_password")
+                setIncorrectPassword("correct_password");
+              console.log(e.target.value)
+
               }
             }}
           ></input>
         </div>
-        <span className={incorrectPassword}>confirmation password is incorrect</span>
+        <span className={incorrectPassword}>
+          confirmation password is incorrect
+        </span>
         <div className="field">
           <span> PROGRAMMING LANGUAGES :</span>
           <ul>
-            <li>
-              <input type="checkbox" id="html" value="HTML" onChange={(e) => insertLanguages(e, 1)} />
-              <label>HTML</label>
-            </li>
-            <li>
-              <input type="checkbox" id="css" value="CSS" onChange={(e) => insertLanguages(e, 2)} />
-              <label>CSS</label>
-            </li>
-            <li>
-              <input type="checkbox" id="javascript" value="JavaScript" onChange={(e) => insertLanguages(e, 3)} />
-              <label>JavaScript</label>
-            </li>
-            <li>
-              <input type="checkbox" id="react" value="react" onChange={(e) => insertLanguages(e, 4)} />
-              <label>React</label>
-            </li>
-            <li>
-              <input type="checkbox" id="ruby" value="ruby" onChange={(e) => insertLanguages(e, 5)} />
-              <label>Ruby</label>
-            </li>
+            {makeLanguageLists}
           </ul>
         </div>
         <div className="field">
@@ -130,8 +149,10 @@ export default function Register(props) {
                   type="checkbox"
                   id="man"
                   value="M"
+                  checked={!checked}
                   onChange={(e) => {
                     setUserAvatar(1);
+                    setChecked(!checked)
                   }}
                 />
                 <label>M</label>
@@ -144,8 +165,10 @@ export default function Register(props) {
                   type="checkbox"
                   id="woman"
                   value="W"
+                  checked={checked}
                   onChange={(e) => {
                     setUserAvatar(2);
+                    setChecked(!checked)
                   }}
                 />
                 <label>W</label>
@@ -166,12 +189,12 @@ export default function Register(props) {
             };
             axios // client talking to the server. Asynchronous. if it doesn't happen .post,
               .post("/register", { userInfo })
-              .then(res => {
+              .then((res) => {
                 props.submitRegistrationInfo(res.data);
-                cookies.set("username", res.data, {maxAge: 3600})
-                navigate("/game/plaza")
-              }).catch(error => console.log(error)
-              )
+                cookies.set("username", res.data, { maxAge: 3600 });
+                navigate("/game/plaza");
+              })
+              .catch((error) => console.log(error));
           }}
         >
           Register
