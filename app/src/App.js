@@ -24,7 +24,7 @@ function App() {
   // const [socket, setSocket] = useState();
   const [room, setRoom] = useState('plaza');
   const [online, setOnline] = useState([{ value: 'all', label: 'all' }]);
-  const [friendList, setFriendList] = useState([]);
+  const [friendList, setFriendList] = useState([]); // all friends
   const [show, setShow] = useState(false);
   const [clicked, setClicked] = useState({});
   const [recipient, setRecipient] = useState({ value: "all", label: "all" });
@@ -48,7 +48,7 @@ function App() {
     "/game/html",
     "/game/css",
     "/game/js",
-     '/'
+    '/'
   ];
 
   // set map for navigate
@@ -98,8 +98,8 @@ function App() {
     // ================= FUNCTIONS =============== //
 
     //frontend
-    socket.on("connect", () => {
-      // console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!");
+    socket.on("connect", () => { // main page ('/')
+      console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!");
       // console.log("SOCKETID", socket.id)
       const all_cookies = cookies.getAll();
       //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
@@ -107,9 +107,11 @@ function App() {
       // navigate("/")
       // }
       // 유저데이터가 아직 삭제되지 않았고, 게임페이지 리로드 한 경우 서버랑 연결하고 currentUser update in server
+
+      console.log("COOKIE EXISTING USER", all_cookies)
       if (all_cookies.userdata) {
         // 쿠키 존재하면 리커넥트 요청
-        socket.emit("SET USERNAME", { username: all_cookies.userdata.userName, socketID: socket.id });
+        socket.emit("SET USERNAME", { username: all_cookies.userdata.userName, socketID: socket.id }); //maybe undefined
         // socket.emit("reconnection?", { username: all_cookies.userdata.userName, newSocketId: socket.id });
         // socket.on("DENY CONNECTION", (e) => {
         //   clearCookies()
@@ -139,9 +141,9 @@ function App() {
     //     newFriendInfo
     //   }));
     // });
-    socket.on("updateFriendsList", ({newFriendName, languages}) => {
+    socket.on("updateFriendsList", ({ newFriendName, languages }) => {
       const nameAndLangObj = {}
-      nameAndLangObj[newFriendName] = {languages}
+      nameAndLangObj[newFriendName] = { languages }
       setFriendList((prev) => ({
         ...prev,
         ...nameAndLangObj
@@ -183,15 +185,15 @@ function App() {
       const loginUsersInformation = {}
       const usersOnline = []
       loginUserNames.map(name => {
-        usersOnline.push({ value: name, label: name, avatar: avatars[loginUsersObject[name].avatar_id]})
+        usersOnline.push({ value: name, label: name, avatar: avatars[loginUsersObject[name].avatar_id] })
         loginUsersInformation[name] = {
           name: name,
           email: loginUsersObject[name].email,
           languages: loginUsersObject[name].languages,
           avatar_id: loginUsersObject[name].avatar_id,
         }
-      }) 
-       //@@@@ SUNDAY - this should be dynamic and need an avatar from socket.
+      })
+      //@@@@ SUNDAY - this should be dynamic and need an avatar from socket.
       // console.log("ONLINE USERS PROFILE SET",loginUsersInformation)
       setProfiles(loginUsersInformation)
 
@@ -219,7 +221,8 @@ function App() {
     });
   };
 
-  const createSocketIdNameObject = (username) => {
+  const createSocketIdNameObject = (username) => { //WORKS
+    console.log('socket - app.js', socket)
     socket && socket.emit("SET USERNAME", { "socketID": socket.id, "username": username });
     // socket && socket.emit("REGISTERED", val); //if socket exists, then emit
   };

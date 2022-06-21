@@ -6,7 +6,8 @@ export default function Profiles(props) {
   const {socket} = useContext(SocketContext)
   useEffect(() => {
     socket.on("update login users information", ({disconnectedUser}) => {
-        const newProfiles = profiles
+      console.log("THIS second", disconnectedUser)
+      const newProfiles = profiles
         if (newProfiles[disconnectedUser]) {
           delete newProfiles[disconnectedUser]
           setProfiles(newProfiles)

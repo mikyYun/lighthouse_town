@@ -46,9 +46,8 @@ const Canvas = (props) => {
     canvas.width = 1120;
     canvas.height = 640;
     const ctx = canvas.getContext("2d");
-
+    
     socket.on("connect", () => {
-
       // const mapImg = new Image();
       // mapImg.src = props.map;
       // mapImg.onload = () => {

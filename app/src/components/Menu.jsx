@@ -15,8 +15,9 @@ const Menu = (props) => {
       <li className="add friend" onClick={(e) => {
         // console.log(clicked.value) // clicked name
         const addFriendName = clicked.value
-        console.log("add-friend clicked", username, addFriendName, userID)
-        socket.emit("add friend", {username, addFriendName, userID})
+        console.log("add-friend clicked", username, addFriendName, userID);
+        socket.emit("add friend", {username, addFriendName, userID});
+        setShow(false)
       }}>Add Friend</li>
       <li className="send-message" onClick={() => {
         setRecipient(clicked);
@@ -25,8 +26,10 @@ const Menu = (props) => {
       }}>Send Message</li>
       <li className="view-profile" onClick={(e) => {
         console.log("clicked vie-porifle", clicked.value)
-        setProfileShow("inline")
-      }}>View {nickname}'s Profile</li>
+        setProfileShow("inline");
+        setShow(false);
+      }}>View {clicked.value}'s Profile</li>
+      <button onClick={()=>{setShow(false)}}>CLOSE</button>
     </ul>
   );
 };

@@ -16,16 +16,11 @@ export default function Online(props) {
     setClicked(obj)
     setShow(true) // 클릭 뒤 사라지게
   }}> {<Avatar url={obj.avatar} alt="avatar" />} {obj.value} </li>);
-  // const friendsNames = Object.keys(friendList); // [이름, 이름]
-  // console.log(removeSelfAndAll)
-  // console.log('clicked', clicked)
 
-  useEffect(() => {
-    socket.emit("friendsList", { socketID: socket.id });
-  }, [online]);
   return (
     <div className="online-list">
       <FriendList />
+      {/* this is doing the emit */}
       <span>Online</span>
       <div>{usersOnline}</div>
     </div>

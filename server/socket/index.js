@@ -4,7 +4,6 @@ module.exports = function (socketIo) {
 
   const SOCKET_EVENT = {
     JOIN_ROOM: "JOIN_ROOM",
-    UPDATE_NICKNAME: "UPDATE_NICKNAME",
     SEND_MESSAGE: "SEND_MESSAGE",
     RECEIVE_MESSAGE: "RECEIVE_MESSAGE",
   };
@@ -14,10 +13,9 @@ module.exports = function (socketIo) {
   // client side event listener
   socketIo.on("connection", function (client) {
     // 클라이언트와 연결이 되면 연결된 사실을 출력합니다.
-    console.log('socket.on', client.on)
     console.log("socket connection succeeded."); //in terminal - vs code
     console.log("MEKLFMSKLDFM:SEMFKLS:DJF:KLJDVLKJSL:VJDKL:VJKLSD:JFKL:SD")
-    // 구현 편의상, 모든 클라이언트의 방 번호는 모두 "room 1"으로 배정해줍니다.
+    // 구현 편의상, 모든 클라이언트의 방 번호는 모두 "plaza"로 배정해줍니다.
     const roomName = "plaza";
 
     /*
@@ -43,36 +41,25 @@ module.exports = function (socketIo) {
         type: SOCKET_EVENT.JOIN_ROOM,
         time: new Date(),
       };
-      // "room 1"에는 이벤트타입과 서버에서 받은 시각을 덧붙여 데이터를 그대로 전송.
+      // "plaza"에는 이벤트타입과 서버에서 받은 시각을 덧붙여 데이터를 그대로 전송.
 
       socketIo.to(roomName).emit("RECEIVE_MESSAGE", responseData);
-      // 클라이언트 로 이벤트를 전달.
-      // 클라이언트에서는 RECEIVE_MESSAGE 이벤트 리스너를 가지고 있어서 그쪽 콜백 함수가 또 실행됌.
+      // 클라이언트 App.js 로 이벤트를 전달.
+      // 클라이언트에 App.js 는 RECEIVE_MESSAGE 이벤트 리스너를 가지고 있어서 그쪽 콜백 함수가 또 실행됌.
 
       /* App.js:
-      useEffect(() => {
-      socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceivePublicMessage); // 이벤트 리스너 - 퍼블릭 메세지
-      socket.on("PRIVATE", handleReceivePrivateMessage); // 이벤트 리스너 - 프라이빗 메세지
+        useEffect(() => {
+        socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceivePublicMessage); // 이벤트 리스너 - 퍼블릭 메세지
+        socket.on("PRIVATE", handleReceivePrivateMessage); // 이벤트 리스너 - 프라이빗 메세지
       */
 
       console.log(`JOIN_ROOM is fired with data: ${JSON.stringify(responseData)}`);
     });
 
-    // --------------- UPDATE NICKNAME ---------------
-    client.on(SOCKET_EVENT.UPDATE_NICKNAME, requestData => {
-      const responseData = {
-        ...requestData,
-        type: SOCKET_EVENT.UPDATE_NICKNAME,
-        time: new Date(),
-      };
-      socketIo.to(roomName).emit("RECEIVE_MESSAGE", responseData);
-      console.log(`UPDATE_NICKNAME is fired with data: ${JSON.stringify(responseData)}`);
-    });
-
-    // receive.message는 ChatRoom.jsx 에서 defined 
+       // receive.message는 ChatRoom.jsx 에서 defined 됌.
     // --------------- SEND MESSAGE ---------------
     client.on(SOCKET_EVENT.SEND_MESSAGE, requestData => {
-      //emiting back to receive message in line 67
+      //emiting back to receive message in line 67 above.
       const responseData = {
         ...requestData,
         type: SOCKET_EVENT.SEND_MESSAGE,
@@ -80,8 +67,8 @@ module.exports = function (socketIo) {
       };
       // SVGPreserveAspectRatio.to(roomName).emit
       socketIo.emit(SOCKET_EVENT.RECEIVE_MESSAGE, responseData);
-      //responseData = chat message
-      //@@@@@@ ChatRoom.jsx line 21
+      // responseData = chat message body
+      // ChatRoom.jsx line 21
       console.log(`${SOCKET_EVENT.SEND_MESSAGE} is fired with data: ${JSON.stringify(responseData)}`);
     });
 
