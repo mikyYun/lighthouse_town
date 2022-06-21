@@ -80,7 +80,6 @@ const usersInRooms = {};
 
 
 io.on("connection", (socket) => { //여기서 이미 socket id generation
-  console.log('CLIENT CONNECTED', socket.id)
   const roomName = "plaza";
   const session = socket.request.session;
   session.save();
@@ -121,7 +120,6 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
           )
           Promise.all(promises) //wait for all promises to resolve
             .then((res) => {
-              console.log("allusersTable", allusersTable)
               socket.emit("friendsListBack", allusersTable);
             })
         }
@@ -190,12 +188,9 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
   //@@THIS IS NOT FIRED
   socket.on("SET USERNAME", (obj) => {
     //Login.jsx 의 setUser(res.data.userName)
-    console.log('obj', obj)
     const { username, socketID } = obj;
-    console.log("RECONNECTION", username, socketID)
 
     currentUsers[username] = socketID;
-    console.log('currentusers in server.js', currentUsers)
     pool.query(
       "SELECT id, username AS name, email, avatar_id FROM users",
       (err, res) => {
@@ -373,6 +368,17 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
   });
 
   // --------------- SEND MESSAGE ---------------
+
+  /* from MessageForm.jsx; this is requestData
+
+        socket.emit(SOCKET_EVENT.SEND_MESSAGE, {
+        nickname, // @@ UNDEFINED - JORDAN
+        content: typingMessage,
+        user,
+        room
+      });
+  */
+
   socket.on("SEND_MESSAGE", (requestData) => {
     const responseData = {
       ...requestData,

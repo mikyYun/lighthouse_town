@@ -1,22 +1,32 @@
-import React, { useContext } from 'react';
+//css
 import './App.css';
+
+//libraries
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { socket } from './components/service/socket.js';
 import Cookies from 'universal-cookie';
+
+//states
+import { useState, useEffect, useContext, createContext } from "react";
+
+//images
 import town from './components/game_img/town-map.png';
+import lounge from './components/game_img/lounge.png';
 import classroom from './components/game_img/classroom.png';
+
+//components
 import Game from './components/Game';
 import Register from './components/Register';
 import Login from './components/Login';
 import Menu from './components/Menu';
-import { socket } from './components/service/socket.js';
-import { createContext } from "react";
 
-// import character imag
-
-
+//exports
 export const SocketContext = createContext(socket); // going to Recipient.jsx
 export const UserListContext = createContext({});
+
+
+
+
 function App() {
 
   // ================= STATES =============== //
@@ -41,8 +51,8 @@ function App() {
   // ================= VARIABLES =============== //
   // console.log("LOCATION", location);
   const nickname = location.state?.[0] || '';
-  console.log("NICKNAME IN APP", nickname)
-  const urlLists = [
+
+  const urlLists = [ //accepted room
     "/game/plaza",
     "/game/ruby",
     "/game/html",
@@ -54,8 +64,12 @@ function App() {
   // set map for navigate
   const maps = {
     plaza: town,
-    js: classroom
+    ruby: lounge,
+    html: lounge,
+    css: lounge,
+    js: classroom,
   };
+
   const avatars = {
     0: "/images/boy1-face.png",
     1: "/images/boy2-face.png",
@@ -80,8 +94,8 @@ function App() {
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD GET A USER FROM THE DATA BASE
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD ALSO SET AN AVATAR WHEN WE GET AN USER OBJECT.
     // set URL for navigate when enter the house
-    setRoom(location.pathname.split("/").splice(2)[0]);
-    setRoom(location.pathname.split("/").splice(2)[0]);
+    const newRoom = location.pathname.split("/").slice(2)[0];
+    if (maps[newRoom]) setRoom(newRoom); // check if the room exists and if it's valid
 
     const currentCookies = cookies.getAll();
     // cookies maxAge 3600.
@@ -90,7 +104,7 @@ function App() {
     } else if (!urlLists.includes(location.pathname)) {
       // clearCookies();
     }
-    // if (!urlLists.includes(location.pathname)) clearCookies();
+    if (!urlLists.includes(location.pathname)) clearCookies();
   }, [location.pathname]);
 
   useEffect(() => {
@@ -220,7 +234,6 @@ function App() {
   };
 
   const createSocketIdNameObject = (username) => { //WORKS
-    console.log('socket - app.js', socket)
     socket && socket.emit("SET USERNAME", { "socketID": socket.id, "username": username });
     // socket && socket.emit("REGISTERED", val); //if socket exists, then emit
   };
@@ -234,6 +247,19 @@ function App() {
   };
 
   // console.log('nickname', nickname)
+
+  const gamePath = <Game
+    username={nickname}
+    sendMessage={sendMessage}
+    sendPrivateMessage={privateMessage}
+    // sendData={sendData}
+    setUser={createSocketIdNameObject}
+    room={room}
+    // nickname={nickname}
+    online={online}
+    map={maps[room]}
+  />
+
   return (
     <SocketContext.Provider value={{ socket, online, nickname, friendList }} >
       <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked, user, setUser, profiles, nickname, setProfiles, profileShow, setProfileShow }} >
@@ -247,18 +273,7 @@ function App() {
             <Route path='/' element={<Login setUser={createSocketIdNameObject} />} />
             <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
             <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
-            <Route path={`/game/${room}`} element={
-              <Game
-                username={nickname}
-                sendMessage={sendMessage}
-                sendPrivateMessage={privateMessage}
-                // sendData={sendData}
-                setUser={createSocketIdNameObject}
-                room={room}
-                // nickname={nickname}
-                online={online}
-                map={maps[room]}
-              />} />
+            <Route path={`/game/plaza`} element={gamePath} />
           </Routes>
         </div>
       </UserListContext.Provider>

@@ -8,6 +8,7 @@ const facing = {
 }
 // facing direction
 const cycleLoop = [0, 1, 2, 3];
+
 class Characters {
 
   constructor(config) {
@@ -100,13 +101,13 @@ class Characters {
       this.state - 10,
       80,
       20
-      )
+    )
     ctx.fillStyle = "black";
     ctx.fillText(
       this.state.username,
       this.state.x + 10,
       this.state.y + 5
-      )
+    )
   }
 };
 
