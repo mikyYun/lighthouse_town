@@ -18,13 +18,12 @@ export default function Online(props) {
       }}
     >
       {<Avatar url={obj.avatar} alt="avatar" />}{obj.value}{" "}
-      <span className={blockAddFriendAlert}><br />Already in your list</span>{" "}
     </li>
   ));
   // const friendsNames = Object.keys(friendList); // [이름, 이름]
   // console.log(removeSelfAndAll)
   // console.log('clicked', clicked)
-
+  
   useEffect(() => {
     socket.emit("friendsList", { socketID: socket.id });
   }, [online]);
@@ -32,6 +31,7 @@ export default function Online(props) {
     <div className="online-list">
       {/* <FriendList /> */}
       <span>Online</span>
+      <span className={blockAddFriendAlert}><br />Already in your list</span>{" "}
       <div>{usersOnline}</div>
     </div>
   );
