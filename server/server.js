@@ -66,15 +66,12 @@ io.on("connection", (socket) => {
   session.save();
 
   // LOGIN USER CONNECTED
-   // socketID and username matching triggered when user login
-   socket.on("SET USERNAME", (obj) => {
+  // socketID and username matching triggered when user login
+  socket.on("SET USERNAME", (obj) => {
     //Login.jsx 의 setUser(res.data.userName)
     const { username, socketID } = obj;
-    console.log("Connected ",username, socketID)
-
     currentUsers[username] = socketID;
-    pool.query(
-      "SELECT id, username AS name, email, avatar_id FROM users",
+    pool.query("SELECT id, username AS name, email, avatar_id FROM users",
       (err, res) => {
         // res.rows => {id: , name: , email: , avatar_id}
         const allUsersObj = res.rows;
@@ -83,7 +80,7 @@ io.on("connection", (socket) => {
           (err, res_1) => {
             // res.rows_1 => {id(languageID): , user_id: , language_name: }
             const userIDAndLang = res_1.rows;
-            const loginUsersData = {}
+            const loginUsersData = {};
             allUsersObj.map(user => {
               if (currentUsers[user.name]) {
                 loginUsersData[user.name] = {
@@ -91,12 +88,12 @@ io.on("connection", (socket) => {
                   email: user.email,
                   avatar_id: user.avatar_id,
                   languages: []
-                }
+                };
                 userIDAndLang.map(lang => {
                   if (user.id === lang.user_id) {
-                    loginUsersData[user.name].languages.push(lang.language_name)
+                    loginUsersData[user.name].languages.push(lang.language_name);
                   }
-                })
+                });
               }
             });
             // console.log(loginUsersData)
@@ -104,17 +101,17 @@ io.on("connection", (socket) => {
             alluserNames.forEach((name) => {
               io.to(currentUsers[name])
                 .emit("all user names", { "users": loginUsersData });// all user names
+            }
+            );
           }
         );
-      }
-    );
 
 
-    // const alluserNames = Object.keys(currentUsers);
-    // alluserNames.forEach((name) => {
-    //   io.to(currentUsers[name])
-    //     .emit("all user names", { "users": alluserNames });
-    }); // {"users": [name1, name2] }
+        // const alluserNames = Object.keys(currentUsers);
+        // alluserNames.forEach((name) => {
+        //   io.to(currentUsers[name])
+        //     .emit("all user names", { "users": alluserNames });
+      }); // {"users": [name1, name2] }
     // }
   });
 
@@ -220,22 +217,22 @@ io.on("connection", (socket) => {
   // });
 
 
-// FOR USER MOVEMENT (Canvas)
+  // FOR USER MOVEMENT (Canvas)
   socket.on('sendData', data => {
 
     const { userState, room, removeFrom } = data;
 
     // console.log('got data', data);
-    if (!usersInRooms[room]){
-      usersInRooms[room] = {}
+    if (!usersInRooms[room]) {
+      usersInRooms[room] = {};
     }
     // console.log('BEFORE LOOP', usersInRooms);
-     //when usersInRooms have some properties
-     for (const rooms in usersInRooms) {
+    //when usersInRooms have some properties
+    for (const rooms in usersInRooms) {
       // console.log(usersInRooms[rooms])
-      for (const user in usersInRooms[rooms]){
-        if ( room !== rooms && userState.username === user) {
-          delete usersInRooms[rooms][userState.username]
+      for (const user in usersInRooms[rooms]) {
+        if (room !== rooms && userState.username === user) {
+          delete usersInRooms[rooms][userState.username];
         }
       }
     }
@@ -248,7 +245,7 @@ io.on("connection", (socket) => {
 
 
 
-   // ADD FRIEND
+  // ADD FRIEND
   // socket.on("add friend", {username, addFreindName})
   socket.on("add friend", ({ username, addFriendName, userID }) => {
     // console.log("ADD FRIEND", nameObj)
@@ -258,7 +255,7 @@ io.on("connection", (socket) => {
         // res.rows => users table [{id: , username: ,....}]
         const targetID = res.rows[0].id;
         // console.log("target users id", targetID);
-        
+
         pool.query(
           "INSERT INTO favorites (added_by, added) VALUES ($2, $1)", [userID, targetID]
         );
@@ -339,8 +336,6 @@ io.on("connection", (socket) => {
     const senderSocketID = obj.senderSocketId;
 
     const recipientSocketId = currentUsers[recipient.value]; // get target's socketid
-    // console.log("SENDERSOCKETID", senderSocketID);
-    // console.log(currentUsers);
     io
       .to(recipientSocketId)
       .emit("PRIVATE", responseData);
@@ -380,8 +375,7 @@ io.on("connection", (socket) => {
       time: new Date(),
     };
     io.to(roomName).emit("RECEIVE_MESSAGE", responseData);
-    console.log(
-      `UPDATE_NICKNAME is fired with data: ${JSON.stringify(responseData)}`
+    console.log(`UPDATE_NICKNAME is fired with data: ${JSON.stringify(responseData)}`
     );
   });
 
@@ -406,17 +400,13 @@ io.on("connection", (socket) => {
 
   /* 오브젝트에서 종료되는 유저 삭제 */
   socket.on("disconnect", () => {
-    // console.log("Server.js - DISCONNECT", socket.id);
-    console.log('currentUser', currentUsers )
-
     const alluserNames = Object.keys(currentUsers);
-    let disconnectedUsername
+    let disconnectedUsername;
     alluserNames.forEach((name) => {
       if (currentUsers[name] === socket.id)
         delete currentUsers[name];
-        disconnectedUsername = name
+      disconnectedUsername = name;
     }); // {"users": [name1, name2] }
-    // console.log("Server.js - DISCONNECT - CURRENT USERS", currentUsers);
     io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기
   });
 });

@@ -21,10 +21,10 @@ const io = new Server(httpServer, {
 // ================ HELPER FUNCS ================= //
 const getUserLang = (userID) => {
   return pool.query(
-    `SELECT user_id, languages.language_name 
+    `SELECT user_id, languages.language_name
     from user_language
 
-    JOIN languages 
+    JOIN languages
     ON languages.id = user_language.language_id
 
     WHERE user_id = $1`,
@@ -100,7 +100,7 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
     const alluserNames = Object.keys(currentUsers);
     const currentUser = alluserNames.find((username) => currentUsers[username] === newSocketID)
 
-    //@@upgrade later @mike 
+    //@@upgrade later @mike
     if (!currentUser) return console.log('user not found', 'allusernames', alluserNames, 'newSocketID', newSocketID)
 
     pool.query(`
@@ -124,13 +124,12 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
             async (row) => { //add 'ASYNC' in front of the arrow function.
               //ASYNC FUNCTION, YOU ARE RETURNING A PROMISE.
               row.languages = await getUserLang(row.friend_id) //to make it synchronous // returning one promise
-              // we call promise function for all friends. 
+              // we call promise function for all friends.
               // we need to ensure to resolve for ALL friends.
             }
           )
           Promise.all(promises) //wait for all promises to resolve
             .then((res) => {
-              console.log("allusersTable", allusersTable)
               socket.emit("friendsListBack", allusersTable);
             })
         }
@@ -204,7 +203,6 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
     console.log("RECONNECTION", username, socketID)
 
     currentUsers[username] = socketID;
-    console.log('currentusers in server.js', currentUsers)
     pool.query(
       "SELECT id, username AS name, email, avatar_id FROM users",
       (err, res) => {
@@ -242,7 +240,7 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
         );
 
 
-        // const alluserNames = Object.keys(currentUsers); 
+        // const alluserNames = Object.keys(currentUsers);
         // alluserNames.forEach((name) => {
         //   io.to(currentUsers[name])
         //     .emit("all user names", { "users": alluserNames });

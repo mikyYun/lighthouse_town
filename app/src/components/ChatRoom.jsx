@@ -53,7 +53,7 @@ function ChatRoom(props) {
     socket.on("PRIVATE", handleReceivePrivateMessage); // 이벤트 리스너 - 프라이빗 메세지
 
     return () => {
-      socket.disconnect();
+      socket.disconnect(); // todo need socket cleanup ?
       // socket.off(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); // 이벤트 리스너 해제
       //@@이거 왜 off 안하고 disconnect로 함?
     };
