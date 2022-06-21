@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useContext, useRef } from "react";
+import { useState, useCallback, useEffect, useContext, useRef, createContext } from "react";
 import MessageForm from "./MessageForm";
 import Avatar from "./Avatar.jsx";
 import "./ChatRoom.scss";
@@ -8,7 +8,8 @@ import {
   makePrivateMessage,
 } from "./service/socket";
 import { SocketContext } from "../App.js";
-import { UserListContext } from "../App.js";
+import { UserListContext, MsgContext } from "../App.js";
+
 
 function ChatRoom(props) {
   const { socket } = useContext(SocketContext);
@@ -59,6 +60,7 @@ function ChatRoom(props) {
   }, [socket, handleReceivePublicMessage]);
   //@@@@ 이거 왜 public message??? private message 는??
 
+
   return (
     <div className="d-flex flex-column chat-form">
       <div className="text-box">
@@ -88,6 +90,7 @@ function ChatRoom(props) {
       <MessageForm nickname={username} recipient={recipient} user={user} />
     </div>
   );
+
 }
 
 export default ChatRoom;

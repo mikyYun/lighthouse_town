@@ -17,6 +17,7 @@ import { createContext } from "react";
 
 export const SocketContext = createContext(socket); // going to Recipient.jsx
 export const UserListContext = createContext({});
+export const MsgContext = createContext([]);
 function App() {
 
   // ================= STATES =============== //
@@ -31,10 +32,11 @@ function App() {
   const [user, setUser] = useState({ value: "all", label: "all", avatar: 1 });
   const [profiles, setProfiles] = useState({});
   const [profileShow, setProfileShow] = useState("none");
+  const [blockAddFriendAlert, setBlockAddFriendAlert] = useState("add-friend");
   const goChat = (username, avatar, userLanguages, id) => {
-    const data = [username, avatar, userLanguages, id];
-    navigate('/game/plaza', { state: data });
-  };
+    const data = [username, avatar, userLanguages, id]
+    navigate('/game/plaza', { state: data })
+  }
   // ================= HOOKS =============== //
 
   const navigate = useNavigate();
@@ -51,7 +53,9 @@ function App() {
     "/game/html",
     "/game/css",
     "/game/js",
-    '/'
+    '/',
+    "/register",
+    "/login"
   ];
 
   // set map for navigate
@@ -80,7 +84,7 @@ function App() {
   // ================= EFFECTS =============== //
 
   useEffect(() => {
-    setUser({ ...user, avatar: avatars[user.avatar] }); //[user.avatar] is a number (avatar id) 
+    setUser({ ...user, avatar: avatars[user.avatar] }); //[user.avatar] is a number (avatar id)
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD GET A USER FROM THE DATA BASE
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD ALSO SET AN AVATAR WHEN WE GET AN USER OBJECT.
     // set URL for navigate when enter the house
@@ -260,13 +264,11 @@ function App() {
   // console.log('nickname', nickname)
   return (
     <SocketContext.Provider value={{ socket, online, nickname, friendList }} >
-      <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked, user, setUser, profiles, nickname, setProfiles, profileShow, setProfileShow }} >
+      <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked, user, setUser, profiles, nickname, setProfiles, profileShow, setProfileShow, blockAddFriendAlert, setBlockAddFriendAlert }} >
 
         {/* clicked -> used in Menu.jsx
     setClicked -> used in Online.jsx */}
-
-        <div className='main'>
-          {show && <Menu username={nickname} />}
+      {/* {show && <Menu username={nickname} />} */}
           <Routes>
             <Route path='/' element={<Login setUser={createSocketIdNameObject} goChat={goChat} />} />
             <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
@@ -284,7 +286,6 @@ function App() {
                 map={maps[room]}
               />} />
           </Routes>
-        </div>
       </UserListContext.Provider>
     </SocketContext.Provider>
   );

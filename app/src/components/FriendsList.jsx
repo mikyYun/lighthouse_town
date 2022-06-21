@@ -12,7 +12,7 @@ export default function FriendList() {
   const [updateFriend, setUpdateFriend] = useState();
   const location = useLocation()
   const userID = location.state?.[3]
-  console.log('FRIENDLIST', friendList)
+  // console.log('FRIENDLIST', friendList)
   const friendsListing = friendList.map((friend, i) => {
     const lists = () => {
       // console.log("LIST", friendList);
@@ -37,6 +37,7 @@ export default function FriendList() {
 
   useEffect(() => {
     socket.emit("friendsList", { newSocketID: socket.id, user, userID });
+    console.log("friendlist socket id",socket.id)
     // console.log("USER", userID)
     // user is an object
     return () => {
@@ -46,7 +47,7 @@ export default function FriendList() {
 
   return (
     <div className="friendsList">
-      <div className="friendsListLabel">Friends</div>
+      <div className="friendsListLabel">My Friends</div>
       {friendsListing}
     </div>
   );

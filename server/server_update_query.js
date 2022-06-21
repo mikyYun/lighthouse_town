@@ -78,71 +78,24 @@ let currentUsers = {}; // => {username : socket.id}
 const usersInRooms = {};
 
 
-// OPEN SOCKET
-io.on("connection", (socket) => {
-  const roomName = "room 1";
+
+io.on("connection", (socket) => { //여기서 이미 socket id generation
+  console.log('CLIENT CONNECTED', socket.id)
+  const roomName = "plaza";
   const session = socket.request.session;
   session.save();
 
-  // LOGIN USER CONNECTED
-   // socketID and username matching triggered when user login
-   socket.on("SET USERNAME", (obj) => {
-    //Login.jsx 의 setUser(res.data.userName)
-    const { username, socketID } = obj;
-    console.log("Connected ",username, socketID)
+  /////////////////////////////////////////////////
 
-    currentUsers[username] = socketID;
-    pool.query(
-      "SELECT id, username AS name, email, avatar_id FROM users",
-      (err, res) => {
-        // res.rows => {id: , name: , email: , avatar_id}
-        const allUsersObj = res.rows;
-        pool.query(
-          "SELECT languages.id, user_id, language_name FROM user_language JOIN languages ON language_id=languages.id",
-          (err, res_1) => {
-            // res.rows_1 => {id(languageID): , user_id: , language_name: }
-            const userIDAndLang = res_1.rows;
-            const loginUsersData = {}
-            allUsersObj.map(user => {
-              if (currentUsers[user.name]) {
-                loginUsersData[user.name] = {
-                  // socketID: socketID,
-                  email: user.email,
-                  avatar_id: user.avatar_id,
-                  languages: []
-                }
-                userIDAndLang.map(lang => {
-                  if (user.id === lang.user_id) {
-                    loginUsersData[user.name].languages.push(lang.language_name)
-                  }
-                })
-              }
-            });
-            // console.log(loginUsersData)
-            const alluserNames = Object.keys(loginUsersData);
-            alluserNames.forEach((name) => {
-              io.to(currentUsers[name])
-                .emit("all user names", { "users": loginUsersData });// all user names
-          }
-        );
-      }
-    );
+  socket.on("hasCookies", e => {
+    console.log(e)
+  })
+
+  ///////////////////////////////////////////////
 
 
-    // const alluserNames = Object.keys(currentUsers);
-    // alluserNames.forEach((name) => {
-    //   io.to(currentUsers[name])
-    //     .emit("all user names", { "users": alluserNames });
-    }); // {"users": [name1, name2] }
-    // }
-  });
-
-
-
-  socket.on("friendsList", (id) => {
-    // id.socketID = new user's socketid
-    // const newSocketID = id.socketID;
-    const {newSocketID, user, userID} = id
+  //waiting for the client to send the request
+  socket.on("friendsList", ({ newSocketID, user, userID }) => {
     // check this id is in currentUsers Object
     const alluserNames = Object.keys(currentUsers);
     const currentUser = alluserNames.find((username) => currentUsers[username] === newSocketID)
@@ -241,7 +194,63 @@ io.on("connection", (socket) => {
 
 
 
-   // ADD FRIEND
+  // socketID and username matching triggered when user login
+
+  //@@THIS IS NOT FIRED
+  socket.on("SET USERNAME", (obj) => {
+    //Login.jsx 의 setUser(res.data.userName)
+    console.log('obj', obj)
+    const { username, socketID } = obj;
+    console.log("RECONNECTION", username, socketID)
+
+    currentUsers[username] = socketID;
+    console.log('currentusers in server.js', currentUsers)
+    pool.query(
+      "SELECT id, username AS name, email, avatar_id FROM users",
+      (err, res) => {
+        // res.rows => {id: , name: , email: , avatar_id}
+        const allUsersObj = res.rows;
+        pool.query(
+          "SELECT languages.id, user_id, language_name FROM user_language JOIN languages ON language_id=languages.id",
+          (err, res_1) => {
+            // res.rows_1 => {id(languageID): , user_id: , language_name: }
+            const userIDAndLang = res_1.rows;
+            const loginUsersData = {}
+            allUsersObj.map(user => {
+              if (currentUsers[user.name]) {
+                loginUsersData[user.name] = {
+                  // socketID: socketID,
+                  email: user.email,
+                  avatar_id: user.avatar_id,
+                  languages: []
+                }
+                userIDAndLang.map(lang => {
+                  if (user.id === lang.user_id) {
+                    loginUsersData[user.name].languages.push(lang.language_name)
+                  }
+                })
+              }
+            });
+            // console.log(loginUsersData)
+            const alluserNames = Object.keys(loginUsersData);
+            alluserNames.forEach((name) => {
+              io.to(currentUsers[name])
+                .emit("all user names", { "users": loginUsersData });// all user names
+            }
+            );
+          }
+        );
+
+
+        // const alluserNames = Object.keys(currentUsers); 
+        // alluserNames.forEach((name) => {
+        //   io.to(currentUsers[name])
+        //     .emit("all user names", { "users": alluserNames });
+      }); // {"users": [name1, name2] }
+    // }
+  });
+
+  // ADD FRIEND
   // socket.on("add friend", {username, addFreindName})
   socket.on("add friend", ({ username, addFriendName, userID }) => {
     // console.log("ADD FRIEND", nameObj)
@@ -251,7 +260,6 @@ io.on("connection", (socket) => {
         // res.rows => users table [{id: , username: ,....}]
         const targetID = res.rows[0].id;
         // console.log("target users id", targetID);
-        
         pool.query(
           "INSERT INTO favorites (added_by, added) VALUES ($2, $1)", [userID, targetID]
         );
@@ -381,13 +389,11 @@ io.on("connection", (socket) => {
       time: new Date(),
     };
     io.emit("RECEIVE_MESSAGE", responseData);
+
   });
 
   /* 오브젝트에서 종료되는 유저 삭제 */
   socket.on("disconnect", () => {
-    // console.log("Server.js - DISCONNECT", socket.id);
-    console.log('currentUser', currentUsers )
-
     const alluserNames = Object.keys(currentUsers);
     let disconnectedUsername
     alluserNames.forEach((name) => {

@@ -57,7 +57,7 @@ export default function Register(props) {
             type="text"
             value={userName}
             onChange={(e) => {
-              if (e.target.value.length < 4) setUserName(e.target.value);
+              if (e.target.value.length < 8) setUserName(e.target.value);
               console.log("username should be longer than 4 chars - Register.js");
             }}
           ></input>
