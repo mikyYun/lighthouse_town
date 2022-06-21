@@ -399,6 +399,7 @@ io.on("connection", (socket) => {
   });
 
   /* 오브젝트에서 종료되는 유저 삭제 */
+  // todo need to test this function and make sure offline user is deleted from other users online list
   socket.on("disconnect", () => {
     const alluserNames = Object.keys(currentUsers);
     let disconnectedUsername;

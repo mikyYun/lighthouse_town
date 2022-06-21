@@ -167,7 +167,7 @@ const Canvas = (props) => {
       }, 7000);
     });
     return () => {
-      socket.disconnect(); // todo need socket cleanup ?
+      socket.off("dataToCanvas"); // todo need socket cleanup ?
     };
   }, [socket]);
 
