@@ -28,8 +28,8 @@ function Recipient() {
   }, [online, nickname])
 
   return (
-    <div className="card d-flex flex-row align-items-center" >
-      <label htmlFor="user-name-input" style={{ width: 290 }}>
+    <div className="card d-flex flex-row chat-to-container" >
+      <label htmlFor="user-name-input" className="chat-to">
         Recipient
       </label>
       <Select

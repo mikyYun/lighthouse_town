@@ -4,6 +4,7 @@ import { UserListContext } from '../App.js'
 import Avatar from "./Avatar.jsx"
 import Menu from "./Menu.jsx";
 import Profile from "./Profile.jsx";
+import './Online.scss'
 
 export default function Online(props) {
   const { online, socket, nickname } = useContext(SocketContext);
@@ -25,8 +26,8 @@ export default function Online(props) {
   }
 
   const usersOnline = removeSelfAndAll.map((obj, i) =>
-    <div className="online-user">
-      <li className="users-online" key={i} onClick={() => {
+    <div className="online-user" key={i}>
+      <li className="users-online" onClick={() => {
         setShowMenu(true);
         setClicked(obj)
         setShow(true); // 클릭 뒤 사라지게
@@ -37,7 +38,7 @@ export default function Online(props) {
     </div>
     );
 
-  console.log(showMenu)
+  // console.log(showMenu)
 
   useEffect(() => {
     socket.emit("friendsList", { socketID: socket.id });
@@ -47,7 +48,7 @@ export default function Online(props) {
   return (
     <div className="online-list">
       {/* <FriendList /> */}
-      <p>Online</p>
+      <div className="side-bar-label">Online</div>
       { showMenu === true ?<Menu close={closeMenu} openProfile={openProfile}/> : null}
       <div>{usersOnline}</div>
     </div>

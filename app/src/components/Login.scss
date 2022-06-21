@@ -1,9 +1,10 @@
-$base-color: #1f1f1e;
-$btn-color: #b0d36a;
-$form-color: #009f92;
+$back-color: #1f1f1e;
+$main-color: #b0d36a;
+$second-color: #9883c4;
+// $form-color: #009f92;
 
 body{
-  background-color: $base-color;
+  background-color: $back-color;
 }
 
 .login-page {
@@ -12,34 +13,64 @@ body{
   align-items: center;
   margin-top: 20%;
 
-
   h1 {
-    color: #bada55;
-    font-size: 4.5rem;
+    color: $main-color;
+    font-size: 6rem;
     font-weight: bolder;
+    font-family: 'VT323', monospace;
+  }
+
+  h2 {
+    color: $main-color;
+    font-size: 4rem;
+    font-weight: bolder;
+    font-family: 'VT323', monospace;
   }
 }
 
 #form_login {
-  background-color: $form-color;
-    width: 400px;
-    height: 300px;
-    margin-top: 30px;
-    padding: 30px;
+  background-color: $second-color;
+  width: 38%;
+  height: 350px;
+  margin-top: 30px;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  border-radius: 10px;
+  box-shadow: 5px 5px #888888;
+  font-size: 1.2rem;
+
+  div {
+    width: 100%;
+    padding: 0.5rem;
+    }
+
+  input {
+    width: 100%;
+    border-radius: 5px;
+  }
+
+  p {
+    margin-bottom: 0;
+    color: whitesmoke;
+  }
+
+  .btns {
+    width: 100%;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    border-radius: 10px;
-    box-shadow: 5px 5px #888888;
+    margin-top: 1.5rem;
+  }
+
 }
 
-#form_login div {
-  margin: 5px
-}
 
 .btn {
-  background-color: $btn-color;
-  width: 150px;
-  margin: 5px
+  background-color: #b0d36a;
+  width: 40%;
+  margin: 5px;
+  font-size: 1.2rem;
 }

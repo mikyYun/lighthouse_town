@@ -1,0 +1,81 @@
+$back-color: #1f1f1e;
+$main-color: #b0d36a;
+$second-color: #9883c4;
+
+.online-list {
+    width: 100%;
+    /* background: whitesmoke; */
+    color: black;
+    text-align: center;
+    border-radius: 5px;
+    margin: 10px auto;
+
+    img.user-avatar {
+        width: 30px;
+      }
+  }
+
+.online-user {
+    width: 90%;
+    background: whitesmoke;
+    color: black;
+    text-align: center;
+    border-radius: 5px;
+    margin: 10px auto;
+
+    :hover {
+        background-color: #bada55;
+        color: black;
+        border-radius: 5px;
+    }
+}
+
+  .language {
+    background-color: $main-color;
+  }
+
+
+
+  .block-friend {
+    display: inline;
+    color: red;
+    font-size: x-small;
+    font-weight: bold;
+  }
+  .add-friend{
+    display: none;
+  }
+
+  .menu-container {
+    width: 100%;
+    background: black;
+    opacity: 50%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+  }
+
+  .menu {
+    position: absolute;
+    padding: 10px;
+    width: 25%;
+    height: 20vh;
+    right: 0;
+    top: 10vh;
+    z-index: 2;
+    background-color: $main-color;
+
+  }
+
+  li {
+    cursor: pointer;
+    padding: 0.5em;
+    list-style: none;
+
+  }
+
+  .users-online:hover{
+    background-color:#bada55;
+    color: black;
+  }
+

@@ -1,9 +1,5 @@
 import React, { useEffect, useRef, useState, useContext, useCallback } from "react";
-import mapImage from "./game_img/town-map.png";
-import girlImage from "./game_img/girl1.png";
 import Characters from "./helper/Characters";
-import boyImage from "./game_img/boy1.png";
-import townWall from "./game_img/collision_data.js/townWall";
 import { selectAvatar } from "./helper/selectAvatar";
 import { SocketContext } from "../App";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -50,9 +46,9 @@ const Canvas = (props) => {
 
 
     // socket.on("connect", () => {
-      console.log('ITS CONNECTED!!!!!!')
+      // console.log('ITS CONNECTED!!!!!!')
       sendData()
-      console.log("SENT!!!!")
+      // console.log("SENT!!!!")
       // socket.emit("sendData", userCharacters[props.username].state);
       socket.on("sendData", (data) => {
         console.log("data", data);
@@ -98,7 +94,6 @@ const Canvas = (props) => {
 
 
     // });   //socket ends
-
 
 
     window.addEventListener("keydown", (e) => {
@@ -163,8 +158,8 @@ const Canvas = (props) => {
     });
 
     return () => {
-      // window.removeEventListener("keydown", (e) => userCharacters[0].move(e));
-      // window.removeEventListener("keyup", () => userCharacters[0].stop());
+      window.removeEventListener("keydown", (e) => userCharacters[0].move(e));
+      window.removeEventListener("keyup", () => userCharacters[0].stop());
     };
 
   }, []);
@@ -227,7 +222,7 @@ const Canvas = (props) => {
   // sending data to server
   function sendData(removeFromRoom) {
     // console.log('Remove From Here', removeFromRoom)
-    socket.emit("sendData", {
+    socket && socket.emit("sendData", {
       userState: userCharacters[props.username].state,
       room: props.room,
       removeFrom: removeFromRoom

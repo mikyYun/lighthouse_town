@@ -21,34 +21,36 @@ const Menu = (props) => {
   }
 
   return (
-    <ul className="menu">
+    <div className="menu-container">
+      <ul className="menu">
 
-      <li className="add friend" onClick={(e) => {
-        // console.log(clicked.value) // clicked name
-        const addFriendName = clicked.value
-        // console.log("add-friend clicked", username, addFriendName, userID);
-        // if addFriiendName is included in current friends list, block add
-        currentFriendsNames.includes(addFriendName) ? blockAddFriend("block-friend") : socket.emit("add friend", {username, addFriendName, userID});
-        // console.log("add-friend clicked", e);
-        // socket.emit("add friend", {username, addFriendName, userID});
-        props.close();
-      }}>Add Friend</li>
+        <li className="add friend" onClick={(e) => {
+          // console.log(clicked.value) // clicked name
+          const addFriendName = clicked.value
+          // console.log("add-friend clicked", username, addFriendName, userID);
+          // if addFriiendName is included in current friends list, block add
+          currentFriendsNames.includes(addFriendName) ? blockAddFriend("block-friend") : socket.emit("add friend", {username, addFriendName, userID});
+          // console.log("add-friend clicked", e);
+          // socket.emit("add friend", {username, addFriendName, userID});
+          props.close();
+        }}>Add Friend</li>
 
-      <li className="send-message" onClick={() => {
-        setRecipient(clicked);
-        // console.log('clicked in Menu', clicked)
-        props.close();
-      }}>Send Message</li>
+        <li className="send-message" onClick={() => {
+          setRecipient(clicked);
+          // console.log('clicked in Menu', clicked)
+          props.close();
+        }}>Send Message</li>
 
-      <li className="view-profile" onClick={(e) => {
-        console.log("clicked vie-porifle", clicked.value)
-        setProfileShow("inline");
-        // props.openProfile();
-        props.close();
-      }}>View Profile</li>
+        <li className="view-profile" onClick={(e) => {
+          console.log("clicked vie-porifle", clicked.value)
+          setProfileShow("inline");
+          // props.openProfile();
+          props.close();
+        }}>View Profile</li>
 
-      <button onClick={props.close}>CLOSE</button>
-    </ul>
+        <button onClick={props.close}>CLOSE</button>
+      </ul>
+   </div>
   );
 };
 
