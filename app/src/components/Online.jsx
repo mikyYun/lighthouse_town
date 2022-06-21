@@ -30,7 +30,7 @@ export default function Online(props) {
   }, [online]);
   return (
     <div className="online-list">
-      <FriendList />
+      {/* <FriendList /> */}
       <span>Online</span>
       <div>{usersOnline}</div>
     </div>

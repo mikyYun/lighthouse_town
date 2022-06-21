@@ -6,10 +6,17 @@ $form-color: #009f92;
   width: 80%;
   // display: flex;
 }
+.side-bar{
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  background-color: $form-color;
+}
 
 .game-container {
   position: relative;
-  width: 80vw;
+  width: 90%;
+  margin: 20px auto;
   background-size: cover;
   image-rendering: pixelated;
 }
@@ -63,21 +70,14 @@ div.d-flex.flex-row {
 }
 
 .online-list {
-
-  position: absolute;
-  width: 20%;
-  height: 100%;
   right: 0;
   top: 0;
   background-color: $form-color;
   font-size: 1.3rem;
   color: white;
-  img {
-  background-color: rgb(82, 82, 131);
     img.user-avatar {
-      width: 15px;
+      width: 30px;
     }
-  }
 }
 
 .language {
@@ -98,16 +98,8 @@ li.list-languages:hover {
   background-color: $base-color;
 }
 
-.profile {
-  background-color: red;
-  width: 20%;
-  height: 10%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  
-  
-}
+
+
 .languageLists,
 li.list-languages {
   font-size: 0.8rem;

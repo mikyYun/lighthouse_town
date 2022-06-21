@@ -172,11 +172,7 @@ const Canvas = (props) => {
 
   useEffect(() => {
 
-    console.log("INSIDE USEEFFECT!!!!")
     socket.on("dataToCanvas", data => {
-      console.log("MESSAGE!!!!", data);
-      console.log(data.nickname);
-      // console.log(props.username)
 
       // when msg comes in, setMsg with its user
       // setTimeout for setMsg to be ""
