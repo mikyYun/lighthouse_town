@@ -49,7 +49,7 @@ const Canvas = (props) => {
     const ctx = canvas.getContext("2d");
 
 
-    socket.on("connect", () => {
+    // socket.on("connect", () => {
 
       sendData()
       // socket.emit("sendData", userCharacters[props.username].state);
@@ -96,8 +96,7 @@ const Canvas = (props) => {
       }
 
 
-    });   //socket ends
-
+    // });   //socket ends
 
 
     window.addEventListener("keydown", (e) => {
@@ -105,11 +104,11 @@ const Canvas = (props) => {
       setUserCharacters(userCharacters);
       sendData()
 
-      console.log(props.room, "BEFORE MOVING")
+      // console.log(props.room, "BEFORE MOVING")
 
       // move to JS
       if (props.room === 'plaza') {
-        console.log("Im in Plaza")
+        // console.log("Im in Plaza")
         if (
           userCharacters[props.username].state.x >= 430 &&
           userCharacters[props.username].state.x <= 450 &&
@@ -135,7 +134,7 @@ const Canvas = (props) => {
       }
       // move to the Plaza
       if (props.room !== 'plaza') {
-        console.log("Im in LANG romm ")
+        // console.log("Im in LANG romm ")
 
         if (
           userCharacters[props.username].state.x <= 50 &&
@@ -162,6 +161,7 @@ const Canvas = (props) => {
     });
 
     return () => {
+      // socket.disconnect()
       window.removeEventListener("keydown", (e) => userCharacters[0].move(e));
       window.removeEventListener("keyup", () => userCharacters[0].stop());
     };
@@ -199,12 +199,12 @@ const Canvas = (props) => {
     const ctx = canvas.getContext("2d");
 
     // console.log('CHARACTER', userCharacters)
-    console.log('게임그릴때: ', msg)
+    // console.log('게임그릴때: ', msg)
       for (const userChar in userCharacters) {
         userCharacters[userChar].drawFrame(ctx);
         userCharacters[userChar].showName(ctx);
         const msgToShow = msg[userCharacters[userChar].state.username];
-        console.log(msgToShow);
+        // console.log(msgToShow);
         if (msgToShow !== undefined){
           userCharacters[userChar].showChat(ctx, msgToShow);
         }

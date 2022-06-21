@@ -100,10 +100,11 @@ io.on("connection", (socket) => {
               }
             });
             // console.log(loginUsersData)
+            // currentUsers = {name: socketID}
             const alluserNames = Object.keys(loginUsersData);
             console.log(loginUsersData)
             alluserNames.forEach((name) => {
-              io.to(currentUsers[name])
+              io.to(currentUsers[name]) // socketID
                 .emit("all user names", { "users": loginUsersData });// all user names
             }
             );
@@ -408,16 +409,16 @@ io.on("connection", (socket) => {
   /* 오브젝트에서 종료되는 유저 삭제 */
   socket.on("disconnect", () => {
     // console.log("Server.js - DISCONNECT", socket.id);
-    console.log('currentUser', currentUsers);
-
+    
     const alluserNames = Object.keys(currentUsers);
     let disconnectedUsername;
     alluserNames.forEach((name) => {
       if (currentUsers[name] === socket.id)
-        delete currentUsers[name];
+      delete currentUsers[name];
       disconnectedUsername = name;
     }); // {"users": [name1, name2] }
     // console.log("Server.js - DISCONNECT - CURRENT USERS", currentUsers);
+    console.log('DISCONNECT A USER', currentUsers);
     io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기
   });
 });

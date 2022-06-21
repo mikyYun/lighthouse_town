@@ -6,12 +6,25 @@ body{
   background-color: $base-color;
 }
 
+.login-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20%;
+
+
+  h1 {
+    color: #bada55;
+    font-size: 4.5rem;
+    font-weight: bolder;
+  }
+}
+
 #form_login {
   background-color: $form-color;
     width: 400px;
     height: 300px;
-    margin: auto;
-    margin-top: 200px;
+    margin-top: 30px;
     padding: 30px;
     display: flex;
     flex-direction: column;
