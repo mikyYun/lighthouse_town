@@ -115,35 +115,35 @@ function App() {
     // ================= FUNCTIONS =============== //
 
     //frontend
-    socket.on("connect", () => {
-      // console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!");
-      // console.log("SOCKETID", socket.id)
-      const all_cookies = cookies.getAll();
-      //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
-      // if (location.pathname === "/game") {
-      // navigate("/")
-      // }
-      // 유저데이터가 아직 삭제되지 않았고, 게임페이지 리로드 한 경우 서버랑 연결하고 currentUser update in server
-      if (all_cookies.userdata) {
-        // 쿠키 존재하면 리커넥트 요청
-        socket.emit("SET USERNAME", { username: all_cookies.userdata.userName, socketID: socket.id });
-        // socket.emit("reconnection?", { username: all_cookies.userdata.userName, newSocketId: socket.id });
-        // socket.on("DENY CONNECTION", (e) => {
-        //   clearCookies()
-        //   navigate("/")
-        // })
-      } else {
-        // 쿠키 없으면 홈으로
-        navigate("/");
-      }
-      // 유저가 연결될 때 마다 친구리스트 요청
-      // socket.emit("friendsList", {socketID: socket.id})
-      // 쿠키는 있는데 현재 사용중인 유저이면 클리어하고 집으로
-      socket.on("DENY CONNECTION", (e) => {
-        // clearCookies();
-        // navigate("/");
-      });
-    }, []);
+    // socket.on("connect", () => {
+    //   // console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!");
+    //   // console.log("SOCKETID", socket.id)
+    //   const all_cookies = cookies.getAll();
+    //   //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
+    //   // if (location.pathname === "/game") {
+    //   // navigate("/")
+    //   // }
+    //   // 유저데이터가 아직 삭제되지 않았고, 게임페이지 리로드 한 경우 서버랑 연결하고 currentUser update in server
+    //   if (all_cookies.userdata) {
+    //     // 쿠키 존재하면 리커넥트 요청
+    //     socket.emit("SET USERNAME", { username: all_cookies.userdata.userName, socketID: socket.id });
+    //     // socket.emit("reconnection?", { username: all_cookies.userdata.userName, newSocketId: socket.id });
+    //     // socket.on("DENY CONNECTION", (e) => {
+    //     //   clearCookies()
+    //     //   navigate("/")
+    //     // })
+    //   } else {
+    //     // 쿠키 없으면 홈으로
+    //     navigate("/");
+    //   }
+    //   // 유저가 연결될 때 마다 친구리스트 요청
+    //   // socket.emit("friendsList", {socketID: socket.id})
+    //   // 쿠키는 있는데 현재 사용중인 유저이면 클리어하고 집으로
+    //   socket.on("DENY CONNECTION", (e) => {
+    //     // clearCookies();
+    //     // navigate("/");
+    //   });
+    // }, []);
 
     // socket.on("DENY CONNECTION", (e) => {
     //   clearCookies()
