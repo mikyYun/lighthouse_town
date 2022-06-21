@@ -64,14 +64,15 @@ io.on("connection", (socket) => {
   const roomName = "room 1";
   const session = socket.request.session;
   session.save();
-
+  console.log("MAKE NEW CONNECTION") // checked
   // LOGIN USER CONNECTED
   // socketID and username matching triggered when user login
   socket.on("SET USERNAME", (obj) => {
     //Login.jsx 의 setUser(res.data.userName)
     const { username, socketID } = obj;
-    console.log("Connected ", username, socketID);
-
+    // only work after login not refresh
+    // console.log("Connected ", username, socketID); 
+    // after refresh, socketid undefined
     currentUsers[username] = socketID;
     pool.query(
       "SELECT id, username AS name, email, avatar_id FROM users",

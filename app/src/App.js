@@ -83,30 +83,32 @@ function App() {
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD ALSO SET AN AVATAR WHEN WE GET AN USER OBJECT.
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
-    // setRoom(location.pathname.split("/").splice(2)[0]);
     const currentCookies = cookies.getAll();
     // cookies maxAge 3600.
-    // socket.on("connect", () => {
-    console.log("SOCKET CONNECTED", currentCookies);
+    socket.on("connect", () => {
+    console.log("SOCKET CONNECTED", currentCookies); // everytime refresh
     if ((location.pathname === "/"
       || location.pathname === "/login"
-      || location.pathname === "/register")
+      || location.pathname === "/register"
+      || location.pathname === "/game"
+      || location.pathname === "/game/plaza")
       && currentCookies.userdata) {
-      setUser(currentCookies.userdata.userName);
+        // console.log("cookies exist, permision allowed user") // checked
+        createSocketIdNameObject(currentCookies.userdata.userName);
       const goChat = (username, avatar, userLanguages, id) => {
         const data = [username, avatar, userLanguages, id];
         navigate('/game/plaza', { state: data });
       };
       goChat(currentCookies.userdata.userName, currentCookies.userdata.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
-      // navigate('/game/plaza', {state: data});
+      // console.log("LOCATION STATE",location.state) // checked
     }
     if (!currentCookies.userdata) {
       // if (!urlLists.includes(location.pathname)) {
-      console.log("TETSTEST");
+      console.log("TETSTEST"); // checked
       clearCookies();
       navigate("/");
     }
-    // })
+  })
     // if (!urlLists.includes(location.pathname)) clearCookies();
   }, [location.pathname]);
 
@@ -114,37 +116,7 @@ function App() {
 
     // ================= FUNCTIONS =============== //
 
-    //frontend
-    // socket.on("connect", () => {
-    //   // console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!");
-    //   // console.log("SOCKETID", socket.id)
-    //   const all_cookies = cookies.getAll();
-    //   //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
-    //   // if (location.pathname === "/game") {
-    //   // navigate("/")
-    //   // }
-    //   // 유저데이터가 아직 삭제되지 않았고, 게임페이지 리로드 한 경우 서버랑 연결하고 currentUser update in server
-    //   if (all_cookies.userdata) {
-    //     // 쿠키 존재하면 리커넥트 요청
-    //     socket.emit("SET USERNAME", { username: all_cookies.userdata.userName, socketID: socket.id });
-    //     // socket.emit("reconnection?", { username: all_cookies.userdata.userName, newSocketId: socket.id });
-    //     // socket.on("DENY CONNECTION", (e) => {
-    //     //   clearCookies()
-    //     //   navigate("/")
-    //     // })
-    //   } else {
-    //     // 쿠키 없으면 홈으로
-    //     navigate("/");
-    //   }
-    //   // 유저가 연결될 때 마다 친구리스트 요청
-    //   // socket.emit("friendsList", {socketID: socket.id})
-    //   // 쿠키는 있는데 현재 사용중인 유저이면 클리어하고 집으로
-    //   socket.on("DENY CONNECTION", (e) => {
-    //     // clearCookies();
-    //     // navigate("/");
-    //   });
-    // }, []);
-
+ 
     // socket.on("DENY CONNECTION", (e) => {
     //   clearCookies()
     //   navigate("/")
