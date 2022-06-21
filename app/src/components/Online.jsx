@@ -15,6 +15,7 @@ export default function Online(props) {
   const removeSelfAndAll = online.filter(obj =>
     obj.value !== "all" && obj.value !== nickname
   )
+  console.log('removeSelfAndAll', removeSelfAndAll)
 
   const closeMenu = () => {
     setShowMenu(false)

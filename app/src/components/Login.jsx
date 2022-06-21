@@ -20,6 +20,9 @@ export default function Login(props) {
   }
 
   return (
+    <div className="login-page">
+      <h1>WELCOME TO</h1>
+      <h1>LIGHTHOUSE-TOWN</h1>
     <form id="form_login" action="/game/plaza" method="GET" runat="server">
       <div>
         <span>EMAIL : </span>
@@ -79,6 +82,7 @@ export default function Login(props) {
       </button>
       <button className="btn" onClick={goRegister}>New here?</button>
     </form>
-    // </>
+    </div>
+
   );
 }
