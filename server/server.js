@@ -85,6 +85,15 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
   const session = socket.request.session;
   session.save();
 
+  /////////////////////////////////////////////////
+
+  socket.on("hasCookies", e => {
+    console.log(e)
+  })
+
+  ///////////////////////////////////////////////
+
+
   //waiting for the client to send the request
   socket.on("friendsList", ({ newSocketID, user, userID }) => {
     // check this id is in currentUsers Object
@@ -391,8 +400,8 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
       if (currentUsers[name] === socket.id)
         delete currentUsers[name];
       disconnectedUsername = name
+      console.log("Server.js - A USER DISCONNECTED - CURRENT USERS", name, socket.id);
     }); // {"users": [name1, name2] }
-    console.log("Server.js - A USER DISCONNECTED - CURRENT USERS", currentUsers);
     io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기
   });
 });;

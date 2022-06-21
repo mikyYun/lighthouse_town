@@ -14,10 +14,11 @@ export default function Login(props) {
   const goRegister = () => {
     navigate('/register')
   }
-  const goChat = (username, avatar, userLanguages, id) => {
-    const data = [username, avatar, userLanguages, id]
-    navigate('/game/plaza', { state: data })
-  }
+  // const goChat = (username, avatar, userLanguages, id) => {
+  //   const data = [username, avatar, userLanguages, id]
+  //   navigate('/game/plaza', { state: data })
+  // }
+  const goChat= props.goChat
 
   return (
     <form id="form_login" action="/game/plaza" method="GET" runat="server">

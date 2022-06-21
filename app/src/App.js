@@ -29,9 +29,12 @@ function App() {
   const [clicked, setClicked] = useState({});
   const [recipient, setRecipient] = useState({ value: "all", label: "all" });
   const [user, setUser] = useState({ value: "all", label: "all", avatar: 1 });
-  const [profiles, setProfiles] = useState({})
+  const [profiles, setProfiles] = useState({});
   const [profileShow, setProfileShow] = useState("none");
-
+  const goChat = (username, avatar, userLanguages, id) => {
+    const data = [username, avatar, userLanguages, id];
+    navigate('/game/plaza', { state: data });
+  };
   // ================= HOOKS =============== //
 
   const navigate = useNavigate();
@@ -41,7 +44,7 @@ function App() {
   // ================= VARIABLES =============== //
   // console.log("LOCATION", location);
   const nickname = location.state?.[0] || '';
-  console.log("NICKNAME IN APP", nickname)
+  console.log("NICKNAME IN APP", nickname);
   const urlLists = [
     "/game/plaza",
     "/game/ruby",
@@ -67,7 +70,8 @@ function App() {
   // ================= INTANCES =============== //
 
   const cookies = new Cookies();
-
+  const all_cookies = cookies.getAll();
+  const cookieData = all_cookies.userdata;
 
   // const addFriend = () => { }
   // const sendMessage = () => { }
@@ -87,47 +91,66 @@ function App() {
     const currentCookies = cookies.getAll();
     // cookies maxAge 3600.
     if (location.pathname === "/" && currentCookies.userdata && currentCookies["connect.sid"]) {
-      navigate('/game/plaza');
+      // navigate('/game/plaza');
+      createSocketIdNameObject(all_cookies.userdata.userName);
+      goChat(cookieData.userName, cookieData.avatar, cookieData.userLanguages, cookieData.userID);
     } else if (!urlLists.includes(location.pathname)) {
-      // clearCookies();
+      clearCookies();
+      navigate("/");
     }
     // if (!urlLists.includes(location.pathname)) clearCookies();
   }, [location.pathname]);
+  console.log("NEW PAGE LOADED"); // WORK
+
 
   useEffect(() => {
 
     // ================= FUNCTIONS =============== //
 
-    //frontend
-    socket.on("connect", () => {
-      // console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!");
+
+    console.log("ALL COOKIES", all_cookies); // WORK
+    socket.on("connect", () => { // triggered in main page //
+      console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!", socket.id);
+      // })
       // console.log("SOCKETID", socket.id)
-      const all_cookies = cookies.getAll();
       //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
+      // 메인페이지에서 쿠키 존재하면 게임페이지로
       // if (location.pathname === "/game") {
       // navigate("/")
       // }
       // 유저데이터가 아직 삭제되지 않았고, 게임페이지 리로드 한 경우 서버랑 연결하고 currentUser update in server
       if (all_cookies.userdata) {
-        // 쿠키 존재하면 리커넥트 요청
-        socket.emit("SET USERNAME", { username: all_cookies.userdata.userName, socketID: socket.id }); //maybe undefined
-        // socket.emit("reconnection?", { username: all_cookies.userdata.userName, newSocketId: socket.id });
-        // socket.on("DENY CONNECTION", (e) => {
-        //   clearCookies()
-        //   navigate("/")
-        // })
+        //     // 쿠키 존재하면 리커넥트 요청
+        // socket.emit("hasCookies", ('test'))
+        createSocketIdNameObject(all_cookies.userdata.userName);
+        goChat(cookieData.userName, cookieData.avatar, cookieData.userLanguages, cookieData.userID);
+        //     // goChat(res.data.userName, res.data.avatar, res.data.userLanguages, res.data.userID)
+
+        //     // socket.emit("SET USERNAME", { username: all_cookies.userdata.userName, socketID: socket.id }); //maybe undefined
+        //     // socket.emit("reconnection?", { username: all_cookies.userdata.userName, newSocketId: socket.id });
+        //     // socket.on("DENY CONNECTION", (e) => {
+        //     //   clearCookies()
+        //     //   navigate("/")
+        //     // })
+        //     // navigate(urlLists[0]);// navigate 하면 같이 넘어갈 데이터 필요 (로그인 하고 넘겨주는 데이터)
+
       } else {
-        // 쿠키 없으면 홈으로
+        //     // 쿠키 없거나 유저데이터가 없으면 홈으로
+        clearCookies();
         navigate("/");
       }
-      // 유저가 연결될 때 마다 친구리스트 요청
-      // socket.emit("friendsList", {socketID: socket.id})
-      // 쿠키는 있는데 현재 사용중인 유저이면 클리어하고 집으로
-      socket.on("DENY CONNECTION", (e) => {
-        // clearCookies();
-        // navigate("/");
-      });
-    }, []);
+    });
+
+    // 유저가 연결될 때 마다 친구리스트 요청
+    // socket.emit("friendsList", {socketID: socket.id})
+    // 쿠키는 있는데 현재 사용중인 유저이면 클리어하고 집으로
+    socket.on("DENY CONNECTION", (e) => {
+      clearCookies();
+      // navigate("/");
+    });
+
+    //frontend
+
 
     // socket.on("DENY CONNECTION", (e) => {
     //   clearCookies()
@@ -141,13 +164,13 @@ function App() {
     //   }));
     // });
     socket.on("updateFriendsList", ({ newFriendName, languages }) => {
-      const nameAndLangObj = {}
-      nameAndLangObj[newFriendName] = { languages }
+      const nameAndLangObj = {};
+      nameAndLangObj[newFriendName] = { languages };
       setFriendList((prev) => ({
         ...prev,
         ...nameAndLangObj
-      }))
-    })
+      }));
+    });
 
     socket.on("friendsListBack", friendsInfo => {
       setFriendList(friendsInfo);
@@ -178,35 +201,35 @@ function App() {
     socket.on("all user names", (obj) => { //@@@SUNDAY: all user objects
       // obj => {name: {email:, avatar_id:, languages: [arr]}, {}, {}}
 
-      const loginUsersObject = obj.users
+      const loginUsersObject = obj.users;
       // console.log("RECEIVED", loginUsersObject)
-      const loginUserNames = Object.keys(loginUsersObject)
-      const loginUsersInformation = {}
-      const usersOnline = []
+      const loginUserNames = Object.keys(loginUsersObject);
+      const loginUsersInformation = {};
+      const usersOnline = [];
       loginUserNames.map(name => {
-        usersOnline.push({ value: name, label: name, avatar: avatars[loginUsersObject[name].avatar_id] })
+        usersOnline.push({ value: name, label: name, avatar: avatars[loginUsersObject[name].avatar_id] });
         loginUsersInformation[name] = {
           name: name,
           email: loginUsersObject[name].email,
           languages: loginUsersObject[name].languages,
           avatar_id: loginUsersObject[name].avatar_id,
-        }
-      })
+        };
+      });
       //@@@@ SUNDAY - this should be dynamic and need an avatar from socket.
       // console.log("ONLINE USERS PROFILE SET",loginUsersInformation)
-      setProfiles(loginUsersInformation)
+      setProfiles(loginUsersInformation);
 
       usersOnline.unshift({ value: "all", label: "all", avatar: avatars[0] });
       // const onlineOthers = usersOnline.filter(user => user.value !== nickname)
 
-
+      // navigate(urlLists[0])
       setOnline(usersOnline);
     }); // this works
 
     return () => {
       socket.disconnect();
     }; // => prevent memory leak..
-  }, []);
+  }, [socket]);
 
   const RegistrationChecker = (val) => {
     socket && socket.emit("REGISTERED", val);
@@ -221,8 +244,8 @@ function App() {
   };
 
   const createSocketIdNameObject = (username) => { //WORKS
-    console.log('socket - app.js', socket)
-    socket && socket.emit("SET USERNAME", { "socketID": socket.id, "username": username });
+    console.log('socket - app.js', socket);
+    socket && socket.emit("SET USERNAME", { socketID: socket.id, "username": username });
     // socket && socket.emit("REGISTERED", val); //if socket exists, then emit
   };
 
@@ -245,9 +268,9 @@ function App() {
         <div className='main'>
           {show && <Menu username={nickname} />}
           <Routes>
-            <Route path='/' element={<Login setUser={createSocketIdNameObject} />} />
+            <Route path='/' element={<Login setUser={createSocketIdNameObject} goChat={goChat} />} />
             <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
-            <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
+            <Route path='/login' element={<Login setUser={createSocketIdNameObject} goChat={goChat} />} />
             <Route path={`/game/${room}`} element={
               <Game
                 username={nickname}
