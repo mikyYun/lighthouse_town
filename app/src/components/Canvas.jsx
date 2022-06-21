@@ -141,6 +141,7 @@ const Canvas = (props) => {
     });
 
     return () => {
+      // socket.disconnect()
       window.removeEventListener("keydown", (e) => userCharacters[0].move(e));
       window.removeEventListener("keyup", () => userCharacters[0].stop());
       socket.disconnect(); // todo need socket cleanup ?
@@ -201,7 +202,7 @@ const Canvas = (props) => {
   // sending data to server
   function sendData(removeFromRoom) {
     // console.log('Remove From Here', removeFromRoom)
-    socket.emit("sendData", {
+    socket && socket.emit("sendData", {
       userState: userCharacters[props.username].state,
       room: props.room,
       removeFrom: removeFromRoom

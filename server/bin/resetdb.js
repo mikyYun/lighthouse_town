@@ -10,9 +10,8 @@ const runSchemaFiles = async () => {
   const schemaFilenames = fs.readdirSync("./db/schema");
   console.log(schemaFilenames)
   for (const fn of schemaFilenames) {
-    console.log(fn)
+    console.log('seeding', fn)
     const sql = fs.readFileSync(`./db/schema/${fn}`, "utf8");
-    console.log(sql)
     await db.query(sql);
   }
 };
@@ -33,7 +32,9 @@ const runResetDB = async () => {
     await db.connect();
     await runSchemaFiles();
     // await runSeedFiles();
+    console.log('-- all done -- 🎉');
     db.end;
+    process.exit();
   } catch (err) {
     console.log("ERROR", err);
     db.end;

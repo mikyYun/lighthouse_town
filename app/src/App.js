@@ -42,7 +42,6 @@ function App() {
 
   // ================= VARIABLES =============== //
   const nickname = location.state?.[0] || '';
-
   const urlLists = [
     "/game/plaza",
     "/game/ruby",
@@ -75,15 +74,32 @@ function App() {
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD ALSO SET AN AVATAR WHEN WE GET AN USER OBJECT.
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
-    setRoom(location.pathname.split("/").splice(2)[0]);
-
     const currentCookies = cookies.getAll();
     // cookies maxAge 3600.
-    if (location.pathname === "/" && currentCookies.userdata && currentCookies["connect.sid"]) {
-      navigate('/game/plaza');
-    } else if (!urlLists.includes(location.pathname)) {
-      // clearCookies();
-    }
+    socket.on("connect", () => {
+      console.log("SOCKET CONNECTED", currentCookies); // everytime refresh
+      if ((location.pathname === "/"
+        || location.pathname === "/login"
+        || location.pathname === "/register"
+        || location.pathname === "/game"
+        || location.pathname === "/game/plaza")
+        && currentCookies.userdata) {
+        // console.log("cookies exist, permision allowed user") // checked
+        createSocketIdNameObject(currentCookies.userdata.userName);
+        const goChat = (username, avatar, userLanguages, id) => {
+          const data = [username, avatar, userLanguages, id];
+          navigate('/game/plaza', { state: data });
+        };
+        goChat(currentCookies.userdata.userName, currentCookies.userdata.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
+        // console.log("LOCATION STATE",location.state) // checked
+      }
+      if (!currentCookies.userdata) {
+        // if (!urlLists.includes(location.pathname)) {
+        console.log("TETSTEST"); // checked
+        clearCookies();
+        navigate("/");
+      }
+    });
     // if (!urlLists.includes(location.pathname)) clearCookies();
   }, [location.pathname]);
 
@@ -167,7 +183,10 @@ function App() {
 
 
     socket.on("all user names", (obj) => { //@@@SUNDAY: all user objects
-      // obj => {name: {email:, avatar_id:, languages: [arr]}, {}, {}}
+      // obj => {uniqname: {email:, avatar_id:, languages: [arr]},
+      //  uniqname: {},
+      //  uniqname: {}
+      // }
 
       const loginUsersObject = obj.users;
       // console.log("RECEIVED", loginUsersObject)

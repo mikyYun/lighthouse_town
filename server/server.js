@@ -64,7 +64,7 @@ io.on("connection", (socket) => {
   const roomName = "room 1";
   const session = socket.request.session;
   session.save();
-
+  console.log("MAKE NEW CONNECTION"); // checked
   // LOGIN USER CONNECTED
   // socketID and username matching triggered when user login
   socket.on("SET USERNAME", (obj) => {
@@ -97,9 +97,11 @@ io.on("connection", (socket) => {
               }
             });
             // console.log(loginUsersData)
+            // currentUsers = {name: socketID}
             const alluserNames = Object.keys(loginUsersData);
+            console.log(loginUsersData);
             alluserNames.forEach((name) => {
-              io.to(currentUsers[name])
+              io.to(currentUsers[name]) // socketID
                 .emit("all user names", { "users": loginUsersData });// all user names
             }
             );
@@ -433,7 +435,6 @@ app.post("/login", (req, res) => {
     [email, password],
     (err, res_1) => {
       if (err) throw err;
-      // console.log(res_1.rows);
       if (res_1.rows[0]) {
         // user exist
         // get followeds
@@ -451,7 +452,6 @@ app.post("/login", (req, res) => {
             const userLanguages = [];
             if (err) throw err;
             if (res_2.rows.length > 0) {
-              // console.log("find user's languages", res_2.rows);
               res_2.rows.forEach((obj) => {
                 userLanguages.push(obj.language_id);
               });
@@ -487,46 +487,83 @@ app.post("/register", (req, res) => {
   const userEmail = req.body.userInfo.userEmail;
   const userLanguages = req.body.userInfo.userLanguages;
   const userAvatar = req.body.userInfo.userAvatar;
+
   pool.query(
-    "SELECT * FROM users WHERE username = $1 OR email = $2",
-    [userName, userEmail],
-    (err, res_1) => {
-      if (err) throw err;
-      // console.log(res_1.rows[0]);
-      if (res_1.rows[0]) return res.status(201).send("existing data");
-    }
-  );
-  pool.query(
-    "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *",
-    [userName, userPassword, userEmail, userAvatar],
-    (err, result) => {
-      if (err) throw err;
-      console.log("new user registered");
-      pool.query(
-        "SELECT id FROM users WHERE username = $1",
-        [userName],
-        (err, res_2) => {
-          // console.log("new user's user ID", res_2.rows);
-          const newUserID = res_2.rows[0].id;
-          userLanguages.forEach((lang_id) => {
-            if (lang_id) {
-              // console.log(lang_id);
-              pool.query(
-                "INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *",
-                [newUserID, lang_id],
-                (err, res_3) => {
-                  if (err) throw err;
-                  console.log("new user's language data added", res_3.rows);
-                }
-              );
-            }
-          });
-        }
-      );
-    }
-  );
-  res.status(201).send({ userName, userEmail, userLanguages, userAvatar });
+    //check if user al
+    // ready exists in DB during registration
+    "SELECT * FROM users WHERE username = $1 OR email = $2", [userName, userEmail])
+    .then((response) => {
+      // break promise chain early by throwing error
+      if (response.rows[0]) return Promise.reject(('User already registered')); // option 1?
+      // throw res.status(409).send('User already registered'); // option 2
+
+      return pool.query(
+        "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [userName, userPassword, userEmail, userAvatar]);
+      // "RETURNING *" means we are returning the new 'user' entry to the next .then
+    })
+    .then((response) => {
+      const { username, avatar_id, id } = response.rows[0];
+      const userData = [username, avatar_id, userLanguages, id];
+
+      userLanguages.forEach((lang_id) => {
+        pool.query(
+          "INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *",
+          [response.rows[0].id, lang_id]
+        );
+      });
+      // sending user info back to Register.jsx (as res.data)
+      res.status(201).send(userData);
+    })
+    .catch((e) => { console.error(e); });
 });
+
+
+// app.post("/register", (req, res) => {
+//   const userName = req.body.userInfo.userName;
+//   const userPassword = req.body.userInfo.userPassword;
+//   const userEmail = req.body.userInfo.userEmail;
+//   const userLanguages = req.body.userInfo.userLanguages;
+//   const userAvatar = req.body.userInfo.userAvatar;
+//   pool.query(
+//     "SELECT * FROM users WHERE username = $1 OR email = $2",
+//     [userName, userEmail],
+//     (err, res_1) => {
+//       if (err) throw err;
+//       // console.log(res_1.rows[0]);
+//       if (res_1.rows[0]) return res.status(201).send("existing data");
+//     }
+//   );
+//   pool.query(
+//     "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *",
+//     [userName, userPassword, userEmail, userAvatar],
+//     (err, result) => {
+//       if (err) throw err;
+//       console.log("new user registered");
+//       pool.query(
+//         "SELECT id FROM users WHERE username = $1",
+//         [userName],
+//         (err, res_2) => {
+//           // console.log("new user's user ID", res_2.rows);
+//           const newUserID = res_2.rows[0].id;
+//           userLanguages.forEach((lang_id) => {
+//             if (lang_id) {
+//               // console.log(lang_id);
+//               pool.query(
+//                 "INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *",
+//                 [newUserID, lang_id],
+//                 (err, res_3) => {
+//                   if (err) throw err;
+//                   console.log("new user's language data added", res_3.rows);
+//                 }
+//               );
+//             }
+//           });
+//         }
+//       );
+//     }
+//   );
+//   res.status(201).send({ userName, userEmail, userLanguages, userAvatar });
+// });
 
 // app.post("/friends", (req, res) => {
 //   const username = req.body.username;
