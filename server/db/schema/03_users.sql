@@ -17,4 +17,4 @@ VALUES
 INSERT INTO users
   (username, password, email, avatar_id)
 VALUES
-  ('aaron', 'aaron', 'test4@test.com', 2);
+  ('wakeel', 'wakeel', 'test4@test.com', 2);
