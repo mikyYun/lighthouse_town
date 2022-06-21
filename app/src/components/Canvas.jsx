@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState, useContext, useCallback } from "react";
 import mapImage from "./game_img/town-map.png";
-import girlImage from "./game_img/girl1.png";
 import Characters from "./helper/Characters";
-import boyImage from "./game_img/boy1.png";
+
 import townWall from "./game_img/collision_data.js/townWall";
 import { selectAvatar } from "./helper/selectAvatar";
 import { SocketContext } from "../App";
@@ -51,49 +50,49 @@ const Canvas = (props) => {
 
     // socket.on("connect", () => {
 
-      sendData()
-      // socket.emit("sendData", userCharacters[props.username].state);
-      socket.on("sendData", (data) => {
-        // console.log("data", data);
-        const newCharactersData = data;
-        newCharactersData[props.username] = userCharacters[props.username];
+    sendData()
+    // socket.emit("sendData", userCharacters[props.username].state);
+    socket.on("sendData", (data) => {
+      // console.log("data", data);
+      const newCharactersData = data;
+      newCharactersData[props.username] = userCharacters[props.username];
 
-        const newCharacters = { ...userCharacters };
-        // set main user character
-        newCharacters[props.username] = userCharacters[props.username];
-        // console.log("before create New CHARACTERS", newCharacters)
+      const newCharacters = { ...userCharacters };
+      // set main user character
+      newCharacters[props.username] = userCharacters[props.username];
+      // console.log("before create New CHARACTERS", newCharacters)
 
-        const allUsersState = data.usersInRooms[props.room];
-        Object.keys(allUsersState).map(user => {
-          // console.log(user)
-          if (typeof user !== 'undefined') {
-            if (user !== props.username) {
-              newCharacters[user] = new Characters(allUsersState[user])
-            }
+      const allUsersState = data.usersInRooms[props.room];
+      Object.keys(allUsersState).map(user => {
+        // console.log(user)
+        if (typeof user !== 'undefined') {
+          if (user !== props.username) {
+            newCharacters[user] = new Characters(allUsersState[user])
           }
-          // console.log("New CHARACTERS", newCharacters)
-        });
-
-        setUserCharacters(newCharacters);
-        // console.log('AFTER SETTING: ', newCharacters)
+        }
+        // console.log("New CHARACTERS", newCharacters)
       });
 
-      for (const userChar in userCharacters) {
-        // console.log('onfirts move',userChar)
-        // console.log(userCharacters)
-        userCharacters[userChar].drawFrame(ctx);
-        userCharacters[userChar].showName(ctx);
+      setUserCharacters(newCharacters);
+      // console.log('AFTER SETTING: ', newCharacters)
+    });
+
+    for (const userChar in userCharacters) {
+      // console.log('onfirts move',userChar)
+      // console.log(userCharacters)
+      userCharacters[userChar].drawFrame(ctx);
+      userCharacters[userChar].showName(ctx);
 
 
-        // Text on head.
-        ctx.font = '20px monospace';
-        ctx.fillText(
-          userCharacters[userChar].state.username,
-          userCharacters[userChar].state.x + 15,
-          userCharacters[userChar].state.y + 10
-          );
-        ctx.fillStyle = "purple";
-      }
+      // Text on head.
+      ctx.font = '20px monospace';
+      ctx.fillText(
+        userCharacters[userChar].state.username,
+        userCharacters[userChar].state.x + 15,
+        userCharacters[userChar].state.y + 10
+      );
+      ctx.fillStyle = "purple";
+    }
 
 
     // });   //socket ends
@@ -114,23 +113,23 @@ const Canvas = (props) => {
           userCharacters[props.username].state.x <= 450 &&
           userCharacters[props.username].state.y >= 120 &&
           userCharacters[props.username].state.y <= 140
-          ) {
-            sendData(props.room);
-            setUserCharacters({ ...userCharacters, [props.username]: undefined })
-            handleRoom('js');
-          }
+        ) {
+          sendData(props.room);
+          setUserCharacters({ ...userCharacters, [props.username]: undefined })
+          handleRoom('js');
+        }
 
         // move to Ruby
         if (
-          userCharacters[props.username].state.x >= 710&&
+          userCharacters[props.username].state.x >= 710 &&
           userCharacters[props.username].state.x <= 730 &&
           userCharacters[props.username].state.y >= 460 &&
           userCharacters[props.username].state.y <= 480
-          ) {
-            sendData(props.room);
-            setUserCharacters({ ...userCharacters, [props.username]: undefined })
-            handleRoom('ruby');
-          }
+        ) {
+          sendData(props.room);
+          setUserCharacters({ ...userCharacters, [props.username]: undefined })
+          handleRoom('ruby');
+        }
       }
       // move to the Plaza
       if (props.room !== 'plaza') {
@@ -140,11 +139,11 @@ const Canvas = (props) => {
           userCharacters[props.username].state.x <= 50 &&
           userCharacters[props.username].state.y >= 410 &&
           userCharacters[props.username].state.y <= 450
-          ) {
-            sendData(props.room);
-            setUserCharacters({ ...userCharacters, [props.username]: undefined })
-            handleRoom('plaza');
-          }
+        ) {
+          sendData(props.room);
+          setUserCharacters({ ...userCharacters, [props.username]: undefined })
+          handleRoom('plaza');
+        }
       }
 
     });
@@ -177,16 +176,16 @@ const Canvas = (props) => {
       // when msg comes in, setMsg with its user
       // setTimeout for setMsg to be ""
 
+      setMsg(prev => ({
+        ...prev,
+        [data.nickname]: data.content
+      }))
+      setTimeout(() => {
         setMsg(prev => ({
           ...prev,
-          [data.nickname]: data.content
+          [data.nickname]: ""
         }))
-        setTimeout(() => {
-          setMsg(prev => ({
-            ...prev,
-            [data.nickname]: ""
-          }))
-        }, 7000);
+      }, 7000);
     });
   }, [socket])
 
@@ -200,15 +199,15 @@ const Canvas = (props) => {
 
     // console.log('CHARACTER', userCharacters)
     // console.log('게임그릴때: ', msg)
-      for (const userChar in userCharacters) {
-        userCharacters[userChar].drawFrame(ctx);
-        userCharacters[userChar].showName(ctx);
-        const msgToShow = msg[userCharacters[userChar].state.username];
-        // console.log(msgToShow);
-        if (msgToShow !== undefined){
-          userCharacters[userChar].showChat(ctx, msgToShow);
-        }
+    for (const userChar in userCharacters) {
+      userCharacters[userChar].drawFrame(ctx);
+      userCharacters[userChar].showName(ctx);
+      const msgToShow = msg[userCharacters[userChar].state.username];
+      // console.log(msgToShow);
+      if (msgToShow !== undefined) {
+        userCharacters[userChar].showChat(ctx, msgToShow);
       }
+    }
 
 
   }, [userCharacters]);
