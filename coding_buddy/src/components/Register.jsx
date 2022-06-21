@@ -36,6 +36,7 @@ export default function Register(props) {
     <div className="register-form">
       {/* <Layout /> */}
       <form action="/login" method="GET" id="form_registration">
+
         <div className="field">
           <span>EMAIL :{" "}</span>    {/* 이안에 뭐가 들어갈껀가요? */}
           <input
@@ -44,12 +45,14 @@ export default function Register(props) {
             rows="1"
             placeholder="EMAIL"
             typeof="email"
+            value={userEmail}
             onChange={(e) => {
-              console.log(e.target.value);
               setUserEmail(e.target.value);
+              console.log(e.target.value);
             }}
-            ></input>
+          ></input>
         </div>
+
         <div className="field">
           <span> NAME :{" "}</span>
           <input
@@ -58,14 +61,15 @@ export default function Register(props) {
             rows="1"
             placeholder="NAME"
             type="text"
+            value={userName}
             onChange={(e) => {
               console.log(e.target.value);
-              if (e.target.value.length < 4)
-                console.log("username should be longer than 4 chars");
-              setUserName(e.target.value);
+              if (e.target.value.length < 4) setUserName(e.target.value);
+              console.log("username should be longer than 4 chars");
             }}
           ></input>
         </div>
+
         <div className="field">
           <span> PASSWORD :{" "}</span>
           <input
@@ -74,11 +78,11 @@ export default function Register(props) {
             rows="1"
             placeholder="PASSWORD"
             type="password"
+            // value={userPassword}
             onChange={(e) => {
-              if (e.target.value.length < 4)
-                console.log("password should be longer than 4 chars");
+              if (e.target.value.length < 4) setUserPassword(e.target.value);
+              console.log("password should be longer than 4 chars");
               console.log(e.target.value);
-              setUserPassword(e.target.value);
             }}
           ></input>
         </div>
@@ -105,23 +109,23 @@ export default function Register(props) {
           <span> PROGRAMMING LANGUAGES :</span>
           <ul>
             <li>
-              <input type="checkbox" id="html" value="HTML" onChange={(e) => insertLanguages(e, 1)}/>
+              <input type="checkbox" id="html" value="HTML" onChange={(e) => insertLanguages(e, 1)} />
               <label>HTML</label>
             </li>
             <li>
-              <input type="checkbox" id="css" value="CSS" onChange={(e) => insertLanguages(e, 2)}/>
+              <input type="checkbox" id="css" value="CSS" onChange={(e) => insertLanguages(e, 2)} />
               <label>CSS</label>
             </li>
             <li>
-              <input type="checkbox" id="javascript" value="JavaScript" onChange={(e) => insertLanguages(e, 3)}/>
+              <input type="checkbox" id="javascript" value="JavaScript" onChange={(e) => insertLanguages(e, 3)} />
               <label>JavaScript</label>
             </li>
             <li>
-              <input type="checkbox" id="react" value="react" onChange={(e) => insertLanguages(e, 4)}/>
+              <input type="checkbox" id="react" value="react" onChange={(e) => insertLanguages(e, 4)} />
               <label>React</label>
             </li>
             <li>
-              <input type="checkbox" id="ruby" value="ruby" onChange={(e) => insertLanguages(e, 5)}/>
+              <input type="checkbox" id="ruby" value="ruby" onChange={(e) => insertLanguages(e, 5)} />
               <label>Ruby</label>
             </li>
           </ul>
@@ -171,17 +175,17 @@ export default function Register(props) {
               userAvatar,
             };
             axios
-              .post("http://localhost:8000/register", {userInfo})
-              .then(res => {
-                if (res.data) {
-                  console.log(res.data)
-                  props.submitRegistrationInfo(res.data);
-                  cookies.set("username", res.data)
-                  navigate("/game")
-                } else {
+              .post("/register", { userInfo })
+                .then(res => {
+                  if (res.data) {
+                    console.log(res.data)
+                    props.submitRegistrationInfo(res.data);
+                    cookies.set("username", res.data)
+                    navigate("/game")
+                  } else {
 
-                }
-              })
+                  }
+                })
             e.preventDefault();
             // })
             // cookies.set("username", username);

@@ -6,7 +6,6 @@ const facing = {
   left: 1,
   right: 2
 }
-
 const cycleLoop = [0,1,2,3];
 class Characters {
 
@@ -87,3 +86,5 @@ export default Characters;
 // update within class -> update method
 
 // drawFrame : in Character
+
+
