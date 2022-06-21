@@ -240,7 +240,7 @@ function App() {
 
         {/* clicked -> used in Menu.jsx
     setClicked -> used in Online.jsx */}
-      {show && <Menu username={nickname} />}
+      {/* {show && <Menu username={nickname} />} */}
           <Routes>
             <Route path='/' element={<Login setUser={createSocketIdNameObject} />} />
             <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
