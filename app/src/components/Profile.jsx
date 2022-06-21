@@ -2,7 +2,7 @@ import { useEffect, useCallback, useContext, useState } from "react";
 import { SocketContext, UserListContext } from "../App.js";
 
 export default function Profiles(props) {
-  const { profiles, nickname, setProfiles, profileShow } = useContext(UserListContext);
+  const { profiles, nickname, setProfiles, profileShow, setProfileShow } = useContext(UserListContext);
   const {socket} = useContext(SocketContext)
   useEffect(() => {
     socket.on("update login users information", ({disconnectedUser}) => {
@@ -40,14 +40,16 @@ export default function Profiles(props) {
       return (
         <div className={`profile ${username}`} key={ind} style={{display: profileShow}}>
           {/* 클릭없이 보고싶으면 밑에 있는것 사용 */}
-        {/* <div className={`profile ${username}`} key={ind} style={{display: "inline"}}> */}
+          {/* <div className={`profile ${username}`} key={ind} style={{display: "inline"}}> */}
           {/* <title> */}
-            {title} <br />
-            {email}
+            <div className="profile-name">{title}</div>
+            <div className="profile-email">{email}</div>
           {/* </title> */}
           <div key={ind}>
-            {languageLists}
+            <div className="profile-language">{languageLists}</div>
           </div>
+
+          <button onClick={() => {setProfileShow("none")}}>CLOSE</button>
         </div>
       );
     }
