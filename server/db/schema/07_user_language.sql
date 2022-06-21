@@ -25,11 +25,15 @@ INSERT INTO user_language (user_id, language_id)
 INSERT INTO user_language (user_id, language_id)
   VALUES (3, 3);
 INSERT INTO user_language (user_id, language_id)
-  VALUES (3, 4);
+  VALUES (4, 1);
 INSERT INTO user_language (user_id, language_id)
-  VALUES (3, 5);
-  INSERT INTO user_language (user_id, language_id)
-  VALUES (4, 4);
+  VALUES (4, 3);
 INSERT INTO user_language (user_id, language_id)
-  VALUES (5, 5);
+  VALUES (4, 5);
+INSERT INTO user_language (user_id, language_id)
+  VALUES (5, 2);
+INSERT INTO user_language (user_id, language_id)
+  VALUES (5, 4);
+
+
 

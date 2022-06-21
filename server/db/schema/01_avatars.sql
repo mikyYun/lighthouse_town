@@ -1,2 +1,8 @@
-INSERT INTO avatars (avatar_name)  VALUES
- ('boy1'), ('boy2'), ('girl1'), ('girl2');
+INSERT INTO avatars (avatar_name)
+  VALUES ('boy1');
+INSERT INTO avatars (avatar_name)
+  VALUES ('boy2');
+  INSERT INTO avatars (avatar_name)
+  VALUES ('girl1');
+INSERT INTO avatars (avatar_name)
+  VALUES ('girl2');
