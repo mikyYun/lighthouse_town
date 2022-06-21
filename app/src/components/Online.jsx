@@ -11,7 +11,7 @@ export default function Online(props) {
   const [showMenu, setShowMenu] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   // const [playToggleClassName, setPlayToggleClassName] = useState("friendsListToggle");
-  // console.log("online_in_Online.jsx", online);
+  console.log("online_in_Online.jsx", online);
   const removeSelfAndAll = online.filter(obj =>
     obj.value !== "all" && obj.value !== nickname
   )

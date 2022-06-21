@@ -49,12 +49,13 @@ const Canvas = (props) => {
     const ctx = canvas.getContext("2d");
 
 
-    socket.on("connect", () => {
-
+    // socket.on("connect", () => {
+      console.log('ITS CONNECTED!!!!!!')
       sendData()
+      console.log("SENT!!!!")
       // socket.emit("sendData", userCharacters[props.username].state);
       socket.on("sendData", (data) => {
-        // console.log("data", data);
+        console.log("data", data);
         const newCharactersData = data;
         newCharactersData[props.username] = userCharacters[props.username];
 
@@ -96,7 +97,7 @@ const Canvas = (props) => {
       }
 
 
-    });   //socket ends
+    // });   //socket ends
 
 
 
@@ -162,8 +163,8 @@ const Canvas = (props) => {
     });
 
     return () => {
-      window.removeEventListener("keydown", (e) => userCharacters[0].move(e));
-      window.removeEventListener("keyup", () => userCharacters[0].stop());
+      // window.removeEventListener("keydown", (e) => userCharacters[0].move(e));
+      // window.removeEventListener("keyup", () => userCharacters[0].stop());
     };
 
   }, []);

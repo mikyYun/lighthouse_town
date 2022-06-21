@@ -86,6 +86,7 @@ function App() {
     setRoom(location.pathname.split("/").splice(2)[0]);
 
     const currentCookies = cookies.getAll();
+    console.log('currentCookies', currentCookies)
     // cookies maxAge 3600.
     if (location.pathname === "/" && currentCookies.userdata && currentCookies["connect.sid"]) {
       navigate('/game/plaza');
@@ -104,6 +105,7 @@ function App() {
       // console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!");
       // console.log("SOCKETID", socket.id)
       const all_cookies = cookies.getAll();
+      console.log('COOKIE', all_cookies)
       //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
       // if (location.pathname === "/game") {
       // navigate("/")

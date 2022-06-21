@@ -99,8 +99,8 @@ io.on("connection", (socket) => {
                 })
               }
             });
-            // console.log(loginUsersData)
-            const alluserNames = Object.keys(loginUsersData);
+            console.log('loginUsersData', loginUsersData)
+            const alluserNames = Object.keys('loginUsersData');
             alluserNames.forEach((name) => {
               io.to(currentUsers[name])
                 .emit("all user names", { "users": loginUsersData });// all user names
@@ -215,7 +215,7 @@ io.on("connection", (socket) => {
   //     // 현재유저 이름은 뺌
   //     // alluserNames.filter(nm => nm !== e.username)
   //     // console.log("CURRENT USERS", alluserNames);
-  //     socket.emit("all user names", { "users": alluserNames });
+  //     socket.emit("allƒ user names", { "users": alluserNames });
   //   }
   // });
 
@@ -258,7 +258,7 @@ io.on("connection", (socket) => {
         // res.rows => users table [{id: , username: ,....}]
         const targetID = res.rows[0].id;
         // console.log("target users id", targetID);
-        
+
         pool.query(
           "INSERT INTO favorites (added_by, added) VALUES ($2, $1)", [userID, targetID]
         );

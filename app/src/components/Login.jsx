@@ -52,35 +52,37 @@ export default function Login(props) {
           }}
         ></input>
       </div>
-      <button
-        className="btn"
-        type="submit"
-        onClick={(e) => {
-          const loginInfo = { userEmail, userPassword }
-          // cookies.set("username", userEmail)
-          axios
-            .post("/login", loginInfo)
-            .then((res) => {
-              if (res.data.userName) {
-                setUser(res.data.userName) // pass username so that server set username and socketid as key:value pair
-                // res.data.friends
-                // setFriends(res.data.friends)
-                // console.log("res.data - Login.js", res.data);
-                cookies.set("userdata", res.data, {maxAge: 3600});
-                goChat(res.data.userName, res.data.avatar, res.data.userLanguages, res.data.userID)
-                // props.setNickname(res.data.userName)
-              } else {
-                // console.log(res.data)
-                console.log("no matching user - Login.js")
-                alert("Invalid information. Please confirm your email and password")
-              }
-            });
-          e.preventDefault();
-        }}
-      >
-        Login
-      </button>
-      <button className="btn" onClick={goRegister}>New here?</button>
+      <div className="btns">
+        <button
+          className="btn"
+          type="submit"
+          onClick={(e) => {
+            const loginInfo = { userEmail, userPassword }
+            // cookies.set("username", userEmail)
+            axios
+              .post("/login", loginInfo)
+              .then((res) => {
+                if (res.data.userName) {
+                  setUser(res.data.userName) // pass username so that server set username and socketid as key:value pair
+                  // res.data.friends
+                  // setFriends(res.data.friends)
+                  // console.log("res.data - Login.js", res.data);
+                  cookies.set("userdata", res.data, {maxAge: 3600});
+                  goChat(res.data.userName, res.data.avatar, res.data.userLanguages, res.data.userID)
+                  // props.setNickname(res.data.userName)
+                } else {
+                  // console.log(res.data)
+                  console.log("no matching user - Login.js")
+                  alert("Invalid information. Please confirm your email and password")
+                }
+              });
+            e.preventDefault();
+          }}
+        >
+          Login
+        </button>
+        <button className="btn" onClick={goRegister}>New here?</button>
+      </div>
     </form>
     </div>
 
