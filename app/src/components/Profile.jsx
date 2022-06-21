@@ -4,8 +4,12 @@ import { SocketContext, UserListContext } from "../App.js";
 export default function Profiles(props) {
   const { profiles, nickname, setProfiles, profileShow, setProfileShow } = useContext(UserListContext);
   const {socket} = useContext(SocketContext)
+
+  const [profile, setProfile] = useState({});
+
   useEffect(() => {
     socket.on("update login users information", ({disconnectedUser}) => {
+        console.log()
         const newProfiles = profiles
         if (newProfiles[disconnectedUser]) {
           delete newProfiles[disconnectedUser]
@@ -29,6 +33,8 @@ export default function Profiles(props) {
    */
   const profileNames = Object.keys(profiles);
   const profileArticles = profileNames.map((username, ind) => {
+
+    // when user is not me!
     if (username !== nickname) {
       // console.log(username)
       const title = profiles[username].name;
@@ -37,8 +43,10 @@ export default function Profiles(props) {
       const languageLists = profiles[username].languages.map((lang, index) => (
         <li key={index} className="list-languages">{lang}</li>
       ));
+
+
       return (
-        <div className={`profile ${username}`} key={ind} style={{display: profileShow}}>
+        <div className={'profile'} key={ind} style={{display: profileShow}}>
           {/* 클릭없이 보고싶으면 밑에 있는것 사용 */}
           {/* <div className={`profile ${username}`} key={ind} style={{display: "inline"}}> */}
           {/* <title> */}

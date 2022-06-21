@@ -11,7 +11,7 @@ const Menu = (props) => {
   const userID = location.state?.[3]
   // const [addFriend, setAddFriend ] = useState("Add")
   // setProfileShow
-  console.log("online users", online, userID, profiles)
+  // console.log("online users", online, userID, profiles)
   const currentFriendsNames = Object.keys(friendList)
   const blockAddFriend = (str) => {
     setBlockAddFriendAlert(str)
@@ -22,6 +22,7 @@ const Menu = (props) => {
 
   return (
     <ul className="menu">
+
       <li className="add friend" onClick={(e) => {
         // console.log(clicked.value) // clicked name
         const addFriendName = clicked.value
@@ -32,17 +33,20 @@ const Menu = (props) => {
         // socket.emit("add friend", {username, addFriendName, userID});
         setShow(false)
       }}>Add Friend</li>
+
       <li className="send-message" onClick={() => {
         setRecipient(clicked);
         console.log('clicked in Menu', clicked)
         setShow(false); // 클릭 뒤 사라지게
       }}>Send Message</li>
+
       <li className="view-profile" onClick={(e) => {
         console.log("clicked vie-porifle", clicked.value)
         setProfileShow("inline");
         setShow(false);
-      }}>View {clicked.value}'s Profile</li>
-      <button onClick={()=>{setShow(false)}}>CLOSE</button>
+      }}>View Profile</li>
+
+      <button onClick={props.close}>CLOSE</button>
     </ul>
   );
 };
