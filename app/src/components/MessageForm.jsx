@@ -63,6 +63,7 @@ function MessageForm({ nickname, recipient, user }) {
           className="form-control"
           maxLength={400}
           value={typingMessage}
+          placeholder="type your message here "
           onChange={handleChangeTypingMessage}
           onMouseDown={() => {
             setTextareaDisable(false)

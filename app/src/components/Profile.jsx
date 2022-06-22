@@ -57,9 +57,12 @@ export default function Profile(props) {
               {/* <div className={`profile ${username}`} key={ind} style={{display: "inline"}}> */}
               {/* <title> */}
               {/* <div className="profile-name">{title}</div> */}
-            <div className="profile-email">{email}</div>
+
+            <div className="profile-email"><p>Email</p>{email}</div>
               {/* </title> */}
-            <div key={ind}>
+            {/* <div key={ind}> */}
+            <div>
+            <p>Languages</p>
               <div className="profile-language">{languageLists}</div>
             </div>
 
