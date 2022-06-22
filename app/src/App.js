@@ -255,32 +255,6 @@ function App() {
               online={online}
               map={maps[room]}
             />} />
-            {/* <Route path={`/game/js`} element={
-          // <Route path={`/game/${room}`} element={
-            <Game
-              username={nickname}
-              sendMessage={sendMessage}
-              sendPrivateMessage={privateMessage}
-              // sendData={sendData}
-              setUser={createSocketIdNameObject}
-              room={room}
-              // nickname={nickname}
-              online={online}
-              map={maps[room]}
-            />} />
-            <Route path={`/game/ruby`} element={
-          // <Route path={`/game/${room}`} element={
-            <Game
-              username={nickname}
-              sendMessage={sendMessage}
-              sendPrivateMessage={privateMessage}
-              // sendData={sendData}
-              setUser={createSocketIdNameObject}
-              room={room}
-              // nickname={nickname}
-              online={online}
-              map={maps[room]}
-            />} /> */}
         </Routes>
       </UserListContext.Provider>
     </SocketContext.Provider>
