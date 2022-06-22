@@ -2,6 +2,7 @@ $back-color: #1f1f1e;
 $main-color: #b0d36a;
 $second-color: #9883c4;
 $list-color: #5f436d;
+$side-bar-color: #e2ecc2f5;
 
 
 
@@ -15,28 +16,33 @@ $list-color: #5f436d;
 }
 
 .friend {
-    background: whitesmoke;
-    width: 90%;
-    height: fit-content;
-    padding: 20px 10px;
+    background-color: $side-bar-color;
+    width: 80%;
     font-size: 1.4rem;
     border-radius: 5px;
     margin: 11px auto;
 
     :hover {
-        background: #bada55;
+        background-color: #bada55;
         color: black;
         border-radius: 5px;
+        cursor: pointer;
     }
 
     .name {
         text-align: center;
+        height: 45px;
+        padding: 5px;
+        p {
+            margin: 0;
+        }
     }
 
+    .languageLists {
+        text-align: center;
+        font-size: 1rem;
+        padding: 1rem 0;
+        background-color: whitesmoke
+    }
 }
 
-.languageLists {
-    flex-direction: row;
-    font-size: 1rem;
-    margin-left: 10px
-}

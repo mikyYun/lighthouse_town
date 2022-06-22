@@ -52,7 +52,7 @@ export default function FriendList() {
     return (
       <div key={i} className="friend " onClick={() => {
         handleToggle(friendName)}}>
-          <div className="name">{friendName}</div>
+          <div className="name"><p>{friendName}</p></div>
           { toggle === friendName ? <div className="languageLists">{lists()}</div> : null }
       </div>
     );

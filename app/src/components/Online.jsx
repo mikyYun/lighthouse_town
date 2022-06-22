@@ -37,7 +37,7 @@ export default function Online(props) {
         console.log(obj)
       }}>
         {<Avatar url={obj.avatar} alt="avatar" />}
-        {obj.value}
+        <p>{obj.value}</p>
       </li>
       { showMenu === true ?<Menu close={closeMenu} obj={obj} /> : null }
     </div>

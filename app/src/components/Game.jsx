@@ -70,7 +70,6 @@ export default function Game(props) {
       <div className="side-bar">
           <FriendList />
           <Online />
-          <Profile />
         </div>
     </div>
   );

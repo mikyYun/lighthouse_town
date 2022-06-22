@@ -1,6 +1,8 @@
 $back-color: #1f1f1e;
-$main-color: #b0d36a;
+$main-color: #bada55;
 $second-color: #9883c4;
+$side-bar-color: #e2ecc2f5;
+
 
 .online-list {
     width: 100%;
@@ -16,19 +18,37 @@ $second-color: #9883c4;
   }
 
 .online-user {
-    width: 90%;
-    background: whitesmoke;
-    color: black;
+    width: 80%;
+    background-color: $side-bar-color;
     text-align: center;
     border-radius: 5px;
     margin: 10px auto;
+    cursor: pointer;
 
-    :hover {
-        background-color: #bada55;
-        color: black;
+    li {
+      list-style: none;
+      padding: 10px;
+      height: 45px;
+      font-size: 1.4rem;
+    }
+    li:hover {
+        background-color: $main-color;
         border-radius: 5px;
     }
+
+    .users-online{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      p {
+        margin: 0 10px;
+      }
+  }
+
+
 }
+
 
   .language {
     background-color: $main-color;
@@ -43,24 +63,40 @@ $second-color: #9883c4;
     align-items: center;
     justify-content: center;
     padding: 0;
-    background: #e2ecc2f5;
+    background-color: whitesmoke;
+
+    .menu-action {
+      width: 100%;
+      cursor: pointer;
+      padding: 0.5em 0;
+      list-style: none;
+
+    }
+    .menu-action:hover {
+      background-color: $main-color;
+    }
 }
 
-  li {
-    width: 100%;
-    cursor: pointer;
-    padding: 0.5em;
-    list-style: none;
 
-  }
-  .online-user :hover {
+.div_profile {
+  padding-top: 20px;
     background-color: #bada55;
-    color: black;
-    border-radius: 5px;
-  }
+    /* border-radius: 10px; */
+    margin: 10px auto 0 auto;
+    width: 100%;
 
-  .users-online:hover{
-    background-color:#bada55;
-    color: black;
-  }
+    .profile-email {
+      font-size: 1rem;
+    }
+    .profile-language {
+      font-size: 1rem;
+
+      .list-languages {
+        align-items: center;
+        font-size: 1rem;
+        padding: 0.2em;
+      }
+
+    }
+}
 
