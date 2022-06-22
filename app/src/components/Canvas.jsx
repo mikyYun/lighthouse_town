@@ -51,7 +51,7 @@ const Canvas = (props) => {
       // console.log("SENT!!!!")
       // socket.emit("sendData", userCharacters[props.username].state);
       socket.on("sendData", (data) => {
-        console.log("data", data);
+        // console.log("data", data);
         const newCharactersData = data;
         newCharactersData[props.username] = userCharacters[props.username];
 

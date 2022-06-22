@@ -70,6 +70,6 @@ export default function Profile(props) {
       }
     });
 
-  return <div className="div_profile">{profileArticles}</div>
+  return <div className="div_profile" onClick={props.close}>{profileArticles}</div>
 
 }
