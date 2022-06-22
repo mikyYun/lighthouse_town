@@ -52,10 +52,10 @@ function App() {
     js: classroom
   };
   const avatars = {
-    0: "/images/boy1-face.png",
-    1: "/images/boy2-face.png",
-    2: "/images/girl1-face.png",
-    3: "/images/girl2-face.png"
+    1: "/images/boy1-face.png",
+    2: "/images/boy2-face.png",
+    3: "/images/girl1-face.png",
+    4: "/images/girl2-face.png"
   };
   // console.log(avatars);
 
@@ -181,6 +181,7 @@ function App() {
       const loginUsersInformation = {};
       const usersOnline = [];
       loginUserNames.map(name => {
+        // console.log("AVATAR ID CHECK", [loginUsersObject[name].avatar_id])
         usersOnline.push({ value: name, label: name, avatar: avatars[loginUsersObject[name].avatar_id] });
         loginUsersInformation[name] = {
           name: name,
@@ -196,7 +197,7 @@ function App() {
       usersOnline.unshift({ value: "all", label: "all", avatar: avatars[0] });
       // const onlineOthers = usersOnline.filter(user => user.value !== nickname)
 
-
+      // console.log("THIS WILL BE ONLINE OBJ", usersOnline)
       setOnline(usersOnline);
     }); // this works
 
