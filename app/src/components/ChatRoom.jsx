@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect, useContext, useRef, createContext } from "react";
 import MessageForm from "./MessageForm";
 import Avatar from "./Avatar.jsx";
-import "./ChatRoom.scss";
 import {
   SOCKET_EVENT,
   makePublicMessage,
@@ -64,7 +63,7 @@ function ChatRoom(props) {
   return (
     <div className="d-flex flex-column chat-form">
       <div className="text-box">
-        <span>{username}</span>, Welcome!
+        <p><span>{username}</span>, Welcome!</p>
       </div>
       <div className="chat-window card" ref={chatWindow}>
         {messages.map((message, index) => {

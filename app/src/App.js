@@ -91,6 +91,7 @@ function App() {
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
     const currentCookies = cookies.getAll();
+    console.log('currentCookies', currentCookies)
     // cookies maxAge 3600.
     socket.on("connect", () => {
       console.log("SOCKET CONNECTED", currentCookies); // everytime refresh

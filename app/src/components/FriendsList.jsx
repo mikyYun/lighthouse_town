@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useContext, useState } from "react";
 import { SocketContext, UserListContext } from "../App.js";
 import { PanelGroup } from "bootstrap";
+import './FriendsList.scss'
 
 export default function FriendList() {
   // const { online,  socket } = useContext(SocketContext);
@@ -25,11 +26,9 @@ export default function FriendList() {
     };
 
     return (
-      <div key={i}>
-        <div className="btn btn-primary collaps">
-          <div>{friendName}</div>
-        </div>
-        <div className="languageLists">{lists()}</div>
+      <div key={i} className="friend">
+          <div className="name">{friendName}</div>
+          <div className="languageLists">{lists()}</div>
       </div>
     );
   });
@@ -43,7 +42,7 @@ export default function FriendList() {
 
   return (
     <div className="friendsList">
-      <div className="friendsListLabel">My Friends</div>
+      <div className="side-bar-label">My Friends</div>
       {friendsListing}
     </div>
   );

@@ -1,11 +1,11 @@
 INSERT INTO users
   (username, password, email, avatar_id)
 VALUES
-  ('moon', 'moon', 'test@test.com', 1);
+  ('moon', 'moon', 'test@test.com', 3);
 INSERT INTO users
   (username, password, email, avatar_id)
 VALUES
-  ('heesoo', 'heesoo', 'test1@test.com', 2);
+  ('heesoo', 'heesoo', 'test1@test.com', 4);
 INSERT INTO users
   (username, password, email, avatar_id)
 VALUES
@@ -29,4 +29,4 @@ VALUES
 INSERT INTO users
   (username, password, email, avatar_id)
 VALUES
-  ('andy', 'andy', 'test7@test.com', 2);
+  ('andy', 'andy', 'test7@test.com', 3);

@@ -55,8 +55,8 @@ function MessageForm({ nickname, recipient, user }) {
   // })
 
   return (
-    <form className="card">
-      <div className="align-items-center">
+    <form >
+      <div >
         <textarea
           ref={focusTextArea}
           readOnly={textareaDisable}
@@ -71,7 +71,7 @@ function MessageForm({ nickname, recipient, user }) {
         />
         <button
           type="button"
-          className="btn btn-primary send-btn"
+          className="send-btn"
           onClick={handleSendMesssage}
         >
           SEND

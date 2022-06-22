@@ -73,7 +73,7 @@ io.on("connection", (socket) => {
     const { username, socketID } = obj;
     console.log("RECIEVED DATA", username, socketID)
     // only work after login not refresh
-    // console.log("Connected ", username, socketID); 
+    // console.log("Connected ", username, socketID);
     // after refresh, socketid undefined
     currentUsers[username] = socketID;
     pool.query(
@@ -220,7 +220,7 @@ io.on("connection", (socket) => {
   //     // 현재유저 이름은 뺌
   //     // alluserNames.filter(nm => nm !== e.username)
   //     // console.log("CURRENT USERS", alluserNames);
-  //     socket.emit("all user names", { "users": alluserNames });
+  //     socket.emit("allƒ user names", { "users": alluserNames });
   //   }
   // });
 
@@ -260,6 +260,7 @@ io.on("connection", (socket) => {
     pool.query(
       "SELECT id, username FROM users WHERE username=$1", [addFriendName],
       (err, res) => {
+        console.log('res', res)
         // res.rows => users table [{id: , username: ,....}]
         const targetID = res.rows[0].id;
         // console.log("target users id", targetID);
@@ -413,7 +414,7 @@ io.on("connection", (socket) => {
   /* 오브젝트에서 종료되는 유저 삭제 */
   socket.on("disconnect", () => {
     // console.log("Server.js - DISCONNECT", socket.id);
-    
+
     const alluserNames = Object.keys(currentUsers);
     let disconnectedUsername;
     alluserNames.forEach((name) => {
