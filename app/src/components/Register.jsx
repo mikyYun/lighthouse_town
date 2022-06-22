@@ -229,7 +229,7 @@ export default function Register(props) {
                 console.log(res.data)
                 setUser(res.data.username)
                 props.submitRegistrationInfo(res.data);
-                cookies.set("userdata", res.data, { maxAge: 3600 });
+                cookies.set("userdata", res.data, { maxAge: 60000 });
                 goChat(
                   res.data.username,
                   res.data.avatar,

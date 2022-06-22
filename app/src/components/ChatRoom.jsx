@@ -9,7 +9,6 @@ import {
 import { SocketContext } from "../App.js";
 import { UserListContext, MsgContext } from "../App.js";
 
-
 function ChatRoom(props) {
   const { socket } = useContext(SocketContext);
   const { recipient, user } = useContext(UserListContext);
@@ -58,7 +57,7 @@ function ChatRoom(props) {
     };
   }, [socket, handleReceivePublicMessage]);
   //@@@@ 이거 왜 public message??? private message 는??
-
+  console.log("AVATAR CHECK IN CHATROOM", messages)
 
   return (
     <div className="d-flex flex-column chat-form">

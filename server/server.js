@@ -406,6 +406,7 @@ io.on("connection", (socket) => {
       time: new Date(),
     };
     // SVGPreserveAspectRatio.to(roomName).emit
+    console.log("send message in server line 409",requestData)
     io.emit("RECEIVE_MESSAGE", responseData);
     //responseData = chat message
     //@@@@@@ ChatRoom.jsx line 21

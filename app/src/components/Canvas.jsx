@@ -37,7 +37,7 @@ const Canvas = (props) => {
     react: "/game/react",
     ruby: "/game/ruby",
   };
-
+  console.log("THIS iS AVATAR", props.avatar)
   // pathname changes -> add classname
   const path = location.pathname.split('/')[2];
 
@@ -225,7 +225,9 @@ const Canvas = (props) => {
     // navigate(roomLists[room], { state: [props.username, props.avatar] });
     const userLanguages = userDataInCookies.userLanguages
     const userID = userDataInCookies.id
+    // socket.emit("SET USERNAME", { "socketID": socket.id, "username": props.username });
     navigate(roomLists[room], { state: [props.username, props.avatar, userLanguages, userID] });
+    // navigate(0)
     navigate(0, { state: [props.username, props.avatar, userLanguages, userID] })
   };
 

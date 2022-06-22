@@ -43,9 +43,9 @@ function App() {
   // ================= VARIABLES =============== //
   // console.log("LOCATION", location);
   const nickname = location.state?.[0] || '';
-  console.log("NICKNAME IN APP", nickname);
-
-
+  console.log("NICKNAME IN APP", user);
+  
+  
   // set map for navigate
   const maps = {
     plaza: town,
@@ -58,29 +58,30 @@ function App() {
     4: "/images/girl2-face.png"
   };
   // console.log(avatars);
-
+  
   // ================= INTANCES =============== //
-
+  
   const cookies = new Cookies();
-
-
+  
+  
   // const addFriend = () => { }
   // const sendMessage = () => { }
   // const viewProfile = () => { }
-
+  
   // ================= EFFECTS =============== //
 
   useEffect(() => {
     setUser({ ...user, avatar: avatars[user.avatar] }); //[user.avatar] is a number (avatar id)
+    console.log("USER", user)
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD GET A USER FROM THE DATA BASE
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD ALSO SET AN AVATAR WHEN WE GET AN USER OBJECT.
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
     const currentCookies = cookies.getAll();
     // console.log('currentCookies', currentCookies)
-    // cookies maxAge 3600.
+    // cookies maxAge 10000.
     socket.on("connect", () => {
-      console.log("SOCKET CONNECTED", currentCookies); // everytime refresh
+      console.log("SOCKET CONNECTED", currentCookies.userdata); // everytime refresh
       //  if ((mainUrlLists.includes(location.pathname))
 
       if ((location.pathname === "/"
@@ -95,7 +96,7 @@ function App() {
           const data = [username, avatar, userLanguages, id];
           navigate("/game/plaza", { state: data });
         };
-        goChat(currentCookies.userdata.userName, currentCookies.userdata.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
+        goChat(currentCookies.userdata.userName, user.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
         // console.log("LOCATION STATE",location.state) // checked
       }
       // if (subUrlLists.includes(location.pathname)) {
@@ -148,7 +149,7 @@ function App() {
     });
 
     socket.on("REGISTRATION SUCCESS", (userInfo) => {
-      cookies.set("email", userInfo, { maxAge: 3600 });
+      cookies.set("email", userInfo, { maxAge: 60000 });
       navigate("/game/plaza");
     });
 

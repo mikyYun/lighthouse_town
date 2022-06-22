@@ -19,7 +19,7 @@ function MessageForm({ nickname, recipient, user }) {
     const noContent = typingMessage.trim() === "";
 
     if (noContent) {
-      console.log("no content received");
+      // console.log("no content received");
       return;
     }
     // console.log("socket", recipient)
@@ -39,6 +39,7 @@ function MessageForm({ nickname, recipient, user }) {
         user,
       });
     }
+    console.log({nickname, content: typingMessage, user})
     setTypingMessage("");
   }, [socket, nickname, typingMessage, recipient]);
 
@@ -73,6 +74,7 @@ function MessageForm({ nickname, recipient, user }) {
           type="button"
           className="send-btn"
           onClick={handleSendMesssage}
+
         >
           SEND
         </button>
