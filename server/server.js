@@ -281,6 +281,7 @@ io.on("connection", (socket) => {
             newFriendLanguageObj[addFriendName] = { languages };
             // console.log("WHAT", addFriendName, {languages});
             // socket.emit("updateFriendsList", newFriendLanguageObj);
+            console.log("NEW FRIEND ADDED")
             socket.emit("updateFriendsList", { newFriendName: addFriendName, languages: languages });
           });
 

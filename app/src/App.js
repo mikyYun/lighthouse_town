@@ -44,21 +44,21 @@ function App() {
   // console.log("LOCATION", location);
   const nickname = location.state?.[0] || '';
   console.log("NICKNAME IN APP", nickname);
-  const subUrlLists = [
-    "/plaza",
-    "/ruby",
-    "/html",
-    "/css",
-    "/js",
-    "/",
-  ];
+  // const subUrlLists = [
+  //   "/plaza",
+  //   "/ruby",
+  //   "/html",
+  //   "/css",
+  //   "/js",
+  //   "/",
+  // ];
 
-  const mainUrlLists = [
-    "/",
-    "/game",
-    "/register",
-    "/login",
-  ];
+  // const mainUrlLists = [
+  //   "/",
+  //   "/game",
+  //   "/register",
+  //   "/login",
+  // ];
 
   // set map for navigate
   const maps = {
@@ -122,14 +122,14 @@ function App() {
       // }
       if (!currentCookies.userdata) {
         // if (!urlLists.includes(location.pathname)) {
-        console.log("TETSTEST"); // checked
+        console.log("NO USERDATA. CLEAR COOKIES"); // checked
         clearCookies();
         navigate("/");
       }
     });
     // if (!urlLists.includes(location.pathname)) clearCookies();
     // window.location.reload()
-  }, [location.pathname]);
+  }, [room]);
 
   useEffect(() => {
 

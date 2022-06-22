@@ -16,7 +16,7 @@ export default function Login(props) {
   }
   const goChat = (username, avatar, userLanguages, id) => {
     const data = [username, avatar, userLanguages, id]
-    navigate('/game/plaza', { state: data })
+    navigate(`/game/plaza`, { state: data })
   }
 
   return (

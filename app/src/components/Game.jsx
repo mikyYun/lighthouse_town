@@ -15,15 +15,15 @@ export default function Game(props) {
   const [msg, setMsg] = useState({});
   console.log('usernameusernameusernameusername');
 
-  useEffect(() => {
-    socket.on("connect", () => {
-      socket.emit("SET USERNAME", { "socketID": socket.id, "username": nickname });
-    })
+  // useEffect(() => {
+  //   socket.on("connect", () => {
+  //     socket.emit("SET USERNAME", { "socketID": socket.id, "username": nickname });
+  //   })
     
-    return (() => {
-      socket.disconnect()
-    })
-  }, [])
+  //   return (() => {
+  //     socket.disconnect()
+  //   })
+  // }, [])
 
   // const {username} = useContext(SocketContext)
   // let loggedIn = false

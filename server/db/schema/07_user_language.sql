@@ -28,6 +28,3 @@ INSERT INTO user_language (user_id, language_id)
   VALUES (3, 4);
 INSERT INTO user_language (user_id, language_id)
   VALUES (3, 5);
-
-
-

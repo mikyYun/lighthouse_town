@@ -6,7 +6,7 @@ import boyImage from "./game_img/boy1.png";
 import townWall from "./game_img/collision_data.js/townWall";
 import { selectAvatar } from "./helper/selectAvatar";
 import { SocketContext } from "../App";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Redirect } from "react-router-dom";
 import { SOCKET_EVENT, makePublicMessage, makePrivateMessage, socket } from "./service/socket";
 import Cookies from 'universal-cookie';
 
@@ -26,6 +26,7 @@ const Canvas = (props) => {
       avatar: props.avatar,
     }),
   });
+  // window.location.reload(true)
   // console.log('usernameusernameusernameusername', props.username);
   // console.log('userCharacters', userCharacters)
   const cookies = new Cookies()
@@ -52,7 +53,7 @@ const Canvas = (props) => {
     const ctx = canvas.getContext("2d");
 
 
-    socket.on("connect", () => {
+    // socket.on("connect", () => {
 
       sendData()
       // window.location.reload()
@@ -101,7 +102,7 @@ const Canvas = (props) => {
       }
 
 
-    });   //socket ends
+    // });   //socket ends
 
 
     window.addEventListener("keydown", (e) => {
@@ -115,8 +116,8 @@ const Canvas = (props) => {
       if (props.room === 'plaza') {
         // console.log("Im in Plaza")
         if (
-          userCharacters[props.username].state.x >= 430 &&
-          userCharacters[props.username].state.x <= 450 &&
+          userCharacters[props.username].state.x >= 420 &&
+          userCharacters[props.username].state.x <= 460 &&
           userCharacters[props.username].state.y >= 120 &&
           userCharacters[props.username].state.y <= 140
           ) {
@@ -128,9 +129,9 @@ const Canvas = (props) => {
         // move to Ruby
         if (
           userCharacters[props.username].state.x >= 710&&
-          userCharacters[props.username].state.x <= 730 &&
-          userCharacters[props.username].state.y >= 460 &&
-          userCharacters[props.username].state.y <= 480
+          userCharacters[props.username].state.x <= 770 &&
+          userCharacters[props.username].state.y >= 430 &&
+          userCharacters[props.username].state.y <= 470
           ) {
             sendData(props.room);
             setUserCharacters({ ...userCharacters, [props.username]: undefined })
