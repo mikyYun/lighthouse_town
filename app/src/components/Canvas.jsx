@@ -227,7 +227,6 @@ const Canvas = (props) => {
     const userID = userDataInCookies.id
     navigate(roomLists[room], { state: [props.username, props.avatar, userLanguages, userID] });
     navigate(0, { state: [props.username, props.avatar, userLanguages, userID] })
-
   };
 
   // console.log('BEFORE FUNC', props.room)
