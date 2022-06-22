@@ -240,7 +240,7 @@ function App() {
         {/* {show && <Menu username={nickname} />} */}
         <Routes>
           <Route path='/' element={<Login setUser={createSocketIdNameObject} />} />
-          <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
+          <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} setUser={createSocketIdNameObject}/>} />
           <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
           {/* <Route path={`/game/plaza`} element={ */}
           // <Route path={`/game/${room}`} element={
