@@ -21,7 +21,7 @@ VALUES
 INSERT INTO users
   (username, password, email, avatar_id)
 VALUES
-  ('nelly', 'nelly', 'test5@test.com', 3);
+  ('nally', 'nelly', 'test5@test.com', 3);
 INSERT INTO users
   (username, password, email, avatar_id)
 VALUES
