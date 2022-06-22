@@ -6,10 +6,9 @@ import Profile from "./Profile.jsx";
 
 const Menu = (props) => {
   const {socket, online, friendList} = useContext(SocketContext)
-  const [showProfile, setShowProfile] = useState(false);
   const location = useLocation()
   const { clicked, setRecipient, setShow, nickname, recipient, setProfileShow, profiles, setBlockAddFriendAlert } = useContext(UserListContext);
-  // console.log('clicked', clicked)
+  const [showProfile, setShowProfile] = useState(false);
   const username = props.username
   const userID = location.state?.[3]
   // const [addFriend, setAddFriend ] = useState("Add")
@@ -24,8 +23,8 @@ const Menu = (props) => {
   }
 
   return (
-      <ul className="menu">
-        <li className="menu-action" onClick={(e) => {
+      <div className="menu">
+        <div className="menu-action" onClick={(e) => {
           // console.log(clicked.value) // clicked name
           const addFriendName = clicked.value
           // console.log("add-friend clicked", username, addFriendName, userID);
@@ -34,23 +33,23 @@ const Menu = (props) => {
           // console.log("add-friend clicked", e);
           socket.emit("add friend", {username, addFriendName, userID});
           props.close();
-        }}>Add Friend</li>
+        }}>Add Friend</div>
 
-        <li className="menu-action" onClick={() => {
+        <div className="menu-action" onClick={() => {
           setRecipient(clicked);
           // console.log('clicked in Menu', clicked)
           props.close();
-        }}>Send Message</li>
+        }}>Send Message</div>
 
-        <li className="menu-action" onClick={(e) => {
-          // console.log("clicked vie-porifle", clicked.value)
-          props.setShowProfile(true);
-          // props.openProfile();
-          props.close();
+        <div className="menu-action" onClick={(e) => {
+          console.log("clicked vie-porifle", clicked.value)
+          setShowProfile(clicked.value);
+          console.log(showProfile)
+          // props.close();
         }}>View Profile
-              {/* <Profile /> */}
-          </li>
-      </ul>
+              { showProfile === clicked.value ? <Profile close={props.close}/> : null}
+          </div>
+      </div>
   );
 };
 
