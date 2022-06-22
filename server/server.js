@@ -506,7 +506,7 @@ app.post("/register", (req, res) => {
   const userPassword = req.body.userInfo.userPassword;
   const userEmail = req.body.userInfo.userEmail;
   const userLanguages = req.body.userInfo.userLanguages;
-  const userAvatar = req.body.userInfo.userAvatar;
+  const avatar = req.body.userInfo.userAvatar;
 
   pool.query(
     //check if user al
@@ -518,12 +518,15 @@ app.post("/register", (req, res) => {
       // throw res.status(409).send('User already registered'); // option 2
 
       return pool.query(
-        "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [userName, userPassword, userEmail, userAvatar]);
+        "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [userName, userPassword, userEmail, avatar]);
       // "RETURNING *" means we are returning the new 'user' entry to the next .then
     })
     .then((response) => {
       const { username, avatar_id, id } = response.rows[0];
-      const userData = [username, avatar_id, userLanguages, id];
+      const userID = id
+      const avatar = avatar_id
+      const userName = username
+      const userData = {userName, avatar, userLanguages, userID};
 
       userLanguages.forEach((lang_id) => {
         pool.query(
@@ -532,6 +535,7 @@ app.post("/register", (req, res) => {
         );
       });
       // sending user info back to Register.jsx (as res.data)
+      console.log("REGISTRATION SUCCESS", userData)
       res.status(201).send(userData);
     })
     .catch((e) => { console.error(e); });

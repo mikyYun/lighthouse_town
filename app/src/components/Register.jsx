@@ -10,11 +10,12 @@ export default function Register(props) {
   const [userName, setUserName] = useState();
   const [userPassword, setUserPassword] = useState();
   const [userLanguages, setUserLanguages] = useState([]);
-  const [userAvatar, setUserAvatar] = useState();
+  const [userAvatar, setUserAvatar] = useState(1);// 기본 아바타 1
   const [incorrectPassword, setIncorrectPassword] =
     useState("correct_password");
-  const [checked, setChecked] = useState(false)
-  const [registerFormCheck, setRegisterFormCheck] = []
+  const [checked, setChecked] = useState(false);
+  const [registerFormCheck, setRegisterFormCheck] = [];
+  const setUser = props.setUser;
   const cookies = new Cookies();
   const navigate = useNavigate();
   // window.addEventListener("click", (e) => {
@@ -30,7 +31,11 @@ export default function Register(props) {
       setUserLanguages((prev) => prev.filter((el) => el !== id));
     }
   };
-
+  const goChat = (username, avatar, userLanguages, id) => {
+    const data = [username, avatar, userLanguages, id];
+    navigate(`/game/plaza`, { state: data });
+    navigate(0, { state: data })
+  };
   const languageLists = {
     html: "HTML",
     css: "CSS",
@@ -81,10 +86,15 @@ export default function Register(props) {
             type="text"
             value={userName}
             onChange={(e) => {
-              if (e.target.value.length < 4) setUserName(e.target.value);
-              console.log(
-                "username should be longer than 4 chars - Register.js"
-              );
+              if (e.target.value.length < 4) {
+                console.log(
+                  "username should be longer than 4 chars - Register.js"
+                );
+              }
+              if (e.target.value.length > 10) {
+                alert("cannot have over 10 digits name");
+              }
+              setUserName(e.target.value);
             }}
           ></input>
         </div>
@@ -101,9 +111,9 @@ export default function Register(props) {
             onChange={(e) => {
               if (e.target.value.length < 4) {
                 console.log("password should be longer than 4 chars");
-                console.log(e.target.value)
+                // console.log(e.target.value)
               }
-              setUserPassword(e.target.value)
+              setUserPassword(e.target.value);
             }}
           ></input>
         </div>
@@ -117,15 +127,14 @@ export default function Register(props) {
             type="password"
             onChange={(e) => {
               if (e.target.value !== userPassword) {
-                console.log(userPassword)
+                // console.log(userPassword)
                 setIncorrectPassword("incorrect_password");
                 console.log(
                   "confirmation password doesn't match. - Register.js"
                 );
               } else {
                 setIncorrectPassword("correct_password");
-              console.log(e.target.value)
-
+                console.log(e.target.value);
               }
             }}
           ></input>
@@ -135,9 +144,7 @@ export default function Register(props) {
         </span>
         <div className="field">
           <span> PROGRAMMING LANGUAGES :</span>
-          <ul>
-            {makeLanguageLists}
-          </ul>
+          <ul>{makeLanguageLists}</ul>
         </div>
         <div className="field">
           <span>AVATAR :</span>
@@ -152,7 +159,7 @@ export default function Register(props) {
                   checked={!checked}
                   onChange={(e) => {
                     setUserAvatar(1);
-                    setChecked(!checked)
+                    setChecked(!checked);
                   }}
                 />
                 <label>M</label>
@@ -168,7 +175,7 @@ export default function Register(props) {
                   checked={checked}
                   onChange={(e) => {
                     setUserAvatar(2);
-                    setChecked(!checked)
+                    setChecked(!checked);
                   }}
                 />
                 <label>W</label>
@@ -190,9 +197,18 @@ export default function Register(props) {
             axios // client talking to the server. Asynchronous. if it doesn't happen .post,
               .post("/register", { userInfo })
               .then((res) => {
+                // res.data = [username, avatar_id, userLanguages, id];
+                console.log(res.data)
+                setUser(res.data.username)
                 props.submitRegistrationInfo(res.data);
-                cookies.set("username", res.data, { maxAge: 3600 });
-                navigate("/game/plaza");
+                cookies.set("userdata", res.data, { maxAge: 3600 });
+                goChat(
+                  res.data.username,
+                  res.data.avatar,
+                  res.data.userLanguages,
+                  res.data.userID
+                );
+                // navigate("/game/plaza");
               })
               .catch((error) => console.log(error));
           }}
