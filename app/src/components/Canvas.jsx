@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState, useContext, useCallback } from "rea
 import Characters from "./helper/Characters";
 import { selectAvatar } from "./helper/selectAvatar";
 import { SocketContext } from "../App";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Redirect } from "react-router-dom";
 import { SOCKET_EVENT, makePublicMessage, makePrivateMessage, socket } from "./service/socket";
+import Cookies from 'universal-cookie';
 
 
 const Canvas = (props) => {
@@ -21,9 +22,12 @@ const Canvas = (props) => {
       avatar: props.avatar,
     }),
   });
-  // console.log('username', props.username);
+  // window.location.reload(true)
+  // console.log('usernameusernameusernameusername', props.username);
   // console.log('userCharacters', userCharacters)
-
+  const cookies = new Cookies()
+  const allCookies = cookies.getAll()
+  const userDataInCookies = allCookies.userdata
   const navigate = useNavigate();
   const roomLists = {
     plaza: '/game/plaza',
@@ -48,7 +52,8 @@ const Canvas = (props) => {
     // socket.on("connect", () => {
       // console.log('ITS CONNECTED!!!!!!')
       sendData()
-      // console.log("SENT!!!!")
+      // window.location.reload()
+     
       // socket.emit("sendData", userCharacters[props.username].state);
       socket.on("sendData", (data) => {
         // console.log("data", data);
@@ -108,8 +113,8 @@ const Canvas = (props) => {
       if (props.room === 'plaza') {
         // console.log("Im in Plaza")
         if (
-          userCharacters[props.username].state.x >= 430 &&
-          userCharacters[props.username].state.x <= 450 &&
+          userCharacters[props.username].state.x >= 420 &&
+          userCharacters[props.username].state.x <= 460 &&
           userCharacters[props.username].state.y >= 120 &&
           userCharacters[props.username].state.y <= 140
         ) {
@@ -120,15 +125,15 @@ const Canvas = (props) => {
 
         // move to Ruby
         if (
-          userCharacters[props.username].state.x >= 710 &&
-          userCharacters[props.username].state.x <= 730 &&
-          userCharacters[props.username].state.y >= 460 &&
-          userCharacters[props.username].state.y <= 480
-        ) {
-          sendData(props.room);
-          setUserCharacters({ ...userCharacters, [props.username]: undefined })
-          handleRoom('ruby');
-        }
+          userCharacters[props.username].state.x >= 710&&
+          userCharacters[props.username].state.x <= 770 &&
+          userCharacters[props.username].state.y >= 430 &&
+          userCharacters[props.username].state.y <= 470
+          ) {
+            sendData(props.room);
+            setUserCharacters({ ...userCharacters, [props.username]: undefined })
+            handleRoom('ruby');
+          }
       }
       // move to the Plaza
       if (props.room !== 'plaza') {
@@ -216,7 +221,12 @@ const Canvas = (props) => {
   //--------- functions
   // if user hit the specific position -> redirect to the page
   function handleRoom(room) {
-    navigate(roomLists[room], { state: [props.username, props.avatar] });
+    // userDataInCookies
+    // navigate(roomLists[room], { state: [props.username, props.avatar] });
+    const userLanguages = userDataInCookies.userLanguages
+    const userID = userDataInCookies.id
+    navigate(roomLists[room], { state: [props.username, props.avatar, userLanguages, userID] });
+    navigate(0, { state: [props.username, props.avatar, userLanguages, userID] })
   };
 
   // console.log('BEFORE FUNC', props.room)

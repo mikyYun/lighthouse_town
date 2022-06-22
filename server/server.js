@@ -61,6 +61,7 @@ const usersInRooms = {};
 
 // OPEN SOCKET
 io.on("connection", (socket) => {
+  
   const roomName = "room 1";
   const session = socket.request.session;
   session.save();
@@ -70,6 +71,7 @@ io.on("connection", (socket) => {
   socket.on("SET USERNAME", (obj) => {
     //Login.jsx 의 setUser(res.data.userName)
     const { username, socketID } = obj;
+    console.log("RECIEVED DATA", username, socketID)
     // only work after login not refresh
     // console.log("Connected ", username, socketID);
     // after refresh, socketid undefined
@@ -143,39 +145,43 @@ io.on("connection", (socket) => {
         // [existUsername],
         (err, res_1) => {
           if (err) throw err;
-          if (res_1.rows[0]) { // 테이블이 존재하면
-            const allusersTable = res_1.rows;
-            let userID;
+          // console.log(existUsername) // 내이름
+          if (res_1.rows[0]) { // 테이블이 존재하면 // 불필요한듯
+            const allusersTable = res_1.rows; // 전체 유저테이블
+            let userID; // 새로 들어온 유저의 아이디 찾기
             allusersTable.map(obj => {
               if (obj.username === existUsername)
-                userID = obj.id; // @@obj는 뭐임?
+                userID = obj.id; // @@obj는 뭐임? => table에서 one row
             });
             // user exist
             // const userID = res_1.rows[0].id;
+            // userID = 2
             pool.query(
               // find added(followers) id
-              "SELECT added_by FROM favorites WHERE added=$1",
+              "SELECT added FROM favorites WHERE added_by=$1",
               // {id: , following: , followed: }
               [userID],
               (err, res_2) => {
-                // console.log(res_2.rows)
+                // console.log(userID)
+                // console.log("favoriteTables", res_2.rows)
                 const usernames = [];
                 const followedIds = []; // userid[1, 2, 3....]
                 const followedInfo = {};
                 res_2.rows.map(obj => {
-                  followedIds.push(obj.added_by);
+                  followedIds.push(obj.added);
                 });
                 // console.log("!!",Object.keys(allusersTable))
-                allusersTable.map(obj => {
-                  if (followedIds.includes(obj.id)) {
-                    // console.log(obj.id)
-                    usernames.push(obj.username);
-                    followedInfo[obj.username] = {};
-                    followedInfo[obj.username]["languages"] = [];
-                    // followedInfo[obj.username]["email"] = obj.email
+                allusersTable.map(row => {
+                  if (followedIds.includes(row.id)) {
+                    // console.log(row)
+                    usernames.push(row.username);
+                    followedInfo[row.username] = {};
+                    followedInfo[row.username]["languages"] = [];
+                    // followedInfo[row.username]["email"] = row.email
                   }
                 });
-                // console.log(usernames);
+                    // console.log("INFOMATION", usernames)
+                    // console.log(usernames);
                 pool.query(
                   "SELECT * FROM user_language JOIN languages ON language_id=languages.id", (err, res_3) => {
                     res_3.rows.map(userLanguageID => { // @@ userLanguageName 으로 바꾸고 밑에서 =>// obj.language_name 으로 하기
@@ -186,8 +192,8 @@ io.on("connection", (socket) => {
                         followedInfo[nameMatching].languages.push(userLanguageID.language_name);
                         // console.log(userLanguageID.language_id)
                       }
+                      // console.log("INFO", userLanguageID)
                     });
-                    // console.log("INFO", followedInfo)
                     socket.emit("friendsListBack", followedInfo);
                   }
                 );
@@ -280,6 +286,7 @@ io.on("connection", (socket) => {
             newFriendLanguageObj[addFriendName] = { languages };
             // console.log("WHAT", addFriendName, {languages});
             // socket.emit("updateFriendsList", newFriendLanguageObj);
+            console.log("NEW FRIEND ADDED")
             socket.emit("updateFriendsList", { newFriendName: addFriendName, languages: languages });
           });
 

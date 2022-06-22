@@ -44,14 +44,7 @@ function App() {
   // console.log("LOCATION", location);
   const nickname = location.state?.[0] || '';
   console.log("NICKNAME IN APP", nickname);
-  const urlLists = [
-    "/game/plaza",
-    "/game/ruby",
-    "/game/html",
-    "/game/css",
-    "/game/js",
-    '/'
-  ];
+
 
   // set map for navigate
   const maps = {
@@ -84,34 +77,46 @@ function App() {
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
     const currentCookies = cookies.getAll();
-    console.log('currentCookies', currentCookies)
+    // console.log('currentCookies', currentCookies)
     // cookies maxAge 3600.
     socket.on("connect", () => {
-    console.log("SOCKET CONNECTED", currentCookies); // everytime refresh
-    if ((location.pathname === "/"
-      || location.pathname === "/login"
-      || location.pathname === "/register"
-      || location.pathname === "/game"
-      || location.pathname === "/game/plaza")
-      && currentCookies.userdata) {
+      console.log("SOCKET CONNECTED", currentCookies); // everytime refresh
+      //  if ((mainUrlLists.includes(location.pathname))
+
+      if ((location.pathname === "/"
+        || location.pathname === "/login"
+        || location.pathname === "/register"
+        || location.pathname === "/game"
+        || location.pathname === "/game/plaza")
+        && currentCookies.userdata) {
         // console.log("cookies exist, permision allowed user") // checked
         createSocketIdNameObject(currentCookies.userdata.userName);
-      const goChat = (username, avatar, userLanguages, id) => {
-        const data = [username, avatar, userLanguages, id];
-        navigate('/game/plaza', { state: data });
-      };
-      goChat(currentCookies.userdata.userName, currentCookies.userdata.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
-      // console.log("LOCATION STATE",location.state) // checked
-    }
-    if (!currentCookies.userdata) {
-      // if (!urlLists.includes(location.pathname)) {
-      console.log("TETSTEST"); // checked
-      clearCookies();
-      navigate("/");
-    }
-  })
+        const goChat = (username, avatar, userLanguages, id) => {
+          const data = [username, avatar, userLanguages, id];
+          navigate("/game/plaza", { state: data });
+        };
+        goChat(currentCookies.userdata.userName, currentCookies.userdata.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
+        // console.log("LOCATION STATE",location.state) // checked
+      }
+      // if (subUrlLists.includes(location.pathname)) {
+      //   console.log("IN GAME")
+      // createSocketIdNameObject(currentCookies.userdata.userName);
+      // const goChat = (username, avatar, userLanguages, id) => {
+      //   // const data = [username, avatar, userLanguages, id];
+      //   // navigate('/game/plaza', { state: data });
+      // };
+      // goChat(currentCookies.userdata.userName, currentCookies.userdata.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
+      // }
+      if (!currentCookies.userdata) {
+        // if (!urlLists.includes(location.pathname)) {
+        console.log("NO USERDATA. CLEAR COOKIES"); // checked
+        clearCookies();
+        navigate("/");
+      }
+    });
     // if (!urlLists.includes(location.pathname)) clearCookies();
-  }, [location.pathname]);
+    // window.location.reload()
+  }, [room]);
 
   useEffect(() => {
 
@@ -237,7 +242,8 @@ function App() {
           <Route path='/' element={<Login setUser={createSocketIdNameObject} />} />
           <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
           <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
-          <Route path={`/game/${room}`} element={
+          {/* <Route path={`/game/plaza`} element={ */}
+          // <Route path={`/game/${room}`} element={
             <Game
               username={nickname}
               sendMessage={sendMessage}
