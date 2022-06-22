@@ -55,26 +55,14 @@ export default function Register(props) {
   );
 
   return (
+
     <div className="register-form">
       <form id="form_registration" onSubmit={(e) => e.preventDefault()}>
-        <div className="field">
-          <span>EMAIL : </span> {/* 이안에 뭐가 들어갈껀가요? */}
-          <input
-            id="register_email"
-            rows="1"
-            placeholder="EMAIL"
-            typeof="email"
-            value={userEmail}
-            onChange={(e) => {
-              setUserEmail(e.target.value);
-              // console.log("setUserEmail - Register.js", e.target.value);
-            }}
-          ></input>
-        </div>
 
-        <div className="field">
+      <div className="field">
           <span> NAME : </span>
           <input
+          className="text-input"
             id="register_name"
             rows="1"
             placeholder="NAME"
@@ -88,11 +76,28 @@ export default function Register(props) {
             }}
           ></input>
         </div>
+        <div className="field">
+          <span>EMAIL : </span> {/* 이안에 뭐가 들어갈껀가요? */}
+          <input
+            className="text-input"
+            id="register_email"
+            rows="1"
+            placeholder="EMAIL"
+            typeof="email"
+            value={userEmail}
+            onChange={(e) => {
+              setUserEmail(e.target.value);
+              // console.log("setUserEmail - Register.js", e.target.value);
+            }}
+          ></input>
+        </div>
+
 
         <div className="field">
           <span> PASSWORD : </span>
           <input
             // name="password"
+            className="text-input"
             id="register_password"
             rows="1"
             placeholder="PASSWORD"
@@ -111,6 +116,7 @@ export default function Register(props) {
           <span> CONFIRM PASSWORD : </span>
           <input
             // name="password_confirmation"
+            className="text-input"
             id="register_password_confirmation"
             rows="1"
             placeholder="PASSWORD_CONFIRMATION"
@@ -143,39 +149,65 @@ export default function Register(props) {
           <span>AVATAR :</span>
           <ul>
             <li>
-              <div className="div_boyImage"></div>
+              <div className="div_boyImage1"></div>
               <div>
                 <input
                   type="checkbox"
                   id="man"
                   value="M"
-                  checked={!checked}
+                  // checked={!checked}
                   onChange={(e) => {
                     setUserAvatar(1);
-                    setChecked(!checked)
+                    // setChecked(!checked)
                   }}
                 />
-                <label>M</label>
               </div>
             </li>
             <li>
-              <div className="div_girlImage"></div>
+              <div className="div_boyImage2"></div>
               <div>
                 <input
                   type="checkbox"
-                  id="woman"
                   value="W"
-                  checked={checked}
+                  // checked={checked}
                   onChange={(e) => {
                     setUserAvatar(2);
-                    setChecked(!checked)
+                    // setChecked(!checked)
                   }}
                 />
-                <label>W</label>
+              </div>
+            </li>
+            <li>
+              <div className="div_girlImage1"></div>
+              <div>
+                <input
+                  type="checkbox"
+                  value="W"
+                  // checked={checked}
+                  onChange={(e) => {
+                    setUserAvatar(3);
+                    // setChecked(!checked)
+                  }}
+                />
+              </div>
+            </li>
+            <li>
+              <div className="div_girlImage2"></div>
+              <div>
+                <input
+                  type="checkbox"
+                  value="W"
+                  // checked={checked}
+                  onChange={(e) => {
+                    setUserAvatar(4);
+                    // setChecked(!checked)
+                  }}
+                />
               </div>
             </li>
           </ul>
         </div>
+        <div className="btn-container">
         <button
           className="btn"
           type="submit"
@@ -199,9 +231,8 @@ export default function Register(props) {
         >
           Register
         </button>
+        </div>
       </form>
-      <div className="div_canvas">{/* <DrawCanvas /> */}</div>
-      {/* <Outlet /> */}
     </div>
   );
 }
