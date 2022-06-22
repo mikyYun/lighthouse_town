@@ -44,21 +44,7 @@ function App() {
   // console.log("LOCATION", location);
   const nickname = location.state?.[0] || '';
   console.log("NICKNAME IN APP", nickname);
-  // const subUrlLists = [
-  //   "/plaza",
-  //   "/ruby",
-  //   "/html",
-  //   "/css",
-  //   "/js",
-  //   "/",
-  // ];
 
-  // const mainUrlLists = [
-  //   "/",
-  //   "/game",
-  //   "/register",
-  //   "/login",
-  // ];
 
   // set map for navigate
   const maps = {
@@ -91,7 +77,7 @@ function App() {
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
     const currentCookies = cookies.getAll();
-    console.log('currentCookies', currentCookies)
+    // console.log('currentCookies', currentCookies)
     // cookies maxAge 3600.
     socket.on("connect", () => {
       console.log("SOCKET CONNECTED", currentCookies); // everytime refresh
@@ -107,7 +93,7 @@ function App() {
         createSocketIdNameObject(currentCookies.userdata.userName);
         const goChat = (username, avatar, userLanguages, id) => {
           const data = [username, avatar, userLanguages, id];
-          navigate('/game/plaza', { state: data });
+          navigate("/game/plaza", { state: data });
         };
         goChat(currentCookies.userdata.userName, currentCookies.userdata.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
         // console.log("LOCATION STATE",location.state) // checked
@@ -256,8 +242,8 @@ function App() {
           <Route path='/' element={<Login setUser={createSocketIdNameObject} />} />
           <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
           <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
-          {/* <Route path={`/game/js`} element={ */}
-          <Route path={`/game/${room}`} element={
+          {/* <Route path={`/game/plaza`} element={ */}
+          // <Route path={`/game/${room}`} element={
             <Game
               username={nickname}
               sendMessage={sendMessage}
@@ -269,6 +255,32 @@ function App() {
               online={online}
               map={maps[room]}
             />} />
+            {/* <Route path={`/game/js`} element={
+          // <Route path={`/game/${room}`} element={
+            <Game
+              username={nickname}
+              sendMessage={sendMessage}
+              sendPrivateMessage={privateMessage}
+              // sendData={sendData}
+              setUser={createSocketIdNameObject}
+              room={room}
+              // nickname={nickname}
+              online={online}
+              map={maps[room]}
+            />} />
+            <Route path={`/game/ruby`} element={
+          // <Route path={`/game/${room}`} element={
+            <Game
+              username={nickname}
+              sendMessage={sendMessage}
+              sendPrivateMessage={privateMessage}
+              // sendData={sendData}
+              setUser={createSocketIdNameObject}
+              room={room}
+              // nickname={nickname}
+              online={online}
+              map={maps[room]}
+            />} /> */}
         </Routes>
       </UserListContext.Provider>
     </SocketContext.Provider>

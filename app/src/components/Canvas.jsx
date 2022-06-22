@@ -56,7 +56,7 @@ const Canvas = (props) => {
      
       // socket.emit("sendData", userCharacters[props.username].state);
       socket.on("sendData", (data) => {
-        console.log("data", data);
+        // console.log("data", data);
         const newCharactersData = data;
         newCharactersData[props.username] = userCharacters[props.username];
 
@@ -222,9 +222,12 @@ const Canvas = (props) => {
   // if user hit the specific position -> redirect to the page
   function handleRoom(room) {
     // userDataInCookies
+    // navigate(roomLists[room], { state: [props.username, props.avatar] });
     const userLanguages = userDataInCookies.userLanguages
     const userID = userDataInCookies.id
     navigate(roomLists[room], { state: [props.username, props.avatar, userLanguages, userID] });
+    navigate(0, { state: [props.username, props.avatar, userLanguages, userID] })
+
   };
 
   // console.log('BEFORE FUNC', props.room)
