@@ -1,24 +1,25 @@
-$base-color: #1f1f1e;
-$btn-color: #bada55;
-$form-color: #009f92;
+$back-color: #1f1f1e;
+$main-color: #b0d36a;
+$second-color: #9883c4;
 
 .main-container {
-  width: 80%;
+  width: 75%;
   // display: flex;
 }
 .side-bar{
-  width: 20%;
+  width: 25%;
   display: flex;
   flex-direction: column;
-  background-color: $form-color;
+  background-color: $second-color;
 }
 
 .game-container {
   position: relative;
-  width: 90%;
-  margin: 20px auto;
+  width: 80%;
+  margin: 4vh auto;
   background-size: cover;
   image-rendering: pixelated;
+  // border-radius: 10px;
 }
 .plaza {
   background-image: url('./game_img/town-map.png');
@@ -36,88 +37,4 @@ $form-color: #009f92;
   max-width: 80vw;
   max-height: 70vh;
 }
-.chatroom {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
 
-.main-container div.chatroom {
-  // display: flex;
-  width: 100%;
-  align-items: center;
-  margin: 0 auto;
-}
-
-.chatroom .d-flex {
-  width: 100%;
-  height: 10vh;
-
-}
-
-textarea.form-control {
-  height: auto;
-  caret-color: transparent;
-}
-div.d-flex.flex-row {
-  height: auto;
-}
-
-#javascript {
-  position: fixed;
-  top: 15vh;
-  left: 35vw;
-}
-
-.online-list {
-  right: 0;
-  top: 0;
-  background-color: $form-color;
-  font-size: 1.3rem;
-  color: white;
-    img.user-avatar {
-      width: 30px;
-    }
-}
-
-.language {
-  background-color: $form-color;
-}
-.collapsButton {
-  width: 100%;
-}
-
-.languageDiv {
-  padding-left: 10px;
-  font-size: 0.6em;
-}
-
-.languageDiv:hover,
-li.list-languages:hover {
-  font-size: 15px;
-  background-color: $base-color;
-}
-
-
-
-.languageLists,
-li.list-languages {
-  font-size: 0.8rem;
-  background-color: rgb(82, 82, 131);
-  flex-direction: row;
-
-}
-// .languageLists:hover {
-//   font-size: 0.8rem;
-//   background-color: rgb(82, 82, 131);
-// }
-
-.block-friend {
-  display: inline;
-  color: red;
-  font-size: x-small;
-  font-weight: bold;
-}
-.add-friend{
-  display: none;
-}

@@ -11,8 +11,19 @@ import FriendList from "./FriendsList";
 
 export default function Game(props) {
   const location = useLocation();
-  const { nickname } = useContext(SocketContext);
+  const { nickname, socket } = useContext(SocketContext);
   const [msg, setMsg] = useState({});
+  console.log('usernameusernameusernameusername');
+
+  // useEffect(() => {
+  //   socket.on("connect", () => {
+  //     socket.emit("SET USERNAME", { "socketID": socket.id, "username": nickname });
+  //   })
+    
+  //   return (() => {
+  //     socket.disconnect()
+  //   })
+  // }, [])
 
   // const {username} = useContext(SocketContext)
   // let loggedIn = false
@@ -70,7 +81,6 @@ export default function Game(props) {
       <div className="side-bar">
           <FriendList />
           <Online />
-          <Profile />
         </div>
     </div>
   );

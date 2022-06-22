@@ -1,12 +1,14 @@
 import { useContext, useState } from "react";
 import { UserListContext, SocketContext } from '../App.js'
 import { useLocation } from "react-router-dom";
+import Profile from "./Profile.jsx";
+
 
 const Menu = (props) => {
   const {socket, online, friendList} = useContext(SocketContext)
   const location = useLocation()
   const { clicked, setRecipient, setShow, nickname, recipient, setProfileShow, profiles, setBlockAddFriendAlert } = useContext(UserListContext);
-  // console.log('clicked', clicked)
+  const [showProfile, setShowProfile] = useState(false);
   const username = props.username
   const userID = location.state?.[3]
   // const [addFriend, setAddFriend ] = useState("Add")
@@ -21,33 +23,33 @@ const Menu = (props) => {
   }
 
   return (
-    <ul className="menu">
+      <div className="menu">
+        <div className="menu-action" onClick={(e) => {
+          // console.log(clicked.value) // clicked name
+          const addFriendName = clicked.value
+          // console.log("add-friend clicked", username, addFriendName, userID);
+          // if addFriiendName is included in current friends list, block add
+          currentFriendsNames.includes(addFriendName) ? blockAddFriend("block-friend") : socket.emit("add friend", {username, addFriendName, userID});
+          // console.log("add-friend clicked", e);
+          socket.emit("add friend", {username, addFriendName, userID});
+          props.close();
+        }}>Add Friend</div>
 
-      <li className="add friend" onClick={(e) => {
-        // console.log(clicked.value) // clicked name
-        const addFriendName = clicked.value
-        console.log("add-friend clicked", username, addFriendName, userID);
-        // if addFriiendName is included in current friends list, block add
-        currentFriendsNames.includes(addFriendName) ? blockAddFriend("block-friend") : socket.emit("add friend", {username, addFriendName, userID});
-        // console.log("add-friend clicked", e);
-        // socket.emit("add friend", {username, addFriendName, userID});
-        setShow(false)
-      }}>Add Friend</li>
+        <div className="menu-action" onClick={() => {
+          setRecipient(clicked);
+          // console.log('clicked in Menu', clicked)
+          props.close();
+        }}>Send Message</div>
 
-      <li className="send-message" onClick={() => {
-        setRecipient(clicked);
-        console.log('clicked in Menu', clicked)
-        setShow(false); // 클릭 뒤 사라지게
-      }}>Send Message</li>
-
-      <li className="view-profile" onClick={(e) => {
-        console.log("clicked vie-porifle", clicked.value)
-        setProfileShow("inline");
-        setShow(false);
-      }}>View Profile</li>
-
-      <button onClick={props.close}>CLOSE</button>
-    </ul>
+        <div className="menu-action" onClick={(e) => {
+          console.log("clicked vie-porifle", clicked.value)
+          setShowProfile(clicked.value);
+          console.log(showProfile)
+          // props.close();
+        }}>View Profile
+              { showProfile === clicked.value ? <Profile close={props.close}/> : null}
+          </div>
+      </div>
   );
 };
 

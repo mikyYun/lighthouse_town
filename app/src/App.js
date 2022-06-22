@@ -47,16 +47,6 @@ function App() {
   // console.log("LOCATION", location);
   const nickname = location.state?.[0] || '';
   console.log("NICKNAME IN APP", nickname);
-  const urlLists = [
-    "/game/plaza",
-    "/game/ruby",
-    "/game/html",
-    "/game/css",
-    "/game/js",
-    '/',
-    "/register",
-    "/login"
-  ];
 
   // set map for navigate
   const maps = {
@@ -64,10 +54,10 @@ function App() {
     js: classroom
   };
   const avatars = {
-    0: "/images/boy1-face.png",
-    1: "/images/boy2-face.png",
-    2: "/images/girl1-face.png",
-    3: "/images/girl2-face.png"
+    1: "/images/boy1-face.png",
+    2: "/images/boy2-face.png",
+    3: "/images/girl1-face.png",
+    4: "/images/girl2-face.png"
   };
   // console.log(avatars);
 
@@ -89,71 +79,51 @@ function App() {
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD ALSO SET AN AVATAR WHEN WE GET AN USER OBJECT.
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
-
-    // setRoom(location.pathname.split("/").splice(2)[0]);
-
     const currentCookies = cookies.getAll();
+    // console.log('currentCookies', currentCookies)
     // cookies maxAge 3600.
-    if (location.pathname === "/" && currentCookies.userdata && currentCookies["connect.sid"]) {
-      // navigate('/game/plaza');
-      createSocketIdNameObject(all_cookies.userdata.userName);
-      goChat(cookieData.userName, cookieData.avatar, cookieData.userLanguages, cookieData.userID);
-    } else if (!urlLists.includes(location.pathname)) {
-      clearCookies();
-      navigate("/");
-    }
-    // if (!urlLists.includes(location.pathname)) clearCookies();
-  }, [location.pathname]);
-  console.log("NEW PAGE LOADED"); // WORK
+    socket.on("connect", () => {
+      console.log("SOCKET CONNECTED", currentCookies); // everytime refresh
+      //  if ((mainUrlLists.includes(location.pathname))
 
-
-  useEffect(() => {
-
-    // ================= FUNCTIONS =============== //
-
-
-    console.log("ALL COOKIES", all_cookies); // WORK
-    socket.on("connect", () => { // triggered in main page //
-      console.log("CONNECT!!!!!!!!!!!!!!!!!!!!!!", socket.id);
-      // })
-      // console.log("SOCKETID", socket.id)
-      //  게임에 들어왔는데 쿠키에 유저데이터가 없으면 메인페이지로
-      // 메인페이지에서 쿠키 존재하면 게임페이지로
-      // if (location.pathname === "/game") {
-      // navigate("/")
+      if ((location.pathname === "/"
+        || location.pathname === "/login"
+        || location.pathname === "/register"
+        || location.pathname === "/game"
+        || location.pathname === "/game/plaza")
+        && currentCookies.userdata) {
+        // console.log("cookies exist, permision allowed user") // checked
+        createSocketIdNameObject(currentCookies.userdata.userName);
+        const goChat = (username, avatar, userLanguages, id) => {
+          const data = [username, avatar, userLanguages, id];
+          navigate("/game/plaza", { state: data });
+        };
+        goChat(currentCookies.userdata.userName, currentCookies.userdata.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
+        // console.log("LOCATION STATE",location.state) // checked
+      }
+      // if (subUrlLists.includes(location.pathname)) {
+      //   console.log("IN GAME")
+      // createSocketIdNameObject(currentCookies.userdata.userName);
+      // const goChat = (username, avatar, userLanguages, id) => {
+      //   // const data = [username, avatar, userLanguages, id];
+      //   // navigate('/game/plaza', { state: data });
+      // };
+      // goChat(currentCookies.userdata.userName, currentCookies.userdata.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
       // }
-      // 유저데이터가 아직 삭제되지 않았고, 게임페이지 리로드 한 경우 서버랑 연결하고 currentUser update in server
-      if (all_cookies.userdata) {
-        //     // 쿠키 존재하면 리커넥트 요청
-        // socket.emit("hasCookies", ('test'))
-        createSocketIdNameObject(all_cookies.userdata.userName);
-        goChat(cookieData.userName, cookieData.avatar, cookieData.userLanguages, cookieData.userID);
-        //     // goChat(res.data.userName, res.data.avatar, res.data.userLanguages, res.data.userID)
-
-        //     // socket.emit("SET USERNAME", { username: all_cookies.userdata.userName, socketID: socket.id }); //maybe undefined
-        //     // socket.emit("reconnection?", { username: all_cookies.userdata.userName, newSocketId: socket.id });
-        //     // socket.on("DENY CONNECTION", (e) => {
-        //     //   clearCookies()
-        //     //   navigate("/")
-        //     // })
-        //     // navigate(urlLists[0]);// navigate 하면 같이 넘어갈 데이터 필요 (로그인 하고 넘겨주는 데이터)
-
-      } else {
-        //     // 쿠키 없거나 유저데이터가 없으면 홈으로
+      if (!currentCookies.userdata) {
+        // if (!urlLists.includes(location.pathname)) {
+        console.log("NO USERDATA. CLEAR COOKIES"); // checked
         clearCookies();
         navigate("/");
       }
     });
+    // if (!urlLists.includes(location.pathname)) clearCookies();
+    // window.location.reload()
+  }, [room]);
 
-    // 유저가 연결될 때 마다 친구리스트 요청
-    // socket.emit("friendsList", {socketID: socket.id})
-    // 쿠키는 있는데 현재 사용중인 유저이면 클리어하고 집으로
-    socket.on("DENY CONNECTION", (e) => {
-      clearCookies();
-      // navigate("/");
-    });
+  useEffect(() => {
 
-    //frontend
+    // ================= FUNCTIONS =============== //
 
 
     // socket.on("DENY CONNECTION", (e) => {
@@ -203,7 +173,10 @@ function App() {
 
 
     socket.on("all user names", (obj) => { //@@@SUNDAY: all user objects
-      // obj => {name: {email:, avatar_id:, languages: [arr]}, {}, {}}
+      // obj => {uniqname: {email:, avatar_id:, languages: [arr]},
+      //  uniqname: {},
+      //  uniqname: {}
+      // }
 
       const loginUsersObject = obj.users;
       // console.log("RECEIVED", loginUsersObject)
@@ -211,6 +184,7 @@ function App() {
       const loginUsersInformation = {};
       const usersOnline = [];
       loginUserNames.map(name => {
+        // console.log("AVATAR ID CHECK", [loginUsersObject[name].avatar_id])
         usersOnline.push({ value: name, label: name, avatar: avatars[loginUsersObject[name].avatar_id] });
         loginUsersInformation[name] = {
           name: name,
@@ -226,7 +200,7 @@ function App() {
       usersOnline.unshift({ value: "all", label: "all", avatar: avatars[0] });
       // const onlineOthers = usersOnline.filter(user => user.value !== nickname)
 
-      // navigate(urlLists[0])
+      // console.log("THIS WILL BE ONLINE OBJ", usersOnline)
       setOnline(usersOnline);
     }); // this works
 
@@ -268,24 +242,25 @@ function App() {
 
         {/* clicked -> used in Menu.jsx
     setClicked -> used in Online.jsx */}
-      {/* {show && <Menu username={nickname} />} */}
-          <Routes>
-            <Route path='/' element={<Login setUser={createSocketIdNameObject} goChat={goChat} />} />
-            <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} />} />
-            <Route path='/login' element={<Login setUser={createSocketIdNameObject} goChat={goChat} />} />
-            <Route path={`/game/${room}`} element={
-              <Game
-                username={nickname}
-                sendMessage={sendMessage}
-                sendPrivateMessage={privateMessage}
-                // sendData={sendData}
-                setUser={createSocketIdNameObject}
-                room={room}
-                // nickname={nickname}
-                online={online}
-                map={maps[room]}
-              />} />
-          </Routes>
+        {/* {show && <Menu username={nickname} />} */}
+        <Routes>
+          <Route path='/' element={<Login setUser={createSocketIdNameObject} />} />
+          <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} setUser={createSocketIdNameObject}/>} />
+          <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
+          {/* <Route path={`/game/plaza`} element={ */}
+          // <Route path={`/game/${room}`} element={
+            <Game
+              username={nickname}
+              sendMessage={sendMessage}
+              sendPrivateMessage={privateMessage}
+              // sendData={sendData}
+              setUser={createSocketIdNameObject}
+              room={room}
+              // nickname={nickname}
+              online={online}
+              map={maps[room]}
+            />} />
+        </Routes>
       </UserListContext.Provider>
     </SocketContext.Provider>
   );
