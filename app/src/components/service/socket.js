@@ -6,8 +6,8 @@ import socketIo from "socket.io-client";
 // export const socket = socketIo(process.env.REACT_APP_BACK_URL);
 // export const socket = socketIo(process.env.REACT_APP_BACK_URL); //io()
 export const socket = socketIo("http://localhost:8000"); //io()
+// export const socket = socketIo("https://lighthousetown.herokuapp.com/"); //io()
 // export const SocketContext = createContext(socket); //G
-
 // socket.on("connect", () => { //GABRIEL
 //   console.log("Service > socket.js: socket server connected.");
 //   socket.send('THIS IS TO CONNECT') //browser console.
