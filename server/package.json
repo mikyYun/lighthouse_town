@@ -10,7 +10,6 @@
     "db:reset": "node bin/resetdb.js",
     "dev:client": "cd ../app && npm start",
     "allrun": "concurrently \"npm run dev\" \"npm run dev:client\""
-
   },
   "keywords": [],
   "author": "",
