@@ -22,8 +22,9 @@ export default function Login(props) {
 
   return (
     <div className="login-page">
-      <h2>WELCOME TO</h2>
-      <h1>LIGHTHOUSE-TOWN</h1>
+      <div className="logo"></div>
+      {/* <h2>WELCOME TO</h2>
+      <h1>LIGHTHOUSE-TOWN</h1> */}
     <form id="form_login" action="/game/plaza" method="GET" runat="server">
       <div>
         <p>EMAIL</p>
