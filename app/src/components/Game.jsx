@@ -13,7 +13,7 @@ export default function Game(props) {
   const location = useLocation();
   const { nickname, socket } = useContext(SocketContext);
   const [msg, setMsg] = useState({});
-  console.log('GAME LOCATION STATE CHECK', location.state);
+  // console.log('GAME LOCATION STATE CHECK', location.state);
 
   // useEffect(() => {
   //   socket.on("connect", () => {
@@ -71,14 +71,14 @@ export default function Game(props) {
   // }
 
   function sendUrl(url){
-    console.log(socket);
+    // console.log(socket);
     socket && socket.emit("lecture", url);
-    console.log("SENT")
+    // console.log("SENT")
   }
 
 useEffect(() => {
     socket.on("new lecture", data => {
-      console.log(data)
+      // console.log(data)
       setLecture(data)
     })
 },[socket])

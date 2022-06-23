@@ -43,7 +43,7 @@ function App() {
   // ================= VARIABLES =============== //
   // console.log("LOCATION", location);
   const nickname = location.state?.[0] || '';
-  console.log("NICKNAME IN APP", user);
+  // console.log("NICKNAME IN APP", user);
   
   
   // set map for navigate
@@ -76,21 +76,21 @@ function App() {
   const currentCookies = cookies.getAll();
 
   useEffect(() => {
-    console.log("USER",user);
+    // console.log("USER",user);
   //[user.avatar] is a number (avatar id)
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD GET A USER FROM THE DATA BASE
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD ALSO SET AN AVATAR WHEN WE GET AN USER OBJECT.
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
     const currentCookies = cookies.getAll();
-    const avatar = currentCookies.userdata.avatar
-    if (currentCookies.userdata) {
-      setUser({ ...user, avatar: avatars[avatar]});
-    }
+    const newAvatar = currentCookies.userdata ? currentCookies.userdata.avatar : user.avatar
+    // if (currentCookies.userdata) {
+      setUser({ ...user, avatar: avatars[newAvatar]});
+    // }
     // console.log('currentCookies', currentCookies)
     // cookies maxAge 10000.
     socket.on("connect", () => {
-      console.log("SOCKET CONNECTED", currentCookies.userdata); // everytime refresh
+      // console.log("SOCKET CONNECTED", currentCookies.userdata); // everytime refresh
       //  if ((mainUrlLists.includes(location.pathname))
 
       if ((location.pathname === "/"
@@ -106,8 +106,8 @@ function App() {
           const data = [username, avatar, userLanguages, id];
           navigate("/game/plaza", { state: data });
         };
-        goChat(currentCookies.userdata.userName, user.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
-        console.log("LOCATION STATE",location.state) // checked
+        goChat(currentCookies.userdata.userName, newAvatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
+        // console.log("LOCATION STATE",location.state) // checked
       }
 
       if ((location.pathname === "/game/js"
@@ -137,7 +137,7 @@ function App() {
       // }
       if (!currentCookies.userdata) {
         // if (!urlLists.includes(location.pathname)) {
-        console.log("NO USERDATA. CLEAR COOKIES"); // checked
+        // console.log("NO USERDATA. CLEAR COOKIES"); // checked
         clearCookies();
         navigate("/");
       }
@@ -204,7 +204,7 @@ function App() {
       // }
 
       const loginUsersObject = obj.users;
-      console.log("RECEIVED", loginUsersObject)
+      // console.log("RECEIVED", loginUsersObject)
       const loginUserNames = Object.keys(loginUsersObject);
       const loginUsersInformation = {};
       const usersOnline = [];

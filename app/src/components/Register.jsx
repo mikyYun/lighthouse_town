@@ -30,7 +30,7 @@ export default function Register(props) {
       setUserLanguages((prev) => prev.filter((el) => el !== id));
     }
   };
-
+  
   const goChat = (username, avatar, userLanguages, id) => {
     const data = [username, avatar, userLanguages, id];
     navigate(`/game/plaza`, { state: data });
@@ -46,7 +46,7 @@ export default function Register(props) {
   const makeLanguageLists = Object.keys(languageLists).map(
     (language, index) => {
       return (
-        <li key={index} className="lang-li">
+        <li key={index}>
           <input
             type="checkbox"
             id={language}
@@ -65,6 +65,7 @@ export default function Register(props) {
       <form id="form_registration" onSubmit={(e) => e.preventDefault()}>
 
       <div className="field">
+          <span> NAME : </span>
           <input
           className="text-input"
             id="register_name"
@@ -86,6 +87,7 @@ export default function Register(props) {
           ></input>
         </div>
         <div className="field">
+          <span>EMAIL : </span> {/* 이안에 뭐가 들어갈껀가요? */}
           <input
             className="text-input"
             id="register_email"
@@ -102,6 +104,7 @@ export default function Register(props) {
 
 
         <div className="field">
+          <span> PASSWORD : </span>
           <input
             // name="password"
             className="text-input"
@@ -120,12 +123,13 @@ export default function Register(props) {
           ></input>
         </div>
         <div className="field">
+          <span> CONFIRM PASSWORD : </span>
           <input
             // name="password_confirmation"
             className="text-input"
             id="register_password_confirmation"
             rows="1"
-            placeholder="PASSWORD CONFIRMATION"
+            placeholder="PASSWORD_CONFIRMATION"
             type="password"
             onChange={(e) => {
               if (e.target.value !== userPassword) {
@@ -145,11 +149,11 @@ export default function Register(props) {
           confirmation password is incorrect
         </span>
         <div className="field">
-          <p> PROGRAMMING LANGUAGES </p>
-          <ul className="lang-choice">{makeLanguageLists}</ul>
+          <span> PROGRAMMING LANGUAGES :</span>
+          <ul>{makeLanguageLists}</ul>
         </div>
         <div className="field">
-          <p className="avatar-label">AVATAR </p>
+          <span>AVATAR :</span>
           <ul>
             <li>
               <div className="div_boyImage1"></div>

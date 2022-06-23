@@ -9,17 +9,16 @@ export default function Profile(props) {
 
   useEffect(() => {
     socket.on("update login users information", ({disconnectedUser}) => {
-        console.log()
         const newProfiles = profiles
         if (newProfiles[disconnectedUser]) {
           delete newProfiles[disconnectedUser]
           setProfiles(newProfiles)
         }
-        console.log("THIS second", profiles)
+        // console.log("THIS second", profiles)
     })
   }, [profiles])
 
-  console.log('Clicked in Profile', clicked)
+  // console.log('Clicked in Profile', clicked)
   // const { nickname } = useCallback(SocketContext)
   // console.log("ONLINE USERS PROFILES", profiles);
   // console.log("ONLINE USERS PROFILES", nickname);
@@ -37,7 +36,7 @@ export default function Profile(props) {
 
 
   const profileNames = Object.keys(profiles);
-  console.log(profileNames)
+  // console.log(profileNames)
   const profileArticles = profileNames.map((username, ind) => {
 
     // when user is not me!
@@ -45,7 +44,7 @@ export default function Profile(props) {
       // console.log(username)
       const title = profiles[username].name;
       const email = profiles[username].email;
-      console.log("TITLE", title, "EMAIL", email)
+      // console.log("TITLE", title, "EMAIL", email)
       const languageLists = profiles[username].languages.map((lang, index) => (
         <li key={index} className="list-languages">{lang}</li>
       ));

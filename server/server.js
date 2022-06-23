@@ -63,8 +63,8 @@ const usersInRooms = {};
 io.on("connection", (socket) => {
   const session = socket.request.session;
   session.save();
-  console.log("MAKE NEW CONNECTION") // checked
-  console.log(currentUsers)
+  console.log("MAKE NEW CONNECTION", socket.id) // checked
+  // console.log(currentUsers)
   // LOGIN USER CONNECTED
   // socketID and username matching triggered when user login
   socket.on("SET USERNAME", (obj) => {
@@ -76,7 +76,7 @@ io.on("connection", (socket) => {
     // console.log("Connected ", username, socketID);
     // after refresh, socketid undefined
     currentUsers[username] = socketID;
-    console.log(currentUsers)
+    // console.log(currentUsers)
     pool.query(
       "SELECT id, username AS name, email, avatar_id FROM users",
       (err, res) => {

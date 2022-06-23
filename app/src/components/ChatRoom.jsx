@@ -29,7 +29,7 @@ function ChatRoom(props) {
   // socketIo.to(roomName).emit("RECEIVE_MESSAGE", responseData);
   const handleReceivePublicMessage = useCallback(
     (pongData) => {
-      console.log("PONG", pongData)
+      // console.log("PONG", pongData)
       const newPublicMessage = makePublicMessage(pongData);
       setMessages((prev) => [...prev, newPublicMessage]);
       moveScrollToReceiveMessage();
@@ -77,7 +77,7 @@ function ChatRoom(props) {
     };
   }, [socket, handleReceivePublicMessage]);
   //@@@@ 이거 왜 public message??? private message 는??
-  console.log("AVATAR CHECK IN CHATROOM", messages)
+  // console.log("AVATAR CHECK IN CHATROOM", messages)
 
   return (
     <div className="d-flex flex-column chat-form">
@@ -87,7 +87,7 @@ function ChatRoom(props) {
       <div className="chat-window card" ref={chatWindow}>
         {messages.map((message, index) => {
           const { nickname, content, time, user } = message;
-          console.log("MESSAGE IN CHATROOM", message)
+          // console.log("MESSAGE IN CHATROOM", message)
           let recipient = "";
           message.recipient
             ? (recipient = message.recipient)

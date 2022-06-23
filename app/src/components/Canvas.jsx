@@ -37,7 +37,7 @@ const Canvas = (props) => {
     react: "/game/react",
     ruby: "/game/ruby",
   };
-  console.log("THIS iS AVATAR", props.avatar)
+  // console.log("THIS iS AVATAR", props.avatar)
   // pathname changes -> add classname
   const path = location.pathname.split('/')[2];
 

@@ -73,7 +73,7 @@ export default function Login(props) {
                   // props.setNickname(res.data.userName)
                 } else {
                   // console.log(res.data)
-                  console.log("no matching user - Login.js")
+                  // console.log("no matching user - Login.js")
                   alert("Invalid information. Please confirm your email and password")
                 }
               });

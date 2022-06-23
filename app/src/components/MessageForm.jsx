@@ -39,7 +39,7 @@ function MessageForm({ nickname, recipient, user }) {
         user,
       });
     }
-    console.log({nickname, content: typingMessage, user})
+    // console.log({nickname, content: typingMessage, user})
     setTypingMessage("");
   }, [socket, nickname, typingMessage, recipient]);
 

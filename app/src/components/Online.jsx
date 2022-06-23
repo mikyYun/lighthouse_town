@@ -34,7 +34,7 @@ export default function Online(props) {
         setShowMenu(showMenu === false ? obj.value : false);
         setClicked(obj);
         setShow(true); // 클릭 뒤 사라지게
-        console.log(obj)
+        // console.log(obj)
       }}>
         {<Avatar url={obj.avatar} alt="avatar" />}
         <p>{obj.value}</p>
