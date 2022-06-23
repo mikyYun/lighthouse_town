@@ -90,22 +90,27 @@ class Characters {
       this.state.x + 10,
       this.state.y + 5
     )
-  }
+  };
+
 
   showChat = (ctx, msg) => {
-    ctx.font = 'bold 20px monospace';
-    ctx.fillRect(
-      this.state.x,
-      this.state - 10,
-      80,
-      20
-    )
-    ctx.fillStyle = "black";
+    // ctx.strokeStyle = "black"
+    // ctx.rect(
+    //   this.state.x - 10,
+    //   this.state.y - 30,
+    //   100,
+    //   20
+    // )
+    // ctx.fill();
+    // ctx.stroke();
+
+    ctx.font = 'bold 20px monospace'
+    ctx.fillStyle = "blue"
     ctx.fillText(
       msg,
       this.state.x,
-      this.state.y - 10
-    )
+      this.state.y - 13
+    );
   }
 };
 
