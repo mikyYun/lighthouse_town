@@ -29,7 +29,7 @@ function App() {
   const [show, setShow] = useState(false);
   const [clicked, setClicked] = useState({});
   const [recipient, setRecipient] = useState({ value: "all", label: "all" });
-  const [user, setUser] = useState({ value: "all", label: "all", avatar: 1 });
+  const [user, setUser] = useState({ value: "all", label: "all"});
   const [profiles, setProfiles] = useState({});
   const [profileShow, setProfileShow] = useState("none");
   const [blockAddFriendAlert, setBlockAddFriendAlert] = useState("add-friend");
@@ -71,13 +71,15 @@ function App() {
   // ================= EFFECTS =============== //
 
   useEffect(() => {
-    setUser({ ...user, avatar: avatars[user.avatar] }); //[user.avatar] is a number (avatar id)
+    console.log("USER",user);
+  //[user.avatar] is a number (avatar id)
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD GET A USER FROM THE DATA BASE
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD ALSO SET AN AVATAR WHEN WE GET AN USER OBJECT.
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
     const currentCookies = cookies.getAll();
-    // console.log('currentCookies', currentCookies)
+    setUser({ ...user, avatar: avatars[currentCookies.userdata.avatar]});
+    console.log('currentCookies', currentCookies)
     // cookies maxAge 3600.
     socket.on("connect", () => {
       console.log("SOCKET CONNECTED", currentCookies); // everytime refresh
@@ -87,7 +89,8 @@ function App() {
         || location.pathname === "/login"
         || location.pathname === "/register"
         || location.pathname === "/game"
-        || location.pathname === "/game/plaza")
+        || location.pathname === "/game/plaza"
+        )
         && currentCookies.userdata) {
         // console.log("cookies exist, permision allowed user") // checked
         createSocketIdNameObject(currentCookies.userdata.userName);
@@ -97,6 +100,12 @@ function App() {
         };
         goChat(currentCookies.userdata.userName, currentCookies.userdata.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
         // console.log("LOCATION STATE",location.state) // checked
+      }
+
+      if ((location.pathname === "/game/js"
+        || location.pathname === "/game/ruby"
+      ) && currentCookies.userdata) {
+        createSocketIdNameObject(currentCookies.userdata.userName);
       }
       // if (subUrlLists.includes(location.pathname)) {
       //   console.log("IN GAME")
@@ -176,7 +185,7 @@ function App() {
       // }
 
       const loginUsersObject = obj.users;
-      // console.log("RECEIVED", loginUsersObject)
+      console.log("RECEIVED", loginUsersObject)
       const loginUserNames = Object.keys(loginUsersObject);
       const loginUsersInformation = {};
       const usersOnline = [];
@@ -219,6 +228,7 @@ function App() {
   };
 
   const createSocketIdNameObject = (username) => {
+    console.log(username, socket.id)
     socket && socket.emit("SET USERNAME", { "socketID": socket.id, "username": username });
     // socket && socket.emit("REGISTERED", val); //if socket exists, then emit
   };

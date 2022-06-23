@@ -13,13 +13,13 @@ export default function Game(props) {
   const location = useLocation();
   const { nickname, socket } = useContext(SocketContext);
   const [msg, setMsg] = useState({});
-  console.log('usernameusernameusernameusername');
+  // console.log('usernameusernameusernameusername');
 
   // useEffect(() => {
   //   socket.on("connect", () => {
   //     socket.emit("SET USERNAME", { "socketID": socket.id, "username": nickname });
   //   })
-    
+
   //   return (() => {
   //     socket.disconnect()
   //   })
