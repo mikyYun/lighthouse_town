@@ -101,7 +101,7 @@ useEffect(() => {
           { show && <div className="lecture">
             <iframe width="560" height="315" src={lecture} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
             <div>
-              <input className="lecture-input" type="text" placeholder="YOUTUDE URL" onKeyUp={e => setUrl(e.target.value)}></input>
+              <input className="lecture-input" type="text" placeholder="YOUTUBE URL" onKeyUp={e => setUrl(e.target.value)}></input>
               <button className="input-btn" onClick={() => {sendUrl(url)}}>UPLOAD</button>
             </div>
           </div>}
