@@ -36,7 +36,6 @@ const sessionMiddleware = session({
   secret: "coding_buddy",
   cookie: { maxAge: 60000 },
 });
-const { getOneUserLanguages } = require("./coding_buddy_db");
 const { Pool } = require("pg");
 const pool = new Pool({
   user: process.env.PGUSER,
@@ -487,10 +486,6 @@ app.get("/", (req, res) => {
 
 // 로그인 정보 리퀘스트 .. 진행중
 app.post("/login", (req, res) => {
-  // client sending
-  // console.log("login request", req.body);
-  // req.body = {userEmail: '', userPassword: ''}
-
   const email = req.body.userEmail;
   const password = req.body.userPassword;
 
@@ -589,80 +584,6 @@ app.post("/register", (req, res) => {
 });
 
 
-// app.post("/register", (req, res) => {
-//   const userName = req.body.userInfo.userName;
-//   const userPassword = req.body.userInfo.userPassword;
-//   const userEmail = req.body.userInfo.userEmail;
-//   const userLanguages = req.body.userInfo.userLanguages;
-//   const userAvatar = req.body.userInfo.userAvatar;
-//   pool.query(
-//     "SELECT * FROM users WHERE username = $1 OR email = $2",
-//     [userName, userEmail],
-//     (err, res_1) => {
-//       if (err) throw err;
-//       // console.log(res_1.rows[0]);
-//       if (res_1.rows[0]) return res.status(201).send("existing data");
-//     }
-//   );
-//   pool.query(
-//     "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *",
-//     [userName, userPassword, userEmail, userAvatar],
-//     (err, result) => {
-//       if (err) throw err;
-//       console.log("new user registered");
-//       pool.query(
-//         "SELECT id FROM users WHERE username = $1",
-//         [userName],
-//         (err, res_2) => {
-//           // console.log("new user's user ID", res_2.rows);
-//           const newUserID = res_2.rows[0].id;
-//           userLanguages.forEach((lang_id) => {
-//             if (lang_id) {
-//               // console.log(lang_id);
-//               pool.query(
-//                 "INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *",
-//                 [newUserID, lang_id],
-//                 (err, res_3) => {
-//                   if (err) throw err;
-//                   console.log("new user's language data added", res_3.rows);
-//                 }
-//               );
-//             }
-//           });
-//         }
-//       );
-//     }
-//   );
-//   res.status(201).send({ userName, userEmail, userLanguages, userAvatar });
-// });
-
-// app.post("/friends", (req, res) => {
-//   const username = req.body.username;
-
-//   // and password.. userName=$1 AND userpassword=$2
-//   return pool.query(
-//     "SELECT id FROM users WHERE username=$1",
-//     [username],
-//     (err, res_1) => {
-//       if (err) throw err;
-//       if (res_1.rows[0]) {
-//         // user exist
-//         const userID = res_1.rows[0].id;
-//         pool.query(
-//           // find followers id
-//           "SELECT added_by FROM favorites WHERE followed=$1",
-//           [userID],
-//           (err, res_2) => {
-//             const userLanguages = [];
-//           }
-//         );
-//       } else {
-//         // no matching user
-//         res.status(201).send(false);
-//       }
-//     }
-//   );
-// });
 
 httpServer.listen(PORT, () => {
   console.log(
