@@ -18,7 +18,7 @@ const path = require("path");
 // 리액트 정적 파일 제공 ?
 app.use(express.static(path.join(__dirname, "../app/build")));
 // 라우트 설정
-app.get("*", (req, res) => {
+app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "../app/build"))
 })
 
