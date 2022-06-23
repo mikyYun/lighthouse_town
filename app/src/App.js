@@ -104,11 +104,11 @@ function App() {
         // console.log("LOCATION STATE",location.state) // checked
       }
 
-      // if ((location.pathname === "/game/js"
-      //   || location.pathname === "/game/ruby"
-      // ) && currentCookies.userdata) {
-      //   createSocketIdNameObject(currentCookies.userdata.userName);
-      // }
+      if ((location.pathname === "/game/js"
+        || location.pathname === "/game/ruby"
+      ) && currentCookies.userdata) {
+        createSocketIdNameObject(currentCookies.userdata.userName);
+      }
       if (!currentCookies.userdata) {
         // if (!urlLists.includes(location.pathname)) {
         console.log("NO USERDATA. CLEAR COOKIES"); // checked
