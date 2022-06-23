@@ -48,6 +48,8 @@ const Canvas = (props) => {
     canvas.height = 640;
     const ctx = canvas.getContext("2d");
 
+    //join to chat room
+    socket.emit('JOIN_ROOM', [props.username,path])
 
     // socket.on("connect", () => {
       // console.log('ITS CONNECTED!!!!!!')
@@ -228,8 +230,9 @@ const Canvas = (props) => {
     const userID = userDataInCookies.id
     // socket.emit("SET USERNAME", { "socketID": socket.id, "username": props.username });
     navigate(roomLists[room], { state: [props.username, props.avatar, userLanguages, userID] });
-    // navigate(0)
-    navigate(0, { state: [props.username, props.avatar, userLanguages, userID] })
+    // navigate(roomLists[room], { state: [props.username, props.avatar, userLanguages, userID] });
+    navigate(0)
+    // navigate(0, { state: [props.username, props.avatar, userLanguages, userID] })
   };
 
   // console.log('BEFORE FUNC', props.room)

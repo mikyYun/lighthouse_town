@@ -62,22 +62,26 @@ function App() {
   // ================= INTANCES =============== //
   
   const cookies = new Cookies();
-  
+  const createSocketIdNameObject = (username) => {
+    socket && socket.emit("SET USERNAME", { "socketID": socket.id, "username": username });
+    // socket && socket.emit("REGISTERED", val); //if socket exists, then emit
+  };
+
   
   // const addFriend = () => { }
   // const sendMessage = () => { }
   // const viewProfile = () => { }
   
   // ================= EFFECTS =============== //
+  const currentCookies = cookies.getAll();
 
   useEffect(() => {
-    setUser({ ...user, avatar: avatars[user.avatar] }); //[user.avatar] is a number (avatar id)
+    setUser({ ...user, avatar: avatars[currentCookies.userdata.avatar] }); //[user.avatar] is a number (avatar id)
     console.log("USER", user)
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD GET A USER FROM THE DATA BASE
     // @@@@@@@@@@@@ SUNDAY : WE SHOULD ALSO SET AN AVATAR WHEN WE GET AN USER OBJECT.
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
-    const currentCookies = cookies.getAll();
     // console.log('currentCookies', currentCookies)
     // cookies maxAge 10000.
     socket.on("connect", () => {
@@ -99,6 +103,23 @@ function App() {
         goChat(currentCookies.userdata.userName, user.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
         // console.log("LOCATION STATE",location.state) // checked
       }
+
+      if ((location.pathname === "/game/js"
+      || location.pathname === "/game/ruby")
+      && currentCookies.userdata) {
+      // console.log("cookies exist, permision allowed user") // checked
+      createSocketIdNameObject(currentCookies.userdata.userName);
+      // const goChat = (username, avatar, userLanguages, id) => {
+        // const data = [username, avatar, userLanguages, id];
+        // navigate("/game/js", { state: data });
+      // };
+      // goChat(currentCookies.userdata.userName, user.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
+      // console.log("LOCATION STATE",location.state) // checked
+    }
+
+
+
+
       // if (subUrlLists.includes(location.pathname)) {
       //   console.log("IN GAME")
       // createSocketIdNameObject(currentCookies.userdata.userName);
@@ -219,10 +240,6 @@ function App() {
     });
   };
 
-  const createSocketIdNameObject = (username) => {
-    socket && socket.emit("SET USERNAME", { "socketID": socket.id, "username": username });
-    // socket && socket.emit("REGISTERED", val); //if socket exists, then emit
-  };
 
   const sendMessage = () => {
     socket && socket.emit("NEW MESSAGE", socket.id);
