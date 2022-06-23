@@ -64,9 +64,11 @@ io.on("connection", (socket) => {
   const session = socket.request.session;
   session.save();
   console.log("MAKE NEW CONNECTION") // checked
+  console.log(currentUsers)
   // LOGIN USER CONNECTED
   // socketID and username matching triggered when user login
   socket.on("SET USERNAME", (obj) => {
+    // console.log("SET USERNAME", obj)
     //Login.jsx 의 setUser(res.data.userName)
     const { username, socketID } = obj;
     console.log("RECIEVED DATA", username, socketID)
@@ -74,11 +76,13 @@ io.on("connection", (socket) => {
     // console.log("Connected ", username, socketID);
     // after refresh, socketid undefined
     currentUsers[username] = socketID;
+    console.log(currentUsers)
     pool.query(
       "SELECT id, username AS name, email, avatar_id FROM users",
       (err, res) => {
         // res.rows => {id: , name: , email: , avatar_id}
         const allUsersObj = res.rows;
+        // console.log(allUsersObj)
         pool.query(
           "SELECT languages.id, user_id, language_name FROM user_language JOIN languages ON language_id=languages.id",
           (err, res_1) => {
@@ -100,10 +104,11 @@ io.on("connection", (socket) => {
                 });
               }
             });
-            // console.log(loginUsersData)
+            console.log('loginUsersData', loginUsersData)
+            console.log('currentUser', currentUsers)
             // currentUsers = {name: socketID}
             const alluserNames = Object.keys(loginUsersData);
-            // console.log("FILTER ONLINE USERS",loginUsersData)
+            console.log("FILTER ONLINE USERS",loginUsersData)
             alluserNames.forEach((name) => {
               io.to(currentUsers[name]) // socketID
                 .emit("all user names", { "users": loginUsersData });// all user names
@@ -253,6 +258,11 @@ io.on("connection", (socket) => {
 
   });
 
+  socket.on("lecture", url => {
+    console.log(url)
+    const address = 'https://www.youtube.com/embed/' + url.split('=')[1]
+    io.emit("new lecture", address);
+  })
 
 
   // ADD FRIEND
@@ -368,14 +378,15 @@ io.on("connection", (socket) => {
     // 이 데이터를 소켓 서버에 던져줌.
     // 소켓서버는 데이터를 받아 콜백함수를 실행.
     // const currentRoom = usersWithRoom[requestData[0]];
-    console.log('userWithRoom', usersWithRoom)
 
-
-    if (Object.keys(usersWithRoom).includes(requestData[0])){
+    // if (Object.keys(usersWithRoom).includes(requestData[0])){ 
       // socket.leave();
       // console.log("LEAVE ", currentRoom);
-    }
-    usersWithRoom[requestData[0]] = requestData[1];
+    // }
+    // usersWithRoom[requestData[0]] = requestData[1];
+//  
+
+
     newRoom = requestData[1];
     socket.join(newRoom); // user를 "room 1" 방에 참가시킴.
     const responseData = {
@@ -383,12 +394,13 @@ io.on("connection", (socket) => {
       type: "JOIN_ROOM",
       time: new Date(),
     };
-    console.log('JOIN TO NEW ROOM', newRoom)
+    // console.log('JOIN TO NEW ROOM', newRoom)
 
       // receive.message는 ChatRoom.jsx 에서 defined
   // --------------- SEND MESSAGE ---------------
   socket.on("SEND_MESSAGE", (requestData) => {
     //emiting back to receive message in line 67
+    console.log('REQUEST', requestData);
     const responseData = {
       ...requestData,
       type: "SEND_MESSAGE",
@@ -397,6 +409,7 @@ io.on("connection", (socket) => {
     console.log("SEND TO NEWROOM", newRoom, requestData)
     // SVGPreserveAspectRatio.to(roomName).emit
     io.to(newRoom).emit("RECEIVE_MESSAGE", responseData);
+
     //responseData = chat message
     //@@@@@@ ChatRoom.jsx line 21
     // console.log(
@@ -429,6 +442,8 @@ io.on("connection", (socket) => {
   });
 
 
+
+
   /* 오브젝트에서 종료되는 유저 삭제 */
   socket.on("disconnect", () => {
     // console.log("Server.js - DISCONNECT", socket.id);
@@ -444,6 +459,8 @@ io.on("connection", (socket) => {
     console.log('DISCONNECT A USER', currentUsers);
     io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기
   });
+
+
 });
 
 //

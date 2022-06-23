@@ -38,3 +38,12 @@ $second-color: #9883c4;
   max-height: 70vh;
 }
 
+.lecture {
+  width: auto;
+  height: auto;
+  background-color: white;
+  top: 0;
+  right: 25%;
+  position: fixed;
+  z-index: 5;
+}
