@@ -587,8 +587,6 @@ app.post("/register", (req, res) => {
     .catch((e) => { console.error(e); });
 });
 
-
-
 httpServer.listen(PORT || 8000, () => {
   console.log(
     `Server Started on port ${PORT}, ${new Date().toLocaleString()} #####`
