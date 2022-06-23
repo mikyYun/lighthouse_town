@@ -61,8 +61,6 @@ const usersInRooms = {};
 
 // OPEN SOCKET
 io.on("connection", (socket) => {
-  
-  const roomName = "room 1";
   const session = socket.request.session;
   session.save();
   console.log("MAKE NEW CONNECTION") // checked
@@ -361,21 +359,55 @@ io.on("connection", (socket) => {
   });
 
   /* ADDED FROM socket/index.js */
+  const usersWithRoom = {};
+  const rooms = ['plaza', 'js', 'ruby'];
+  let newRoom;
 
   socket.on("JOIN_ROOM", (requestData) => {
     // 콜백함수의 파라미터는 클라이언트에서 보내주는 데이터.
     // 이 데이터를 소켓 서버에 던져줌.
     // 소켓서버는 데이터를 받아 콜백함수를 실행.
-    socket.join(roomName); // user를 "room 1" 방에 참가시킴.
+    // const currentRoom = usersWithRoom[requestData[0]];
+    console.log('userWithRoom', usersWithRoom)
+
+
+    if (Object.keys(usersWithRoom).includes(requestData[0])){
+      // socket.leave();
+      console.log("LEAVE ", currentRoom);
+    }
+    usersWithRoom[requestData[0]] = requestData[1];
+    newRoom = requestData[1];
+    socket.join(newRoom); // user를 "room 1" 방에 참가시킴.
     const responseData = {
       ...requestData,
       type: "JOIN_ROOM",
       time: new Date(),
     };
+    console.log('JOIN TO NEW ROOM', newRoom)
+
+      // receive.message는 ChatRoom.jsx 에서 defined
+  // --------------- SEND MESSAGE ---------------
+  socket.on("SEND_MESSAGE", (requestData) => {
+    //emiting back to receive message in line 67
+    const responseData = {
+      ...requestData,
+      type: "SEND_MESSAGE",
+      time: new Date(),
+    };
+    console.log("SEND TO NEWROOM", newRoom)
+    // SVGPreserveAspectRatio.to(roomName).emit
+    io.to(newRoom).emit("RECEIVE_MESSAGE", responseData);
+    //responseData = chat message
+    //@@@@@@ ChatRoom.jsx line 21
+    // console.log(
+    //   `"SEND_MESSAGE" is fired with data: ${JSON.stringify(responseData)}`
+    // );
+    io.emit("dataToCanvas", responseData);
+  });
 
 
     // "room 1"에는 이벤트타입과 서버에서 받은 시각을 덧붙여 데이터를 그대로 전송.
-    io.to(roomName).emit("RECEIVE_MESSAGE", responseData);
+    io.to(newRoom).emit("RECEIVE_MESSAGE", responseData);
     // 클라이언트에 이벤트를 전달.
     // 클라이언트에서는 RECEIVE_MESSAGE 이벤트 리스너를 가지고 있어서 그쪽 콜백 함수가 또 실행됌. 서버구현 마치고 클라이언트 구현은 나중에.
     console.log(
@@ -396,24 +428,6 @@ io.on("connection", (socket) => {
     );
   });
 
-  // receive.message는 ChatRoom.jsx 에서 defined
-  // --------------- SEND MESSAGE ---------------
-  socket.on("SEND_MESSAGE", (requestData) => {
-    //emiting back to receive message in line 67
-    const responseData = {
-      ...requestData,
-      type: "SEND_MESSAGE",
-      time: new Date(),
-    };
-    // SVGPreserveAspectRatio.to(roomName).emit
-    io.emit("RECEIVE_MESSAGE", responseData);
-    //responseData = chat message
-    //@@@@@@ ChatRoom.jsx line 21
-    // console.log(
-    //   `"SEND_MESSAGE" is fired with data: ${JSON.stringify(responseData)}`
-    // );
-    io.emit("dataToCanvas", responseData);
-  });
 
   /* 오브젝트에서 종료되는 유저 삭제 */
   socket.on("disconnect", () => {

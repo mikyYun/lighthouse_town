@@ -48,6 +48,8 @@ const Canvas = (props) => {
     canvas.height = 640;
     const ctx = canvas.getContext("2d");
 
+    //join to chat room
+    socket.emit('JOIN_ROOM', [props.username,path])
 
     // socket.on("connect", () => {
       // console.log('ITS CONNECTED!!!!!!')
