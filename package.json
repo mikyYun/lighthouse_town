@@ -5,7 +5,6 @@
   },
   "scripts": {
     "start": "node server",
-    "concurrently \"npm run dev\" \"npm run dev:client\"",
     "build": "cd app/ && npm install cd ../server/ && npm install && npm run start cd ../app/ && npm start"
   },
   "dependencies": {
