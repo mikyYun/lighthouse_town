@@ -12,9 +12,9 @@ const app = express();
 
 const path = require("path");
 // 미들웨어 함수를 특정경로에 등록..?
-app.use('/api/data', function (req, res) {
-  res.json({ greeting: 'Hello World' });
-});
+// app.use('/api/data', function (req, res) {
+//   res.json({ greeting: 'Hello World' });
+// });
 // 리액트 정적 파일 제공 ?
 app.use(express.static(path.join(__dirname, "../app/build")));
 // 라우트 설정
