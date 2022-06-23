@@ -78,6 +78,7 @@ function App() {
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
     const currentCookies = cookies.getAll();
+
     setUser({ ...user, avatar: avatars[currentCookies.userdata.avatar]});
     console.log('currentCookies', currentCookies)
     // cookies maxAge 3600.
