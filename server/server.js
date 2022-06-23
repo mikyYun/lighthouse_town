@@ -488,7 +488,7 @@ app.get("/", (req, res) => {
 app.post("/login", (req, res) => {
   const email = req.body.userEmail;
   const password = req.body.userPassword;
-
+  console.log("res.row", res)
   // and password.. userName=$1 AND userpassword=$2
   return pool.query(
     "SELECT * FROM users WHERE email=$1 AND password=$2",
