@@ -59,7 +59,7 @@ export default function Login(props) {
           type="submit"
           onClick={(e) => {
             const loginInfo = { userEmail, userPassword }
-            // cookies.set("username", userEmail)
+            cookies.set("LOGIN REQUEST", userEmail)
             axios
               .post("/login", loginInfo)
               .then((res) => {
