@@ -35,7 +35,24 @@ $second-color: #9883c4;
 .game-canvas {
   width: 100%;
   max-width: 80vw;
-  max-height: 70vh;
+  height: auto;
+}
+
+.lecture-btn {
+  position: fixed;
+  z-index: 2;
+  width: 130px;
+  height: 50px;
+  margin-top: 40px;
+  margin-left: 50px;
+  padding: auto;
+  font-size: 1.3rem;
+  background: $main-color;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 5px 5px grey;
+
+
 }
 
 .lecture {
@@ -46,4 +63,29 @@ $second-color: #9883c4;
   right: 25%;
   position: fixed;
   z-index: 5;
-}
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  }
+
+  .lecture-input {
+    width: 80%;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: solid 2px #d0cece;
+  }
+
+  .input-btn {
+    width: 20%;
+    border: none;
+    background-color: $main-color;
+    padding: 3px;
+  }
+
+  @media (max-width: 1000px){
+    .lecture-btn{
+      width: 90px;
+      height: 30px;
+      font-size: 1rem;
+    }
+  }

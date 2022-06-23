@@ -13,7 +13,9 @@ export default function Game(props) {
   const location = useLocation();
   const { nickname, socket } = useContext(SocketContext);
   const [msg, setMsg] = useState({});
-  // console.log('GAME LOCATION STATE CHECK', location.state);
+
+  console.log('location', location);
+
 
   // useEffect(() => {
   //   socket.on("connect", () => {
@@ -55,7 +57,7 @@ export default function Game(props) {
   // if (location.state !== null) {
 
   const [show, setShow] = useState(false);
-  const [lecture, setLecture] = useState("https://www.youtube.com/embed/uab4P-0Gpzk" );
+  const [lecture, setLecture] = useState("https://www.youtube.com/embed/FSs_JYwnAdI" );
   const [url, setUrl] = useState("");
   const showLecture = () => {
     setShow(!show);
@@ -94,11 +96,14 @@ useEffect(() => {
       <div className="main-container">
         {/* {(location.state === null) && navigate("/")} */}
         {/* <Canvas username={location.state[0] || 'guest'} avatar={location.state[1]} sendData={props.sendData} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} /> */}
-        <div className="lecture-btn">
-          <button onClick={showLecture}>LECTURE</button>
+        <div className="lecture-container">
+          { location.pathname === '/game/js' && <button className="lecture-btn" onClick={showLecture}>LECTURE</button>}
           { show && <div className="lecture">
             <iframe width="560" height="315" src={lecture} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
-            <input type="text" onKeyUp={e => setUrl(e.target.value)}></input><button onClick={() => {sendUrl(url)}}>UPLOAD</button>
+            <div>
+              <input className="lecture-input" type="text" placeholder="YOUTUDE URL" onKeyUp={e => setUrl(e.target.value)}></input>
+              <button className="input-btn" onClick={() => {sendUrl(url)}}>UPLOAD</button>
+            </div>
           </div>}
         </div>
         <Canvas
