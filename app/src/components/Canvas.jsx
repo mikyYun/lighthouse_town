@@ -53,7 +53,7 @@ const Canvas = (props) => {
       // console.log('ITS CONNECTED!!!!!!')
       sendData()
       // window.location.reload()
-     
+
       // socket.emit("sendData", userCharacters[props.username].state);
       socket.on("sendData", (data) => {
         // console.log("data", data);
@@ -208,6 +208,7 @@ const Canvas = (props) => {
       const msgToShow = msg[userCharacters[userChar].state.username];
       // console.log(msgToShow);
       if (msgToShow !== undefined) {
+        // userCharacters[userChar].showBubble(ctx);
         userCharacters[userChar].showChat(ctx, msgToShow);
       }
     }

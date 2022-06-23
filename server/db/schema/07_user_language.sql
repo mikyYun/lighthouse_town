@@ -50,4 +50,6 @@ INSERT INTO user_language (user_id, language_id)
   VALUES (7, 2);
 INSERT INTO user_language (user_id, language_id)
   VALUES (8, 1);
+INSERT INTO user_language (user_id, language_id)
+  VALUES (9, 3);
 

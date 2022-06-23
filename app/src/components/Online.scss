@@ -80,23 +80,40 @@ $side-bar-color: #e2ecc2f5;
 
 .div_profile {
   padding-top: 20px;
-    background-color: #bada55;
+    background-color: $main-color;
     /* border-radius: 10px; */
     margin: 10px auto 0 auto;
     width: 100%;
+    height: auto;
+
+    .profile {
+      padding-bottom: 20px;
+      width: 90%;
+      margin: 0 auto;
+    }
 
     .profile-email {
       font-size: 1rem;
+      margin-bottom: 13px;
+      border-bottom: $side-bar-color 3px solid;
+      padding-bottom: 10px;
     }
     .profile-language {
-      font-size: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 30px;
 
       .list-languages {
         align-items: center;
         font-size: 1rem;
         padding: 0.2em;
+        height: 1.3rem;
       }
+    }
 
+    p {
+      margin-bottom: 0;
     }
 }
+
 

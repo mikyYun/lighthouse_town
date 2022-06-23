@@ -23,6 +23,7 @@ const Menu = (props) => {
   }
 
   return (
+    <div>
       <div className="menu">
         <div className="menu-action" onClick={(e) => {
           // console.log(clicked.value) // clicked name
@@ -47,9 +48,10 @@ const Menu = (props) => {
           console.log(showProfile)
           // props.close();
         }}>View Profile
-              { showProfile === clicked.value ? <Profile close={props.close}/> : null}
           </div>
       </div>
+        { showProfile === clicked.value ? <Profile close={props.close}/> : null}
+  </div>
   );
 };
 
