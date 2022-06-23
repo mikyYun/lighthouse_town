@@ -77,7 +77,7 @@ class Characters {
 
   showName = (ctx) => {
     // name over head
-    ctx.font = 'bold 20px monospace';
+    ctx.font = 'bold 25px monospace';
     ctx.fillRect(
       this.state.x,
       this.state - 10,
@@ -104,7 +104,7 @@ class Characters {
     // ctx.fill();
     // ctx.stroke();
 
-    ctx.font = 'bold 20px monospace'
+    ctx.font = 'bold 30px monospace'
     ctx.fillStyle = "blue"
     ctx.fillText(
       msg,

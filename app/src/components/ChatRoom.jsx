@@ -94,7 +94,7 @@ function ChatRoom(props) {
             ? (recipient = message.recipient)
             : (recipient = "all");
           return (
-            <div key={index} className="d-flex flex-row">
+            <div key={index} className="d-flex flex-row chat-content">
               {nickname && (
                 <div className="message-nickname">
                   <Avatar url={message.user.avatar} />
