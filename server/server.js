@@ -7,7 +7,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const PORT = process.env.PORT || 80;
 const express = require("express");
-const session = require("express-session");
+const session = require("cookie-session");
 const app = express();
 
 const path = require("path");
