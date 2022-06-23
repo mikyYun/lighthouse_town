@@ -4,7 +4,7 @@
   },
   "scripts": {
     "start": "node server",
-    "build": "cd app/ && npm install && npm run build && cd ../server/ && npm install && npm run start"
+    "build": "cd app/ && npm install && npm run build && cd ../server/ && npm install && npm run all"
   },
   "dependencies": {
     "@socket.io/postgres-adapter": "^0.3.0",
