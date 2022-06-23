@@ -13,6 +13,9 @@ export default function Game(props) {
   const location = useLocation();
   const { nickname, socket } = useContext(SocketContext);
   const [msg, setMsg] = useState({});
+
+
+
   // console.log('usernameusernameusernameusername');
 
   // useEffect(() => {
@@ -54,6 +57,39 @@ export default function Game(props) {
 
   // if (location.state !== null) {
 
+  const [show, setShow] = useState(false);
+  const [lecture, setLecture] = useState("https://www.youtube.com/embed/uab4P-0Gpzk" );
+  const [url, setUrl] = useState("");
+  const showLecture = () => {
+    setShow(!show);
+  }
+
+
+//   https://youtu.be/9wH52VWqsT4
+// avatar moon to all: https://www.youtube.com/embed/9wH52VWqsT4
+  // const changeLecture = () => {
+  //   const address = url.split('=')[1]
+  //   console.log(address);
+  //   setLecture('https://www.youtube.com/embed/' + address)
+  // }
+
+  function sendUrl(url){
+    console.log(socket);
+    socket && socket.emit("lecture", url);
+    console.log("SENT")
+  }
+
+useEffect(() => {
+    socket.on("new lecture", data => {
+      console.log(data)
+      setLecture(data)
+    })
+},[socket])
+  // const updateLecture = () => {
+  //   socket.emit("lecture", url);
+  // }
+
+
   return (
 
     <div className='main'>
@@ -61,6 +97,13 @@ export default function Game(props) {
       <div className="main-container">
         {/* {(location.state === null) && navigate("/")} */}
         {/* <Canvas username={location.state[0] || 'guest'} avatar={location.state[1]} sendData={props.sendData} sendMessage={sendMessage} sendPrivateMessage={sendPrivateMessage} room={props.room} /> */}
+        <div className="lecture-btn">
+          <button onClick={showLecture}>LECTURE</button>
+          { show && <div className="lecture">
+            <iframe width="560" height="315" src={lecture} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+            <input type="text" onKeyUp={e => setUrl(e.target.value)}></input><button onClick={() => {sendUrl(url)}}>UPLOAD</button>
+          </div>}
+        </div>
         <Canvas
           username={nickname}
           // avatar={location.state?.[1]}

@@ -29,7 +29,7 @@ function App() {
   const [show, setShow] = useState(false);
   const [clicked, setClicked] = useState({});
   const [recipient, setRecipient] = useState({ value: "all", label: "all" });
-  const [user, setUser] = useState({ value: "all", label: "all", avatar: "1"});
+  const [user, setUser] = useState({ value: "all", label: "all", avatars: 1});
   const [profiles, setProfiles] = useState({});
   const [profileShow, setProfileShow] = useState("none");
   const [blockAddFriendAlert, setBlockAddFriendAlert] = useState("add-friend");
@@ -78,10 +78,11 @@ function App() {
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
     const currentCookies = cookies.getAll();
+
     if (currentCookies.userdata) {
       setUser({ ...user, avatar: avatars[currentCookies.userdata.avatar]});
     }
-    console.log('currentCookies', currentCookies)
+    // console.log('currentCookies', currentCookies)
     // cookies maxAge 3600.
     socket.on("connect", () => {
       console.log("SOCKET CONNECTED", currentCookies); // everytime refresh
@@ -109,6 +110,15 @@ function App() {
       ) && currentCookies.userdata) {
         createSocketIdNameObject(currentCookies.userdata.userName);
       }
+      // if (subUrlLists.includes(location.pathname)) {
+      //   console.log("IN GAME")
+      // createSocketIdNameObject(currentCookies.userdata.userName);
+      // const goChat = (username, avatar, userLanguages, id) => {
+      //   // const data = [username, avatar, userLanguages, id];
+      //   // navigate('/game/plaza', { state: data });
+      // };
+      // goChat(currentCookies.userdata.userName, currentCookies.userdata.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
+      // }
       if (!currentCookies.userdata) {
         // if (!urlLists.includes(location.pathname)) {
         console.log("NO USERDATA. CLEAR COOKIES"); // checked

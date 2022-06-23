@@ -79,21 +79,6 @@ function ChatRoom(props) {
   }, [socket, handleReceivePublicMessage]);
   //@@@@ 이거 왜 public message??? private message 는??
 
-  // content: "ddd"
-  // nickname: "moon"
-  // user: {value: 'all', label: 'all'}
-
-//   {
-//     "nickname": "moon",
-//     "content": "ssss",
-//     "user": {
-//         "value": "all",
-//         "label": "all",
-//         "avatar": "/images/boy1-face.png"
-//     }
-// }
-
-
 
   return (
     <div className="d-flex flex-column chat-form">

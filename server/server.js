@@ -258,6 +258,11 @@ io.on("connection", (socket) => {
 
   });
 
+  socket.on("lecture", url => {
+    console.log(url)
+    const address = 'https://www.youtube.com/embed/' + url.split('=')[1]
+    io.emit("new lecture", address);
+  })
 
 
   // ADD FRIEND
@@ -429,6 +434,8 @@ io.on("connection", (socket) => {
   });
 
 
+
+
   /* 오브젝트에서 종료되는 유저 삭제 */
   socket.on("disconnect", () => {
     // console.log("Server.js - DISCONNECT", socket.id);
@@ -444,6 +451,8 @@ io.on("connection", (socket) => {
     console.log('DISCONNECT A USER', currentUsers);
     io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기
   });
+
+
 });
 
 //
