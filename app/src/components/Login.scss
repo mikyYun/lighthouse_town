@@ -16,10 +16,10 @@ body{
 
   .logo {
     background: url('./game_img/logo.png') no-repeat;
-    background-size: cover;
-    width: 600px;
-    height: 230px;
-    margin-bottom: 40px;
+    background-size: contain;
+    width: 400px;
+    height: 170px;
+    /* margin-bottom: 40px; */
     image-rendering: pixelated;
 
   }
