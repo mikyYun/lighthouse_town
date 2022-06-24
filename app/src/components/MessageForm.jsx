@@ -55,14 +55,15 @@ function MessageForm({ nickname, recipient, user }) {
   // })
 
   return (
-    <form className="card">
-      <div className="align-items-center">
+    <form >
+      <div >
         <textarea
           ref={focusTextArea}
           readOnly={textareaDisable}
           className="form-control"
           maxLength={400}
           value={typingMessage}
+          placeholder="type your message here "
           onChange={handleChangeTypingMessage}
           onMouseDown={() => {
             setTextareaDisable(false)
@@ -71,7 +72,7 @@ function MessageForm({ nickname, recipient, user }) {
         />
         <button
           type="button"
-          className="btn btn-primary send-btn"
+          className="send-btn"
           onClick={handleSendMesssage}
         >
           SEND

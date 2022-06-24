@@ -1,7 +1,6 @@
 
 //@@@@@@@socket ID SPELLING FIX!!
 
-// server running with nodemon : npm run dev
 require("dotenv").config();
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -17,25 +16,6 @@ const io = new Server(httpServer, {
     credentials: true,
   },
 });
-
-// ================ HELPER FUNCS ================= //
-const getUserLang = (userID) => {
-  return pool.query(
-    `SELECT user_id, languages.language_name 
-    from user_language
-
-    JOIN languages 
-    ON languages.id = user_language.language_id
-
-    WHERE user_id = $1`,
-    [userID]
-  )
-    .then((result) => {
-      return result.rows.map((row) => row.language_name) //return array of languages
-    }
-    )
-}
-
 
 const { createAdapter } = require("@socket.io/postgres-adapter"); //app.get, 안써도 socket.io 안에서 직접 postgres 연결이 가능. root path 따로 설정 불필요.
 const sessionMiddleware = session({
@@ -78,101 +58,195 @@ let currentUsers = {}; // => {username : socket.id}
 const usersInRooms = {};
 
 
-
-io.on("connection", (socket) => { //여기서 이미 socket id generation
-  console.log('CLIENT CONNECTED', socket.id)
-  const roomName = "plaza";
+// OPEN SOCKET
+io.on("connection", (socket) => {
   const session = socket.request.session;
   session.save();
+  console.log("MAKE NEW CONNECTION") // checked
+  console.log(currentUsers)
+  // LOGIN USER CONNECTED
+  // socketID and username matching triggered when user login
+  socket.on("SET USERNAME", (obj) => {
+    // console.log("SET USERNAME", obj)
+    //Login.jsx 의 setUser(res.data.userName)
+    const { username, socketID } = obj;
+    console.log("RECIEVED DATA", username, socketID)
+    // only work after login not refresh
+    // console.log("Connected ", username, socketID);
+    // after refresh, socketid undefined
+    currentUsers[username] = socketID;
+    console.log(currentUsers)
+    pool.query(
+      "SELECT id, username AS name, email, avatar_id FROM users",
+      (err, res) => {
+        // res.rows => {id: , name: , email: , avatar_id}
+        const allUsersObj = res.rows;
+        // console.log(allUsersObj)
+        pool.query(
+          "SELECT languages.id, user_id, language_name FROM user_language JOIN languages ON language_id=languages.id",
+          (err, res_1) => {
+            // res.rows_1 => {id(languageID): , user_id: , language_name: }
+            const userIDAndLang = res_1.rows;
+            const loginUsersData = {};
+            allUsersObj.map(user => {
+              if (currentUsers[user.name]) {
+                loginUsersData[user.name] = {
+                  // socketID: socketID,
+                  email: user.email,
+                  avatar_id: user.avatar_id,
+                  languages: []
+                };
+                userIDAndLang.map(lang => {
+                  if (user.id === lang.user_id) {
+                    loginUsersData[user.name].languages.push(lang.language_name);
+                  }
+                });
+              }
+            });
+            console.log('loginUsersData', loginUsersData)
+            console.log('currentUser', currentUsers)
+            // currentUsers = {name: socketID}
+            const alluserNames = Object.keys(loginUsersData);
+            console.log("FILTER ONLINE USERS",loginUsersData)
+            alluserNames.forEach((name) => {
+              io.to(currentUsers[name]) // socketID
+                .emit("all user names", { "users": loginUsersData });// all user names
+            }
+            );
+          }
+        );
 
-  //waiting for the client to send the request
-  socket.on("friendsList", ({ newSocketID, user, userID }) => {
+
+        // const alluserNames = Object.keys(currentUsers);
+        // alluserNames.forEach((name) => {
+        //   io.to(currentUsers[name])
+        //     .emit("all user names", { "users": alluserNames });
+      }); // {"users": [name1, name2] }
+    // }
+  });
+
+
+
+  socket.on("friendsList", (id) => {
+    // id.socketID = new user's socketid
+    const newSocketID = id.socketID;
     // check this id is in currentUsers Object
     const alluserNames = Object.keys(currentUsers);
-    const currentUser = alluserNames.find((username) => currentUsers[username] === newSocketID)
+    let existUsername;
+    alluserNames.map(username => {
+      if (currentUsers[username] === newSocketID) {
+        // console.log(username)
+        existUsername = username;
+        return;
+      } else {
+        return false; // !!@@return false 아님?
+      }
+    });
+    if (existUsername !== false) { // @@아니면 이렇게 쓰는 건? if (existUsername)
+      pool.query("SELECT * FROM users", // {id: , username: , password: , email: , avatar: , lan_id: }
+        // [existUsername],
+        (err, res_1) => {
+          if (err) throw err;
+          // console.log(existUsername) // 내이름
+          if (res_1.rows[0]) { // 테이블이 존재하면 // 불필요한듯
+            const allusersTable = res_1.rows; // 전체 유저테이블
+            let userID; // 새로 들어온 유저의 아이디 찾기
+            allusersTable.map(obj => {
+              if (obj.username === existUsername)
+                userID = obj.id; // @@obj는 뭐임? => table에서 one row
+            });
+            // user exist
+            // const userID = res_1.rows[0].id;
+            // userID = 2
+            pool.query(
+              // find added(followers) id
+              "SELECT added FROM favorites WHERE added_by=$1",
+              // {id: , following: , followed: }
+              [userID],
+              (err, res_2) => {
+                // console.log(userID)
+                // console.log("favoriteTables", res_2.rows)
+                const usernames = [];
+                const followedIds = []; // userid[1, 2, 3....]
+                const followedInfo = {};
+                res_2.rows.map(obj => {
+                  followedIds.push(obj.added);
+                });
+                // console.log("!!",Object.keys(allusersTable))
+                allusersTable.map(row => {
+                  if (followedIds.includes(row.id)) {
+                    // console.log(row)
+                    usernames.push(row.username);
+                    followedInfo[row.username] = {};
+                    followedInfo[row.username]["languages"] = [];
+                    // followedInfo[row.username]["email"] = row.email
+                  }
+                });
+                    // console.log("INFOMATION", usernames)
+                    // console.log(usernames);
+                pool.query(
+                  "SELECT * FROM user_language JOIN languages ON language_id=languages.id", (err, res_3) => {
+                    res_3.rows.map(userLanguageID => { // @@ userLanguageName 으로 바꾸고 밑에서 =>// obj.language_name 으로 하기
+                      // console.log("THIS", userLanguageID);
+                      // console.log(allusersTable);
+                      const nameMatching = allusersTable.find(obj => obj.id === userLanguageID.user_id).username;
+                      if (followedIds.includes(userLanguageID.user_id)) {
+                        followedInfo[nameMatching].languages.push(userLanguageID.language_name);
+                        // console.log(userLanguageID.language_id)
+                      }
+                      // console.log("INFO", userLanguageID)
+                    });
+                    socket.emit("friendsListBack", followedInfo);
+                  }
+                );
+              }
+            );
+          }
+        });
+    }
+  });
 
-    //@@upgrade later @mike 
-    if (!currentUser) return console.log('user not found', 'allusernames', alluserNames, 'newSocketID', newSocketID)
-
-    pool.query(`
-      SELECT users.id, users.username, added_users.id AS friend_id, added_users.username AS friend_name
-
-      FROM users
-
-      JOIN favorites
-      ON users.id = favorites.added_by
-
-      JOIN users added_users
-      ON added_users.id = favorites.added
-
-      WHERE added_by = $1;
-  `, [userID],
-      (err, result) => {
-        if (result.rows[0]) {
-          // if you have friends
-          const allusersTable = result.rows; // [ {friend1}, {friend2} ]
-          const promises = allusersTable.map(
-            async (row) => { //add 'ASYNC' in front of the arrow function.
-              //ASYNC FUNCTION, YOU ARE RETURNING A PROMISE.
-              row.languages = await getUserLang(row.friend_id) //to make it synchronous // returning one promise
-              // we call promise function for all friends. 
-              // we need to ensure to resolve for ALL friends.
-            }
-          )
-          Promise.all(promises) //wait for all promises to resolve
-            .then((res) => {
-              console.log("allusersTable", allusersTable)
-              socket.emit("friendsListBack", allusersTable);
-            })
-        }
-      });
+  // socket.on("reconnection?", (e) => {
+  //   console.log("RECONENCTION REQUEST", e);
+  //   // let reconnection = true
+  //   // console.log("THIS IS RECONNECTION", e);
+  //   // e.username, e.newSocketId
+  //   // console.log("before",currentUsers)
+  //   if (currentUsers[e.username]) {
+  //     // 현재 currentUsers 에 같은 유저네임이 존재하면 => 사용중인 유저네임 && disconnect 되지 않았다면
+  //     socket.emit("DENY CONNECTION", false);
+  //     // callback("return")
+  //   } else {
+  //     currentUsers[e.username] = e.newSocketId; // update
+  //     const alluserNames = Object.keys(currentUsers); // get keys arr
+  //     // alluserNames.forEach((name) => {
+  //     // if (currentUsers[name] === socket.id)
+  //     // delete currentUsers[name];
+  //     // }); // {"users": [name1, name2] }
+  //     // 현재유저 이름은 뺌
+  //     // alluserNames.filter(nm => nm !== e.username)
+  //     // console.log("CURRENT USERS", alluserNames);
+  //     socket.emit("allƒ user names", { "users": alluserNames });
+  //   }
+  // });
 
 
-    // socket.on("reconnection?", (e) => {
-    //   console.log("RECONENCTION REQUEST", e);
-    //   // let reconnection = true
-    //   // console.log("THIS IS RECONNECTION", e);
-    //   // e.username, e.newSocketId
-    //   // console.log("before",currentUsers)
-    //   if (currentUsers[e.username]) {
-    //     // 현재 currentUsers 에 같은 유저네임이 존재하면 => 사용중인 유저네임 && disconnect 되지 않았다면
-    //     socket.emit("DENY CONNECTION", false);
-    //     // callback("return")
-    //   } else {
-    //     currentUsers[e.username] = e.newSocketId; // update
-    //     const alluserNames = Object.keys(currentUsers); // get keys arr
-    //     // alluserNames.forEach((name) => {
-    //     // if (currentUsers[name] === socket.id)
-    //     // delete currentUsers[name];
-    //     // }); // {"users": [name1, name2] }
-    //     // 현재유저 이름은 뺌
-    //     // alluserNames.filter(nm => nm !== e.username)
-    //     // console.log("CURRENT USERS", alluserNames);
-    //     socket.emit("all user names", { "users": alluserNames });
-    //   }
-    // });
+  // FOR USER MOVEMENT (Canvas)
+  socket.on('sendData', data => {
 
-    // use object
-    // socket.emit("init", {data: 'hello world'})
-
-
-
-  })
-
-  socket.on('sendData', data => { //이 data는 어디서옴?
-
-    const { userState, room, removeFrom } = data; // 이 room은 어디서 어떻게 define 돼있음?
+    const { userState, room, removeFrom } = data;
 
     // console.log('got data', data);
     if (!usersInRooms[room]) {
-      usersInRooms[room] = {}
+      usersInRooms[room] = {};
     }
+    // console.log('BEFORE LOOP', usersInRooms);
     //when usersInRooms have some properties
     for (const rooms in usersInRooms) {
       // console.log(usersInRooms[rooms])
-      for (const user in usersInRooms[rooms]) { //이건 왜 room아니고 rooms 임?
+      for (const user in usersInRooms[rooms]) {
         if (room !== rooms && userState.username === user) {
-          delete usersInRooms[rooms][userState.username] //뭐하는 코드?
+          delete usersInRooms[rooms][userState.username];
         }
       }
     }
@@ -183,63 +257,12 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
 
   });
 
+  socket.on("lecture", url => {
+    console.log(url)
+    const address = 'https://www.youtube.com/embed/' + url.split('=')[1]
+    io.emit("new lecture", address);
+  })
 
-
-  // socketID and username matching triggered when user login
-
-  //@@THIS IS NOT FIRED
-  socket.on("SET USERNAME", (obj) => {
-    //Login.jsx 의 setUser(res.data.userName)
-    console.log('obj', obj)
-    const { username, socketID } = obj;
-    console.log("RECONNECTION", username, socketID)
-
-    currentUsers[username] = socketID;
-    console.log('currentusers in server.js', currentUsers)
-    pool.query(
-      "SELECT id, username AS name, email, avatar_id FROM users",
-      (err, res) => {
-        // res.rows => {id: , name: , email: , avatar_id}
-        const allUsersObj = res.rows;
-        pool.query(
-          "SELECT languages.id, user_id, language_name FROM user_language JOIN languages ON language_id=languages.id",
-          (err, res_1) => {
-            // res.rows_1 => {id(languageID): , user_id: , language_name: }
-            const userIDAndLang = res_1.rows;
-            const loginUsersData = {}
-            allUsersObj.map(user => {
-              if (currentUsers[user.name]) {
-                loginUsersData[user.name] = {
-                  // socketID: socketID,
-                  email: user.email,
-                  avatar_id: user.avatar_id,
-                  languages: []
-                }
-                userIDAndLang.map(lang => {
-                  if (user.id === lang.user_id) {
-                    loginUsersData[user.name].languages.push(lang.language_name)
-                  }
-                })
-              }
-            });
-            // console.log(loginUsersData)
-            const alluserNames = Object.keys(loginUsersData);
-            alluserNames.forEach((name) => {
-              io.to(currentUsers[name])
-                .emit("all user names", { "users": loginUsersData });// all user names
-            }
-            );
-          }
-        );
-
-
-        // const alluserNames = Object.keys(currentUsers); 
-        // alluserNames.forEach((name) => {
-        //   io.to(currentUsers[name])
-        //     .emit("all user names", { "users": alluserNames });
-      }); // {"users": [name1, name2] }
-    // }
-  });
 
   // ADD FRIEND
   // socket.on("add friend", {username, addFreindName})
@@ -248,9 +271,11 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
     pool.query(
       "SELECT id, username FROM users WHERE username=$1", [addFriendName],
       (err, res) => {
+        console.log('res', res)
         // res.rows => users table [{id: , username: ,....}]
         const targetID = res.rows[0].id;
         // console.log("target users id", targetID);
+
         pool.query(
           "INSERT INTO favorites (added_by, added) VALUES ($2, $1)", [userID, targetID]
         );
@@ -268,6 +293,7 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
             newFriendLanguageObj[addFriendName] = { languages };
             // console.log("WHAT", addFriendName, {languages});
             // socket.emit("updateFriendsList", newFriendLanguageObj);
+            console.log("NEW FRIEND ADDED")
             socket.emit("updateFriendsList", { newFriendName: addFriendName, languages: languages });
           });
 
@@ -342,20 +368,54 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
   });
 
   /* ADDED FROM socket/index.js */
+  const usersWithRoom = {};
+  const rooms = ['plaza', 'js', 'ruby'];
+  let newRoom;
 
   socket.on("JOIN_ROOM", (requestData) => {
+    // 콜백함수의 파라미터는 클라이언트에서 보내주는 데이터.
+    // 이 데이터를 소켓 서버에 던져줌.
+    // 소켓서버는 데이터를 받아 콜백함수를 실행.
+    // const currentRoom = usersWithRoom[requestData[0]];
 
-    socket.join(roomName); // user를 "plaza" 방에 참가시킴.
+    newRoom = requestData[1];
+    socket.join(newRoom); // user를 "room 1" 방에 참가시킴.
     const responseData = {
       ...requestData,
       type: "JOIN_ROOM",
       time: new Date(),
     };
+    // console.log('JOIN TO NEW ROOM', newRoom)
 
-    io.to(roomName).emit("RECEIVE_MESSAGE", responseData);
+      // receive.message는 ChatRoom.jsx 에서 defined
+  // --------------- SEND MESSAGE ---------------
+  socket.on("SEND_MESSAGE", (requestData) => {
+    //emiting back to receive message in line 67
+    console.log('REQUEST', requestData);
+    const responseData = {
+      ...requestData,
+      type: "SEND_MESSAGE",
+      time: new Date(),
+    };
+    console.log("SEND TO NEWROOM", responseData)
+    // SVGPreserveAspectRatio.to(roomName).emit
+    io.to(newRoom).emit("RECEIVE_MESSAGE", responseData);
 
+    //responseData = chat message
+    //@@@@@@ ChatRoom.jsx line 21
+    // console.log(
+    //   `"SEND_MESSAGE" is fired with data: ${JSON.stringify(responseData)}`
+    // );
+    io.emit("dataToCanvas", responseData);
+  });
+
+
+    // "room 1"에는 이벤트타입과 서버에서 받은 시각을 덧붙여 데이터를 그대로 전송.
+    io.to(newRoom).emit("RECEIVE_MESSAGE", responseData);
+    // 클라이언트에 이벤트를 전달.
+    // 클라이언트에서는 RECEIVE_MESSAGE 이벤트 리스너를 가지고 있어서 그쪽 콜백 함수가 또 실행됌. 서버구현 마치고 클라이언트 구현은 나중에.
     console.log(
-      `JOIN_ROOM is fired with data: ${JSON.stringify(responseData)} `
+      `JOIN_ROOM is fired with data: ${JSON.stringify(responseData)}`
     );
     // io.to(roomName).emit("all user names", "jasklefjl;ksajv@@@@@")
   });
@@ -368,35 +428,31 @@ io.on("connection", (socket) => { //여기서 이미 socket id generation
     };
     io.to(roomName).emit("RECEIVE_MESSAGE", responseData);
     console.log(
-      `UPDATE_NICKNAME is fired with data: ${JSON.stringify(responseData)} `
+      `UPDATE_NICKNAME is fired with data: ${JSON.stringify(responseData)}`
     );
   });
 
-  // --------------- SEND MESSAGE ---------------
-  socket.on("SEND_MESSAGE", (requestData) => {
-    const responseData = {
-      ...requestData,
-      type: "SEND_MESSAGE",
-      time: new Date(),
-    };
-    io.emit("RECEIVE_MESSAGE", responseData);
 
-  });
+
 
   /* 오브젝트에서 종료되는 유저 삭제 */
   socket.on("disconnect", () => {
+    // console.log("Server.js - DISCONNECT", socket.id);
+
     const alluserNames = Object.keys(currentUsers);
-    let disconnectedUsername
+    let disconnectedUsername;
     alluserNames.forEach((name) => {
       if (currentUsers[name] === socket.id)
-        delete currentUsers[name];
-      disconnectedUsername = name
+      delete currentUsers[name];
+      disconnectedUsername = name;
     }); // {"users": [name1, name2] }
-    console.log("Server.js - DISCONNECT - CURRENT USERS", currentUsers);
-    console.log("Server.js - DISCONNECT - CURRENT USERS", disconnectedUsername);
+    // console.log("Server.js - DISCONNECT - CURRENT USERS", currentUsers);
+    console.log('DISCONNECT A USER', currentUsers);
     io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기
   });
-});;
+
+
+});
 
 //
 app.get("/", (req, res) => {
@@ -472,47 +528,88 @@ app.post("/register", (req, res) => {
   const userPassword = req.body.userInfo.userPassword;
   const userEmail = req.body.userInfo.userEmail;
   const userLanguages = req.body.userInfo.userLanguages;
-  const userAvatar = req.body.userInfo.userAvatar;
+  const avatar = req.body.userInfo.userAvatar;
+
   pool.query(
-    "SELECT * FROM users WHERE username = $1 OR email = $2",
-    [userName, userEmail],
-    (err, res_1) => {
-      if (err) throw err;
-      // console.log(res_1.rows[0]);
-      if (res_1.rows[0]) return res.status(201).send("existing data");
-    }
-  );
-  pool.query(
-    "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *",
-    [userName, userPassword, userEmail, userAvatar],
-    (err, result) => {
-      if (err) throw err;
-      console.log("new user registered");
-      pool.query(
-        "SELECT id FROM users WHERE username = $1",
-        [userName],
-        (err, res_2) => {
-          // console.log("new user's user ID", res_2.rows);
-          const newUserID = res_2.rows[0].id;
-          userLanguages.forEach((lang_id) => {
-            if (lang_id) {
-              // console.log(lang_id);
-              pool.query(
-                "INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *",
-                [newUserID, lang_id],
-                (err, res_3) => {
-                  if (err) throw err;
-                  console.log("new user's language data added", res_3.rows);
-                }
-              );
-            }
-          });
-        }
-      );
-    }
-  );
-  res.status(201).send({ userName, userEmail, userLanguages, userAvatar });
+    //check if user al
+    // ready exists in DB during registration
+    "SELECT * FROM users WHERE username = $1 OR email = $2", [userName, userEmail])
+    .then((response) => {
+      // break promise chain early by throwing error
+      if (response.rows[0]) return Promise.reject(('User already registered')); // option 1?
+      // throw res.status(409).send('User already registered'); // option 2
+
+      return pool.query(
+        "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [userName, userPassword, userEmail, avatar]);
+      // "RETURNING *" means we are returning the new 'user' entry to the next .then
+    })
+    .then((response) => {
+      const { username, avatar_id, id } = response.rows[0];
+      const userID = id
+      const avatar = avatar_id
+      const userName = username
+      const userData = {userName, avatar, userLanguages, userID};
+
+      userLanguages.forEach((lang_id) => {
+        pool.query(
+          "INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *",
+          [response.rows[0].id, lang_id]
+        );
+      });
+      // sending user info back to Register.jsx (as res.data)
+      console.log("REGISTRATION SUCCESS", userData)
+      res.status(201).send(userData);
+    })
+    .catch((e) => { console.error(e); });
 });
+
+
+// app.post("/register", (req, res) => {
+//   const userName = req.body.userInfo.userName;
+//   const userPassword = req.body.userInfo.userPassword;
+//   const userEmail = req.body.userInfo.userEmail;
+//   const userLanguages = req.body.userInfo.userLanguages;
+//   const userAvatar = req.body.userInfo.userAvatar;
+//   pool.query(
+//     "SELECT * FROM users WHERE username = $1 OR email = $2",
+//     [userName, userEmail],
+//     (err, res_1) => {
+//       if (err) throw err;
+//       // console.log(res_1.rows[0]);
+//       if (res_1.rows[0]) return res.status(201).send("existing data");
+//     }
+//   );
+//   pool.query(
+//     "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *",
+//     [userName, userPassword, userEmail, userAvatar],
+//     (err, result) => {
+//       if (err) throw err;
+//       console.log("new user registered");
+//       pool.query(
+//         "SELECT id FROM users WHERE username = $1",
+//         [userName],
+//         (err, res_2) => {
+//           // console.log("new user's user ID", res_2.rows);
+//           const newUserID = res_2.rows[0].id;
+//           userLanguages.forEach((lang_id) => {
+//             if (lang_id) {
+//               // console.log(lang_id);
+//               pool.query(
+//                 "INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *",
+//                 [newUserID, lang_id],
+//                 (err, res_3) => {
+//                   if (err) throw err;
+//                   console.log("new user's language data added", res_3.rows);
+//                 }
+//               );
+//             }
+//           });
+//         }
+//       );
+//     }
+//   );
+//   res.status(201).send({ userName, userEmail, userLanguages, userAvatar });
+// });
 
 // app.post("/friends", (req, res) => {
 //   const username = req.body.username;
@@ -528,7 +625,7 @@ app.post("/register", (req, res) => {
 //         const userID = res_1.rows[0].id;
 //         pool.query(
 //           // find followers id
-//           "SELECT added_by FROM favorites WHERE addedd=$1",
+//           "SELECT added_by FROM favorites WHERE followed=$1",
 //           [userID],
 //           (err, res_2) => {
 //             const userLanguages = [];

@@ -1,14 +1,14 @@
-import { useState, useCallback, useEffect, useContext, useRef } from "react";
+import { useState, useCallback, useEffect, useContext, useRef, createContext } from "react";
 import MessageForm from "./MessageForm";
 import Avatar from "./Avatar.jsx";
-import "./ChatRoom.scss";
 import {
   SOCKET_EVENT,
   makePublicMessage,
   makePrivateMessage,
 } from "./service/socket";
 import { SocketContext } from "../App.js";
-import { UserListContext } from "../App.js";
+import { UserListContext, MsgContext } from "../App.js";
+
 
 function ChatRoom(props) {
   const { socket } = useContext(SocketContext);
@@ -30,18 +30,38 @@ function ChatRoom(props) {
   // socketIo.to(roomName).emit("RECEIVE_MESSAGE", responseData);
   const handleReceivePublicMessage = useCallback(
     (pongData) => {
-      // console.log("PONG", pongData)
+      console.log("PONG", pongData)
       const newPublicMessage = makePublicMessage(pongData);
-      setMessages((messages) => [...messages, newPublicMessage]);
+      setMessages((prev) => [...prev, newPublicMessage]);
       moveScrollToReceiveMessage();
     },
     [moveScrollToReceiveMessage]
   );
 
+
+//   {
+//     "0": "moon",
+//     "1": "js",
+//     "type": "JOIN_ROOM",
+//     "time": "2022-06-23T01:57:45.086Z"
+// }
+
+// {
+//   "nickname": "moon",
+//   "content": "ddd",
+//   "user": {
+//       "value": "all",
+//       "label": "all",
+//       "avatar": "/images/boy1-face.png"
+//   },
+//   "type": "SEND_MESSAGE",
+//   "time": "2022-06-23T01:58:44.411Z"
+// }
+
   const handleReceivePrivateMessage = useCallback(
     (pongData) => {
       const newPrivateMessage = makePrivateMessage(pongData);
-      setMessages((messages) => [...messages, newPrivateMessage]);
+      setMessages((prev) => [...prev, newPrivateMessage]);
       moveScrollToReceiveMessage();
     },
     [moveScrollToReceiveMessage]
@@ -59,23 +79,25 @@ function ChatRoom(props) {
   }, [socket, handleReceivePublicMessage]);
   //@@@@ 이거 왜 public message??? private message 는??
 
+
   return (
     <div className="d-flex flex-column chat-form">
       <div className="text-box">
-        <span>{username}</span>, Welcome!
+        <p><span>{username}</span>, Welcome!</p>
       </div>
       <div className="chat-window card" ref={chatWindow}>
         {messages.map((message, index) => {
           const { nickname, content, time, user } = message;
+          console.log("MESSAGE IN CHATROOM", message)
           let recipient = "";
           message.recipient
             ? (recipient = message.recipient)
             : (recipient = "all");
           return (
-            <div key={index} className="d-flex flex-row">
+            <div key={index} className="d-flex flex-row chat-content">
               {nickname && (
                 <div className="message-nickname">
-                  <Avatar url={message.user?.avatar} />
+                  <Avatar url={message.user.avatar} />
                   {"  "}
                   {nickname} to {recipient}: {content}
                 </div>
@@ -88,6 +110,7 @@ function ChatRoom(props) {
       <MessageForm nickname={username} recipient={recipient} user={user} />
     </div>
   );
+
 }
 
 export default ChatRoom;
