@@ -32,7 +32,7 @@ const Menu = (props) => {
           // if addFriiendName is included in current friends list, block add
           currentFriendsNames.includes(addFriendName) ? blockAddFriend("block-friend") : socket.emit("add friend", {username, addFriendName, userID});
           // console.log("add-friend clicked", e);
-          socket.emit("add friend", {username, addFriendName, userID});
+          // socket.emit("add friend", {username, addFriendName, userID});
           props.close();
         }}>Add Friend</div>
 

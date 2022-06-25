@@ -221,14 +221,14 @@ export default function Register(props) {
             axios // client talking to the server. Asynchronous. if it doesn't happen .post,
               .post("/register", { userInfo })
               .then((res) => {
-                if (res.data.username) {
+                if (res.data.userName) {
                   // res.data = [username, avatar_id, userLanguages, id];
                   console.log("register button click and response data",res.data)
-                  setUser(res.data.username)
+                  setUser(res.data.userName)
                   // props.submitRegistrationInfo(res.data);
                   cookies.set("userdata", res.data, { maxAge: 3600 });
                   goChat(
-                    res.data.username,
+                    res.data.userName,
                     res.data.avatar,
                     res.data.userLanguages,
                     res.data.userID
