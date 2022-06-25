@@ -5,7 +5,14 @@
 * Myeonghwan Mike Yun : https://github.com/mikyYun
 
 ## Preview
-![Alt ]
+![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/login.gif)
+![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/register.gif)
+![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/onlineUserSync.gif)
+![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/shareVideo.gif)
+![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/liveSyncVideo.gif)
+![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/syncedVideo.gif)
+![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/bubbleChat.gif)
+![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/privateChat.gif)
 
 ## User Story
 - User can login with existing userdata
