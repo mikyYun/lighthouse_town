@@ -24,11 +24,7 @@ function ChatRoom(props) {
       });
     }
   }, []);
-  // console.log("USER!!",user)
-  // RECEIVE_MESSAGE 이벤트 콜백: messages state에 데이터를 추가.
-  // MessageForm & socket > index.js
-  // socketIo.to(roomName).emit("RECEIVE_MESSAGE", responseData);
-  const handleReceivePublicMessage = useCallback(
+  const handleReceiveMessage = useCallback(
     (pongData) => {
       console.log("PONG", pongData)
       const newPublicMessage = makePublicMessage(pongData);
@@ -38,25 +34,6 @@ function ChatRoom(props) {
     [moveScrollToReceiveMessage]
   );
 
-
-//   {
-//     "0": "moon",
-//     "1": "js",
-//     "type": "JOIN_ROOM",
-//     "time": "2022-06-23T01:57:45.086Z"
-// }
-
-// {
-//   "nickname": "moon",
-//   "content": "ddd",
-//   "user": {
-//       "value": "all",
-//       "label": "all",
-//       "avatar": "/images/boy1-face.png"
-//   },
-//   "type": "SEND_MESSAGE",
-//   "time": "2022-06-23T01:58:44.411Z"
-// }
 
   const handleReceivePrivateMessage = useCallback(
     (pongData) => {
@@ -68,7 +45,7 @@ function ChatRoom(props) {
   );
 
   useEffect(() => {
-    socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceivePublicMessage); // 이벤트 리스너 - 퍼블릭 메세지
+    socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); // 이벤트 리스너 - 퍼블릭 메세지
     socket.on("PRIVATE", handleReceivePrivateMessage); // 이벤트 리스너 - 프라이빗 메세지
 
     return () => {
@@ -76,8 +53,7 @@ function ChatRoom(props) {
       // socket.off(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); // 이벤트 리스너 해제
       //@@이거 왜 off 안하고 disconnect로 함?
     };
-  }, [socket, handleReceivePublicMessage]);
-  //@@@@ 이거 왜 public message??? private message 는??
+  }, [socket, handleReceiveMessage]);
 
 
   return (

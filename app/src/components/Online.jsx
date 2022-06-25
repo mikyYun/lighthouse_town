@@ -10,23 +10,13 @@ export default function Online(props) {
   const { online, socket, nickname } = useContext(SocketContext);
   const { setClicked, setShow, blockAddFriendAlert } = useContext(UserListContext);
   const [showMenu, setShowMenu] = useState(false);
-
-
-  // const [playToggleClassName, setPlayToggleClassName] = useState("friendsListToggle");
-  // console.log("online_in_Online.jsx", online);
   const removeSelfAndAll = online.filter(obj =>
     obj.value !== "all" && obj.value !== nickname
   )
-  // console.log('removeSelfAndAll', removeSelfAndAll)
 
   const closeMenu = () => {
     setShowMenu(false)
   }
-
-/// click the each online-user
-//  - view Menu
-//    - view Profile
-
 
   const usersOnline = removeSelfAndAll.map((obj, i) =>
     <div className="online-user" key={i}>
@@ -43,7 +33,6 @@ export default function Online(props) {
     </div>
     );
 
-  // console.log(showMenu)
 
   useEffect(() => {
     socket.emit("friendsList", { socketID: socket.id });

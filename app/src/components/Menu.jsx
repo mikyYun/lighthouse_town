@@ -38,7 +38,6 @@ const Menu = (props) => {
 
         <div className="menu-action" onClick={() => {
           setRecipient(clicked);
-          // console.log('clicked in Menu', clicked)
           props.close();
         }}>Send Message</div>
 
@@ -46,7 +45,6 @@ const Menu = (props) => {
           console.log("clicked vie-porifle", clicked.value)
           setShowProfile(clicked.value);
           console.log(showProfile)
-          // props.close();
         }}>View Profile
           </div>
       </div>

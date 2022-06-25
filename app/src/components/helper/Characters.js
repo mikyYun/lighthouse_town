@@ -94,16 +94,6 @@ class Characters {
 
 
   showChat = (ctx, msg) => {
-    // ctx.strokeStyle = "black"
-    // ctx.rect(
-    //   this.state.x - 10,
-    //   this.state.y - 30,
-    //   100,
-    //   20
-    // )
-    // ctx.fill();
-    // ctx.stroke();
-
     ctx.font = 'bold 30px monospace'
     ctx.fillStyle = "blue"
     ctx.fillText(
@@ -115,11 +105,3 @@ class Characters {
 };
 
 export default Characters;
-
-
-// keypressed : not in constructor
-// update within class -> update method
-
-// drawFrame : in Character
-
-

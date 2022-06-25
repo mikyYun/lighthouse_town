@@ -1,14 +1,12 @@
-import React, { useEffect, useRef, useState, useContext, useCallback } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import Characters from "./helper/Characters";
-import { selectAvatar } from "./helper/selectAvatar";
 import { SocketContext } from "../App";
-import { useNavigate, useLocation, Redirect } from "react-router-dom";
-import { SOCKET_EVENT, makePublicMessage, makePrivateMessage, socket } from "./service/socket";
+import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from 'universal-cookie';
 
 
 const Canvas = (props) => {
-  const { socket, nickname } = useContext(SocketContext);
+  const { socket } = useContext(SocketContext);
   const canvasRef = useRef(null);
   const location = useLocation();
   const [msg, setMsg] = useState({});
@@ -22,9 +20,6 @@ const Canvas = (props) => {
       avatar: props.avatar,
     }),
   });
-  // window.location.reload(true)
-  // console.log('usernameusernameusernameusername', props.username);
-  // console.log('userCharacters', userCharacters)
   const cookies = new Cookies()
   const allCookies = cookies.getAll()
   const userDataInCookies = allCookies.userdata
@@ -51,14 +46,8 @@ const Canvas = (props) => {
     //join to chat room
     socket.emit('JOIN_ROOM', [props.username,path])
 
-    // socket.on("connect", () => {
-      // console.log('ITS CONNECTED!!!!!!')
       sendData()
-      // window.location.reload()
-
-      // socket.emit("sendData", userCharacters[props.username].state);
       socket.on("sendData", (data) => {
-        // console.log("data", data);
         const newCharactersData = data;
         newCharactersData[props.username] = userCharacters[props.username];
 
@@ -84,8 +73,6 @@ const Canvas = (props) => {
     });
 
     for (const userChar in userCharacters) {
-      // console.log('onfirts move',userChar)
-      // console.log(userCharacters)
       userCharacters[userChar].drawFrame(ctx);
       userCharacters[userChar].showName(ctx);
 
@@ -108,8 +95,6 @@ const Canvas = (props) => {
       userCharacters[props.username].move(e);
       setUserCharacters(userCharacters);
       sendData()
-
-      // console.log(props.room, "BEFORE MOVING")
 
       // move to JS
       if (props.room === 'plaza') {
@@ -156,10 +141,7 @@ const Canvas = (props) => {
 
 
     window.addEventListener("keyup", () => {
-      // console.log()
-      // userCharacters[props.username].stop();
       setUserCharacters(userCharacters)
-      // console.log('after stop', userCharacters[props.username].state)
       if (userCharacters[props.username] !== undefined) {
         sendData();
       }
@@ -202,13 +184,10 @@ const Canvas = (props) => {
     canvas.height = 640;
     const ctx = canvas.getContext("2d");
 
-    // console.log('CHARACTER', userCharacters)
-    // console.log('게임그릴때: ', msg)
     for (const userChar in userCharacters) {
       userCharacters[userChar].drawFrame(ctx);
       userCharacters[userChar].showName(ctx);
       const msgToShow = msg[userCharacters[userChar].state.username];
-      // console.log(msgToShow);
       if (msgToShow !== undefined) {
         // userCharacters[userChar].showBubble(ctx);
         userCharacters[userChar].showChat(ctx, msgToShow);
@@ -232,10 +211,7 @@ const Canvas = (props) => {
     navigate(0, { state: [props.username, props.avatar, userLanguages, userID] })
   };
 
-  // console.log('BEFORE FUNC', props.room)
-  // sending data to server
   function sendData(removeFromRoom) {
-    // console.log('Remove From Here', removeFromRoom)
     socket && socket.emit("sendData", {
       userState: userCharacters[props.username].state,
       room: props.room,

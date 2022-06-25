@@ -23,8 +23,6 @@ export default function Login(props) {
   return (
     <div className="login-page">
       <div className="logo"></div>
-      {/* <h2>WELCOME TO</h2>
-      <h1>LIGHTHOUSE-TOWN</h1> */}
     <form id="form_login" action="/game/plaza" method="GET" runat="server">
       <div>
         <p>EMAIL</p>
@@ -66,14 +64,9 @@ export default function Login(props) {
               .then((res) => {
                 if (res.data.userName) {
                   setUser(res.data.userName) // pass username so that server set username and socketid as key:value pair
-                  // res.data.friends
-                  // setFriends(res.data.friends)
-                  // console.log("res.data - Login.js", res.data);
                   cookies.set("userdata", res.data, {maxAge: 3600});
                   goChat(res.data.userName, res.data.avatar, res.data.userLanguages, res.data.userID)
-                  // props.setNickname(res.data.userName)
                 } else {
-                  // console.log(res.data)
                   console.log("no matching user - Login.js")
                   alert("Invalid information. Please confirm your email and password")
                 }

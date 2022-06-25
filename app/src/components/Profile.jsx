@@ -20,9 +20,6 @@ export default function Profile(props) {
   }, [profiles])
 
   console.log('Clicked in Profile', clicked)
-  // const { nickname } = useCallback(SocketContext)
-  // console.log("ONLINE USERS PROFILES", profiles);
-  // console.log("ONLINE USERS PROFILES", nickname);
   /**
    * provile = {
    *  name: {
@@ -59,14 +56,11 @@ export default function Profile(props) {
               {/* <div className="profile-name">{title}</div> */}
 
             <div className="profile-email"><p>Email</p>{email}</div>
-              {/* </title> */}
-            {/* <div key={ind}> */}
             <div>
             <p>Languages</p>
               <div className="profile-language">{languageLists}</div>
             </div>
 
-            {/* <button onClick={() => {setProfileShow("none")}}>CLOSE</button> */}
           </div>
           );
         }

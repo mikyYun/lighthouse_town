@@ -544,10 +544,8 @@ app.post("/register", (req, res) => {
       // "RETURNING *" means we are returning the new 'user' entry to the next .then
     })
     .then((response) => {
-      const { username, avatar_id, id } = response.rows[0];
+      const { id } = response.rows[0];
       const userID = id
-      // const avatar = avatar_id
-      // const userName = username
       const userData = {userName, avatar, userLanguages, userID};
 
       userLanguages.forEach((lang_id) => {

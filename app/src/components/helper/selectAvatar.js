@@ -16,14 +16,3 @@ const selectAvatar = (num) => {
 };
 
 export default selectAvatar
-
-// const selectAvatar = (num) => {
-//   if (num === 1) {
-//     return boyImage
-//   }
-//   if (num === 2) {
-//     return girlImage
-//   }
-// }
-
-// export default selectAvatar;

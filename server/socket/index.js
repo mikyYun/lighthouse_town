@@ -68,7 +68,6 @@ module.exports = function (socketIo) {
       // SVGPreserveAspectRatio.to(roomName).emit
       socketIo.emit(SOCKET_EVENT.RECEIVE_MESSAGE, responseData);
       // responseData = chat message body
-      // ChatRoom.jsx line 21
       console.log(`${SOCKET_EVENT.SEND_MESSAGE} is fired with data: ${JSON.stringify(responseData)}`);
     });
 
