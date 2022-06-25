@@ -5,21 +5,21 @@
 * Myeonghwan Mike Yun : https://github.com/mikyYun
 
 ## Preview
-* Login
+* Login <br />
 ![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/login.gif)
-* Registration
+* Registration <br />
 ![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/register.gif)
-* Online User's movement Sync 
+* Online User's movement Sync <br />
 ![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/onlineUserSync.gif)
-* Share Video via lecture button
+* Share Video via lecture button <br />
 ![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/shareVideo.gif)
-* Live Video share in a room
+* Live Video share in a room <br />
 ![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/liveSyncVideo.gif)
-* Synced Video
+* Synced Video <br />
 ![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/syncedVideo.gif)
-* Chat to All with bubble over the head
+* Chat to All with bubble over the head <br />
 ![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/bubbleChat.gif)
-* Private chat any location
+* Private chat any location <br />
 ![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/privateChat.gif)
 
 ## User Story
