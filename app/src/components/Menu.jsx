@@ -42,9 +42,9 @@ const Menu = (props) => {
         }}>Send Message</div>
 
         <div className="menu-action" onClick={(e) => {
-          console.log("clicked vie-porifle", clicked.value)
+          // console.log("clicked vie-porifle", clicked.value)
           setShowProfile(clicked.value);
-          console.log(showProfile)
+          // console.log(showProfile)
         }}>View Profile
           </div>
       </div>

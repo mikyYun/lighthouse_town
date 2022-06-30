@@ -19,7 +19,7 @@ function MessageForm({ nickname, recipient, user }) {
     const noContent = typingMessage.trim() === "";
 
     if (noContent) {
-      console.log("no content received");
+      // console.log("no content received");
       return;
     }
     if (recipient.value !== "all") {

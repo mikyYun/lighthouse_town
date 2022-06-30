@@ -15,7 +15,7 @@ export default function Game(props) {
   const { sendMessage, sendPrivateMessage } = props
   const [msg, setMsg] = useState({});
 
-  console.log('location', location);
+  // console.log('location', location);
 
   const [show, setShow] = useState(false);
   const [lecture, setLecture] = useState("https://www.youtube.com/embed/FSs_JYwnAdI" );
@@ -25,14 +25,14 @@ export default function Game(props) {
   }
 
   function sendUrl(url){
-    console.log(socket);
+    // console.log(socket);
     socket && socket.emit("lecture", url);
-    console.log("SENT")
+    // console.log("SENT")
   }
 
 useEffect(() => {
     socket.on("new lecture", data => {
-      console.log(data)
+      // console.log(data)
       setLecture(data)
     })
 },[socket])

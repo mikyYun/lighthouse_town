@@ -26,7 +26,7 @@ function ChatRoom(props) {
   }, []);
   const handleReceiveMessage = useCallback(
     (pongData) => {
-      console.log("PONG", pongData)
+      // console.log("PONG", pongData)
       const newPublicMessage = makePublicMessage(pongData);
       setMessages((prev) => [...prev, newPublicMessage]);
       moveScrollToReceiveMessage();
@@ -64,7 +64,7 @@ function ChatRoom(props) {
       <div className="chat-window card" ref={chatWindow}>
         {messages.map((message, index) => {
           const { nickname, content, time, user } = message;
-          console.log("MESSAGE IN CHATROOM", message)
+          // console.log("MESSAGE IN CHATROOM", message)
           let recipient = "";
           message.recipient
             ? (recipient = message.recipient)

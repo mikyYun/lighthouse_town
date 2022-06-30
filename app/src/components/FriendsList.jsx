@@ -13,7 +13,7 @@ export default function FriendList() {
     } else {
       setToggle(value);
     }
-    console.log(toggle);
+    // console.log(toggle);
   };
 
   useEffect(() => {

@@ -22,7 +22,7 @@ export const makePublicMessage = pongData => {
     }
 
     case SOCKET_EVENT.SEND_MESSAGE: {
-      console.log(`${nickname} has sent a public message.`)
+      // console.log(`${nickname} has sent a public message.`)
       contentLabel = String(content); //보내는 메세지
       break;
     }
@@ -44,7 +44,7 @@ export const makePrivateMessage = pongData => {
 
   switch (type) {
     case "PRIVATE": {
-      console.log(`${nickname} has sent a private message.`)
+      // console.log(`${nickname} has sent a private message.`)
       contentLabel = String(content);  //보내는 메세지
       break;
     }

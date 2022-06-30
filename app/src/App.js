@@ -68,7 +68,7 @@ function App() {
   // ================= EFFECTS =============== //
 
   useEffect(() => {
-    console.log("USER",user);
+    // console.log("USER",user);
   //[user.avatar] is a number (avatar id)
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
@@ -80,7 +80,7 @@ function App() {
     // console.log('currentCookies', currentCookies)
     // cookies maxAge 3600.
     socket.on("connect", () => {
-      console.log("SOCKET CONNECTED", currentCookies); // everytime refresh
+      // console.log("SOCKET CONNECTED", currentCookies); // everytime refresh
       //  if ((mainUrlLists.includes(location.pathname))
 
       if ((location.pathname === "/"
@@ -147,7 +147,7 @@ function App() {
       // }
 
       const loginUsersObject = obj.users;
-      console.log("RECEIVED", loginUsersObject)
+      // console.log("RECEIVED", loginUsersObject)
       const loginUserNames = Object.keys(loginUsersObject);
       const loginUsersInformation = {};
       const usersOnline = [];
@@ -188,7 +188,7 @@ function App() {
   };
 
   const createSocketIdNameObject = (username) => {
-    console.log(username, socket.id)
+    // console.log(username, socket.id)
     socket && socket.emit("SET USERNAME", { "socketID": socket.id, "username": username });
   };
 
