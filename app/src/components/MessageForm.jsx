@@ -22,8 +22,6 @@ function MessageForm({ nickname, recipient, user }) {
       console.log("no content received");
       return;
     }
-    // console.log("socket", recipient)
-    // @@@@ 메시지가 있으면 nickname과 message를 SEND_MESSAGE 이벤트 타입과 함께 소켓 서버로 (socket > index. js) 전송합니다.
     if (recipient.value !== "all") {
       socket.emit("PRIVATE", {
         nickname, // whole user information
@@ -46,14 +44,6 @@ function MessageForm({ nickname, recipient, user }) {
 
   }
 
-
-  // document.addEventListener("keyup", (e) => {
-  //   if (e.key === "Enter") {
-  //     setTextareaDisable(false)
-  //     focusTextArea.current.focus()
-  //   }
-  // })
-
   return (
     <form >
       <div >
@@ -63,6 +53,7 @@ function MessageForm({ nickname, recipient, user }) {
           className="form-control"
           maxLength={400}
           value={typingMessage}
+          placeholder="type your message here "
           onChange={handleChangeTypingMessage}
           onMouseDown={() => {
             setTextareaDisable(false)

@@ -30,7 +30,7 @@ export default function Register(props) {
       setUserLanguages((prev) => prev.filter((el) => el !== id));
     }
   };
-  
+
   const goChat = (username, avatar, userLanguages, id) => {
     const data = [username, avatar, userLanguages, id];
     navigate(`/game/plaza`, { state: data });
@@ -46,7 +46,7 @@ export default function Register(props) {
   const makeLanguageLists = Object.keys(languageLists).map(
     (language, index) => {
       return (
-        <li key={index}>
+        <li key={index} className="lang-li">
           <input
             type="checkbox"
             id={language}
@@ -65,7 +65,6 @@ export default function Register(props) {
       <form id="form_registration" onSubmit={(e) => e.preventDefault()}>
 
       <div className="field">
-          <span> NAME : </span>
           <input
           className="text-input"
             id="register_name"
@@ -87,7 +86,6 @@ export default function Register(props) {
           ></input>
         </div>
         <div className="field">
-          <span>EMAIL : </span> {/* 이안에 뭐가 들어갈껀가요? */}
           <input
             className="text-input"
             id="register_email"
@@ -104,7 +102,6 @@ export default function Register(props) {
 
 
         <div className="field">
-          <span> PASSWORD : </span>
           <input
             // name="password"
             className="text-input"
@@ -123,13 +120,12 @@ export default function Register(props) {
           ></input>
         </div>
         <div className="field">
-          <span> CONFIRM PASSWORD : </span>
           <input
             // name="password_confirmation"
             className="text-input"
             id="register_password_confirmation"
             rows="1"
-            placeholder="PASSWORD_CONFIRMATION"
+            placeholder="PASSWORD CONFIRMATION"
             type="password"
             onChange={(e) => {
               if (e.target.value !== userPassword) {
@@ -149,11 +145,11 @@ export default function Register(props) {
           confirmation password is incorrect
         </span>
         <div className="field">
-          <span> PROGRAMMING LANGUAGES :</span>
-          <ul>{makeLanguageLists}</ul>
+          <p> PROGRAMMING LANGUAGES </p>
+          <ul className="lang-choice">{makeLanguageLists}</ul>
         </div>
         <div className="field">
-          <span>AVATAR :</span>
+          <p className="avatar-label">AVATAR </p>
           <ul>
             <li>
               <div className="div_boyImage1"></div>
@@ -225,18 +221,21 @@ export default function Register(props) {
             axios // client talking to the server. Asynchronous. if it doesn't happen .post,
               .post("/register", { userInfo })
               .then((res) => {
-                // res.data = [username, avatar_id, userLanguages, id];
-                console.log(res.data)
-                setUser(res.data.username)
-                props.submitRegistrationInfo(res.data);
-                cookies.set("userdata", res.data, { maxAge: 3600 });
-                goChat(
-                  res.data.username,
-                  res.data.avatar,
-                  res.data.userLanguages,
-                  res.data.userID
-                );
-                // navigate("/game/plaza");
+                if (res.data.userName) {
+                  // res.data = [username, avatar_id, userLanguages, id];
+                  console.log("register button click and response data",res.data)
+                  setUser(res.data.userName)
+                  // props.submitRegistrationInfo(res.data);
+                  cookies.set("userdata", res.data, { maxAge: 3600 });
+                  goChat(
+                    res.data.userName,
+                    res.data.avatar,
+                    res.data.userLanguages,
+                    res.data.userID
+                  )
+                } else {
+                  alert("Invalid information. Please try with different email or username")
+                }
               })
               .catch((error) => console.log(error));
           }}
