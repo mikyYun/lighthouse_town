@@ -1,7 +1,6 @@
 
 //@@@@@@@socket ID SPELLING FIX!!
 
-// server running with nodemon : npm run dev
 require("dotenv").config();
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -17,25 +16,6 @@ const io = new Server(httpServer, {
     credentials: true,
   },
 });
-
-// ================ HELPER FUNCS ================= //
-const getUserLang = (userID) => {
-  return pool.query(
-    `SELECT user_id, languages.language_name 
-    from user_language
-
-    JOIN languages 
-    ON languages.id = user_language.language_id
-
-    WHERE user_id = $1`,
-    [userID]
-  )
-    .then((result) => {
-      return result.rows.map((row) => row.language_name) //return array of languages
-    }
-    )
-}
-
 
 const { createAdapter } = require("@socket.io/postgres-adapter"); //app.get, 안써도 socket.io 안에서 직접 postgres 연결이 가능. root path 따로 설정 불필요.
 const sessionMiddleware = session({
@@ -80,14 +60,14 @@ const usersInRooms = {};
 
 // OPEN SOCKET
 io.on("connection", (socket) => {
-  
-  const roomName = "room 1";
   const session = socket.request.session;
   session.save();
   console.log("MAKE NEW CONNECTION") // checked
+  console.log(currentUsers)
   // LOGIN USER CONNECTED
   // socketID and username matching triggered when user login
   socket.on("SET USERNAME", (obj) => {
+    // console.log("SET USERNAME", obj)
     //Login.jsx 의 setUser(res.data.userName)
     const { username, socketID } = obj;
     console.log("RECIEVED DATA", username, socketID)
@@ -95,11 +75,13 @@ io.on("connection", (socket) => {
     // console.log("Connected ", username, socketID);
     // after refresh, socketid undefined
     currentUsers[username] = socketID;
+    console.log(currentUsers)
     pool.query(
       "SELECT id, username AS name, email, avatar_id FROM users",
       (err, res) => {
         // res.rows => {id: , name: , email: , avatar_id}
         const allUsersObj = res.rows;
+        // console.log(allUsersObj)
         pool.query(
           "SELECT languages.id, user_id, language_name FROM user_language JOIN languages ON language_id=languages.id",
           (err, res_1) => {
@@ -121,10 +103,11 @@ io.on("connection", (socket) => {
                 });
               }
             });
-            // console.log(loginUsersData)
+            console.log('loginUsersData', loginUsersData)
+            console.log('currentUser', currentUsers)
             // currentUsers = {name: socketID}
             const alluserNames = Object.keys(loginUsersData);
-            // console.log("FILTER ONLINE USERS",loginUsersData)
+            console.log("FILTER ONLINE USERS",loginUsersData)
             alluserNames.forEach((name) => {
               io.to(currentUsers[name]) // socketID
                 .emit("all user names", { "users": loginUsersData });// all user names
@@ -146,8 +129,7 @@ io.on("connection", (socket) => {
 
   socket.on("friendsList", (id) => {
     // id.socketID = new user's socketid
-    // const newSocketID = id.socketID;
-    const {newSocketID, user, userID} = id
+    const newSocketID = id.socketID;
     // check this id is in currentUsers Object
     const alluserNames = Object.keys(currentUsers);
     let existUsername;
@@ -275,6 +257,11 @@ io.on("connection", (socket) => {
 
   });
 
+  socket.on("lecture", url => {
+    console.log(url)
+    const address = 'https://www.youtube.com/embed/' + url.split('=')[1]
+    io.emit("new lecture", address);
+  })
 
 
   // ADD FRIEND
@@ -381,20 +368,54 @@ io.on("connection", (socket) => {
   });
 
   /* ADDED FROM socket/index.js */
+  const usersWithRoom = {};
+  const rooms = ['plaza', 'js', 'ruby'];
+  let newRoom;
 
   socket.on("JOIN_ROOM", (requestData) => {
+    // 콜백함수의 파라미터는 클라이언트에서 보내주는 데이터.
+    // 이 데이터를 소켓 서버에 던져줌.
+    // 소켓서버는 데이터를 받아 콜백함수를 실행.
+    // const currentRoom = usersWithRoom[requestData[0]];
 
-    socket.join(roomName); // user를 "plaza" 방에 참가시킴.
+    newRoom = requestData[1];
+    socket.join(newRoom); // user를 "room 1" 방에 참가시킴.
     const responseData = {
       ...requestData,
       type: "JOIN_ROOM",
       time: new Date(),
     };
+    // console.log('JOIN TO NEW ROOM', newRoom)
 
-    io.to(roomName).emit("RECEIVE_MESSAGE", responseData);
+      // receive.message는 ChatRoom.jsx 에서 defined
+  // --------------- SEND MESSAGE ---------------
+  socket.on("SEND_MESSAGE", (requestData) => {
+    //emiting back to receive message in line 67
+    console.log('REQUEST', requestData);
+    const responseData = {
+      ...requestData,
+      type: "SEND_MESSAGE",
+      time: new Date(),
+    };
+    console.log("SEND TO NEWROOM", responseData)
+    // SVGPreserveAspectRatio.to(roomName).emit
+    io.to(newRoom).emit("RECEIVE_MESSAGE", responseData);
 
+    //responseData = chat message
+    //@@@@@@ ChatRoom.jsx line 21
+    // console.log(
+    //   `"SEND_MESSAGE" is fired with data: ${JSON.stringify(responseData)}`
+    // );
+    io.emit("dataToCanvas", responseData);
+  });
+
+
+    // "room 1"에는 이벤트타입과 서버에서 받은 시각을 덧붙여 데이터를 그대로 전송.
+    io.to(newRoom).emit("RECEIVE_MESSAGE", responseData);
+    // 클라이언트에 이벤트를 전달.
+    // 클라이언트에서는 RECEIVE_MESSAGE 이벤트 리스너를 가지고 있어서 그쪽 콜백 함수가 또 실행됌. 서버구현 마치고 클라이언트 구현은 나중에.
     console.log(
-      `JOIN_ROOM is fired with data: ${JSON.stringify(responseData)} `
+      `JOIN_ROOM is fired with data: ${JSON.stringify(responseData)}`
     );
     // io.to(roomName).emit("all user names", "jasklefjl;ksajv@@@@@")
   });
@@ -407,19 +428,10 @@ io.on("connection", (socket) => {
     };
     io.to(roomName).emit("RECEIVE_MESSAGE", responseData);
     console.log(
-      `UPDATE_NICKNAME is fired with data: ${JSON.stringify(responseData)} `
+      `UPDATE_NICKNAME is fired with data: ${JSON.stringify(responseData)}`
     );
   });
 
-  // --------------- SEND MESSAGE ---------------
-  socket.on("SEND_MESSAGE", (requestData) => {
-    const responseData = {
-      ...requestData,
-      type: "SEND_MESSAGE",
-      time: new Date(),
-    };
-    io.emit("RECEIVE_MESSAGE", responseData);
-  });
 
   /* 오브젝트에서 종료되는 유저 삭제 */
   socket.on("disconnect", () => {
@@ -427,23 +439,22 @@ io.on("connection", (socket) => {
 
     const alluserNames = Object.keys(currentUsers);
     let disconnectedUsername;
-    alluserNames.forEach((name) => {
-      if (currentUsers[name] === socket.id)
-<<<<<<< HEAD
-        delete currentUsers[name];
-      disconnectedUsername = name
-      console.log("Server.js - A USER DISCONNECTED - CURRENT USERS", name, socket.id);
+    alluserNames.forEach((username) => {
+      if (currentUsers[username] === socket.id)
+
+        delete currentUsers[username];
+      disconnectedUsername = username
+      console.log("Server.js - A USER DISCONNECTED - CURRENT USERS", username, socket.id);
     }); // {"users": [name1, name2] }
-=======
-      delete currentUsers[name];
-      disconnectedUsername = name;
+
+      delete currentUsers[username];
+      disconnectedUsername = username;
     }); // {"users": [name1, name2] }
     // console.log("Server.js - DISCONNECT - CURRENT USERS", currentUsers);
     console.log('DISCONNECT A USER', currentUsers);
->>>>>>> 3a0aa8ce1674345b477deeeb948c4f3d099a6585
     io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기
   });
-});;
+
 
 //
 app.get("/", (req, res) => {
@@ -535,10 +546,8 @@ app.post("/register", (req, res) => {
       // "RETURNING *" means we are returning the new 'user' entry to the next .then
     })
     .then((response) => {
-      const { username, avatar_id, id } = response.rows[0];
+      const { id } = response.rows[0];
       const userID = id
-      const avatar = avatar_id
-      const userName = username
       const userData = {userName, avatar, userLanguages, userID};
 
       userLanguages.forEach((lang_id) => {
@@ -554,81 +563,6 @@ app.post("/register", (req, res) => {
     .catch((e) => { console.error(e); });
 });
 
-
-// app.post("/register", (req, res) => {
-//   const userName = req.body.userInfo.userName;
-//   const userPassword = req.body.userInfo.userPassword;
-//   const userEmail = req.body.userInfo.userEmail;
-//   const userLanguages = req.body.userInfo.userLanguages;
-//   const userAvatar = req.body.userInfo.userAvatar;
-//   pool.query(
-//     "SELECT * FROM users WHERE username = $1 OR email = $2",
-//     [userName, userEmail],
-//     (err, res_1) => {
-//       if (err) throw err;
-//       // console.log(res_1.rows[0]);
-//       if (res_1.rows[0]) return res.status(201).send("existing data");
-//     }
-//   );
-//   pool.query(
-//     "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *",
-//     [userName, userPassword, userEmail, userAvatar],
-//     (err, result) => {
-//       if (err) throw err;
-//       console.log("new user registered");
-//       pool.query(
-//         "SELECT id FROM users WHERE username = $1",
-//         [userName],
-//         (err, res_2) => {
-//           // console.log("new user's user ID", res_2.rows);
-//           const newUserID = res_2.rows[0].id;
-//           userLanguages.forEach((lang_id) => {
-//             if (lang_id) {
-//               // console.log(lang_id);
-//               pool.query(
-//                 "INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *",
-//                 [newUserID, lang_id],
-//                 (err, res_3) => {
-//                   if (err) throw err;
-//                   console.log("new user's language data added", res_3.rows);
-//                 }
-//               );
-//             }
-//           });
-//         }
-//       );
-//     }
-//   );
-//   res.status(201).send({ userName, userEmail, userLanguages, userAvatar });
-// });
-
-// app.post("/friends", (req, res) => {
-//   const username = req.body.username;
-
-//   // and password.. userName=$1 AND userpassword=$2
-//   return pool.query(
-//     "SELECT id FROM users WHERE username=$1",
-//     [username],
-//     (err, res_1) => {
-//       if (err) throw err;
-//       if (res_1.rows[0]) {
-//         // user exist
-//         const userID = res_1.rows[0].id;
-//         pool.query(
-//           // find followers id
-//           "SELECT added_by FROM favorites WHERE addedd=$1",
-//           [userID],
-//           (err, res_2) => {
-//             const userLanguages = [];
-//           }
-//         );
-//       } else {
-//         // no matching user
-//         res.status(201).send(false);
-//       }
-//     }
-//   );
-// });
 
 httpServer.listen(PORT, () => {
   console.log(

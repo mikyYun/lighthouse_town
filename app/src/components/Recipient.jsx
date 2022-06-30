@@ -9,18 +9,6 @@ function Recipient() {
 
 
   const [otherUsers, setOtherUsers] = useState([])
-  // other users => dynamic values
-  // const recipient = props.recipient
-  // const setRecipient = props.setRecipient
-  // console.log("ONLINE - RECIPIENT.JSX", online)
-  // console.log("ONLINE - RECIPIENT.JSX", nickname)
-  // console.log("INSIDE", online)
-
-  // online.map(onlineMember => {
-  // if (onlineMember.value === nickname) delete onlineMember[nickname]
-  // console.log(onlineMember.value === nickname)
-  // console.log("TEST", onlineMember)
-  // })
   useEffect(() => {
 
     const onlineOthers = online.filter(user => user.value !== nickname)

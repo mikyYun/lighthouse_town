@@ -29,7 +29,7 @@ function App() {
   const [show, setShow] = useState(false);
   const [clicked, setClicked] = useState({});
   const [recipient, setRecipient] = useState({ value: "all", label: "all" });
-  const [user, setUser] = useState({ value: "all", label: "all", avatar: 1 });
+  const [user, setUser] = useState({ value: "all", label: "all", avatars: 1});
   const [profiles, setProfiles] = useState({});
   const [profileShow, setProfileShow] = useState("none");
   const [blockAddFriendAlert, setBlockAddFriendAlert] = useState("add-friend");
@@ -44,9 +44,9 @@ function App() {
   const location = useLocation();
 
   // ================= VARIABLES =============== //
-  // console.log("LOCATION", location);
   const nickname = location.state?.[0] || '';
-  console.log("NICKNAME IN APP", nickname);
+  // console.log("NICKNAME IN APP", nickname);
+
 
   // set map for navigate
   const maps = {
@@ -64,22 +64,19 @@ function App() {
   // ================= INTANCES =============== //
 
   const cookies = new Cookies();
-  const all_cookies = cookies.getAll();
-  const cookieData = all_cookies.userdata;
-
-  // const addFriend = () => { }
-  // const sendMessage = () => { }
-  // const viewProfile = () => { }
 
   // ================= EFFECTS =============== //
 
   useEffect(() => {
-    setUser({ ...user, avatar: avatars[user.avatar] }); //[user.avatar] is a number (avatar id)
-    // @@@@@@@@@@@@ SUNDAY : WE SHOULD GET A USER FROM THE DATA BASE
-    // @@@@@@@@@@@@ SUNDAY : WE SHOULD ALSO SET AN AVATAR WHEN WE GET AN USER OBJECT.
+    console.log("USER",user);
+  //[user.avatar] is a number (avatar id)
     // set URL for navigate when enter the house
     setRoom(location.pathname.split("/").splice(2)[0]);
     const currentCookies = cookies.getAll();
+
+    if (currentCookies.userdata) {
+      setUser({ ...user, avatar: avatars[currentCookies.userdata.avatar]});
+    }
     // console.log('currentCookies', currentCookies)
     // cookies maxAge 3600.
     socket.on("connect", () => {
@@ -90,7 +87,8 @@ function App() {
         || location.pathname === "/login"
         || location.pathname === "/register"
         || location.pathname === "/game"
-        || location.pathname === "/game/plaza")
+        || location.pathname === "/game/plaza"
+        )
         && currentCookies.userdata) {
         // console.log("cookies exist, permision allowed user") // checked
         createSocketIdNameObject(currentCookies.userdata.userName);
@@ -101,15 +99,12 @@ function App() {
         goChat(currentCookies.userdata.userName, currentCookies.userdata.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
         // console.log("LOCATION STATE",location.state) // checked
       }
-      // if (subUrlLists.includes(location.pathname)) {
-      //   console.log("IN GAME")
-      // createSocketIdNameObject(currentCookies.userdata.userName);
-      // const goChat = (username, avatar, userLanguages, id) => {
-      //   // const data = [username, avatar, userLanguages, id];
-      //   // navigate('/game/plaza', { state: data });
-      // };
-      // goChat(currentCookies.userdata.userName, currentCookies.userdata.avatar, currentCookies.userdata.userLanguages, currentCookies.userdata.userID);
-      // }
+
+      if ((location.pathname === "/game/js"
+        || location.pathname === "/game/ruby"
+      ) && currentCookies.userdata) {
+        createSocketIdNameObject(currentCookies.userdata.userName);
+      }
       if (!currentCookies.userdata) {
         // if (!urlLists.includes(location.pathname)) {
         console.log("NO USERDATA. CLEAR COOKIES"); // checked
@@ -125,18 +120,6 @@ function App() {
 
     // ================= FUNCTIONS =============== //
 
-
-    // socket.on("DENY CONNECTION", (e) => {
-    //   clearCookies()
-    //   navigate("/")
-    // })
-
-    // socket.on("updateFriendsList", newFriendInfo => {
-    //   setFriendList(prev => ({
-    //     ...prev,
-    //     newFriendInfo
-    //   }));
-    // });
     socket.on("updateFriendsList", ({ newFriendName, languages }) => {
       const nameAndLangObj = {};
       nameAndLangObj[newFriendName] = { languages };
@@ -157,21 +140,6 @@ function App() {
 
     socket.on("init", msg => console.log("msg - App.js", msg)); //coming from server
     socket.on("backData", data => console.log("data", data)); //coming from server
-
-    // socket.on("update login users information", ({disconnectedUser}) => {
-    //   // console.log("DISCONNECTED USERNAME", disconnectedUser)
-    //   console.log("THIS", disconnectedUser)
-    //   // const updateProfileLists = () => {
-    //     // delete profiles[disconnectedUser]
-    //   // }
-    //   // setProfiles(prev => ({
-    //   //   [disconnectedUser]: remove,
-    //   //   ...rest
-    //   // }))
-    //   console.log("THIS", profiles)
-    // })
-
-
     socket.on("all user names", (obj) => { //@@@SUNDAY: all user objects
       // obj => {uniqname: {email:, avatar_id:, languages: [arr]},
       //  uniqname: {},
@@ -179,7 +147,7 @@ function App() {
       // }
 
       const loginUsersObject = obj.users;
-      // console.log("RECEIVED", loginUsersObject)
+      console.log("RECEIVED", loginUsersObject)
       const loginUserNames = Object.keys(loginUsersObject);
       const loginUsersInformation = {};
       const usersOnline = [];
@@ -193,13 +161,11 @@ function App() {
           avatar_id: loginUsersObject[name].avatar_id,
         };
       });
-      //@@@@ SUNDAY - this should be dynamic and need an avatar from socket.
       // console.log("ONLINE USERS PROFILE SET",loginUsersInformation)
       setProfiles(loginUsersInformation);
 
       usersOnline.unshift({ value: "all", label: "all", avatar: avatars[0] });
       // const onlineOthers = usersOnline.filter(user => user.value !== nickname)
-
       // console.log("THIS WILL BE ONLINE OBJ", usersOnline)
       setOnline(usersOnline);
     }); // this works
@@ -209,9 +175,9 @@ function App() {
     }; // => prevent memory leak..
   }, [socket]);
 
-  const RegistrationChecker = (val) => {
-    socket && socket.emit("REGISTERED", val);
-  };
+  // const RegistrationChecker = (val) => {
+  //   socket && socket.emit("REGISTERED", val);
+  // };
 
   const clearCookies = () => {
     const all_cookies = cookies.getAll();
@@ -221,10 +187,9 @@ function App() {
     });
   };
 
-  const createSocketIdNameObject = (username) => { //WORKS
-    console.log('socket - app.js', socket);
-    socket && socket.emit("SET USERNAME", { socketID: socket.id, "username": username });
-    // socket && socket.emit("REGISTERED", val); //if socket exists, then emit
+  const createSocketIdNameObject = (username) => {
+    console.log(username, socket.id)
+    socket && socket.emit("SET USERNAME", { "socketID": socket.id, "username": username });
   };
 
   const sendMessage = () => {
@@ -235,28 +200,20 @@ function App() {
     socket && socket.emit("PRIVATE MESSAGE", { "target": target, "message": msg, "username": username });
   };
 
-  // console.log('nickname', nickname)
   return (
     <SocketContext.Provider value={{ socket, online, nickname, friendList }} >
       <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked, user, setUser, profiles, nickname, setProfiles, profileShow, setProfileShow, blockAddFriendAlert, setBlockAddFriendAlert }} >
-
-        {/* clicked -> used in Menu.jsx
-    setClicked -> used in Online.jsx */}
-        {/* {show && <Menu username={nickname} />} */}
         <Routes>
           <Route path='/' element={<Login setUser={createSocketIdNameObject} />} />
-          <Route path='/register' element={<Register submitRegistrationInfo={RegistrationChecker} setUser={createSocketIdNameObject}/>} />
+          <Route path='/register' element={<Register setUser={createSocketIdNameObject}/>} />
           <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
-          {/* <Route path={`/game/plaza`} element={ */}
           // <Route path={`/game/${room}`} element={
             <Game
               username={nickname}
               sendMessage={sendMessage}
               sendPrivateMessage={privateMessage}
-              // sendData={sendData}
               setUser={createSocketIdNameObject}
               room={room}
-              // nickname={nickname}
               online={online}
               map={maps[room]}
             />} />

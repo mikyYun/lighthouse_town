@@ -26,5 +26,6 @@ body {
   height: 100vh;
   padding-top: 1px;
   display: flex;
+  overflow: hidden;
 }
 

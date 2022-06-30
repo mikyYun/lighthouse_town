@@ -9,8 +9,8 @@ export default function Profile(props) {
 
   useEffect(() => {
     socket.on("update login users information", ({disconnectedUser}) => {
-        console.log()
-        const newProfiles = profiles
+      console.log("THIS second", disconnectedUser)
+      const newProfiles = profiles
         if (newProfiles[disconnectedUser]) {
           delete newProfiles[disconnectedUser]
           setProfiles(newProfiles)
@@ -20,9 +20,6 @@ export default function Profile(props) {
   }, [profiles])
 
   console.log('Clicked in Profile', clicked)
-  // const { nickname } = useCallback(SocketContext)
-  // console.log("ONLINE USERS PROFILES", profiles);
-  // console.log("ONLINE USERS PROFILES", nickname);
   /**
    * provile = {
    *  name: {
@@ -57,13 +54,13 @@ export default function Profile(props) {
               {/* <div className={`profile ${username}`} key={ind} style={{display: "inline"}}> */}
               {/* <title> */}
               {/* <div className="profile-name">{title}</div> */}
-            <div className="profile-email">{email}</div>
-              {/* </title> */}
-            <div key={ind}>
+
+            <div className="profile-email"><p>Email</p>{email}</div>
+            <div>
+            <p>Languages</p>
               <div className="profile-language">{languageLists}</div>
             </div>
 
-            {/* <button onClick={() => {setProfileShow("none")}}>CLOSE</button> */}
           </div>
           );
         }

@@ -77,7 +77,7 @@ class Characters {
 
   showName = (ctx) => {
     // name over head
-    ctx.font = 'bold 20px monospace';
+    ctx.font = 'bold 25px monospace';
     ctx.fillRect(
       this.state.x,
       this.state - 10,
@@ -90,31 +90,18 @@ class Characters {
       this.state.x + 10,
       this.state.y + 5
     )
-  }
+  };
+
 
   showChat = (ctx, msg) => {
-    ctx.font = 'bold 20px monospace';
-    ctx.fillRect(
-      this.state.x,
-      this.state - 10,
-      80,
-      20
-    )
-    ctx.fillStyle = "black";
+    ctx.font = 'bold 30px monospace'
+    ctx.fillStyle = "blue"
     ctx.fillText(
       msg,
       this.state.x,
-      this.state.y - 10
-    )
+      this.state.y - 13
+    );
   }
 };
 
 export default Characters;
-
-
-// keypressed : not in constructor
-// update within class -> update method
-
-// drawFrame : in Character
-
-

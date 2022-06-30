@@ -14,19 +14,28 @@ body{
   justify-content: center;
   height: 100vh;
 
-  h1 {
-    color: $main-color;
-    font-size: 6rem;
-    font-weight: bolder;
-    font-family: 'VT323', monospace;
-  }
+  .logo {
+    background: url('./game_img/logo.png') no-repeat;
+    background-size: contain;
+    width: 400px;
+    height: 170px;
+    /* margin-bottom: 40px; */
+    image-rendering: pixelated;
 
-  h2 {
-    color: $main-color;
-    font-size: 4rem;
-    font-weight: bolder;
-    font-family: 'VT323', monospace;
   }
+  // h1 {
+  //   color: $main-color;
+  //   font-size: 6rem;
+  //   font-weight: bolder;
+  //   font-family: 'VT323', monospace;
+  // }
+
+  // h2 {
+  //   color: $main-color;
+  //   font-size: 4rem;
+  //   font-weight: bolder;
+  //   font-family: 'VT323', monospace;
+  // }
 }
 
 #form_login {
