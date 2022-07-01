@@ -14,7 +14,6 @@ import { createContext } from "react";
 
 // import character imag
 
-
 export const SocketContext = createContext(socket); // going to Recipient.jsx
 export const UserListContext = createContext({});
 export const MsgContext = createContext([]);
