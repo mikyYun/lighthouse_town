@@ -1,40 +1,25 @@
-import { useEffect, useCallback, useContext, useState } from "react";
+import { useEffect, useContext } from "react";
 import { SocketContext, UserListContext } from "../App.js";
 
 export default function Profile(props) {
   const { clicked, profiles, nickname, setProfiles, profileShow, setProfileShow } = useContext(UserListContext);
   const {socket} = useContext(SocketContext)
 
-  const [profile, setProfile] = useState({});
-
   useEffect(() => {
     socket.on("update login users information", ({disconnectedUser}) => {
-      console.log("THIS second", disconnectedUser)
+      // console.log("THIS second", disconnectedUser)
       const newProfiles = profiles
         if (newProfiles[disconnectedUser]) {
           delete newProfiles[disconnectedUser]
           setProfiles(newProfiles)
         }
-        console.log("THIS second", profiles)
+        // console.log("THIS second", profiles)
     })
   }, [profiles])
 
-  console.log('Clicked in Profile', clicked)
-  /**
-   * provile = {
-   *  name: {
-   *     name: 'mike',
-   *     email: 'email',
-   *     languages: [html, css....],
-   *     avatar_id: 'avatar_id',
-   *   }
-   * }
-   */
-
-
 
   const profileNames = Object.keys(profiles);
-  console.log(profileNames)
+  // console.log(profileNames)
   const profileArticles = profileNames.map((username, ind) => {
 
     // when user is not me!
@@ -42,7 +27,7 @@ export default function Profile(props) {
       // console.log(username)
       const title = profiles[username].name;
       const email = profiles[username].email;
-      console.log("TITLE", title, "EMAIL", email)
+      // console.log("TITLE", title, "EMAIL", email)
       const languageLists = profiles[username].languages.map((lang, index) => (
         <li key={index} className="list-languages">{lang}</li>
       ));

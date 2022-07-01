@@ -9,6 +9,7 @@ function MessageForm({ nickname, recipient, user }) {
   const { socket } = useContext(SocketContext);
   const [textareaDisable, setTextareaDisable] = useState(true)
   const focusTextArea = useRef()
+
   // socket, socket_event object
   // textarea에서 텍스트를 입력하면 typingMessage state를 변경합니다.
   const handleChangeTypingMessage = useCallback((event) => {
@@ -19,7 +20,7 @@ function MessageForm({ nickname, recipient, user }) {
     const noContent = typingMessage.trim() === "";
 
     if (noContent) {
-      console.log("no content received");
+      // console.log("no content received");
       return;
     }
     if (recipient.value !== "all") {

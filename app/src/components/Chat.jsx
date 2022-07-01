@@ -3,13 +3,14 @@ import Recipient from "./Recipient";
 import './Chat.scss'
 
 export default function Chat(props) {
+  const {username, room} = props
 
   return (
 
     <>
       <div className="chatroom">
         <Recipient />
-        <ChatRoom username={props.username} room={props.room} recipient={''} />
+        <ChatRoom username={username}/>
       </div>
     </>
   )

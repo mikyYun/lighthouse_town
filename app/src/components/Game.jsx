@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { SocketContext } from "../App";
+import { SocketContext, UserListContext } from "../App";
 import Canvas from "./Canvas";
 import "./Game.scss";
 import Chat from "./Chat";
@@ -11,11 +11,12 @@ import FriendList from "./FriendsList";
 
 export default function Game(props) {
   const location = useLocation();
-  const { nickname, socket } = useContext(SocketContext);
+  const { socket } = useContext(SocketContext);
+  const { nickname } = useContext(UserListContext);
   const { sendMessage, sendPrivateMessage } = props
   const [msg, setMsg] = useState({});
 
-  console.log('location', location);
+  // console.log('location', location);
 
   const [show, setShow] = useState(false);
   const [lecture, setLecture] = useState("https://www.youtube.com/embed/FSs_JYwnAdI" );
@@ -25,14 +26,14 @@ export default function Game(props) {
   }
 
   function sendUrl(url){
-    console.log(socket);
+    // console.log(socket);
     socket && socket.emit("lecture", url);
-    console.log("SENT")
+    // console.log("SENT")
   }
 
 useEffect(() => {
     socket.on("new lecture", data => {
-      console.log(data)
+      // console.log(data)
       setLecture(data)
     })
 },[socket])
@@ -57,11 +58,10 @@ useEffect(() => {
           sendMessage={sendMessage}
           sendPrivateMessage={sendPrivateMessage}
           room={props.room}
-          sendData={props.sendData}
           map={props.map}
         />
         <Chat
-          username={props.username}
+          username={nickname}
           room={props.room}
           handleSubmitNickname={props.handleSubmitNickname}
         />

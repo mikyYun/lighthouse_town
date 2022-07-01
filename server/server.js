@@ -62,20 +62,20 @@ const usersInRooms = {};
 io.on("connection", (socket) => {
   const session = socket.request.session;
   session.save();
-  console.log("MAKE NEW CONNECTION") // checked
-  console.log(currentUsers)
+  // console.log("MAKE NEW CONNECTION") // checked
+  // console.log(currentUsers)
   // LOGIN USER CONNECTED
   // socketID and username matching triggered when user login
   socket.on("SET USERNAME", (obj) => {
     // console.log("SET USERNAME", obj)
     //Login.jsx 의 setUser(res.data.userName)
     const { username, socketID } = obj;
-    console.log("RECIEVED DATA", username, socketID)
+    // console.log("RECIEVED DATA", username, socketID)
     // only work after login not refresh
     // console.log("Connected ", username, socketID);
     // after refresh, socketid undefined
     currentUsers[username] = socketID;
-    console.log(currentUsers)
+    // console.log(currentUsers)
     pool.query(
       "SELECT id, username AS name, email, avatar_id FROM users",
       (err, res) => {
@@ -103,11 +103,11 @@ io.on("connection", (socket) => {
                 });
               }
             });
-            console.log('loginUsersData', loginUsersData)
-            console.log('currentUser', currentUsers)
+            // console.log('loginUsersData', loginUsersData)
+            // console.log('currentUser', currentUsers)
             // currentUsers = {name: socketID}
             const alluserNames = Object.keys(loginUsersData);
-            console.log("FILTER ONLINE USERS",loginUsersData)
+            // console.log("FILTER ONLINE USERS",loginUsersData)
             alluserNames.forEach((name) => {
               io.to(currentUsers[name]) // socketID
                 .emit("all user names", { "users": loginUsersData });// all user names
@@ -182,8 +182,8 @@ io.on("connection", (socket) => {
                     // followedInfo[row.username]["email"] = row.email
                   }
                 });
-                    // console.log("INFOMATION", usernames)
-                    // console.log(usernames);
+                // console.log("INFOMATION", usernames)
+                // console.log(usernames);
                 pool.query(
                   "SELECT * FROM user_language JOIN languages ON language_id=languages.id", (err, res_3) => {
                     res_3.rows.map(userLanguageID => { // @@ userLanguageName 으로 바꾸고 밑에서 =>// obj.language_name 으로 하기
@@ -258,10 +258,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("lecture", url => {
-    console.log(url)
-    const address = 'https://www.youtube.com/embed/' + url.split('=')[1]
+    // console.log(url)
+    const address = 'https://www.youtube.com/embed/' + url.split('=')[1];
     io.emit("new lecture", address);
-  })
+  });
 
 
   // ADD FRIEND
@@ -271,7 +271,7 @@ io.on("connection", (socket) => {
     pool.query(
       "SELECT id, username FROM users WHERE username=$1", [addFriendName],
       (err, res) => {
-        console.log('res', res)
+        // console.log('res', res)
         // res.rows => users table [{id: , username: ,....}]
         const targetID = res.rows[0].id;
         // console.log("target users id", targetID);
@@ -293,7 +293,7 @@ io.on("connection", (socket) => {
             newFriendLanguageObj[addFriendName] = { languages };
             // console.log("WHAT", addFriendName, {languages});
             // socket.emit("updateFriendsList", newFriendLanguageObj);
-            console.log("NEW FRIEND ADDED")
+            // console.log("NEW FRIEND ADDED")
             socket.emit("updateFriendsList", { newFriendName: addFriendName, languages: languages });
           });
 
@@ -387,27 +387,27 @@ io.on("connection", (socket) => {
     };
     // console.log('JOIN TO NEW ROOM', newRoom)
 
-      // receive.message는 ChatRoom.jsx 에서 defined
-  // --------------- SEND MESSAGE ---------------
-  socket.on("SEND_MESSAGE", (requestData) => {
-    //emiting back to receive message in line 67
-    console.log('REQUEST', requestData);
-    const responseData = {
-      ...requestData,
-      type: "SEND_MESSAGE",
-      time: new Date(),
-    };
-    console.log("SEND TO NEWROOM", responseData)
-    // SVGPreserveAspectRatio.to(roomName).emit
-    io.to(newRoom).emit("RECEIVE_MESSAGE", responseData);
+    // receive.message는 ChatRoom.jsx 에서 defined
+    // --------------- SEND MESSAGE ---------------
+    socket.on("SEND_MESSAGE", (requestData) => {
+      //emiting back to receive message in line 67
+      // console.log('REQUEST', requestData);
+      const responseData = {
+        ...requestData,
+        type: "SEND_MESSAGE",
+        time: new Date(),
+      };
+      // console.log("SEND TO NEWROOM", responseData)
+      // SVGPreserveAspectRatio.to(roomName).emit
+      io.to(newRoom).emit("RECEIVE_MESSAGE", responseData);
 
-    //responseData = chat message
-    //@@@@@@ ChatRoom.jsx line 21
-    // console.log(
-    //   `"SEND_MESSAGE" is fired with data: ${JSON.stringify(responseData)}`
-    // );
-    io.emit("dataToCanvas", responseData);
-  });
+      //responseData = chat message
+      //@@@@@@ ChatRoom.jsx line 21
+      // console.log(
+      //   `"SEND_MESSAGE" is fired with data: ${JSON.stringify(responseData)}`
+      // );
+      io.emit("dataToCanvas", responseData);
+    });
 
 
     // "room 1"에는 이벤트타입과 서버에서 받은 시각을 덧붙여 데이터를 그대로 전송.
@@ -433,28 +433,25 @@ io.on("connection", (socket) => {
   });
 
 
+
+
   /* 오브젝트에서 종료되는 유저 삭제 */
   socket.on("disconnect", () => {
     // console.log("Server.js - DISCONNECT", socket.id);
 
     const alluserNames = Object.keys(currentUsers);
     let disconnectedUsername;
-    alluserNames.forEach((username) => {
-      if (currentUsers[username] === socket.id)
-
-        delete currentUsers[username];
-      disconnectedUsername = username
-      console.log("Server.js - A USER DISCONNECTED - CURRENT USERS", username, socket.id);
-    }); // {"users": [name1, name2] }
-
-      delete currentUsers[username];
-      disconnectedUsername = username;
+    alluserNames.forEach((name) => {
+      if (currentUsers[name] === socket.id)
+        delete currentUsers[name];
+      disconnectedUsername = name;
+      // console.log("Server.js - A USER DISCONNECTED - CURRENT USERS", name, socket.id);
     }); // {"users": [name1, name2] }
     // console.log("Server.js - DISCONNECT - CURRENT USERS", currentUsers);
     console.log('DISCONNECT A USER', currentUsers);
     io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기
   });
-
+});
 
 //
 app.get("/", (req, res) => {
@@ -547,8 +544,8 @@ app.post("/register", (req, res) => {
     })
     .then((response) => {
       const { id } = response.rows[0];
-      const userID = id
-      const userData = {userName, avatar, userLanguages, userID};
+      const userID = id;
+      const userData = { userName, avatar, userLanguages, userID };
 
       userLanguages.forEach((lang_id) => {
         pool.query(
@@ -557,7 +554,7 @@ app.post("/register", (req, res) => {
         );
       });
       // sending user info back to Register.jsx (as res.data)
-      console.log("REGISTRATION SUCCESS", userData)
+      console.log("REGISTRATION SUCCESS", userData);
       res.status(201).send(userData);
     })
     .catch((e) => { console.error(e); });

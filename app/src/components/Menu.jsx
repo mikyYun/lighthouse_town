@@ -5,9 +5,9 @@ import Profile from "./Profile.jsx";
 
 
 const Menu = (props) => {
-  const {socket, online, friendList} = useContext(SocketContext)
+  const {socket} = useContext(SocketContext)
   const location = useLocation()
-  const { clicked, setRecipient, setShow, nickname, recipient, setProfileShow, profiles, setBlockAddFriendAlert } = useContext(UserListContext);
+  const { clicked, setRecipient, setBlockAddFriendAlert, friendList } = useContext(UserListContext);
   const [showProfile, setShowProfile] = useState(false);
   const username = props.username
   const userID = location.state?.[3]
@@ -42,9 +42,9 @@ const Menu = (props) => {
         }}>Send Message</div>
 
         <div className="menu-action" onClick={(e) => {
-          console.log("clicked vie-porifle", clicked.value)
+          // console.log("clicked vie-porifle", clicked.value)
           setShowProfile(clicked.value);
-          console.log(showProfile)
+          // console.log(showProfile)
         }}>View Profile
           </div>
       </div>

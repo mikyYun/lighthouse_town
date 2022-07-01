@@ -6,7 +6,7 @@ const dbParams = require("../lib/db.js");
 const db = new Client(dbParams);
 
 const runSchemaFiles = async () => {
-  console.log("FINDING")
+  // console.log("FINDING")
   const schemaFilenames = fs.readdirSync("./db/schema");
   console.log(schemaFilenames)
   for (const fn of schemaFilenames) {

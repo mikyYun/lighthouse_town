@@ -58,7 +58,7 @@ export default function RegistrationModel() {
 
     }, () => {
       // 아직 모델을 받아오지 못했을 경우(로딩중)
-      console.log("model loading...");
+      // console.log("model loading...");
     });
 
     const light = new THREE.DirectionalLight(0x000000, 0, 0);
