@@ -13,7 +13,8 @@ import { UserListContext, MsgContext } from "../App.js";
 function ChatRoom(props) {
   const { socket } = useContext(SocketContext);
   const { recipient, user } = useContext(UserListContext);
-  const { username } = props;
+
+  const { username, room } = props;
   const [messages, setMessages] = useState([]);
   const chatWindow = useRef(null);
   const moveScrollToReceiveMessage = useCallback(() => {

@@ -207,9 +207,8 @@ function App() {
           <Route path='/' element={<Login setUser={createSocketIdNameObject} />} />
           <Route path='/register' element={<Register setUser={createSocketIdNameObject}/>} />
           <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
-          // <Route path={`/game/${room}`} element={
+          <Route path={`/game/${room}`} element={
             <Game
-              username={nickname}
               sendMessage={sendMessage}
               sendPrivateMessage={privateMessage}
               setUser={createSocketIdNameObject}

@@ -57,7 +57,6 @@ useEffect(() => {
           sendMessage={sendMessage}
           sendPrivateMessage={sendPrivateMessage}
           room={props.room}
-          sendData={props.sendData}
           map={props.map}
         />
         <Chat
