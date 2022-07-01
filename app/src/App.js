@@ -220,6 +220,5 @@ function App() {
       </UserListContext.Provider>
     </SocketContext.Provider>
   );
-
 }
 export default App;

@@ -61,7 +61,7 @@ useEffect(() => {
           map={props.map}
         />
         <Chat
-          username={props.username}
+          username={nickname}
           room={props.room}
           handleSubmitNickname={props.handleSubmitNickname}
         />
