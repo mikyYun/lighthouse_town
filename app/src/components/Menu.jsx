@@ -5,9 +5,9 @@ import Profile from "./Profile.jsx";
 
 
 const Menu = (props) => {
-  const {socket, online, friendList} = useContext(SocketContext)
+  const {socket} = useContext(SocketContext)
   const location = useLocation()
-  const { clicked, setRecipient, setShow, nickname, recipient, setProfileShow, profiles, setBlockAddFriendAlert } = useContext(UserListContext);
+  const { clicked, setRecipient, setBlockAddFriendAlert, friendList } = useContext(UserListContext);
   const [showProfile, setShowProfile] = useState(false);
   const username = props.username
   const userID = location.state?.[3]

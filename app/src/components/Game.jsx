@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { SocketContext } from "../App";
+import { SocketContext, UserListContext } from "../App";
 import Canvas from "./Canvas";
 import "./Game.scss";
 import Chat from "./Chat";
@@ -11,7 +11,8 @@ import FriendList from "./FriendsList";
 
 export default function Game(props) {
   const location = useLocation();
-  const { nickname, socket } = useContext(SocketContext);
+  const { socket } = useContext(SocketContext);
+  const { nickname } = useContext(UserListContext);
   const { sendMessage, sendPrivateMessage } = props
   const [msg, setMsg] = useState({});
 

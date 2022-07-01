@@ -201,8 +201,8 @@ function App() {
   };
 
   return (
-    <SocketContext.Provider value={{ socket, online, nickname, friendList }} >
-      <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked, user, setUser, profiles, nickname, setProfiles, profileShow, setProfileShow, blockAddFriendAlert, setBlockAddFriendAlert }} >
+    <SocketContext.Provider value={{ socket }} >
+      <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked, user, setUser, profiles, nickname, setProfiles, profileShow, setProfileShow, blockAddFriendAlert, setBlockAddFriendAlert, online, friendList }} >
         <Routes>
           <Route path='/' element={<Login setUser={createSocketIdNameObject} />} />
           <Route path='/register' element={<Register setUser={createSocketIdNameObject}/>} />

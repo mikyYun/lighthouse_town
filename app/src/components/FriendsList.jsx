@@ -3,7 +3,8 @@ import { SocketContext, UserListContext } from "../App.js";
 import "./FriendsList.scss";
 
 export default function FriendList() {
-  const { friendList, socket } = useContext(SocketContext);
+  const { socket } = useContext(SocketContext);
+  const { friendList } = useContext(UserListContext);
   const friendsNames = Object.keys(friendList); // [이름, 이름]
   const [toggle, setToggle] = useState(false);
 
