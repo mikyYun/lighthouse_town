@@ -175,10 +175,6 @@ function App() {
     }; // => prevent memory leak..
   }, [socket]);
 
-  // const RegistrationChecker = (val) => {
-  //   socket && socket.emit("REGISTERED", val);
-  // };
-
   const clearCookies = () => {
     const all_cookies = cookies.getAll();
     // if (all_cookies.length > 0) {
