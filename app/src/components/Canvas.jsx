@@ -3,7 +3,7 @@ import Characters from "./helper/Characters";
 import { SocketContext } from "../App";
 import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from 'universal-cookie';
-import townWall from "./game_img/collision_data.js/townWall"
+
 
 const Canvas = (props) => {
   const { socket } = useContext(SocketContext);
@@ -32,7 +32,7 @@ const Canvas = (props) => {
     react: "/game/react",
     ruby: "/game/ruby",
   };
-  console.log(townWall)
+
   // pathname changes -> add classname
   const path = location.pathname.split('/')[2];
 
