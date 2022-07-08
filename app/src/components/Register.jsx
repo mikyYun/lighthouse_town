@@ -234,7 +234,8 @@ export default function Register(props) {
                     res.data.userID
                   )
                 } else {
-                  alert("Invalid information. Please try with different email or username")
+                  alert("Registration failed. Please try with different email or username")
+                  window.location = '/register'
                 }
               })
               .catch((error) => console.log(error));

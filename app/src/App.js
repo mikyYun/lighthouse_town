@@ -104,7 +104,7 @@ function App() {
       ) && currentCookies.userdata) {
         createSocketIdNameObject(currentCookies.userdata.userName);
       }
-      if (!currentCookies.userdata) {
+      if (!currentCookies.userdata && location.pathname !== "/register") {
         // if (!urlLists.includes(location.pathname)) {
         console.log("NO USERDATA. CLEAR COOKIES"); // checked
         clearCookies();

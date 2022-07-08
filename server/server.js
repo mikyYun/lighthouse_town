@@ -206,30 +206,6 @@ io.on("connection", (socket) => {
     }
   });
 
-  // socket.on("reconnection?", (e) => {
-  //   console.log("RECONENCTION REQUEST", e);
-  //   // let reconnection = true
-  //   // console.log("THIS IS RECONNECTION", e);
-  //   // e.username, e.newSocketId
-  //   // console.log("before",currentUsers)
-  //   if (currentUsers[e.username]) {
-  //     // 현재 currentUsers 에 같은 유저네임이 존재하면 => 사용중인 유저네임 && disconnect 되지 않았다면
-  //     socket.emit("DENY CONNECTION", false);
-  //     // callback("return")
-  //   } else {
-  //     currentUsers[e.username] = e.newSocketId; // update
-  //     const alluserNames = Object.keys(currentUsers); // get keys arr
-  //     // alluserNames.forEach((name) => {
-  //     // if (currentUsers[name] === socket.id)
-  //     // delete currentUsers[name];
-  //     // }); // {"users": [name1, name2] }
-  //     // 현재유저 이름은 뺌
-  //     // alluserNames.filter(nm => nm !== e.username)
-  //     // console.log("CURRENT USERS", alluserNames);
-  //     socket.emit("allƒ user names", { "users": alluserNames });
-  //   }
-  // });
-
 
   // FOR USER MOVEMENT (Canvas)
   socket.on('sendData', data => {
@@ -296,30 +272,6 @@ io.on("connection", (socket) => {
             // console.log("NEW FRIEND ADDED")
             socket.emit("updateFriendsList", { newFriendName: addFriendName, languages: languages });
           });
-
-
-        // pool.query("SELECT * FROM user_language WHERE user_id=$1", [targetID],
-        //   (err, res) => {
-        //     const userLanguageTable = res.rows;
-        //     const languageNames = []
-        //     // console.log(row)
-        //     // return changeToLanguageName(row.id);
-        //     userLanguageTable.map(row => {
-        //     return pool.query("SELECT * FROM languages WHERE id=$1", [row.language_id],
-        //     (err, res) => {
-        //           console.log("RES",res.rows[0].language_name)
-        //           return languageNames.push(res.rows[0].language_name)
-        //           // return res.rows[0].languageName;
-        //         });
-        //     });
-        //     console.log("THIS",languageNames)
-        //     // return userLanguageTable;
-        //     socket.emit("updateFriendsList", userLanguageTable)
-        //   });
-        // console.log(getOneUserLanguages(targetID, addFriendName))
-        // getOneUserLanguages(targetID, addFriendName);
-        // this method will return array of language names
-        // send this array to update friendList
 
       }
     );
@@ -535,8 +487,11 @@ app.post("/register", (req, res) => {
     "SELECT * FROM users WHERE username = $1 OR email = $2", [userName, userEmail])
     .then((response) => {
       // break promise chain early by throwing error
-      if (response.rows[0]) return Promise.reject(('User already registered')); // option 1?
-      // throw res.status(409).send('User already registered'); // option 2
+      if (response.rows[0]) {
+        res.status(201).send(false);
+        // return Promise.reject(('User already registered')); // option 1?
+      }
+        // throw res.status(409).send('User already registered'); // option 2
 
       return pool.query(
         "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [userName, userPassword, userEmail, avatar]);
