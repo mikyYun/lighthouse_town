@@ -1,8 +1,9 @@
 # Lighthouse Town
 ## Collaborator
 * Moon Choi : https://github.com/moon-choi
-* Heesoo Park : https://github.com/moon-choi
+* Heesoo Park : https://github.com/IamHPark
 * Myeonghwan Mike Yun : https://github.com/mikyYun
+* Jordan Ciurcovich: https://github.com/symphony
 
 ## Preview
 * Login <br />
@@ -57,32 +58,34 @@ BACK_URL=http://localhost:8000
 ### Database
 - login any psql user
 - create new user as superuser with password 123
-* $ CREATE USER coding_buddy WITH SUPERUSER PASSWORD '123';
-* $ \du => check new user
+* $ `CREATE USER coding_buddy WITH SUPERUSER PASSWORD '123'`;
+* $ `\du` => check new user
 
 - create new database
 * $ CREATE DATABASE coding_buddy;
-* $ \l => check new database
+* $ `\l` => check new database
 
 - login with new user
-* $ psql -d coding_buddy -U coding_buddy
+* $ `psql -d coding_buddy -U coding_buddy`
 * $ type password to login
-* $ \conninfo => check current user
+* $ `\conninfo` => check current user
 
 ### Reset Database
 - initialize database
 /server <br />
-- npm run db:reset
+- `npm run db:reset`
 : this will initialize codding_buddy database <br />
 since this initialization is needed to stop, ctrl + C || command + C to stop server run
 
 ### Run
 - run server and client together <br />
-/server <br />
-npm run runall
+/server <br /> 
+`npm run runall`
+
 - run server
-/server <br />
-npm run dev
+/server <br /> 
+`npm run dev`
+
 - run client
-/app <br />
-npm start
+/app <br /> 
+`npm start`
