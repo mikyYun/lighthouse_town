@@ -46,13 +46,6 @@ app.use(
   })
 );
 
-// get current all users data
-pool.query(
-  `SELECT username, email FROM users;`
-).then(res => {
-  console.log("all user data",res.rows)
-})
-
 io.use((socket, next) => {
   sessionMiddleware(socket.request, {}, next);
 });
