@@ -41,4 +41,9 @@ VALUES
 INSERT INTO users
   (username, password, email, avatar_id)
 VALUES
-  ('gary', 'garyy', 'test8@test.com', 2);
+  ('gary', 'gary', 'test8@test.com', 2);
+
+INSERT INTO users
+  (username, password, email, avatar_id)
+VALUES
+  ('heverton', 'heverton', 'test9@test.com', 2);

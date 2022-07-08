@@ -9,13 +9,11 @@ INSERT INTO favorites (added_by, added)
 INSERT INTO favorites (added_by, added)
   VALUES (1, 5);
 INSERT INTO favorites (added_by, added)
+  VALUES (1, 10);
+INSERT INTO favorites (added_by, added)
   VALUES (2, 4);
 INSERT INTO favorites (added_by, added)
   VALUES (2, 5);
-INSERT INTO favorites (added_by, added)
-  VALUES (3, 1);
-INSERT INTO favorites (added_by, added)
-  VALUES (3, 2);
 INSERT INTO favorites (added_by, added)
   VALUES (3, 4);
 INSERT INTO favorites (added_by, added)
