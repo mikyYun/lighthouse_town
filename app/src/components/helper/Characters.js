@@ -61,8 +61,6 @@ class Characters {
     }
   }
 
-
-
   drawFrame = (ctx) => {
     const frameX = cycleLoop[this.state.frameCount];
     // console.log(frameX, this.state.frameCount)

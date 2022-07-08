@@ -10,7 +10,7 @@ export default function Register(props) {
   const [userName, setUserName] = useState();
   const [userPassword, setUserPassword] = useState();
   const [userLanguages, setUserLanguages] = useState([]);
-  const [userAvatar, setUserAvatar] = useState(1);// 기본 아바타 1
+  const [userAvatar, setUserAvatar] = useState(1); // 기본 아바타 1
   const [incorrectPassword, setIncorrectPassword] =
     useState("correct_password");
   const [registerFormCheck, setRegisterFormCheck] = [];
@@ -34,7 +34,7 @@ export default function Register(props) {
   const goChat = (username, avatar, userLanguages, id) => {
     const data = [username, avatar, userLanguages, id];
     navigate(`/game/plaza`, { state: data });
-    navigate(0, { state: data })
+    navigate(0, { state: data });
   };
   const languageLists = {
     html: "HTML",
@@ -60,13 +60,11 @@ export default function Register(props) {
   );
 
   return (
-
     <div className="register-form">
       <form id="form_registration" onSubmit={(e) => e.preventDefault()}>
-
-      <div className="field">
+        <div className="field">
           <input
-          className="text-input"
+            className="text-input"
             id="register_name"
             rows="1"
             placeholder="NAME"
@@ -99,7 +97,6 @@ export default function Register(props) {
             }}
           ></input>
         </div>
-
 
         <div className="field">
           <input
@@ -158,7 +155,7 @@ export default function Register(props) {
                   type="checkbox"
                   id="man"
                   value="1"
-                  checked={(userAvatar === 1) ? true : false}
+                  checked={userAvatar === 1 ? true : false}
                   onChange={(e) => {
                     setUserAvatar(1);
                   }}
@@ -171,7 +168,7 @@ export default function Register(props) {
                 <input
                   type="checkbox"
                   value="2"
-                  checked={(userAvatar === 2) ? true : false}
+                  checked={userAvatar === 2 ? true : false}
                   onChange={(e) => {
                     setUserAvatar(2);
                   }}
@@ -184,7 +181,7 @@ export default function Register(props) {
                 <input
                   type="checkbox"
                   value="3"
-                  checked={(userAvatar === 3) ? true : false}
+                  checked={userAvatar === 3 ? true : false}
                   onChange={(e) => {
                     setUserAvatar(3);
                   }}
@@ -197,7 +194,7 @@ export default function Register(props) {
                 <input
                   type="checkbox"
                   value="4"
-                  checked={(userAvatar === 4) ? true : false}
+                  checked={userAvatar === 4 ? true : false}
                   onChange={(e) => {
                     setUserAvatar(4);
                   }}
@@ -207,42 +204,47 @@ export default function Register(props) {
           </ul>
         </div>
         <div className="btn-container">
-        <button
-          className="btn"
-          type="submit"
-          onClick={(e) => {
-            const userInfo = {
-              userName,
-              userPassword,
-              userEmail,
-              userLanguages,
-              userAvatar,
-            };
-            axios // client talking to the server. Asynchronous. if it doesn't happen .post,
-              .post("/register", { userInfo })
-              .then((res) => {
-                if (res.data.userName) {
-                  // res.data = [username, avatar_id, userLanguages, id];
-                  console.log("register button click and response data",res.data)
-                  setUser(res.data.userName)
-                  // props.submitRegistrationInfo(res.data);
-                  cookies.set("userdata", res.data, { maxAge: 3600 });
-                  goChat(
-                    res.data.userName,
-                    res.data.avatar,
-                    res.data.userLanguages,
-                    res.data.userID
-                  )
-                } else {
-                  alert("Registration failed. Please try with different email or username")
-                  window.location = '/register'
-                }
-              })
-              .catch((error) => console.log(error));
-          }}
-        >
-          Register
-        </button>
+          <button
+            className="btn"
+            type="submit"
+            onClick={(e) => {
+              const userInfo = {
+                userName,
+                userPassword,
+                userEmail,
+                userLanguages,
+                userAvatar,
+              };
+              axios // client talking to the server. Asynchronous. if it doesn't happen .post,
+                .post("/register", { userInfo })
+                .then((res) => {
+                  if (res.data.userName) {
+                    // res.data = [username, avatar_id, userLanguages, id];
+                    console.log(
+                      "register button click and response data",
+                      res.data
+                    );
+                    setUser(res.data.userName);
+                    // props.submitRegistrationInfo(res.data);
+                    cookies.set("userdata", res.data, { maxAge: 3600 });
+                    goChat(
+                      res.data.userName,
+                      res.data.avatar,
+                      res.data.userLanguages,
+                      res.data.userID
+                    );
+                  } else {
+                    alert(
+                      "Registration failed. Please try with different email or username"
+                    );
+                    window.location = "/register";
+                  }
+                })
+                .catch((error) => console.log(error));
+            }}
+          >
+            Register
+          </button>
         </div>
       </form>
     </div>
