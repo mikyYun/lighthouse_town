@@ -1,91 +1,104 @@
 # Lighthouse Town
-## Collaborator
-* Moon Choi : https://github.com/moon-choi
-* Heesoo Park : https://github.com/IamHPark
-* Myeonghwan Mike Yun : https://github.com/mikyYun
+
+## About 
+A Retro gaming inspired online chatting app - focused on bringing developers and collaborators together. \
+Built with React.js, Socket.IO, React Router and Express Node.js
+
+## Collaborators
+* Myeonghwan Mike Yun: https://github.com/mikyYun
+* Moon Choi: https://github.com/moon-choi
+* Heesoo Park: https://github.com/IamHPark
 * Jordan Ciurcovich: https://github.com/symphony
 
 ## Preview
+* Lighthouse Town Plaza - see other users online <br />
+![see other users online in app plaza](_docs/01-onlineUserSync.gif)
+
 * Login <br />
-![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/login.gif)
+![login form](_docs/02-login.gif)
+
 * Registration <br />
-![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/register.gif)
-* Online User's movement Sync <br />
-![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/onlineUserSync.gif)
+![registration form](_docs/03-register.gif)
+
 * Share Video via lecture button <br />
-![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/shareVideo.gif)
-* Live Video share in a room <br />
-![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/liveSyncVideo.gif)
+![share an external video in app with other users](_docs/04-shareVideo.gif)
+
 * Synced Video <br />
-![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/syncedVideo.gif)
-* Chat to All with bubble over the head <br />
-![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/bubbleChat.gif)
+![embedded synced video on other users' clients](_docs/06-syncedVideo.gif)
+
+* Chat to All with bubble over avatar <br />
+![bubble chat popup over user's avatar](_docs/07-bubbleChat.gif)
+
 * Private chat any location <br />
-![alt-text](https://github.com/mikyYun/lighthouse_town/blob/main/src/privateChat.gif)
+![private chat window](_docs/08-privateChat.gif)
 
-## User Story
-- User can login with existing userdata
-- User can register with unique email and username
-- User can choose their programming languages and avatar in registeration
-- User can see other online users
-- User can control their own avatar
-- User can see other online users' movement
-- User can communicate to all 
-- User can communicate to specific user
-- User can share video link in js room via lecture button
+
+## Features
+- login with existing userdata
+- register with unique email and username
+- choose their programming languages and avatar in registeration
+- see other online users
+- control their own avatar
+- see other online users' movement
+- communicate to all 
+- communicate to specific user
+- share video link in js room via lecture button
 - User cannot see unrelated private messages
-- User can see public messaged over the head of avatar
-- User can see online users list and friends list
-- User can add a friend by click 'Add frined' on online list 
-- User can see online user's information by click 'View profile' on online list's user tag
-- User can send message by click 'Send message' on online list's user tag
+- see public messages over the head of avatar
+- see online users list and friends list
+- add a friend by click 'Add frined' on online list 
+- see online user's information by click 'View profile' on online list's user tag
+- send message by click 'Send message' on online list's user tag
+
+---
+## Usage
+- Clone and cd into repo \
+`git clone git@github.com:mikyYun/lighthouse_town.git && cd lighthouse_town`
 
 
-## Setup
-### Server And Client
-- 'npm install' to install npm packagies in 'app' and 'server' independently
-- create .env in server folder <br />
-/server/.env <br />
-PGUSER=coding_buddy <br />
-PGHOST=localhost <br />
-PGDATABASE=coding_buddy <br />
-PGPASSWORD=123 <br />
-PGPORT=5432
-- create .env in app folder <br />
-/app/.env <br />
-BACK_URL=http://localhost:8000
+### Server Setup
+- `cd server` 
+- `npm i` in **server** folder to install server dependencies
+- `cp .env.example .env` to create environment variables file
+
 
 ### Database
-- login any psql user
-- create new user as superuser with password 123
-* $ `CREATE USER coding_buddy WITH SUPERUSER PASSWORD '123'`;
-* $ `\du` => check new user
+- login to psql as any admin \
+`postgres psql`
 
-- create new database
-* $ CREATE DATABASE coding_buddy;
-* $ `\l` => check new database
+- create 'development' superuser \
+`CREATE USER development WITH SUPERUSER PASSWORD 'development';` \
+`\du` => check new user
+
+- create new database \
+`CREATE DATABASE coding_buddy_development;` \
+`\l` => check new database
 
 - login with new user
-* $ `psql -d coding_buddy -U coding_buddy`
-* $ type password to login
-* $ `\conninfo` => check current user
+`psql -d coding_buddy_development -U development` \
 
-### Reset Database
-- initialize database
-/server <br />
-- `npm run db:reset`
-: this will initialize codding_buddy database <br />
-since this initialization is needed to stop, ctrl + C || command + C to stop server run
+- enter password `development` to login \
+`\conninfo` => check current user
 
-### Run
-- run server and client together <br />
-/server <br /> 
+
+### Client Setup
+- `cd client` (from **root** folder) 
+- `npm i` in **app** folder
+- `cp .env.example .env`
+
+
+### Troubleshooting
+- initialize the database \
+`npm run db:reset` in **server** folder
+- `ctrl + C` to stop the server or client
+
+
+### Run the App
+- run server and client together from **server** folder \
 `npm run runall`
 
-- run server
-/server <br /> 
-`npm run dev`
+- *OR* run server individually \
+`npm run dev` from **server** folder
 
-- run client
-/app <br /> 
-`npm start`
+- run client \
+`npm start` from **app** folder
