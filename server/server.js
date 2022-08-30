@@ -23,19 +23,11 @@ const sessionMiddleware = session({
   cookie: { maxAge: 60000 },
 });
 const { getOneUserLanguages } = require("./coding_buddy_db");
-const { Pool } = require("pg");
-const pool = new Pool({
-  user: process.env.PGUSER,
-  host: process.env.PGHOST,
-  database: process.env.PGDATABASE,
-  password: process.env.PGPASSWORD,
-  port: process.env.PGPORT,
-});
 
-//G. socket(server)
-//G. create a new instance of a socket handler
-//G. and passing io as an argument.
-//G. io is the Server.
+// PG database client/connection setup
+const { Pool } = require("pg");
+const dbParams = require("./lib/db.js");
+const pool = new Pool(dbParams);
 
 app.use(cors());
 app.use(sessionMiddleware);
