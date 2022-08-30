@@ -15,7 +15,7 @@
     "db:reset": "node bin/resetdb.js",
     "dev:client": "cd ../app && npm start",
     "allrun": "concurrently \"npm run dev\" \"npm run dev:client\"",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "heroku-postbuild": "cd app && npm install && npm run build"
   },
   "keywords": [],
   "author": "",
