@@ -6,6 +6,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const PORT = process.env.PORT || 8000;
 const express = require("express");
+const path = require("path");
 const session = require("express-session");
 const app = express();
 const httpServer = require("http").createServer(app);
@@ -16,6 +17,9 @@ const io = new Server(httpServer, {
     credentials: true,
   },
 });
+
+//When you navigate to the root page, it would use the built react-app
+app.use(express.static(path.resolve(__dirname, "./app/build")));
 
 const { createAdapter } = require("@socket.io/postgres-adapter"); //app.get, 안써도 socket.io 안에서 직접 postgres 연결이 가능. root path 따로 설정 불필요.
 const sessionMiddleware = session({
