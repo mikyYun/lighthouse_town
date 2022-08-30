@@ -407,6 +407,10 @@ app.get("/", (req, res) => {
   res.json({ connected: "start" });
 });
 
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname + '/app/public/index.html'))
+});
+
 // 로그인 정보 리퀘스트 .. 진행중
 app.post("/login", (req, res) => {
   // client sending
