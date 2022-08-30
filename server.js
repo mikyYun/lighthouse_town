@@ -19,7 +19,8 @@ const io = new Server(httpServer, {
 });
 
 //When you navigate to the root page, it would use the built react-app
-app.use(express.static(path.resolve(__dirname, "./app/build")));
+app.use(express.static(path.join(__dirname, "app/build")));
+
 
 const { createAdapter } = require("@socket.io/postgres-adapter"); //app.get, 안써도 socket.io 안에서 직접 postgres 연결이 가능. root path 따로 설정 불필요.
 const sessionMiddleware = session({
@@ -401,6 +402,8 @@ io.on("connection", (socket) => {
   });
 });
 
+
+
 //
 app.get("/", (req, res) => {
   // 8000
@@ -408,7 +411,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname + '/app/public/index.html'))
+  res.sendFile(path.resolve(__dirname, "app/build", "index.html"))
 });
 
 // 로그인 정보 리퀘스트 .. 진행중
