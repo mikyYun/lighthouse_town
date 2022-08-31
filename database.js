@@ -1,19 +1,36 @@
-const Pool = require('pg').Pool; //postgres
-require("dotenv").config();
+// PG database client connection setup
+const { Pool } = require('pg'); //postgres
+const dbParams = require('./lib/db.js')
+const pool = new Pool(dbParams);
+
 // export default queryMethos = {getOneUserLanguages}
 
-const pool = new Pool({
-  user: process.env.PGUSER,
-  host: process.env.PGHOST,
-  database: process.env.PGDATABASE,
-  password: process.env.PGPASSWORD,
-  port: process.env.PGPORT,
-  ssl: {
-    require: true,
-    rejectUnauthorized: false
+
+module.exports = {
+  getUsers: () => {
+    const queryString = "SELECT id, username AS name, email, avatar_id FROM users";
+    const queryGetLang = "SELECT languages.id, user_id, language_name FROM user_language JOIN languages ON language_id=languages.id";
+
+    return pool
+      .query(queryString)
+      .then(res => {
+        return res.rows || null;
+      })
+      .catch(err => {
+        console.log('Error', err.stack);
+      });
   }
 
-});
+
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -40,16 +57,16 @@ const filterEssentials = function (currentUsers) {
   )
 }
 
-// 데이터베이스 관리...
-// GET : get all users
-const getUsers = (req, res) => {
-  pool.query("SELECT * FROM users ORDER BY id ASC", (err, result) => {
-    if (err) throw err;
-    res.status(200).json(result.rows);
-    // console.log("result.rows - coding_buddy_db.js", result.rows)
-    return result.rows
-  });
-};
+// // 데이터베이스 관리...
+// // GET : get all users
+// const getUsers = (req, res) => {
+//   pool.query("SELECT * FROM users ORDER BY id ASC", (err, result) => {
+//     if (err) throw err;
+//     res.status(200).json(result.rows);
+//     // console.log("result.rows - coding_buddy_db.js", result.rows)
+//     return result.rows
+//   });
+// };
 
 // GET : get a user
 const getUserById = (req, res) => {
@@ -99,4 +116,4 @@ const deleteUser = (req, res) => {
   })
 }
 
-module.exports = { getUsers, getUserById, createUser, updateUser, deleteUser }
+// module.exports = { getUsers, getUserById, createUser, updateUser, deleteUser }

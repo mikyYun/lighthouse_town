@@ -7,12 +7,12 @@ const db = new Client(dbParams);
 
 const runSchemaFiles = async () => {
   // console.log("FINDING")
-  const schemaFilenames = fs.readdirSync("./db/schema");
+  const schemaFilenames = fs.readdirSync("db/schema");
   console.log(schemaFilenames)
   for (const fn of schemaFilenames) {
-    console.log(fn)
-    const sql = fs.readFileSync(`./db/schema/${fn}`, "utf8");
-    console.log(sql)
+    console.log('fn', fn)
+    const sql = fs.readFileSync(`db/schema/${fn}`, "utf8");
+    console.log('sql', sql)
     await db.query(sql);
   }
 };
@@ -34,6 +34,7 @@ const runResetDB = async () => {
     await runSchemaFiles();
     // await runSeedFiles();
     db.end;
+    console.log("IT'S CONNECTED")
   } catch (err) {
     console.log("ERROR", err);
     db.end;

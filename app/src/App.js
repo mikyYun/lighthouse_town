@@ -78,7 +78,10 @@ function App() {
     }
     // console.log('currentCookies', currentCookies)
     // cookies maxAge 3600.
-    socket.on("connect", () => {
+
+
+    // socket connect first
+    socket.on("connection", () => {
       // console.log("SOCKET CONNECTED", currentCookies); // everytime refresh
       //  if ((mainUrlLists.includes(location.pathname))
 
@@ -140,6 +143,7 @@ function App() {
     socket.on("init", msg => console.log("msg - App.js", msg)); //coming from server
     socket.on("backData", data => console.log("data", data)); //coming from server
     socket.on("all user names", (obj) => { //@@@SUNDAY: all user objects
+      console.log('obj, ', obj)
       // obj => {uniqname: {email:, avatar_id:, languages: [arr]},
       //  uniqname: {},
       //  uniqname: {}

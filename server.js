@@ -1,6 +1,3 @@
-
-//@@@@@@@socket ID SPELLING FIX!!
-
 require("dotenv").config({silent: true});
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -9,9 +6,11 @@ const express = require("express");
 const path = require("path");
 const session = require("express-session");
 const app = express();
-const httpServer = require("http").createServer(app);
+
+// Socket.I.O setup
+const http = require("http").createServer(app);
 const { Server } = require("socket.io"); //socketIo
-const io = new Server(httpServer, {
+const io = new Server(http, {
   cors: {
     origin: "http://localhost:3000", //client
     credentials: true,
@@ -19,20 +18,23 @@ const io = new Server(httpServer, {
 });
 
 //When you navigate to the root page, it would use the built react-app
-app.use(express.static(path.join(__dirname, "app/build")));
-
+// app.use(express.static(path.join(__dirname, "app/build")));
 
 const { createAdapter } = require("@socket.io/postgres-adapter"); //app.get, 안써도 socket.io 안에서 직접 postgres 연결이 가능. root path 따로 설정 불필요.
 const sessionMiddleware = session({
   secret: "coding_buddy",
   cookie: { maxAge: 60000 },
 });
-const { getOneUserLanguages } = require("./coding_buddy_db");
+// const { getOneUserLanguages } = require("./coding_buddy_db");
 
 // PG database client/connection setup
 const { Pool } = require("pg");
 const dbParams = require("./lib/db.js");
 const pool = new Pool(dbParams);
+
+// Database connection
+const db = require('./database');
+
 
 app.use(cors());
 app.use(sessionMiddleware);
@@ -57,28 +59,39 @@ const usersInRooms = {};
 
 // OPEN SOCKET
 io.on("connection", (socket) => {
+  // LOGIN USER CONNECTED
   const session = socket.request.session;
   session.save();
-  // console.log("MAKE NEW CONNECTION") // checked
-  // console.log(currentUsers)
-  // LOGIN USER CONNECTED
+
   // socketID and username matching triggered when user login
   socket.on("SET USERNAME", (obj) => {
-    // console.log("SET USERNAME", obj)
+    console.log("SET USERNAME", obj)
     //Login.jsx 의 setUser(res.data.userName)
     const { username, socketID } = obj;
-    // console.log("RECIEVED DATA", username, socketID)
-    // only work after login not refresh
-    // console.log("Connected ", username, socketID);
-    // after refresh, socketid undefined
     currentUsers[username] = socketID;
-    // console.log(currentUsers)
+
+
+
+
+    // database refactoring
+
+    let allUsers;
+    db.getUsers()
+      .then(users => {
+        allUsers = users;
+        // console.log('from DATABASE', allUsers);
+      })
+
+
+
+
+
     pool.query(
       "SELECT id, username AS name, email, avatar_id FROM users",
       (err, res) => {
         // res.rows => {id: , name: , email: , avatar_id}
         const allUsersObj = res.rows;
-        // console.log(allUsersObj)
+        // console.log("allUsersObj", allUsersObj)
         pool.query(
           "SELECT languages.id, user_id, language_name FROM user_language JOIN languages ON language_id=languages.id",
           (err, res_1) => {
@@ -410,9 +423,10 @@ app.get("/", (req, res) => {
   res.json({ connected: "start" });
 });
 
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "app/build", "index.html"))
-});
+// to build the app for heroku
+// app.get("*", (req, res) => {
+//   res.sendFile(path.resolve(__dirname, "app/build", "index.html"))
+// });
 
 // 로그인 정보 리퀘스트 .. 진행중
 app.post("/login", (req, res) => {
@@ -429,7 +443,7 @@ app.post("/login", (req, res) => {
     [email, password],
     (err, res_1) => {
       if (err) throw err;
-      // console.log(res_1.rows);
+      console.log(res_1.rows);
       if (res_1.rows[0]) {
         // user exist
         // get followeds
@@ -519,7 +533,7 @@ app.post("/register", (req, res) => {
 });
 
 
-httpServer.listen(PORT, () => {
+http.listen(PORT, () => {
   console.log(
     `Server Started on port ${PORT}, ${new Date().toLocaleString()} #####`
   );
