@@ -28,6 +28,7 @@ const sessionMiddleware = session({
 // const { getOneUserLanguages } = require("./coding_buddy_db");
 
 // PG database client/connection setup
+// should be in database.js
 const { Pool } = require("pg");
 const dbParams = require("./lib/db.js");
 const pool = new Pool(dbParams);
@@ -39,11 +40,7 @@ const db = require('./database');
 app.use(cors());
 app.use(sessionMiddleware);
 app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
+app.use(bodyParser.urlencoded({extended: true}));
 
 io.use((socket, next) => {
   sessionMiddleware(socket.request, {}, next);
@@ -65,11 +62,10 @@ io.on("connection", (socket) => {
 
   // socketID and username matching triggered when user login
   socket.on("SET USERNAME", (obj) => {
-    console.log("SET USERNAME", obj)
     //Login.jsx 의 setUser(res.data.userName)
     const { username, socketID } = obj;
     currentUsers[username] = socketID;
-
+    console.log("currentUsers ", currentUsers)
 
 
 
@@ -86,17 +82,23 @@ io.on("connection", (socket) => {
 
 
 
+
     pool.query(
+      // get all users info
       "SELECT id, username AS name, email, avatar_id FROM users",
       (err, res) => {
         // res.rows => {id: , name: , email: , avatar_id}
         const allUsersObj = res.rows;
         // console.log("allUsersObj", allUsersObj)
+
+        // get all langs by all users
         pool.query(
           "SELECT languages.id, user_id, language_name FROM user_language JOIN languages ON language_id=languages.id",
           (err, res_1) => {
             // res.rows_1 => {id(languageID): , user_id: , language_name: }
             const userIDAndLang = res_1.rows;
+            // console.log('userIDAndLang', userIDAndLang)
+
             const loginUsersData = {};
             allUsersObj.map(user => {
               if (currentUsers[user.name]) {
@@ -106,12 +108,14 @@ io.on("connection", (socket) => {
                   avatar_id: user.avatar_id,
                   languages: []
                 };
+
                 userIDAndLang.map(lang => {
                   if (user.id === lang.user_id) {
                     loginUsersData[user.name].languages.push(lang.language_name);
                   }
                 });
               }
+
             });
             // console.log('loginUsersData', loginUsersData)
             // console.log('currentUser', currentUsers)
@@ -428,14 +432,47 @@ app.get("/", (req, res) => {
 //   res.sendFile(path.resolve(__dirname, "app/build", "index.html"))
 // });
 
-// 로그인 정보 리퀘스트 .. 진행중
+// it occurs when user hit the login button
 app.post("/login", (req, res) => {
   // client sending
-  // console.log("login request", req.body);
+  console.log("login request", req.body);
   // req.body = {userEmail: '', userPassword: ''}
 
   const email = req.body.userEmail;
   const password = req.body.userPassword;
+
+  let loggedUser = {}
+  db.getLoginUser(email, password)
+    .then(user => {
+      // get logged user info as obj
+      loggedUser = user;
+      loggedUser.languages = [];
+      db.getLoginUserLangs(user.id)
+      .then(langs => {
+        langs.map(lang => {
+          loggedUser.languages.push(lang.name)
+        })
+
+        res.status(201).send(loggedUser); //object - username, avatar, language
+      })
+
+    })
+
+
+    // loggedUser after lang array {
+    //   id: 3,
+    //   username: 'mike',
+    //   password: 'mike',
+    //   email: 'test2@test.com',
+    //   avatar_id: 1,
+    //   languages: [ 'HTML', 'CSS', 'JavaScript' ]
+    // }
+
+
+
+
+
+
 
   // and password.. userName=$1 AND userpassword=$2
   return pool.query(

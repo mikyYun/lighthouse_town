@@ -8,8 +8,15 @@ const pool = new Pool(dbParams);
 
 module.exports = {
   getUsers: () => {
-    const queryString = "SELECT id, username AS name, email, avatar_id FROM users";
-    const queryGetLang = "SELECT languages.id, user_id, language_name FROM user_language JOIN languages ON language_id=languages.id";
+    const queryString = `
+      SELECT id, username AS name, email, avatar_id
+      FROM users
+    `;
+    const queryGetLang = `
+      SELECT languages.id, user_id, language_name
+      FROM user_language
+      JOIN languages ON language_id=languages.id
+    `;
 
     return pool
       .query(queryString)
@@ -17,9 +24,50 @@ module.exports = {
         return res.rows || null;
       })
       .catch(err => {
-        console.log('Error', err.stack);
+        console.log('Error ', err.stack);
       });
+  },
+
+  getLangsByUserId: (id) => {
+    const queryString = ``
+
+  },
+
+  getLoginUser: (email, pw) => {
+    const queryString = `
+      SELECT * FROM users
+      WHERE email=$1 AND password=$2
+    `;
+
+    return pool
+      .query(queryString, [email, pw])
+      .then(res => {
+        return res.rows[0] || null;
+      })
+      .catch(err => {
+        console.log('Error ', err.stack)
+      })
+  },
+
+  getLoginUserLangs: (userId) => {
+    const queryString = `
+      SELECT language_name as name
+      FROM languages
+      JOIN user_language
+      ON user_language.language_id = languages.id
+      WHERE user_id=$1;
+    `
+
+    return pool
+      .query(queryString, [userId])
+      .then(res => {
+        return res.rows || null;
+      })
+      .catch(err => {
+        console.log('Error ', err.stack)
+      })
   }
+
 
 
 }
