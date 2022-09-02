@@ -66,9 +66,27 @@ module.exports = {
       .catch(err => {
         console.log('Error ', err.stack)
       })
+  },
+
+
+  getFriends: (id) => {
+    const queryString = `
+      SELECT username as name
+      FROM users
+      JOIN favorites
+      ON favorites.added = users.id
+      WHERE added_by=$1;
+    `
+
+    return pool
+      .query(queryString, [id])
+      .then(res => {
+        return res.rows || null;
+      })
+      .catch(err => {
+        console.log('Error ', err.message)
+      })
   }
-
-
 
 }
 

@@ -15,10 +15,15 @@ export default function Login(props) {
     navigate('/register')
   }
   const goChat = (username, avatar, userLanguages, id) => {
-    const data = [username, avatar, userLanguages, id]
+    const data = { username, avatar, userLanguages, id}
+    // const data = [username, avatar, userLanguages, id]
     navigate(`/game/plaza`, { state: data })
     navigate(0, { state: data })
   }
+
+  const updateLoggedUser = (user) => {
+    props.setLoggedUser(user)
+  };
 
   return (
     <div className="login-page">
@@ -58,16 +63,16 @@ export default function Login(props) {
           type="submit"
           onClick={(e) => {
             const loginInfo = { userEmail, userPassword }
-            // cookies.set("username", userEmail)
             axios
               .post("/login", loginInfo)
               .then((res) => {
-                if (res.data.userName) {
-                  setUser(res.data.userName) // pass username so that server set username and socketid as key:value pair
+                if (res.data.username) {
+                  console.log("res.data ",res.data)
+                  setUser(res.data.username) // pass username so that server set username and socketid as key:value pair
+                  updateLoggedUser(res.data)
                   cookies.set("userdata", res.data, {maxAge: 3600});
-                  goChat(res.data.userName, res.data.avatar, res.data.userLanguages, res.data.userID)
+                  goChat(res.data.username, res.data.avatar_id, res.data.languages, res.data.id)
                 } else {
-                  console.log("no matching user - Login.js")
                   alert("Invalid information. Please confirm your email and password")
                 }
               });

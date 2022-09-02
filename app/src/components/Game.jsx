@@ -4,7 +4,7 @@ import Canvas from "./Canvas";
 import "./Game.scss";
 import Chat from "./Chat";
 import Online from "./Online";
-import Profile from "./Profile.jsx";
+
 
 import { useLocation } from "react-router-dom";
 import FriendList from "./FriendsList";
@@ -32,6 +32,7 @@ export default function Game(props) {
   }
 
 useEffect(() => {
+  console.log('location.state ',location.state)
     socket.on("new lecture", data => {
       // console.log(data)
       setLecture(data)
@@ -54,7 +55,7 @@ useEffect(() => {
         </div>
         <Canvas
           username={nickname}
-          avatar={location.state?.[1]}
+          avatar={location.state.avatar}
           sendMessage={sendMessage}
           sendPrivateMessage={sendPrivateMessage}
           room={props.room}

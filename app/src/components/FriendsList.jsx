@@ -2,7 +2,7 @@ import { useEffect, useContext, useState } from "react";
 import { SocketContext, UserListContext } from "../App.js";
 import "./FriendsList.scss";
 
-export default function FriendList() {
+export default function FriendList(props) {
   const { socket } = useContext(SocketContext);
   const { friendList } = useContext(UserListContext);
   const friendsNames = Object.keys(friendList); // [이름, 이름]
@@ -18,6 +18,9 @@ export default function FriendList() {
   };
 
   useEffect(() => {
+    // console.log('id', props.loggedUser.id)
+    // socket.emit("getFriendsList", props.loggedUser.id)
+
     socket.emit("friendsList", { socketID: socket.id });
     return () => {
       socket.disconnect();

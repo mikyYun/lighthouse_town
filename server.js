@@ -49,6 +49,19 @@ io.use((socket, next) => {
 io.adapter(createAdapter(pool));
 
 
+app.get("/", (req, res) => {
+  // 8000
+  res.json({ connected: "start" });
+});
+
+// to build the app for heroku
+// app.get("*", (req, res) => {
+//   res.sendFile(path.resolve(__dirname, "app/build", "index.html"))
+// });
+
+
+
+
 // store all users' socket id with username key-value pair
 let currentUsers = {}; // => {username : socket.id}
 const usersInRooms = {};
@@ -56,6 +69,7 @@ const usersInRooms = {};
 
 // OPEN SOCKET
 io.on("connection", (socket) => {
+  console.log("SOCKET CONNECTED!!!")
   // LOGIN USER CONNECTED
   const session = socket.request.session;
   session.save();
@@ -68,17 +82,10 @@ io.on("connection", (socket) => {
     console.log("currentUsers ", currentUsers)
 
 
-
-    // database refactoring
-
-    let allUsers;
-    db.getUsers()
-      .then(users => {
-        allUsers = users;
-        // console.log('from DATABASE', allUsers);
-      })
-
-
+  socket.on('getFriends', id => {
+      db.getFriends(loggedUser.id)
+      .then(friends => console.log('friends', friends))
+  })
 
 
 
@@ -421,27 +428,16 @@ io.on("connection", (socket) => {
 
 
 
-//
-app.get("/", (req, res) => {
-  // 8000
-  res.json({ connected: "start" });
-});
-
-// to build the app for heroku
-// app.get("*", (req, res) => {
-//   res.sendFile(path.resolve(__dirname, "app/build", "index.html"))
-// });
-
 // it occurs when user hit the login button
 app.post("/login", (req, res) => {
   // client sending
   console.log("login request", req.body);
   // req.body = {userEmail: '', userPassword: ''}
 
+  let loggedUser = {}
   const email = req.body.userEmail;
   const password = req.body.userPassword;
 
-  let loggedUser = {}
   db.getLoginUser(email, password)
     .then(user => {
       // get logged user info as obj
@@ -452,79 +448,15 @@ app.post("/login", (req, res) => {
         langs.map(lang => {
           loggedUser.languages.push(lang.name)
         })
-
+        console.log('loggedUser', loggedUser);
         res.status(201).send(loggedUser); //object - username, avatar, language
       })
 
+      // db.getFriends(loggedUser.id)
+      // .then(friends => console.log('friends', friends))
+
     })
-
-
-    // loggedUser after lang array {
-    //   id: 3,
-    //   username: 'mike',
-    //   password: 'mike',
-    //   email: 'test2@test.com',
-    //   avatar_id: 1,
-    //   languages: [ 'HTML', 'CSS', 'JavaScript' ]
-    // }
-
-
-
-
-
-
-
-  // and password.. userName=$1 AND userpassword=$2
-  return pool.query(
-    "SELECT * FROM users WHERE email=$1 AND password=$2",
-    [email, password],
-    (err, res_1) => {
-      if (err) throw err;
-      console.log(res_1.rows);
-      if (res_1.rows[0]) {
-        // user exist
-        // get followeds
-        const userInfo = res_1.rows[0];
-        const userID = userInfo.id;
-        const userName = userInfo.username;
-        const avatar = userInfo.avatar_id;
-        // console.log(res_1.rows[0]); // id: 3, username: "mike", password: "mike", email: "test2@test.com", avatar_id: 1
-        // find languages
-
-        pool.query(
-          "SELECT * FROM user_language WHERE user_id=$1",
-          [userID],
-          (err, res_2) => {
-            const userLanguages = [];
-            if (err) throw err;
-            if (res_2.rows.length > 0) {
-              // console.log("find user's languages", res_2.rows);
-              res_2.rows.forEach((obj) => {
-                userLanguages.push(obj.language_id);
-              });
-              const loginUserData = {
-                userName,
-                avatar,
-                userLanguages,
-                userID
-                // friends
-              };
-              res.status(201).send(loginUserData); //object - username, avatar, language
-            } else {
-              console.log("No available language", res_2.rows);
-            }
-          }
-        );
-
-
-      } else {
-        // no matching user
-        res.status(201).send(false);
-      }
-    }
-  );
 });
-
 
 // friends
 

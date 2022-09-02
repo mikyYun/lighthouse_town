@@ -8,7 +8,6 @@ import classroom from './components/game_img/classroom.png';
 import Game from './components/Game';
 import Register from './components/Register';
 import Login from './components/Login';
-import Menu from './components/Menu';
 import { socket } from './components/service/socket.js';
 import { createContext } from "react";
 
@@ -32,6 +31,11 @@ function App() {
   const [profiles, setProfiles] = useState({});
   const [profileShow, setProfileShow] = useState("none");
   const [blockAddFriendAlert, setBlockAddFriendAlert] = useState("add-friend");
+
+
+  const [loggedUser, setLoggedUser] = useState({});
+
+
   const goChat = (username, avatar, userLanguages, id) => {
     const data = [username, avatar, userLanguages, id]
     navigate('/game/plaza', { state: data })
@@ -67,6 +71,8 @@ function App() {
   // ================= EFFECTS =============== //
 
   useEffect(() => {
+
+    console.log('loggedUser', loggedUser)
     // console.log("USER",user);
   //[user.avatar] is a number (avatar id)
     // set URL for navigate when enter the house
@@ -120,6 +126,8 @@ function App() {
 
   useEffect(() => {
 
+
+
     // ================= FUNCTIONS =============== //
 
     socket.on("updateFriendsList", ({ newFriendName, languages }) => {
@@ -143,7 +151,7 @@ function App() {
     socket.on("init", msg => console.log("msg - App.js", msg)); //coming from server
     socket.on("backData", data => console.log("data", data)); //coming from server
     socket.on("all user names", (obj) => { //@@@SUNDAY: all user objects
-      console.log('obj, ', obj)
+      // console.log('obj, ', obj)
       // obj => {uniqname: {email:, avatar_id:, languages: [arr]},
       //  uniqname: {},
       //  uniqname: {}
@@ -203,9 +211,9 @@ function App() {
     <SocketContext.Provider value={{ socket }} >
       <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked, user, setUser, profiles, nickname, setProfiles, profileShow, setProfileShow, blockAddFriendAlert, setBlockAddFriendAlert, online, friendList }} >
         <Routes>
-          <Route path='/' element={<Login setUser={createSocketIdNameObject} />} />
+          <Route path='/' element={<Login setUser={createSocketIdNameObject} setLoggedUser={setLoggedUser}/>} />
           <Route path='/register' element={<Register setUser={createSocketIdNameObject}/>} />
-          <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
+          {/* <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} /> */}
           <Route path={`/game/${room}`} element={
             <Game
               sendMessage={sendMessage}
@@ -214,6 +222,7 @@ function App() {
               room={room}
               online={online}
               map={maps[room]}
+              loggeduser={loggedUser}
             />} />
         </Routes>
       </UserListContext.Provider>

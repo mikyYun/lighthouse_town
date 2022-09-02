@@ -2,7 +2,6 @@ import { useEffect, useContext, useState } from "react";
 import { SocketContext, UserListContext } from "../App.js";
 import Avatar from "./Avatar.jsx"
 import Menu from "./Menu.jsx";
-import Profile from "./Profile.jsx";
 import './Online.scss'
 
 export default function Online(props) {
