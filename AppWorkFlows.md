@@ -22,7 +22,17 @@
 
 <!-- SUCCESSFUL REGISTER && LOGIN -->
 * store received user data(name, email, friends list, languages) & onlineUsers.. 
-<!-- WHERE??? Cookies?? Storage?? -->
-* after store data, redirect or navigate to "GAME/PLAZA"
+<!-- WHERE??? Cookies?? Storage?? React.State?? ==> with Cookies, state -->
+* after store data, then redirect or navigate to "GAME/PLAZA"
 
-<!-- RENDERING GAME/PLAZA -->
+<!-- RENDER GAME/PLAZA -->
+* Draw Canvas
+* Show Avatar according to avatar id of each indivisual
+* Show friendsLists using cookies or state
+* Show onlineLists using cookies or state
+* Draw all onlined avatars on their own x,y positions
+
+<!-- UPDATE IDEAS -->
+* Create FriendsList && OnlineLists outside canvas so that don't need to rerender those datas
+* Lists only re-render if the lists updated(add / remove friends || login || logout users )
+* 
