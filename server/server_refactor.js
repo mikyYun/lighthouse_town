@@ -1,11 +1,8 @@
 /** USE QUERY */
 // import { pool, filterEssentials, getUsers, getUserById, createUser, updateUser, deleteUser } from "./coding_buddy_db";
-const pool = require("./coding_buddy_db")
-import { getUserById } from "./coding_buddy_db";
-// const poolGroup = require("./coding_buddy_db")
-// const pool = poolGroup.pool
-
-
+const poolGroup = require("./coding_buddy_db");
+const pool = poolGroup.pool;
+const getUserById = poolGroup.getUserById;
 /** USE .env */
 require("dotenv").config();
 
@@ -49,8 +46,8 @@ app.use(bodyParser.urlencoded({
 app.post("/login", (req, res) => {
   const email = req.body.userEmail;
   const password = req.body.userPassword;
-  console.log(poolGroup.getUserById());
-  // poolGroup.getUserById(req, res)
+  // console.log(poolGroup.getUserById(req, res));
+  getUserById(req, res);
 });
 
 
