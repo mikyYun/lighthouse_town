@@ -60,10 +60,27 @@ const getUserInfo = (req, res) => {
   // pool.query('SELECT * FROM users WHERE id = $1 AND password = $2', [email, password], (err, result) => {
 
   /**
-   * SELECT users.id, username, password, email, avatar_id, user_language.language_id, favorites.added FROM users INNER JOIN favorites ON users.id = favorites.added_by INNER JOIN user_language ON users.id = user_language.user_id  WHERE (users.email = 'test@test.com' AND users.password = 'moon');
+   * SELECT users.id, username, password, email, avatar_id, languages.language_name, favorites.added 
+    FROM users 
+    INNER JOIN favorites 
+      ON users.id = favorites.added_by
+    INNER JOIN user_language
+      ON users.id = user_language.user_id
+    INNER JOIN languages
+      ON languages.id = user_language.language_id
+    WHERE (users.email = 'test@test.com' AND users.password = 'moon');
    */
 
-  pool.query('SELECT * FROM users JOIN user_language ON users.id = user_language.user_id JOIN favorites ON added_by = users.id WHERE users.email = $1 AND password = $2', [email, password], (err, result) => {
+  pool.query(`SELECT users.id, username, password, email, avatar_id, languages.language_name, favorites.added 
+  FROM users
+    INNER JOIN favorites
+      ON users.id = favorites.added_by
+    INNER JOIN user_language
+      ON users.id = user_language.user_id
+    INNER JOIN languages
+      ON languages.id = user_language.language_id
+  WHERE (users.email = $1 AND users.password = $2)`, [email, password], (err, result) => {
+    // user_language ON users.id = user_language.user_id JOIN favorites ON added_by = users.id WHERE users.email = $1 AND password = $2`, [email, password], (err, result) => {
     if (err) {
       /** SEND STATUS 409 */
       res.status(409);
