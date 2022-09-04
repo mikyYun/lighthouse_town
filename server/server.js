@@ -1,5 +1,4 @@
-
-//@@@@@@@socket ID SPELLING FIX!!
+import { pool, filterEssentials, getUsers, getUserById, createUser, updateUser, deleteUser } from "./coding_buddy_db";
 
 require("dotenv").config();
 const cors = require("cors");
@@ -22,15 +21,17 @@ const sessionMiddleware = session({
   secret: "coding_buddy",
   cookie: { maxAge: 60000 },
 });
-const { getOneUserLanguages } = require("./coding_buddy_db");
-const { Pool } = require("pg");
-const pool = new Pool({
-  user: process.env.PGUSER,
-  host: process.env.PGHOST,
-  database: process.env.PGDATABASE,
-  password: process.env.PGPASSWORD,
-  port: process.env.PGPORT,
-});
+
+// const { getOneUserLanguages } = require("./coding_buddy_db");
+// const { Pool } = require("pg");
+// const pool = new Pool({
+//   user: process.env.PGUSER,
+//   host: process.env.PGHOST,
+//   database: process.env.PGDATABASE,
+//   password: process.env.PGPASSWORD,
+//   port: process.env.PGPORT,
+// });
+
 
 //G. socket(server)
 //G. create a new instance of a socket handler
@@ -491,7 +492,7 @@ app.post("/register", (req, res) => {
         res.status(201).send(false);
         // return Promise.reject(('User already registered')); // option 1?
       }
-        // throw res.status(409).send('User already registered'); // option 2
+      // throw res.status(409).send('User already registered'); // option 2
 
       return pool.query(
         "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [userName, userPassword, userEmail, avatar]);

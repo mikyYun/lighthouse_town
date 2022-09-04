@@ -17,6 +17,8 @@ import { createContext } from "react";
 export const SocketContext = createContext(socket); // going to Recipient.jsx
 export const UserListContext = createContext({});
 export const MsgContext = createContext([]);
+
+/** START APP */
 function App() {
 
   // ================= STATES =============== //

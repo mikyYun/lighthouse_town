@@ -35,4 +35,4 @@
 <!-- UPDATE IDEAS -->
 * Create FriendsList && OnlineLists outside canvas so that don't need to rerender those datas
 * Lists only re-render if the lists updated(add / remove friends || login || logout users )
-* 
+<!-- REFACTORING VERSION 1 _ END -->
