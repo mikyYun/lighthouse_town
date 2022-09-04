@@ -52,16 +52,19 @@ const getUsers = (req, res) => {
 };
 
 /** GET to identify user information */
-const getUserById = (req, res) => {
+const getUserInfo = (req, res) => {
   const email = req.body.userEmail;
   const password = req.body.userPassword;
   const id = parseInt(req.params.id);
 
-  pool.query('SELECT * FROM users WHERE id = $1 AND password = $2', [email, password], (err, result) => {
+  // pool.query('SELECT * FROM users WHERE id = $1 AND password = $2', [email, password], (err, result) => {
+    pool.query('SELECT * FROM users JOIN user_language ON users.id = user_language.user_id WHERE users.email = $1 AND password = $2', [email, password], (err, result) => {
     if (err) {
       /** SEND STATUS 409 */
+      console.log("ERROR", err)
       res.status(409)
     } else {
+      console.log("SUCCESS", result.rows)
       res.status(200).json(result.rows);
     }
   });
@@ -106,7 +109,7 @@ const deleteUser = (req, res) => {
 const poolGroup = {
   pool,
   filterEssentials,
-  getUserById: getUserById,
+  getUserInfo,
   getUsers,
   createUser,
   updateUser,
