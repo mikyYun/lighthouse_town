@@ -58,15 +58,36 @@ const getUserInfo = (req, res) => {
   const id = parseInt(req.params.id);
 
   // pool.query('SELECT * FROM users WHERE id = $1 AND password = $2', [email, password], (err, result) => {
-    pool.query('SELECT * FROM users JOIN user_language ON users.id = user_language.user_id WHERE users.email = $1 AND password = $2', [email, password], (err, result) => {
+
+  /**
+   * SELECT users.id, username, password, email, avatar_id, user_language.language_id, favorites.added FROM users INNER JOIN favorites ON users.id = favorites.added_by INNER JOIN user_language ON users.id = user_language.user_id  WHERE (users.email = 'test@test.com' AND users.password = 'moon');
+   */
+
+  pool.query('SELECT * FROM users JOIN user_language ON users.id = user_language.user_id JOIN favorites ON added_by = users.id WHERE users.email = $1 AND password = $2', [email, password], (err, result) => {
     if (err) {
       /** SEND STATUS 409 */
-      console.log("ERROR", err)
-      res.status(409)
-    } else {
-      console.log("SUCCESS", result.rows)
-      res.status(200).json(result.rows);
-    }
+      res.status(409);
+    } 
+    // else {
+      console.log("QUERY RESULT", result.rows);
+      // const userInfo = result.rows[0]
+      const userName = result.rows[0].username;
+      const avatar = result.rows[0].avatar_id;
+      const userID = result.rows[0].id;
+      const userLanguages = [];
+      result.rows.forEach((userData) => {
+        userLanguages.push(userData.language_id)
+      })
+      const loginUserData = {
+        userName,
+        avatar,
+        userLanguages,
+        userID
+      };
+      res.status(200).send(loginUserData);
+      // res.status(200).json(result.rows);
+
+    // }
   });
 };
 
