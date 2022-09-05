@@ -55,21 +55,6 @@ const getUsers = (req, res) => {
 const getUserInfo = (req, res) => {
   const email = req.body.userEmail;
   const password = req.body.userPassword;
-  const id = parseInt(req.params.id);
-
-  // pool.query('SELECT * FROM users WHERE id = $1 AND password = $2', [email, password], (err, result) => {
-
-  /**
-   * SELECT users.id, username, password, email, avatar_id, languages.language_name, favorites.added 
-    FROM users 
-    INNER JOIN favorites 
-      ON users.id = favorites.added_by
-    INNER JOIN user_language
-      ON users.id = user_language.user_id
-    INNER JOIN languages
-      ON languages.id = user_language.language_id
-    WHERE (users.email = 'test@test.com' AND users.password = 'moon');
-   */
 
   pool.query(`SELECT users.id, username, password, email, avatar_id, languages.language_name, favorites.added 
   FROM users
@@ -80,21 +65,19 @@ const getUserInfo = (req, res) => {
     INNER JOIN languages
       ON languages.id = user_language.language_id
   WHERE (users.email = $1 AND users.password = $2)`, [email, password], (err, result) => {
-    // user_language ON users.id = user_language.user_id JOIN favorites ON added_by = users.id WHERE users.email = $1 AND password = $2`, [email, password], (err, result) => {
     if (err) {
       /** SEND STATUS 409 */
-      res.status(409);
-    } 
+      res.status(409).send({msg: "Invalid information. Please try again"});
+    }
     // else {
-      console.log("QUERY RESULT", result.rows);
-      // const userInfo = result.rows[0]
+    if (result.rows && result.rows[0]) {
       const userName = result.rows[0].username;
       const avatar = result.rows[0].avatar_id;
       const userID = result.rows[0].id;
       const userLanguages = [];
       result.rows.forEach((userData) => {
-        userLanguages.push(userData.language_id)
-      })
+        userLanguages.push(userData.language_id);
+      });
       const loginUserData = {
         userName,
         avatar,
@@ -103,8 +86,10 @@ const getUserInfo = (req, res) => {
       };
       res.status(200).send(loginUserData);
       // res.status(200).json(result.rows);
-
-    // }
+    } else {
+      /** NO MATCHING USER INFO OR INVALID */
+      res.status(409).send("Invalid information. Please try again")
+    }
   });
 };
 

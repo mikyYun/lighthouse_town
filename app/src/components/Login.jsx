@@ -66,10 +66,10 @@ export default function Login(props) {
                   setUser(res.data.userName) // pass username so that server set username and socketid as key:value pair
                   cookies.set("userdata", res.data, {maxAge: 3600});
                   goChat(res.data.userName, res.data.avatar, res.data.userLanguages, res.data.userID)
-                } else {
-                  console.log("no matching user - Login.js")
-                  alert("Invalid information. Please confirm your email and password")
-                }
+                } 
+              })
+              .catch((err, res) => {
+                alert("Invalid information. Please try again")
               });
             e.preventDefault();
           }}

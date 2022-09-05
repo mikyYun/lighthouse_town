@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server_refactor.js",
+    "start": "nodemon server_refactor.js",
     "dev": "nodemon server.js",
     "db:reset": "node bin/resetdb.js",
     "dev:client": "cd ../app && npm start",
