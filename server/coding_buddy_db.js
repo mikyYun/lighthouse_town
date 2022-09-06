@@ -41,6 +41,23 @@ const filterEssentials = function (currentUsers) {
   );
 };
 
+/** LANGUAGES MATCHING WITH ID AND LANGUAGE_NAME */
+const langIDAndName = {};
+
+const getLanguages = () => {
+  pool.query(`
+    SELECT id, language_name FROM languages
+  `, (err, result) => {
+    result.rows.map(idAndName => {
+      langIDAndName[idAndName.id] = idAndName.language_name;
+    });
+    return langIDAndName;
+  }
+  );
+};
+/** LANG_ID : LANG_NAME */
+getLanguages();
+
 /** GET to get all users from DB */
 const getUsers = (req, res) => {
   pool.query("SELECT * FROM users ORDER BY id ASC", (err, result) => {
@@ -51,46 +68,67 @@ const getUsers = (req, res) => {
   });
 };
 
+const getFriends = (userID) => {
+  pool.query(`
+    SELECT username FROM users 
+      JOIN favorites 
+        ON users.id = favorites.added
+      WHERE favorites.added_by = $1
+      RETURNING *
+  `, [userID]);
+};
 /** GET to identify user information */
 const getUserInfo = (req, res) => {
   const email = req.body.userEmail;
   const password = req.body.userPassword;
-
-  pool.query(`SELECT users.id, username, password, email, avatar_id, languages.language_name, favorites.added 
-  FROM users
-    INNER JOIN favorites
-      ON users.id = favorites.added_by
-    INNER JOIN user_language
-      ON users.id = user_language.user_id
-    INNER JOIN languages
-      ON languages.id = user_language.language_id
-  WHERE (users.email = $1 AND users.password = $2)`, [email, password], (err, result) => {
-    if (err) {
-      /** SEND STATUS 409 */
-      res.status(409).send({msg: "Invalid information. Please try again"});
-    }
-    // else {
-    if (result.rows && result.rows[0]) {
+  pool.query(`
+    SELECT users.id, avatar_id, users.username, language_name FROM languages
+    JOIN user_language
+    ON languages.id = user_language.language_id
+    JOIN users
+    ON users.id = user_language.user_id
+    WHERE (users.email = $1 AND users.password = $2)
+    `, [email, password])
+    .then((result) => {
       const userName = result.rows[0].username;
       const avatar = result.rows[0].avatar_id;
       const userID = result.rows[0].id;
+      const userFriendsList = [];
       const userLanguages = [];
-      result.rows.forEach((userData) => {
-        userLanguages.push(userData.language_id);
-      });
-      const loginUserData = {
-        userName,
-        avatar,
-        userLanguages,
-        userID
-      };
-      res.status(200).send(loginUserData);
-      // res.status(200).json(result.rows);
-    } else {
-      /** NO MATCHING USER INFO OR INVALID */
-      res.status(409).send("Invalid information. Please try again")
-    }
-  });
+      pool.query(`
+        SELECT username FROM users 
+          JOIN favorites 
+            ON users.id = favorites.added
+          WHERE favorites.added_by = $1
+        `, [userID])
+        .then((res) => {
+          res.rows.forEach(friendName => {
+            userFriendsList.push(friendName.username);
+          });
+        })
+        .then(() => {
+          result.rows.forEach((userData) => {
+            userLanguages.push(userData.language_name);
+            userFriendsList.push(userData.added);
+          });
+        })
+        .then(() => {
+          const loginUserData = {
+            userName,
+            avatar,
+            userLanguages,
+            userID,
+            userFriendsList
+          };
+          res.status(200).send(loginUserData);
+        })
+        .catch(err => {
+          res.status(409).send("Invalid information. Please try again");
+        });
+    })
+    .catch((err) => {
+      res.status(409).send("Invalid information. Please try again");
+    });
 };
 
 /** POST to register a new user */
