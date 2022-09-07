@@ -6,11 +6,9 @@ const express = require("express");
 const path = require("path");
 const session = require("express-session");
 const app = express();
-
-// Socket.I.O setup
-const http = require("http").createServer(app);
+const httpServer = require("http").createServer(app);
 const { Server } = require("socket.io"); //socketIo
-const io = new Server(http, {
+const io = new Server(httpServer, {
   cors: {
     origin: "http://localhost:3000", //client
     credentials: true,
@@ -20,21 +18,17 @@ const io = new Server(http, {
 //When you navigate to the root page, it would use the built react-app
 // app.use(express.static(path.join(__dirname, "app/build")));
 
+
 const { createAdapter } = require("@socket.io/postgres-adapter"); //app.get, 안써도 socket.io 안에서 직접 postgres 연결이 가능. root path 따로 설정 불필요.
 const sessionMiddleware = session({
   secret: "coding_buddy",
   cookie: { maxAge: 60000 },
 });
-// const { getOneUserLanguages } = require("./coding_buddy_db");
 
 // PG database client/connection setup
 const { Pool } = require("pg");
 const dbParams = require("./lib/db.js");
 const pool = new Pool(dbParams);
-
-// Database connection
-const db = require('./database');
-
 
 app.use(cors());
 app.use(sessionMiddleware);
@@ -59,39 +53,24 @@ const usersInRooms = {};
 
 // OPEN SOCKET
 io.on("connection", (socket) => {
-  // LOGIN USER CONNECTED
   const session = socket.request.session;
   session.save();
 
+  // LOGIN USER CONNECTED
   // socketID and username matching triggered when user login
   socket.on("SET USERNAME", (obj) => {
-    console.log("SET USERNAME", obj)
+
     //Login.jsx 의 setUser(res.data.userName)
     const { username, socketID } = obj;
+
     currentUsers[username] = socketID;
-
-
-
-
-    // database refactoring
-
-    let allUsers;
-    db.getUsers()
-      .then(users => {
-        allUsers = users;
-        // console.log('from DATABASE', allUsers);
-      })
-
-
-
-
-
+    // console.log(currentUsers)
     pool.query(
       "SELECT id, username AS name, email, avatar_id FROM users",
       (err, res) => {
         // res.rows => {id: , name: , email: , avatar_id}
         const allUsersObj = res.rows;
-        // console.log("allUsersObj", allUsersObj)
+        // console.log(allUsersObj)
         pool.query(
           "SELECT languages.id, user_id, language_name FROM user_language JOIN languages ON language_id=languages.id",
           (err, res_1) => {
@@ -113,11 +92,8 @@ io.on("connection", (socket) => {
                 });
               }
             });
-            // console.log('loginUsersData', loginUsersData)
-            // console.log('currentUser', currentUsers)
-            // currentUsers = {name: socketID}
+
             const alluserNames = Object.keys(loginUsersData);
-            // console.log("FILTER ONLINE USERS",loginUsersData)
             alluserNames.forEach((name) => {
               io.to(currentUsers[name]) // socketID
                 .emit("all user names", { "users": loginUsersData });// all user names
@@ -125,14 +101,7 @@ io.on("connection", (socket) => {
             );
           }
         );
-
-
-        // const alluserNames = Object.keys(currentUsers);
-        // alluserNames.forEach((name) => {
-        //   io.to(currentUsers[name])
-        //     .emit("all user names", { "users": alluserNames });
-      }); // {"users": [name1, name2] }
-    // }
+      });
   });
 
 
@@ -157,7 +126,6 @@ io.on("connection", (socket) => {
         // [existUsername],
         (err, res_1) => {
           if (err) throw err;
-          // console.log(existUsername) // 내이름
           if (res_1.rows[0]) { // 테이블이 존재하면 // 불필요한듯
             const allusersTable = res_1.rows; // 전체 유저테이블
             let userID; // 새로 들어온 유저의 아이디 찾기
@@ -166,45 +134,32 @@ io.on("connection", (socket) => {
                 userID = obj.id; // @@obj는 뭐임? => table에서 one row
             });
             // user exist
-            // const userID = res_1.rows[0].id;
-            // userID = 2
             pool.query(
               // find added(followers) id
               "SELECT added FROM favorites WHERE added_by=$1",
               // {id: , following: , followed: }
               [userID],
               (err, res_2) => {
-                // console.log(userID)
-                // console.log("favoriteTables", res_2.rows)
                 const usernames = [];
                 const followedIds = []; // userid[1, 2, 3....]
                 const followedInfo = {};
                 res_2.rows.map(obj => {
                   followedIds.push(obj.added);
                 });
-                // console.log("!!",Object.keys(allusersTable))
                 allusersTable.map(row => {
                   if (followedIds.includes(row.id)) {
-                    // console.log(row)
                     usernames.push(row.username);
                     followedInfo[row.username] = {};
                     followedInfo[row.username]["languages"] = [];
-                    // followedInfo[row.username]["email"] = row.email
                   }
                 });
-                // console.log("INFOMATION", usernames)
-                // console.log(usernames);
                 pool.query(
                   "SELECT * FROM user_language JOIN languages ON language_id=languages.id", (err, res_3) => {
                     res_3.rows.map(userLanguageID => { // @@ userLanguageName 으로 바꾸고 밑에서 =>// obj.language_name 으로 하기
-                      // console.log("THIS", userLanguageID);
-                      // console.log(allusersTable);
                       const nameMatching = allusersTable.find(obj => obj.id === userLanguageID.user_id).username;
                       if (followedIds.includes(userLanguageID.user_id)) {
                         followedInfo[nameMatching].languages.push(userLanguageID.language_name);
-                        // console.log(userLanguageID.language_id)
                       }
-                      // console.log("INFO", userLanguageID)
                     });
                     socket.emit("friendsListBack", followedInfo);
                   }
@@ -221,15 +176,12 @@ io.on("connection", (socket) => {
   socket.on('sendData', data => {
 
     const { userState, room, removeFrom } = data;
-
     // console.log('got data', data);
     if (!usersInRooms[room]) {
       usersInRooms[room] = {};
     }
-    // console.log('BEFORE LOOP', usersInRooms);
     //when usersInRooms have some properties
     for (const rooms in usersInRooms) {
-      // console.log(usersInRooms[rooms])
       for (const user in usersInRooms[rooms]) {
         if (room !== rooms && userState.username === user) {
           delete usersInRooms[rooms][userState.username];
@@ -237,7 +189,6 @@ io.on("connection", (socket) => {
       }
     }
     usersInRooms[room][userState.username] = userState;
-    // console.log('usersInROMMs', usersInRooms)
 
     io.emit('sendData', { usersInRooms, room }); // 다시 Canvas.jsx -> const newCharactersData = data;
 
@@ -257,17 +208,12 @@ io.on("connection", (socket) => {
     pool.query(
       "SELECT id, username FROM users WHERE username=$1", [addFriendName],
       (err, res) => {
-        // console.log('res', res)
         // res.rows => users table [{id: , username: ,....}]
         const targetID = res.rows[0].id;
-        // console.log("target users id", targetID);
 
         pool.query(
           "INSERT INTO favorites (added_by, added) VALUES ($2, $1)", [userID, targetID]
         );
-        // console.log(targetID);
-        /////////////////////////////////////////
-        /////////////////////////////////////////
 
         pool.query("SELECT * FROM user_language JOIN languages ON user_language.language_id=languages.id WHERE user_id=$1", [targetID],
           (err, res) => {
@@ -286,12 +232,6 @@ io.on("connection", (socket) => {
       }
     );
 
-    // pool.query(
-    //   "SELECT * FROM favorites",
-    //   (err, res) => {
-    //     // console.log(res.rows)
-    //   }
-    // );
   });
 
   // receive message
@@ -319,8 +259,6 @@ io.on("connection", (socket) => {
     const senderSocketID = obj.senderSocketId;
 
     const recipientSocketId = currentUsers[recipient.value]; // get target's socketid
-    // console.log("SENDERSOCKETID", senderSocketID);
-    // console.log(currentUsers);
     io
       .to(recipientSocketId)
       .emit("PRIVATE", responseData);
@@ -359,15 +297,8 @@ io.on("connection", (socket) => {
         type: "SEND_MESSAGE",
         time: new Date(),
       };
-      // console.log("SEND TO NEWROOM", responseData)
-      // SVGPreserveAspectRatio.to(roomName).emit
-      io.to(newRoom).emit("RECEIVE_MESSAGE", responseData);
 
-      //responseData = chat message
-      //@@@@@@ ChatRoom.jsx line 21
-      // console.log(
-      //   `"SEND_MESSAGE" is fired with data: ${JSON.stringify(responseData)}`
-      // );
+      io.to(newRoom).emit("RECEIVE_MESSAGE", responseData);
       io.emit("dataToCanvas", responseData);
     });
 
@@ -379,7 +310,6 @@ io.on("connection", (socket) => {
     console.log(
       `JOIN_ROOM is fired with data: ${JSON.stringify(responseData)}`
     );
-    // io.to(roomName).emit("all user names", "jasklefjl;ksajv@@@@@")
   });
 
   socket.on("UPDATE_NICKNAME", (requestData) => {
@@ -399,7 +329,6 @@ io.on("connection", (socket) => {
 
   /* 오브젝트에서 종료되는 유저 삭제 */
   socket.on("disconnect", () => {
-    // console.log("Server.js - DISCONNECT", socket.id);
 
     const alluserNames = Object.keys(currentUsers);
     let disconnectedUsername;
@@ -407,9 +336,7 @@ io.on("connection", (socket) => {
       if (currentUsers[name] === socket.id)
         delete currentUsers[name];
       disconnectedUsername = name;
-      // console.log("Server.js - A USER DISCONNECTED - CURRENT USERS", name, socket.id);
     }); // {"users": [name1, name2] }
-    // console.log("Server.js - DISCONNECT - CURRENT USERS", currentUsers);
     console.log('DISCONNECT A USER', currentUsers);
     io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기
   });
@@ -423,7 +350,6 @@ app.get("/", (req, res) => {
   res.json({ connected: "start" });
 });
 
-// to build the app for heroku
 // app.get("*", (req, res) => {
 //   res.sendFile(path.resolve(__dirname, "app/build", "index.html"))
 // });
@@ -443,7 +369,6 @@ app.post("/login", (req, res) => {
     [email, password],
     (err, res_1) => {
       if (err) throw err;
-      console.log(res_1.rows);
       if (res_1.rows[0]) {
         // user exist
         // get followeds
@@ -451,7 +376,6 @@ app.post("/login", (req, res) => {
         const userID = userInfo.id;
         const userName = userInfo.username;
         const avatar = userInfo.avatar_id;
-        // console.log(res_1.rows[0]); // id: 3, username: "mike", password: "mike", email: "test2@test.com", avatar_id: 1
         // find languages
 
         pool.query(
@@ -533,7 +457,7 @@ app.post("/register", (req, res) => {
 });
 
 
-http.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(
     `Server Started on port ${PORT}, ${new Date().toLocaleString()} #####`
   );
