@@ -1,5 +1,5 @@
 const poolGroup = require("./coding_buddy_db");
-const {pool, getUserInfo, createUser} = poolGroup;
+const {pool, tryLogin, registerUser} = poolGroup;
 
 /** USE .env */
 require("dotenv").config();
@@ -394,65 +394,16 @@ io.on("connection", (socket) => {
   });
 });
 
-//
 app.get("/", (req, res) => {
-  // 8000
   res.json({ connected: "start" });
 });
 
-// 로그인 정보 리퀘스트 .. 진행중
 app.post("/login", (req, res) => {
-  console.log("REGISTER", req)
-  return getUserInfo(req, res);
+  return tryLogin(req, res);
 });
 
-
-// friends
-
 app.post("/register", (req, res) => {
-
-
-  console.log("REGISTER", req)
-  return createUser(req, res);
-
-  // const userName = req.body.userInfo.userName;
-  // const userPassword = req.body.userInfo.userPassword;
-  // const userEmail = req.body.userInfo.userEmail;
-  // const userLanguages = req.body.userInfo.userLanguages;
-  // const avatar = req.body.userInfo.userAvatar;
-
-  // pool.query(
-  //   //check if user al
-  //   // ready exists in DB during registration
-  //   "SELECT * FROM users WHERE username = $1 OR email = $2", [userName, userEmail])
-  //   .then((response) => {
-  //     // break promise chain early by throwing error
-  //     if (response.rows[0]) {
-  //       res.status(201).send(false);
-  //       // return Promise.reject(('User already registered')); // option 1?
-  //     }
-  //     // throw res.status(409).send('User already registered'); // option 2
-
-  //     return pool.query(
-  //       "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [userName, userPassword, userEmail, avatar]);
-  //     // "RETURNING *" means we are returning the new 'user' entry to the next .then
-  //   })
-  //   .then((response) => {
-  //     const { id } = response.rows[0];
-  //     const userID = id;
-  //     const userData = { userName, avatar, userLanguages, userID };
-
-  //     userLanguages.forEach((lang_id) => {
-  //       pool.query(
-  //         "INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *",
-  //         [response.rows[0].id, lang_id]
-  //       );
-  //     });
-  //     // sending user info back to Register.jsx (as res.data)
-  //     console.log("REGISTRATION SUCCESS", userData);
-  //     res.status(201).send(userData);
-  //   })
-  //   .catch((e) => { console.error(e); });
+  return registerUser(req, res);
 });
 
 

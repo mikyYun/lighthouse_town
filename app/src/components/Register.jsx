@@ -217,17 +217,13 @@ export default function Register(props) {
                 userLanguages,
                 userAvatar,
               };
-              console.log("CLICKED", userInfo)
-              // const posting = {
-              //   method: "post",
-              //   url: "/login",
-              //   userInfo 
-              // }
-              // axios(posting)
               axios
                 .post("/register", {userInfo})
                 .then((res) => {
-                  console.log(res)
+                  console.log("test",res)
+                  if (res.data.unique) alert(`
+                    Registration failed. Please try with different email or username
+                  `)
                   if (res.data.userName) {
                     // res.data = [username, avatar_id, userLanguages, id];
                     console.log(
@@ -250,12 +246,12 @@ export default function Register(props) {
                     window.location = "/register";
                   }
                 })
-                .catch((error) => {
+                .catch((error, msg) => {
                   // alert(
                   //   "Registration failed. Please try with different email or username"
                   // );
                   console.log("ERROR") 
-                  console.log(error)
+                  console.log(error, msg)
                 });
             }}
           >
