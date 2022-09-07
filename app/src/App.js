@@ -3,7 +3,7 @@ import './App.css';
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Cookies from 'universal-cookie';
-import town from './components/game_img/town-map.png';
+import town from './components/game_img/town-map-logo.png';
 import classroom from './components/game_img/classroom.png';
 import Game from './components/Game';
 import Register from './components/Register';

@@ -47,7 +47,6 @@ function MessageForm({ nickname, recipient, user }) {
 
   return (
     <form >
-      <div >
         <textarea
           ref={focusTextArea}
           readOnly={textareaDisable}
@@ -68,7 +67,6 @@ function MessageForm({ nickname, recipient, user }) {
         >
           SEND
         </button>
-      </div>
     </form>
   );
 }

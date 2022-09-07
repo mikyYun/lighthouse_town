@@ -1,11 +1,8 @@
 $back-color: #1f1f1e;
-$main-color: #b0d36a;
-$second-color: #9883c4;
-// $form-color: #009f92;
+$main-color: #bada55;
+$second-color: #7555da;
 
-body{
-  background-color: $back-color;
-}
+
 
 .login-page {
   display: flex;
@@ -23,19 +20,19 @@ body{
     image-rendering: pixelated;
 
   }
-  // h1 {
-  //   color: $main-color;
-  //   font-size: 6rem;
-  //   font-weight: bolder;
-  //   font-family: 'VT323', monospace;
-  // }
+  h1 {
+    color: $main-color;
+    font-size: 6rem;
+    font-weight: bolder;
+    font-family: 'Londrina Shadow', cursive;
+    margin-bottom: 0;
+  }
 
-  // h2 {
-  //   color: $main-color;
-  //   font-size: 4rem;
-  //   font-weight: bolder;
-  //   font-family: 'VT323', monospace;
-  // }
+  h2 {
+    color: $main-color;
+    font-size: 2rem;
+    margin-bottom: 4rem;
+  }
 }
 
 #form_login {
@@ -43,7 +40,6 @@ body{
   width: 30%;
   min-width: 450px;
   max-width: 550px;
-
   height: 350px;
   margin-top: 30px;
   padding: 50px;
@@ -52,17 +48,20 @@ body{
   justify-content: center;
   align-items: flex-start;
   border-radius: 10px;
-  box-shadow: 5px 5px #888888;
+  box-shadow: 3px 3px #8888889e;
   font-size: 1.2rem;
 
   div {
     width: 100%;
-    padding: 0.5rem;
     }
 
   input {
     width: 100%;
     border-radius: 5px;
+    height: 3rem;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    margin-bottom: 2rem;
   }
 
   p {
@@ -82,8 +81,10 @@ body{
 
 
 .btn {
-  background-color: #b0d36a;
+  background-color: $main-color;
   width: 40%;
-  margin: 5px;
-  font-size: 1.2rem;
+  margin: 0 10px;
+  font-size: 1rem;
+  padding: 0.8rem;
+  border-radius: 5px;
 }

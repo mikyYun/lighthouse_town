@@ -1,14 +1,15 @@
 $back-color: #1f1f1e;
-$main-color: #b0d36a;
-$second-color: #9883c4;
+$main-color: #bada55;
+$second-color: #7555da;
+
 
 .main-container {
-  width: 75%;
+  width: 70%;
   background-color: $main-color;
   // display: flex;
 }
 .side-bar{
-  width: 25%;
+  width: 30%;
   display: flex;
   flex-direction: column;
   background-color: $second-color;
@@ -16,11 +17,11 @@ $second-color: #9883c4;
 
 .game-container {
   position: relative;
-  width: 100%;
-  /* height: 42vh; */
   background-size: cover;
   image-rendering: pixelated;
+  aspect-ratio: 1120 / 640;
 }
+
 .plaza {
   background-image: url('./game_img/town-map-logo.png');
 }

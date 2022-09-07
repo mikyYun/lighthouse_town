@@ -22,10 +22,11 @@ export default function Login(props) {
 
   return (
     <div className="login-page">
-      <div className="logo"></div>
+      {/* <div className="logo"></div> */}
+      <h1>Lighthouse Town</h1>
+      <h2>A place to find a coding buddy</h2>
     <form id="form_login" action="/game/plaza" method="GET" runat="server">
       <div>
-        <p>EMAIL</p>
         <input
           // name="email"
           id="login_email"
@@ -39,7 +40,6 @@ export default function Login(props) {
         ></input>
       </div>
       <div>
-        <p>PASSWORD{" "}</p>
         <input
           // name="password"
           id="login_password"

@@ -16,7 +16,7 @@ function Recipient() {
   return (
     <div className="card d-flex flex-row chat-to-container" >
       <label htmlFor="user-name-input" className="chat-to">
-        Recipient
+        Send to :
       </label>
       <Select
         type="text"
