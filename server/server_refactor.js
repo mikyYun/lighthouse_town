@@ -1,8 +1,7 @@
 /** USE QUERY */
-// import { pool, filterEssentials, getUsers, getUserById, createUser, updateUser, deleteUser } from "./coding_buddy_db";
 const poolGroup = require("./coding_buddy_db");
-const pool = poolGroup.pool;
-const getUserInfo = poolGroup.getUserInfo;
+const { pool, getUserInfo, createUser } = poolGroup;
+
 /** USE .env */
 require("dotenv").config();
 
@@ -28,11 +27,6 @@ const sessionMiddleware = session({
   secret: "codding_buddy",
   cookie: { maxAge: 60000 },
 });
-io.use((socket, next) => {
-  sessionMiddleware(socket.request, {}, next);
-});
-/** ADAPTER TO USE QUERIES */
-io.adapter(createAdapter(pool));
 
 /** SET EXPRESS TO USE PACKAGES */
 app.use(cors());
@@ -42,13 +36,37 @@ app.use(bodyParser.urlencoded({
   extended: true,
 }));
 
+
+io.use((socket, next) => {
+  sessionMiddleware(socket.request, {}, next);
+});
+/** ADAPTER TO USE QUERIES */
+io.adapter(createAdapter(pool));
+
+io.on("connection", (socket) => {
+  const session = socket.request.session;
+  session.save();
+  console.log("SOCKET CONNECTED")
+})
+
+
+
+/** REGISTER */
+app.post("/register"), (req, res) => {
+
+  console.log("REGISTER", req)
+  // return createUser(body, res);
+  return createUser(req, res);
+};
+
 /** LOGIN */
 app.post("/login", (req, res) => {
+  console.log("LOGIN")
   return getUserInfo(req, res);
 });
 
 
 /** SERVER RUNNING */
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+httpServer.listen(PORT, () => {
+  console.log(`SERVER_REFACTOR.JS || Server running on port ${PORT}`);
 });

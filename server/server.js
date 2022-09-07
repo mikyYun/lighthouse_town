@@ -1,58 +1,46 @@
-import { pool, filterEssentials, getUsers, getUserById, createUser, updateUser, deleteUser } from "./coding_buddy_db";
+const poolGroup = require("./coding_buddy_db");
+const {pool, getUserInfo, createUser} = poolGroup;
 
+/** USE .env */
 require("dotenv").config();
+
+/** REQUIRES */
 const cors = require("cors");
-const bodyParser = require("body-parser");
 const PORT = process.env.PORT || 8000;
+const bodyParser = require("body-parser");
 const express = require("express");
 const session = require("express-session");
 const app = express();
 const httpServer = require("http").createServer(app);
-const { Server } = require("socket.io"); //socketIo
+const { createAdapter } = require("@socket.io/postgres-adapter");
+
+/** INTEGRATING Socket.io */
+const { Server } = require("socket.io");
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000", //client
-    credentials: true,
-  },
+    origin: process.env.FRONT_URL,
+    Credential: true,
+  }
 });
 
-const { createAdapter } = require("@socket.io/postgres-adapter"); //app.get, 안써도 socket.io 안에서 직접 postgres 연결이 가능. root path 따로 설정 불필요.
 const sessionMiddleware = session({
   secret: "coding_buddy",
   cookie: { maxAge: 60000 },
 });
 
-// const { getOneUserLanguages } = require("./coding_buddy_db");
-// const { Pool } = require("pg");
-// const pool = new Pool({
-//   user: process.env.PGUSER,
-//   host: process.env.PGHOST,
-//   database: process.env.PGDATABASE,
-//   password: process.env.PGPASSWORD,
-//   port: process.env.PGPORT,
-// });
-
-
-//G. socket(server)
-//G. create a new instance of a socket handler
-//G. and passing io as an argument.
-//G. io is the Server.
-
+/** SET EXPRESS TO USE PACKAGES */
 app.use(cors());
 app.use(sessionMiddleware);
 app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
+app.use(bodyParser.urlencoded({
+  extended: true,
+}));
 
 io.use((socket, next) => {
   sessionMiddleware(socket.request, {}, next);
 });
-
+/** ADAPTER TO USE QUERIES */
 io.adapter(createAdapter(pool));
-
 
 // store all users' socket id with username key-value pair
 let currentUsers = {}; // => {username : socket.id}
@@ -414,111 +402,62 @@ app.get("/", (req, res) => {
 
 // 로그인 정보 리퀘스트 .. 진행중
 app.post("/login", (req, res) => {
-  // client sending
-  // console.log("login request", req.body);
-  // req.body = {userEmail: '', userPassword: ''}
-
-  const email = req.body.userEmail;
-  const password = req.body.userPassword;
-
-  // and password.. userName=$1 AND userpassword=$2
-  return pool.query(
-    "SELECT * FROM users WHERE email=$1 AND password=$2",
-    [email, password],
-    (err, res_1) => {
-      if (err) throw err;
-      // console.log(res_1.rows);
-      if (res_1.rows[0]) {
-        // user exist
-        // get followeds
-        const userInfo = res_1.rows[0];
-        const userID = userInfo.id;
-        const userName = userInfo.username;
-        const avatar = userInfo.avatar_id;
-        // console.log(res_1.rows[0]); // id: 3, username: "mike", password: "mike", email: "test2@test.com", avatar_id: 1
-        // find languages
-
-        pool.query(
-          "SELECT * FROM user_language WHERE user_id=$1",
-          [userID],
-          (err, res_2) => {
-            const userLanguages = [];
-            if (err) throw err;
-            if (res_2.rows.length > 0) {
-              // console.log("find user's languages", res_2.rows);
-              res_2.rows.forEach((obj) => {
-                userLanguages.push(obj.language_id);
-              });
-              const loginUserData = {
-                userName,
-                avatar,
-                userLanguages,
-                userID
-                // friends
-              };
-              res.status(201).send(loginUserData); //object - username, avatar, language
-            } else {
-              console.log("No available language", res_2.rows);
-            }
-          }
-        );
-
-
-      } else {
-        // no matching user
-        res.status(201).send(false);
-      }
-    }
-  );
+  console.log("REGISTER", req)
+  return getUserInfo(req, res);
 });
 
 
 // friends
 
 app.post("/register", (req, res) => {
-  const userName = req.body.userInfo.userName;
-  const userPassword = req.body.userInfo.userPassword;
-  const userEmail = req.body.userInfo.userEmail;
-  const userLanguages = req.body.userInfo.userLanguages;
-  const avatar = req.body.userInfo.userAvatar;
 
-  pool.query(
-    //check if user al
-    // ready exists in DB during registration
-    "SELECT * FROM users WHERE username = $1 OR email = $2", [userName, userEmail])
-    .then((response) => {
-      // break promise chain early by throwing error
-      if (response.rows[0]) {
-        res.status(201).send(false);
-        // return Promise.reject(('User already registered')); // option 1?
-      }
-      // throw res.status(409).send('User already registered'); // option 2
 
-      return pool.query(
-        "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [userName, userPassword, userEmail, avatar]);
-      // "RETURNING *" means we are returning the new 'user' entry to the next .then
-    })
-    .then((response) => {
-      const { id } = response.rows[0];
-      const userID = id;
-      const userData = { userName, avatar, userLanguages, userID };
+  console.log("REGISTER", req)
+  return createUser(req, res);
 
-      userLanguages.forEach((lang_id) => {
-        pool.query(
-          "INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *",
-          [response.rows[0].id, lang_id]
-        );
-      });
-      // sending user info back to Register.jsx (as res.data)
-      console.log("REGISTRATION SUCCESS", userData);
-      res.status(201).send(userData);
-    })
-    .catch((e) => { console.error(e); });
+  // const userName = req.body.userInfo.userName;
+  // const userPassword = req.body.userInfo.userPassword;
+  // const userEmail = req.body.userInfo.userEmail;
+  // const userLanguages = req.body.userInfo.userLanguages;
+  // const avatar = req.body.userInfo.userAvatar;
+
+  // pool.query(
+  //   //check if user al
+  //   // ready exists in DB during registration
+  //   "SELECT * FROM users WHERE username = $1 OR email = $2", [userName, userEmail])
+  //   .then((response) => {
+  //     // break promise chain early by throwing error
+  //     if (response.rows[0]) {
+  //       res.status(201).send(false);
+  //       // return Promise.reject(('User already registered')); // option 1?
+  //     }
+  //     // throw res.status(409).send('User already registered'); // option 2
+
+  //     return pool.query(
+  //       "INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [userName, userPassword, userEmail, avatar]);
+  //     // "RETURNING *" means we are returning the new 'user' entry to the next .then
+  //   })
+  //   .then((response) => {
+  //     const { id } = response.rows[0];
+  //     const userID = id;
+  //     const userData = { userName, avatar, userLanguages, userID };
+
+  //     userLanguages.forEach((lang_id) => {
+  //       pool.query(
+  //         "INSERT INTO user_language (user_id, language_id) VALUES ($1, $2) RETURNING *",
+  //         [response.rows[0].id, lang_id]
+  //       );
+  //     });
+  //     // sending user info back to Register.jsx (as res.data)
+  //     console.log("REGISTRATION SUCCESS", userData);
+  //     res.status(201).send(userData);
+  //   })
+  //   .catch((e) => { console.error(e); });
 });
 
 
 httpServer.listen(PORT, () => {
   console.log(
-    `Server Started on port ${PORT}, ${new Date().toLocaleString()} #####`
+    `SERVER.JS || Server Started on port ${PORT}, ${new Date().toLocaleString()} #####`
   );
 });

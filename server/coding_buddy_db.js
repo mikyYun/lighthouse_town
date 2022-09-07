@@ -12,36 +12,31 @@ const pool = new Pool({
   port: process.env.PGPORT
 });
 
-/** FOR REGISTERATION */
-
-/** FOR LOGIN */
-
-
-
 // when user login, pass essential data
-const filterEssentials = function (currentUsers) {
-  pool.query(
-    "SELECT id, username, email, avatar_id FROM users",
-    (err, res) => {
-      // res.rows => {id: , username: , email: , avatar_id}
-      const allUsersObj = res.rows;
-      pool.query(
-        "SELECT languages.id, user_id, language_name FROM user_language JOIN languages ON language_id=languages.id",
-        (err, res_1) => {
-          // res.rows_1 => {id(languageID): , user_id: , language_name: }
-          const userIDAndLang = res_1.rows;
-          allUsersObj.map(user => {
-            if (currentUsers[user.username]) {
+// const filterEssentials = function (currentUsers) {
+//   pool.query(
+//     "SELECT id, username, email, avatar_id FROM users",
+//     (err, res) => {
+//       // res.rows => {id: , username: , email: , avatar_id}
+//       const allUsersObj = res.rows;
+//       pool.query(
+//         "SELECT languages.id, user_id, language_name FROM user_language JOIN languages ON language_id=languages.id",
+//         (err, res_1) => {
+//           // res.rows_1 => {id(languageID): , user_id: , language_name: }
+//           const userIDAndLang = res_1.rows;
+//           allUsersObj.map(user => {
+//             if (currentUsers[user.username]) {
 
-            }
-          });
-        }
-      );
-    }
-  );
-};
+//             }
+//           });
+//         }
+//       );
+//     }
+//   );
+// };
 
 /** LANGUAGES MATCHING WITH ID AND LANGUAGE_NAME */
+/** ONLY ONCE */
 const langIDAndName = {};
 
 const getLanguages = () => {
@@ -77,6 +72,7 @@ const getFriends = (userID) => {
       RETURNING *
   `, [userID]);
 };
+
 /** GET to identify user information */
 const getUserInfo = (req, res) => {
   const email = req.body.userEmail;
@@ -131,17 +127,46 @@ const getUserInfo = (req, res) => {
     });
 };
 
-/** POST to register a new user */
+
+/** POST REGISTER NEW USER */
 const createUser = (req, res) => {
-  const { username, password, email, avatar_id, languages } = req.body;
-  pool.query("INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [username, password, email, avatar_id], (err, result) => {
-    if (err) throw err;
-    res.status(201).send(`User added with ID: ${result.rows[0].id}`);
-  });
-  pool.query("INSERT INTO user_language (user_id, language_id) VALUES ($1) RETURNING *", [languages], (err, result) => {
-    if (err) throw err;
-    res.status(201).send(`User added with `);
-  });
+  console.log(req)
+  const userName = req.body.userInfo.userName;
+  const userPassword = req.body.userInfo.userPassword;
+  const userEmail = req.body.userInfo.userEmail;
+  const userLanguages = req.body.userInfo.userLanguages;
+  const avatar = req.body.userInfo.userAvatar;
+  /** CHECK UNIQUE */
+  pool.query(`
+    SELECT * FROM users WHERE username = $1 OR email = $2
+  `, [username, userEmail])
+  .then(response => {
+    /** GIVEN username OR email IS ALREADY IN DB */
+    // if (response.rows[0]) res.status(409).send(false);
+    if (response.rows[0]) console.log(response.rows);
+    console.log()
+  })
+  .catch(err => {
+    console.log(err)
+  })
+
+  /** INSERT NEW USER's DATA USING TRANSACTION */
+  // pool.query(`
+  //   BEGIN TRANSACTION
+  //     INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4);
+  //     INSERT INTO user_language (user_id, language_id) VALUES ($5, $6);
+  //   COMMIT
+  // `, [])
+
+  // const { username, password, email, avatar_id, languages } = req.body;
+  // pool.query("INSERT INTO users (username, password, email, avatar_id) VALUES ($1, $2, $3, $4) RETURNING *", [username, password, email, avatar_id], (err, result) => {
+  //   if (err) throw err;
+  //   res.status(201).send(`User added with ID: ${result.rows[0].id}`);
+  // });
+  // pool.query("INSERT INTO user_language (user_id, language_id) VALUES ($1) RETURNING *", [languages], (err, result) => {
+  //   if (err) throw err;
+  //   res.status(201).send(`User added with `);
+  // });
 };
 
 // PUT : updated data in an existing user
@@ -169,12 +194,12 @@ const deleteUser = (req, res) => {
 /** REQUIRE poolGroup OBJ inside Server */
 const poolGroup = {
   pool,
-  filterEssentials,
   getUserInfo,
-  getUsers,
   createUser,
-  updateUser,
-  deleteUser
+  // filterEssentials,
+  // getUsers,
+  // updateUser,
+  // deleteUser
 };
 
 /** EXPORT poolGroup as a MODULE */

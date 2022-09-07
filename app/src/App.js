@@ -11,6 +11,7 @@ import Login from './components/Login';
 import Menu from './components/Menu';
 import { socket } from './components/service/socket.js';
 import { createContext } from "react";
+import axios from "axios";
 
 // import character imag
 
@@ -201,9 +202,9 @@ function App() {
     <SocketContext.Provider value={{ socket }} >
       <UserListContext.Provider value={{ show, setShow, recipient, setRecipient, clicked, setClicked, user, setUser, profiles, nickname, setProfiles, profileShow, setProfileShow, blockAddFriendAlert, setBlockAddFriendAlert, online, friendList }} >
         <Routes>
-          <Route path='/' element={<Login setUser={createSocketIdNameObject} />} />
-          <Route path='/register' element={<Register setUser={createSocketIdNameObject}/>} />
-          <Route path='/login' element={<Login setUser={createSocketIdNameObject} />} />
+          <Route path='/' element={<Login setUser={createSocketIdNameObject} axios={axios} />} />
+          <Route path='/register' element={<Register setUser={createSocketIdNameObject} axios={axios}/>} />
+          <Route path='/login' element={<Login setUser={createSocketIdNameObject} axios={axios}/>} />
           <Route path={`/game/${room}`} element={
             <Game
               sendMessage={sendMessage}

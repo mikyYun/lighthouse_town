@@ -2,8 +2,9 @@ import React, { useState } from "react";
 // import { RegistrationChecker } from "./helper/RegistrationChecker";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
 import "./Register.scss";
+const {BACK_URL} = process.env; 
 
 export default function Register(props) {
   const [userEmail, setUserEmail] = useState();
@@ -14,7 +15,8 @@ export default function Register(props) {
   const [incorrectPassword, setIncorrectPassword] =
     useState("correct_password");
   const [registerFormCheck, setRegisterFormCheck] = [];
-  const setUser = props.setUser;
+  // const setUser = props.setUser;
+  const {setUser, axios} = props;
   const cookies = new Cookies();
   const navigate = useNavigate();
   // window.addEventListener("click", (e) => {
@@ -215,9 +217,17 @@ export default function Register(props) {
                 userLanguages,
                 userAvatar,
               };
-              axios // client talking to the server. Asynchronous. if it doesn't happen .post,
-                .post("/register", { userInfo })
+              console.log("CLICKED", userInfo)
+              // const posting = {
+              //   method: "post",
+              //   url: "/login",
+              //   userInfo 
+              // }
+              // axios(posting)
+              axios
+                .post("/register", {userInfo})
                 .then((res) => {
+                  console.log(res)
                   if (res.data.userName) {
                     // res.data = [username, avatar_id, userLanguages, id];
                     console.log(
@@ -240,7 +250,13 @@ export default function Register(props) {
                     window.location = "/register";
                   }
                 })
-                .catch((error) => console.log(error));
+                .catch((error) => {
+                  // alert(
+                  //   "Registration failed. Please try with different email or username"
+                  // );
+                  console.log("ERROR") 
+                  console.log(error)
+                });
             }}
           >
             Register
