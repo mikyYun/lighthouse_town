@@ -1,14 +1,14 @@
 import { useState } from "react";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
-// import axios from "axios";
+import axios from "axios";
 import './Login.scss'
 
 export default function Login(props) {
 
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  const { setUser, axios } = props
+  const { setUser } = props
   const cookies = new Cookies();
   const navigate = useNavigate()
   const goRegister = () => {

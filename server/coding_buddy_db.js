@@ -105,7 +105,7 @@ const tryLogin = (req, res) => {
         .then(() => {
           result.rows.forEach((userData) => {
             userLanguages.push(userData.language_name);
-            userFriendsList.push(userData.added);
+            // userFriendsList.push(userData.added);
           });
         })
         .then(() => {

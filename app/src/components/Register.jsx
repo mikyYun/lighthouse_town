@@ -2,7 +2,7 @@ import React, { useState } from "react";
 // import { RegistrationChecker } from "./helper/RegistrationChecker";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
-// import axios from "axios";
+import axios from "axios";
 import "./Register.scss";
 const {BACK_URL} = process.env; 
 
@@ -16,7 +16,7 @@ export default function Register(props) {
     useState("correct_password");
   const [registerFormCheck, setRegisterFormCheck] = [];
   // const setUser = props.setUser;
-  const {setUser, axios} = props;
+  const {setUser} = props;
   const cookies = new Cookies();
   const navigate = useNavigate();
   // window.addEventListener("click", (e) => {

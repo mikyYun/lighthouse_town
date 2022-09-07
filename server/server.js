@@ -51,7 +51,7 @@ const usersInRooms = {};
 io.on("connection", (socket) => {
   const session = socket.request.session;
   session.save();
-  // console.log("MAKE NEW CONNECTION") // checked
+  console.log("MAKE NEW CONNECTION") // checked
   // console.log(currentUsers)
   // LOGIN USER CONNECTED
   // socketID and username matching triggered when user login
