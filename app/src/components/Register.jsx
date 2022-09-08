@@ -4,7 +4,7 @@ import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Register.scss";
-const {BACK_URL} = process.env; 
+const { BACK_URL } = process.env;
 
 export default function Register(props) {
   const [userEmail, setUserEmail] = useState();
@@ -16,7 +16,7 @@ export default function Register(props) {
     useState("correct_password");
   const [registerFormCheck, setRegisterFormCheck] = [];
   // const setUser = props.setUser;
-  const {setUser} = props;
+  const { setUser } = props;
   const cookies = new Cookies();
   const navigate = useNavigate();
   // window.addEventListener("click", (e) => {
@@ -128,14 +128,9 @@ export default function Register(props) {
             type="password"
             onChange={(e) => {
               if (e.target.value !== userPassword) {
-                // console.log(userPassword)
                 setIncorrectPassword("incorrect_password");
-                console.log(
-                  "confirmation password doesn't match. - Register.js"
-                );
               } else {
                 setIncorrectPassword("correct_password");
-                console.log(e.target.value);
               }
             }}
           ></input>
@@ -218,20 +213,14 @@ export default function Register(props) {
                 userAvatar,
               };
               axios
-                .post("/register", {userInfo})
+                .post("/register", { userInfo })
                 .then((res) => {
-                  console.log("test",res)
-                  if (res.data.unique) alert(`
+                  if (res.data.unique)
+                    alert(`
                     Registration failed. Please try with different email or username
-                  `)
+                  `);
                   if (res.data.userName) {
-                    // res.data = [username, avatar_id, userLanguages, id];
-                    console.log(
-                      "register button click and response data",
-                      res.data
-                    );
                     setUser(res.data.userName);
-                    // props.submitRegistrationInfo(res.data);
                     cookies.set("userdata", res.data, { maxAge: 3600 });
                     goChat(
                       res.data.userName,
@@ -247,11 +236,9 @@ export default function Register(props) {
                   }
                 })
                 .catch((error, msg) => {
-                  // alert(
-                  //   "Registration failed. Please try with different email or username"
-                  // );
-                  console.log("ERROR") 
-                  console.log(error, msg)
+                  alert(
+                    "Registration failed. Please try with different email or username"
+                  );
                 });
             }}
           >

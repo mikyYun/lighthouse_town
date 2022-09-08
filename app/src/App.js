@@ -17,28 +17,27 @@ function App() {
   const [room, setRoom] = useState("plaza");
 
   useEffect(() => {
-    console.log("SOCKET CONNECTED")
+    console.log("SOCKET CONNECTED");
     // return () => {
     //   socket.disconnect();
     // };
   }, [socket]);
 
   const createSocketIdNameObj = (username) => {
-    console.log("CHECK");
-    socket.email("SET USERNAME", {
+    socket?.email("SET USERNAME", {
       socketID: socket.id,
       username: username
     });
   };
-
   return (
     <SocketContext.Provider value={{ socket }}>
-      <UserListContext.Provider value={{}}>
+      <UserListContext.Provider value={{ room }}>
         <Routes>
-          <Route path="/" element={<Login setUser={createSocketIdNameObj} />}></Route>
-          <Route path="/register" element={<Register setUser={createSocketIdNameObj}/>}></Route>
-          <Route path="/login" element={<Login setUser={createSocketIdNameObj} />}></Route>
-          <Route path={`/game/${room}`} element={<Game />}></Route>
+          {/* <Route path={"/"||"/login"} element={<Login setUser={createSocketIdNameObj} />} /> */}
+          <Route path="/register" element={<Register setUser={createSocketIdNameObj} />} />
+          <Route path="/" element={<Login setUser={createSocketIdNameObj} />} />
+          <Route path="/login" element={<Login setUser={createSocketIdNameObj} />} />
+          <Route path={`/game/${room}`} element={<Game />} />
         </Routes>
       </UserListContext.Provider>
     </SocketContext.Provider>
