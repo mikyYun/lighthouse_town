@@ -51,7 +51,7 @@ const usersInRooms = {};
 io.on("connection", (socket) => {
   const session = socket.request.session;
   session.save();
-  console.log("MAKE NEW CONNECTION") // checked
+  console.log("SOCKET CONNECTED")
   // console.log(currentUsers)
   // LOGIN USER CONNECTED
   // socketID and username matching triggered when user login
@@ -59,6 +59,7 @@ io.on("connection", (socket) => {
     // console.log("SET USERNAME", obj)
     //Login.jsx 의 setUser(res.data.userName)
     const { username, socketID } = obj;
+    console.log("USERNAME AND SOCKETID", username, socketID)
     // console.log("RECIEVED DATA", username, socketID)
     // only work after login not refresh
     // console.log("Connected ", username, socketID);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { SocketContext, UserListContext } from "../App";
+import { SocketContext, UserListContext } from "../App_backup";
 import Canvas from "./Canvas";
 import "./Game.scss";
 import Chat from "./Chat";

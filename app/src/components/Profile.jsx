@@ -1,5 +1,5 @@
 import { useEffect, useContext } from "react";
-import { SocketContext, UserListContext } from "../App.js";
+import { SocketContext, UserListContext } from "../App_backup.js";
 
 export default function Profile(props) {
   const { clicked, profiles, nickname, setProfiles, profileShow, setProfileShow } = useContext(UserListContext);

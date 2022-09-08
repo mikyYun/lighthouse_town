@@ -1,5 +1,5 @@
 import { useEffect, useContext, useState, useMemo } from "react";
-import { SocketContext, UserListContext } from "../App.js";
+import { SocketContext, UserListContext } from "../App_backup.js";
 import "./FriendsList.scss";
 import Cookies from "universal-cookie";
 

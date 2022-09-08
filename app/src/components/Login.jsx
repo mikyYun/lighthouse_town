@@ -14,10 +14,12 @@ export default function Login(props) {
   const goRegister = () => {
     navigate('/register')
   }
-  const goChat = (username, avatar, userLanguages, id) => {
-    const data = [username, avatar, userLanguages, id]
-    navigate(`/game/plaza`, { state: data })
-    navigate(0, { state: data })
+  const goChat = () => {
+  // const goChat = (userData) => {
+    // const data = [...userData]
+    // navigate(`/game/plaza`, { state: data })
+    // navigate(0, { state: data })
+    navigate("/game/plaza")
   }
 
   return (
@@ -45,8 +47,8 @@ export default function Login(props) {
           id="login_password"
           rows="1"
           placeholder="PASSWORD"
-          type="password"
           value={userPassword}
+          type="password"
           onChange={(e) => {
             setUserPassword(e.target.value);
           }}
@@ -57,15 +59,21 @@ export default function Login(props) {
           className="btn"
           type="submit"
           onClick={(e) => {
-            const loginInfo = { userEmail, userPassword }
+            // const loginInfo = { userEmail, userPassword }
+            const loginInfo = {
+              userEmail: "test@test.com",
+              userPassword: "moon"
+            }
             // cookies.set("username", userEmail)
             axios
-              .post("/login", loginInfo)
-              .then((res) => {
-                if (res.data.userName) {
-                  setUser(res.data.userName) // pass username so that server set username and socketid as key:value pair
-                  cookies.set("userdata", res.data, {maxAge: 3600});
-                  goChat(res.data.userName, res.data.avatar, res.data.userLanguages, res.data.userID)
+            .post("/login", loginInfo)
+            .then((res) => {
+              if (res.data.userName) {
+                const target = res.data
+                cookies.set("userdata", target, {maxAge: 3600});
+                  // setUser(target.userName)
+                  // goChat(target.userName, target.avatar, target.userLanguages, target.userID)
+                  goChat()
                 } 
               })
               .catch((err, res) => {
