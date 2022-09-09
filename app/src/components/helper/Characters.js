@@ -63,6 +63,12 @@ class Characters {
     }
   }
 
+  stop = (keyCode) => {
+    if (keyCode == 37 || keyCode == 38 || keyCode == 39 || keyCode == 40) {
+      this.state.frameCount = 0;
+    }
+  }
+
   drawFrame = (ctx) => {
     const frameX = cycleLoop[this.state.frameCount];
     // console.log(frameX, this.state.frameCount)

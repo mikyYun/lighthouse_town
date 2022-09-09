@@ -47,15 +47,24 @@ const Canvas = () => {
         ...prev,
         [username]: prev[username]
       }))
-      canvas = canvasRef.current;
+      // canvas = canvasRef.current;
       // const ctx = canvas.getContext("2d");
       // userCharacters[username].drawFrame(ctx);
       // userCharacters[username].showName(ctx);
       // userCharacters[username].drawFrame(ctx);
       // userCharacters[username].showName(ctx);
     });
+    document.addEventListener("keyup", (e) => {
+      const keyCode = e.keyCode;
+      userCharacters[username]?.stop(keyCode);
+      setUserCharacters(prev => ({
+        ...prev,
+        [username]: prev[username]
+      }))
+    })
     return () => {
       document.removeEventListener("keydown");
+      document.removeEventListener("keyup")
     };
   }, []);
 
