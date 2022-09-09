@@ -15,6 +15,14 @@ export const MsgContext = createContext([]);
 
 function App() {
   const [room, setRoom] = useState("plaza");
+  const [character, setCharacter] = useState({})
+  const roomList = ["plaza", "js", "ruby", "react", "coffee"]
+
+  const roomRoute = roomList.map(roomName => {
+    return (
+      <Route path={`/game/${roomName}`}  element={<Game character={character} setCharacter={setCharacter} />} key={roomName}/>
+    )
+  })
 
   useEffect(() => {
     console.log("SOCKET CONNECTED");
@@ -33,11 +41,11 @@ function App() {
     <SocketContext.Provider value={{ socket }}>
       <UserListContext.Provider value={{ room }}>
         <Routes>
-          {/* <Route path={"/"||"/login"} element={<Login setUser={createSocketIdNameObj} />} /> */}
           <Route path="/register" element={<Register setUser={createSocketIdNameObj} />} />
           <Route path="/" element={<Login setUser={createSocketIdNameObj} />} />
           <Route path="/login" element={<Login setUser={createSocketIdNameObj} />} />
-          <Route path={`/game/${room}`} element={<Game />} />
+          {/* <Route path={`/game/${room}`} element={<Game />} /> */}
+          {roomRoute}
         </Routes>
       </UserListContext.Provider>
     </SocketContext.Provider>

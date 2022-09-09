@@ -37,24 +37,26 @@ class Characters {
   }
 
   // add websocket
-  move = (e) => {
+  move = (keyCode) => {
     // console.log('inside move', this)
-    if (e.key === 'ArrowUp') {
+
+    // console.log(e.keyCode)
+    if (keyCode == 38) {
       this.state.y -= this.movement_speed;
       this.state.currentDirection = facing.up;
       this.frameDirection()
     }
-    if (e.key === 'ArrowLeft') {
+    if (keyCode == 37) {
       this.state.x -= this.movement_speed;
       this.state.currentDirection = facing.left;
       this.frameDirection()
     }
-    if (e.key === 'ArrowDown') {
+    if (keyCode == 40) {
       this.state.y += this.movement_speed;
       this.state.currentDirection = facing.down;
       this.frameDirection()
     }
-    if (e.key === 'ArrowRight') {
+    if (keyCode == 39) {
       this.state.x += this.movement_speed;
       this.state.currentDirection = facing.right;
       this.frameDirection()
