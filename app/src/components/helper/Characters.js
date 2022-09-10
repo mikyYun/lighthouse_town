@@ -20,7 +20,8 @@ class Characters {
       avatar: config.avatar
     }
     this.img = new Image();
-    this.img.src = selectAvatar(this.state.avatar)
+    this.img.src = selectAvatar(this.state.avatar);
+    this.img.style.scale=2;
     this.movement_speed = 10;
     this.width = 63.5;
     this.height = 63.5;

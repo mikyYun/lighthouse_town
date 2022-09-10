@@ -3,6 +3,7 @@ import Characters from "./helper/Characters";
 import { SocketContext } from "../App";
 import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from "universal-cookie";
+const ScreenSizeDetector = require("screen-size-detector");
 
 const Canvas = () => {
   const { socket } = useContext(SocketContext);
@@ -12,7 +13,86 @@ const Canvas = () => {
   const path = location.pathname.split("/")[2];
   const [msg, setMsg] = useState({});
   const [userCharacters, setUserCharacters] = useState({});
-  
+  const [cameraPosition, setCameraPosition] = useState({
+    x: 0,
+    y: 0,
+    isRight: false,
+    isLeft: true,
+    isTop: true,
+    isBottom: false,
+  });
+  const screen = new ScreenSizeDetector();
+  // const horCenter = (screen.width - 63.5) / 2;
+  // const verCenter = (screen.height - 63.5) / 2;
+  const cameraControl = ({ x, y }, keyCode) => {
+    // console.log(horCenter, verCenter);
+    // console.log(x, y) // avatar position
+
+    // avatar position, screen size (w / h)
+    if (screen.width < 1120 || screen.height < 640) {
+      const avatarXPosition = userCharacters[username].state.x;
+      const avatarYPosition = userCharacters[username].state.x;
+
+      if (keyCode == 38) {
+        console.log("UP");
+
+      }
+      if (keyCode == 40) {
+        console.log("DOWN");
+
+      }
+      if (keyCode == 37) {
+        console.log("LEFT", cameraPosition.x, avatarXPosition);
+        if (cameraPosition.x < 0 && screen.width - 250 > avatarXPosition) {
+          cameraPosition.x = cameraPosition.x + 10;
+          if (cameraPosition.x > 0) cameraPosition.x = 0;
+        }
+
+        
+      }
+      if (keyCode == 39) {
+        console.log("RIGHT");
+        if (avatarXPosition + 300 < 1120) {
+            if (screen.width - avatarXPosition < 300) {
+              cameraPosition.x = cameraPosition.x - 10;
+              if (cameraPosition.x > 1120) cameraPosition.x = 1120;
+            }
+          // }
+        }
+      }
+
+      // if (xPosition + 200 >= 1120) {
+      //   cameraPosition.isRight = true;
+      // }
+
+      // if (!cameraPosition.isRight) {
+      //   console.log(xPosition, cameraPosition.x)
+
+      //   if (screen.width - xPosition < 300 && cameraPosition.x <= 0) {
+      //     // right
+      //     cameraPosition.x = cameraPosition.x - 10;
+      //   }
+      // }
+      // if (xPosition <= 200) {
+      //   cameraPosition.HorizonMax = false;
+      // }
+
+      // if (screen.width - xPosition > 200 && cameraPosition.x < 0) {
+      //   cameraPosition.x = cameraPosition.x + 10;
+
+      // }
+    }
+    if (screen.height < 640) {
+      // cameraPosition.y = cameraPosition.y - 10;
+    }
+    // const y = avatarPosition.y;
+    // setCameraPosition(prev => ({
+    // ...prev,
+    // x,
+    // y
+    // }))
+  };
+
   let canvas;
   // const canvas = canvasRef.current;
   // canvas.width = 1120;
@@ -43,10 +123,15 @@ const Canvas = () => {
     document.addEventListener("keydown", (e) => {
       const keyCode = e.keyCode;
       userCharacters[username]?.move(keyCode);
-      setUserCharacters(prev => ({
+      console.log("AVATARPOSITION", userCharacters[username].state.x);
+      const x = userCharacters[username].state.x;
+      const y = userCharacters[username].state.y;
+      cameraControl({ x, y }, keyCode);
+
+      setUserCharacters((prev) => ({
         ...prev,
-        [username]: prev[username]
-      }))
+        [username]: prev[username],
+      }));
       // canvas = canvasRef.current;
       // const ctx = canvas.getContext("2d");
       // userCharacters[username].drawFrame(ctx);
@@ -57,14 +142,14 @@ const Canvas = () => {
     document.addEventListener("keyup", (e) => {
       const keyCode = e.keyCode;
       userCharacters[username]?.stop(keyCode);
-      setUserCharacters(prev => ({
+      setUserCharacters((prev) => ({
         ...prev,
-        [username]: prev[username]
-      }))
-    })
+        [username]: prev[username],
+      }));
+    });
     return () => {
       document.removeEventListener("keydown");
-      document.removeEventListener("keyup")
+      document.removeEventListener("keyup");
     };
   }, []);
 
@@ -133,16 +218,7 @@ const Canvas = () => {
   //   // });   //socket ends
 
   // useEffect(() => {
-  const controlAvatar = (e) => {
-    console.log(e.keyCode);
-    // window.addEventListener("keydown", (e) => {
-    const keyCode = e.keyCode;
-    userCharacters[username]?.move(keyCode);
-    // userCharacters[username].drawFrame(ctx);
-    // userCharacters[username].showName(ctx);
-    setUserCharacters(userCharacters);
-    // })
-  };
+
   // window.addEventListener("keydown", (e) => {
   //   userCharacters[username].move(e.keyCode);
   //   console.log(userCharacters[username].state);
@@ -250,11 +326,21 @@ const Canvas = () => {
   //   });
   // }, [socket])
 
+  useMemo(() => {
+    const initialMapHeight = (screenHeight) => {
+      if (screenHeight < 640) {
+        return screenHeight - 320;
+      }
+    };
 
-  
+    setCameraPosition((prev) => ({
+      ...prev,
+      // y: initialMapHeight(screen.height)
+      // y : -150,
+    }));
+  }, []);
 
   useEffect(() => {
-
     canvas = canvasRef.current;
     canvas.width = 1120;
     canvas.height = 640;
@@ -276,9 +362,7 @@ const Canvas = () => {
 
     // setUserCharacters(prev => ({...prev, [username]: }))
     // });
-
   }, [userCharacters]);
-
   // //--------- functions
   // // if user hit the specific position -> redirect to the page
   // function handleRoom(room) {
@@ -300,7 +384,20 @@ const Canvas = () => {
 
   return (
     <div className={`game-container ${path}`}>
-      <canvas className="game-canvas" ref={canvasRef}></canvas>
+      <canvas
+        className={`game-canvas ${path}`}
+        ref={canvasRef}
+        style={{
+          left: cameraPosition.x,
+          // bottom: cameraPosition.y
+          // zIndex: 2,
+          // backgroundPositionX: cameraPosition.x,
+          // backgroundPositionY: cameraPosition.y,
+        }}
+      ></canvas>
+      <div className="camera"></div>
+      <section className="control_section"></section>
+      <section className="message_section"></section>
     </div>
   );
 };
