@@ -6,11 +6,21 @@ const cameraControl = (keyCode, cameraPosition, setCameraPosition, screen, userC
   if (screen.width < 1120 || screen.height < 640) {
     const avatarXPosition = userCharacters[username].state.x;
     const avatarYPosition = userCharacters[username].state.y;
-
+    const verticalLimit = 640 - screen.height
+    const verticalCenter = screen.height / 2
+    const horizontalLimit = 1120 - screen.width
+    const horizontalCenter = screen.width / 2
     if (keyCode == 38) {
-      console.log("UP");
-      if (avatarYPosition >= 200) {
-        cameraPosition.y = cameraPosition.y - 10;
+      if (640 - avatarYPosition > 300) {
+        const decreaseY = (positionY) => {
+          positionY -= 10;
+          if (positionY < 0) positionY = 0;
+          return positionY;
+        };
+        setCameraPosition((prev) => ({
+          ...prev,
+          y: decreaseY(prev.y)
+        }));
       }
       // if (cameraPosition.y < 0 && screen.height - 250 > avatarXPosition) {
       //   cameraPosition.y = cameraPosition.y - 10;
@@ -18,15 +28,32 @@ const cameraControl = (keyCode, cameraPosition, setCameraPosition, screen, userC
       // }
     }
     if (keyCode == 40) {
-      
-      // if (cameraPosition.y > 0 && screen.height - 250 > avatarXPosition) {
-      //   cameraPosition.y = cameraPosition.y + 10;
-      //   if (cameraPosition.y > 0) cameraPosition.y = 0;
-      // }
-    }
-    if (keyCode == 37) {
-      if (1120 - avatarXPosition > 300
+
+      if (
+        avatarYPosition > verticalCenter
          ) {
+        const increaseY = (positionY) => {
+          if (positionY === verticalLimit) return positionY;
+          positionY += 10;
+          if (positionY > verticalLimit) positionY = verticalLimit;
+          return positionY;
+        };
+        setCameraPosition((prev) => ({
+          ...prev,
+          y: increaseY(prev.y)
+        }));
+      }
+    }
+    // LEFT
+    if (keyCode == 37) {
+      if (
+        // 1120 - avatarXPosition > 300
+        avatarXPosition < 1120 - horizontalCenter
+        &&
+        avatarXPosition % horizontalCenter > 0
+        // avatarXPosition + horizontalCenter < 1120 
+        // if (avatarXPosition > horizontalCenter
+      ) {
         const increaseX = (positionX) => {
           positionX += 10;
           if (positionX > 0) positionX = 0;
@@ -38,18 +65,20 @@ const cameraControl = (keyCode, cameraPosition, setCameraPosition, screen, userC
         }));
       }
     }
+    // RIGHT
     if (keyCode == 39) {
       if (
-        avatarXPosition + 200 < 1120
+        avatarXPosition < 1120 - 63.5
         &&
-        avatarXPosition > 200
+        avatarXPosition > horizontalCenter
         ) {
           const decreaseX = (positionX) => {
+            if (-positionX == 1120 - screen.width ) return positionX;
             positionX -= 10;
-            if (positionX > 1120) positionX = 1120;
-            return positionX;
-          };
-          setCameraPosition((prev) => ({
+          if (-positionX > 1120 - screen.width) positionX = -(1120 - screen.width);
+          return positionX;
+        };
+        setCameraPosition((prev) => ({
           ...prev,
           x: decreaseX(prev.x),
         }));
