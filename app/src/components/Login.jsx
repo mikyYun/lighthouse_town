@@ -31,7 +31,7 @@ export default function Login(props) {
         <div>
           <p>EMAIL</p>
           <input
-            // name="email"
+            name="email"
             id="login_email"
             rows="1"
             placeholder="EMAIL"
@@ -45,7 +45,7 @@ export default function Login(props) {
         <div>
           <p>PASSWORD </p>
           <input
-            // name="password"
+            name="password"
             id="login_password"
             rows="1"
             placeholder="PASSWORD"
@@ -61,11 +61,11 @@ export default function Login(props) {
             className="btn"
             type="submit"
             onClick={(e) => {
-              // const loginInfo = { userEmail, userPassword }
-              const loginInfo = {
-                userEmail: "test@test.com",
-                userPassword: "moon",
-              };
+              const loginInfo = { userEmail, userPassword }
+              // const loginInfo = {
+              //   userEmail: "test@test.com",
+              //   userPassword: "moon",
+              // };
               // cookies.set("username", userEmail)
               axios
                 .post("/login", loginInfo)

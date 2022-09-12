@@ -9,12 +9,19 @@ import selectAvatar from "./helper/selectAvatar.js";
 export default function Online(props) {
   const { socket } = useContext(SocketContext);
   const { room, onlineList } = useContext(UserListContext);
-  const [showOnline, setShowOnline] = useState("show")
+  const [showOnline, setShowOnline] = useState("show");
   const toggleOnline = (showOnline) => {
-    showOnline === "show" ? setShowOnline("hide") : setShowOnline("show")
-  }
+    showOnline === "show" ? setShowOnline("hide") : setShowOnline("show");
+  };
   // const [onlineList, setOnlineList] = useState([room])
-
+  // useEffect(() => {
+  //   socket.on("REMOVE LOGOUT USER", (updatedUserNames) => {
+  //     console.log(onlineList[updatedUserNames]);
+  //   });
+  //   return () => {
+  //     socket.disconnect();
+  //   }
+  // }, []);
 
   // useEffect(() => {
   //   console.log("TEST")
@@ -59,18 +66,16 @@ export default function Online(props) {
   //   socket.emit("friendsList", { socketID: socket.id });
   // }, [online]);
 
-  const onlineUserList = onlineList.map(user => {
-  
+  const onlineUserList = onlineList.map((user) => {
     return (
       <div className="user" key={user}>
         <li className="users-online">{user}</li>
       </div>
-    )
-  })
-
+    );
+  });
 
   const usersOnline = (
-    <div className={`online-users ${showOnline}`} >
+    <div className={`online-users ${showOnline}`}>
       {/* {onlineList.map} */}
       {onlineUserList}
       {/* <div className="user">
@@ -103,9 +108,14 @@ export default function Online(props) {
   return (
     <div className="online-list">
       {/* <FriendList /> */}
-      <div className="side-bar-label" onClick={() => {
-        toggleOnline(showOnline)
-      }}>Online</div>
+      <div
+        className="side-bar-label"
+        onClick={() => {
+          toggleOnline(showOnline);
+        }}
+      >
+        Online
+      </div>
       {usersOnline}
     </div>
   );

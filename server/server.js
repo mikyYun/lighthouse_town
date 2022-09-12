@@ -67,11 +67,10 @@ io.on("connection", (socket) => {
     console.log(username, "joined", currentRoom, "with ID ", socket.id);
     const userNames = Object.keys(currentUsers);
 
-    socket.emit(currentRoom, { userNames });
+    io.emit(currentRoom, { userNames });
   });
 
   socket.on("SET USERNAME", ({ socketID, username, currentRoom }) => {
-    console.log(socket.id)
     
     currentUsers[username] = socketID;
     /** LOGIN OR REGISTERED USER JOIN ROOM PLAZA */
@@ -406,16 +405,19 @@ io.on("connection", (socket) => {
 
   /* 오브젝트에서 종료되는 유저 삭제 */
   socket.on("disconnect", () => {
-    // console.log("Server.js - DISCONNECT", socket.id);
+    console.log("Server.js - DISCONNECT", socket.id);
 
     const alluserNames = Object.keys(currentUsers);
-    let disconnectedUsername;
+    // let disconnectedUsername;
     alluserNames.forEach((name) => {
       if (currentUsers[name] === socket.id)
         delete currentUsers[name];
-      disconnectedUsername = name;
+      // disconnectedUsername = name;
     });
-    io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기
+    const updatedUserNames = Object.keys(currentUsers)
+    console.log(updatedUserNames)
+    io.emit("REMOVE LOGOUT USER", {updatedUserNames})
+    // io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기
   });
 });
 

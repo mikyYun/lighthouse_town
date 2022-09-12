@@ -49,15 +49,18 @@ function App() {
     return () => {
       socket.disconnect();
     };
-  }, [])
+  }, []);
 
   useEffect(() => {
     // ALL SOCKET RECEIVER
-      socket.on(room, (userNamesObj) => {
-      console.log("TEST");
-      const userNames = userNamesObj.userNames
-      setOnlineList(userNames)
+    socket.on(room, (userNamesObj) => {
+      const userNames = userNamesObj.userNames;
+      setOnlineList(userNames);
     });
+
+    socket.on("REMOVE LOGOUT USER", ({updatedUserNames}) => {
+      setOnlineList(updatedUserNames)
+    })
 
     return () => {
       socket.disconnect();
@@ -65,10 +68,13 @@ function App() {
   }, [socket]);
 
   const updateUserSocketId = (username) => {
-    socket && socket.emit("UPDATE SOCKETID", {
-      username, currentRoom: room
-    })
-  }
+    if (username) {
+
+      socket && socket.emit("UPDATE SOCKETID", {
+        username, currentRoom: room
+      });
+    }
+  };
 
   const createSocketIdNameObj = (username) => {
 
