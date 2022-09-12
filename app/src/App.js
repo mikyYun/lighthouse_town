@@ -24,6 +24,11 @@ function App() {
     );
   });
   const navigate = useNavigate();
+  const cookie = new Cookies().getAll().userdata;
+  const username = cookie?.userName;
+  const filterMyName = (userNamesArr) => {
+    return userNamesArr.filter(userName => userName !== username)
+  }
   // useEffect(() => {
   //   socket.on("connection", (serverSocket) => {
   //     console.log("Client socket connected with server")
@@ -41,8 +46,8 @@ function App() {
   // }, [socket])
   useEffect(() => {
     /** PAGE REFRESH UPDATE NEW SOCKET ID */
-    const cookie = new Cookies().getAll().userdata;
-    const username = cookie?.userName;
+    // const cookie = new Cookies().getAll().userdata;
+    // const username = cookie?.userName;
 
     updateUserSocketId(username);
 
@@ -55,11 +60,15 @@ function App() {
     // ALL SOCKET RECEIVER
     socket.on(room, (userNamesObj) => {
       const userNames = userNamesObj.userNames;
-      setOnlineList(userNames);
+      const filterUserNames = filterMyName(userNames);
+      
+      setOnlineList(filterUserNames);
     });
 
     socket.on("REMOVE LOGOUT USER", ({updatedUserNames}) => {
-      setOnlineList(updatedUserNames)
+
+      const filterUserNames = filterMyName(updatedUserNames)
+      setOnlineList(filterUserNames)
     })
 
     return () => {
