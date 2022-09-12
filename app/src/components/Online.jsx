@@ -1,16 +1,35 @@
-import { useEffect, useContext, useState } from "react";
+import { useEffect, useContext, useState, useMemo } from "react";
 import { SocketContext, UserListContext } from "../App.js";
 import Avatar from "./Avatar.jsx";
 import Menu from "./Menu.jsx";
 import Profile from "./Profile.jsx";
 import "./Online.scss";
+import selectAvatar from "./helper/selectAvatar.js";
 
 export default function Online(props) {
   const { socket } = useContext(SocketContext);
+  const { room, onlineList } = useContext(UserListContext);
   const [showOnline, setShowOnline] = useState("show")
   const toggleOnline = (showOnline) => {
     showOnline === "show" ? setShowOnline("hide") : setShowOnline("show")
   }
+  // const [onlineList, setOnlineList] = useState([room])
+
+
+  // useEffect(() => {
+  //   console.log("TEST")
+  //   // socket && socket.emit("SET USERNAME", {
+  //   //   socketID: socket.id,
+  //   //   username: "moon",
+  //   //   currentRoom: room
+  //   // })
+  //   socket.on("PLAZA", (userNames) => {
+  //     console.log("datat",userNames)
+  //   })
+  //   return () => {
+  //     socket.disconnect();
+  //   }
+  // }, [socket])
   // const { setClicked, setShow, nickname, online } = useContext(UserListContext);
   // const [showMenu, setShowMenu] = useState(false);
   // const removeSelfAndAll = online.filter(obj =>
@@ -40,9 +59,21 @@ export default function Online(props) {
   //   socket.emit("friendsList", { socketID: socket.id });
   // }, [online]);
 
+  const onlineUserList = onlineList.map(user => {
+  
+    return (
+      <div className="user" key={user}>
+        <li className="users-online">{user}</li>
+      </div>
+    )
+  })
+
+
   const usersOnline = (
     <div className={`online-users ${showOnline}`} >
-      <div className="user">
+      {/* {onlineList.map} */}
+      {onlineUserList}
+      {/* <div className="user">
         <img src="../images/boy1-face.png" alt="" />
         <li className="users-online">list</li>
       </div>
@@ -65,7 +96,7 @@ export default function Online(props) {
       <div className="user">
         <img src="" alt="" />
         <li className="users-online">list</li>
-      </div>
+      </div> */}
     </div>
   );
 

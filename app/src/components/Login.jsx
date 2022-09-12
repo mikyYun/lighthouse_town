@@ -73,9 +73,9 @@ export default function Login(props) {
                   if (res.data.userName) {
                     const target = res.data;
                     cookies.set("userdata", target, { maxAge: 3600 });
-                    // setUser(target.userName)
+                    setUser(target.userName)
                     // goChat(target.userName, target.avatar, target.userLanguages, target.userID)
-                    goChat();
+                    // goChat();
                   }
                 })
                 .catch((err, res) => {

@@ -18,12 +18,12 @@ const Canvas = () => {
     x: 0,
     y: 0,
   });
+  const navigate = useNavigate();
   const screen = new ScreenSizeDetector();
   // const horCenter = (screen.width - 63.5) / 2;
   // const verCenter = (screen.height - 63.5) / 2;
-
   
-
+  
   let canvas;
   // const canvas = canvasRef.current;
   // canvas.width = 1120;
@@ -33,6 +33,9 @@ const Canvas = () => {
   useMemo(() => {
     const cookies = new Cookies();
     const allCookies = cookies.getAll();
+    if (!allCookies.userData) {
+      navigate("/")
+    }
     const userData = allCookies.userdata;
     setUsername(userData.userName);
     const avatar = userData.avatar;

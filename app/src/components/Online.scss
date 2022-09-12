@@ -33,17 +33,17 @@ $side-bar-color: #e2ecc2f5;
       cursor: pointer;
       position: relative;
       padding: 5px;
-      padding-left: 30px;
+      // padding-left: 30px;
       margin-bottom: 10px;
-      img {
-        position: absolute;
-        left: 15px;
-        top: 0;
-        bottom: 0;
-        margin: auto;
-        width: 20px;
-        height: 20px;
-      }
+      // img {
+      //   position: absolute;
+      //   left: 15px;
+      //   top: 0;
+      //   bottom: 0;
+      //   margin: auto;
+      //   width: 20px;
+      //   height: 20px;
+      // }
       li {
         list-style: none;
         background-color: $side-bar-color;

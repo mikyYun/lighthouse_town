@@ -3,7 +3,12 @@
 // import { createContext } from "react";
 import socketIo from "socket.io-client";
 // export const socket = socketIo("http://localhost:8000"); //io()
-export const socket = socketIo(process.env.BACK_URL); //io()
+export const socket = socketIo("http://localhost:8000"
+, {
+  transports: ["websocket"]
+}
+);
+
 export const SOCKET_EVENT = {
   JOIN_ROOM: "JOIN_ROOM",
   UPDATE_NICKNAME: "UPDATE_NICKNAME",
