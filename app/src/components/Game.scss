@@ -8,82 +8,116 @@ $second-color: #9883c4;
   background-color: $main-color;
   // display: flex;
 }
-.side-bar {
-  width: 25%;
-  display: flex;
-  flex-direction: column;
-  background-color: $second-color;
-}
 
-.game-container {
-  position: relative;
-  width: 100%;
-  height: 640px;
-  // background-position: left bottom;
-  // background-size: 100%;
-  // &.plaza {
-      // background-image: url("./game_img/town-map-logo.png");
+.main {
+  .game-container {
+    position: relative;
+    width: 100%;
+    height: 640px;
+    // background-position: left bottom;
+    // background-size: 100%;
+    // &.plaza {
+    // background-image: url("./game_img/town-map-logo.png");
     // }
     // &.js {
-      //   background-image: url("./game_img/classroom-2.png");
-      // }
-      // &.ruby {
-        //   background-image: url("./game_img/lounge-2.png");
-        // }
-  img {
-    position: fixed;
-    left: 0;
-    top: 0;
+    //   background-image: url("./game_img/classroom-2.png");
+    // }
+    // &.ruby {
+    //   background-image: url("./game_img/lounge-2.png");
+    // }
+    img {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 1120px;
+      height: 640px;
+    }
+    .camera {
+      position: absolute;
+      width: 100%;
+      max-width: 1120px;
+      height: 100%;
+      max-height: 640px;
+      z-index: 1;
+      background-color: transparent;
+      border: 10px solid white;
+      top: 0;
+      left: 0;
+    }
+  }
+  .game-canvas {
+    // overflow: hidden;
+    width: 100%;
+    // max-width: 80vw;
+    // height: auto;
+    // width: 100%;
+    // max-width: 1120px;
     width: 1120px;
     height: 640px;
-  }
-  .camera {
-    position: absolute;
-    width: 100%;
+    // width: 800px;
     // height: 500px;
+    // width: 100%;
+    // height: 100%;
+    // background-color: blue;
+    background-size: cover;
+    image-rendering: pixelated;
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    z-index: 10;
+    position: absolute;
+    padding-right: 200px;
+
+    &.plaza {
+      // background-position-x: -50px;
+      // background-position-y: -50px;
+      background-image: url("./game_img/town-map-logo.png");
+    }
+    &.js {
+      background-image: url("./game_img/classroom-2.png");
+    }
+    &.ruby {
+      background-image: url("./game_img/lounge-2.png");
+    }
+  }
+  .side-bar {
+    display: flex;
+    flex-direction: column;
+    background-color: $second-color;
+    width: calc(100% - 1105px);
+    position: fixed;
+    top: 0;
+    right: -15px;
     height: 100%;
     max-height: 640px;
-    z-index: 1;
-    background-color: transparent;
-    border: 10px solid white;
-    top: 0;
-    left: 0;
+    overflow-y: scroll;
+    // padding-right: 17px; 
+    // box-sizing: content-box;   
+    @media screen and (max-width: 1319px) {
+      width: 215px;
+      height: 100%;
+      background-color: second-color;
+      z-index: 10;
+    }
   }
 }
 
-.game-canvas {
-  // overflow: hidden;
-  width: 100%;
-  // max-width: 80vw;
-  height: auto;
-  width: 1120px;
-  height: 640px;
-  // width: 800px;
-  // height: 500px;
-  // width: 100%;
-  // height: 100%;
-  background-color: blue;
-  background-size: cover;
-  image-rendering: pixelated;
-  background-repeat: no-repeat;
-  background-position: left bottom;
-  // transition: background-position .1s;
-  // overflow: hidden;
-  z-index: 10;
-  position: absolute;
-
-  &.plaza {
-    // background-position-x: -50px;
-    // background-position-y: -50px;
-    background-image: url("./game_img/town-map-logo.png");
-  }
-  &.js {
-    background-image: url("./game_img/classroom-2.png");
-  }
-  &.ruby {
-    background-image: url("./game_img/lounge-2.png");
-  }
-}
+// .control_section {
+//   position: fixed;
+//   right: 0;
+//   top: 0;
+//   width: 100px;
+//   height: 100%;
+//   background-color: blue;
+//   z-index: 10;
+// }
+// .message_section {
+//   position: fixed;
+//   bottom: 0;
+//   width: 100%;
+//   height: 200px;
+//   background-color: gray;
+//   z-index: 10;
+// }
 
 .lecture-btn {
   position: fixed;

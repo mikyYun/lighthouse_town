@@ -1,119 +1,158 @@
 $back-color: #1f1f1e;
 $main-color: #bada55;
 $second-color: #9883c4;
+$list-color: #5f436d;
 $side-bar-color: #e2ecc2f5;
 
-
 .online-list {
+  // position: fixed;
+  // right: 0;
+  // top: 0;
+  color: black;
+  text-align: center;
+  height: 100%;
+  // background-color: $second-color;
+  .side-bar-label {
     width: 100%;
-    /* background: whitesmoke; */
-    color: black;
-    text-align: center;
-    border-radius: 5px;
-    margin: 10px auto;
-
-    img.user-avatar {
-        width: 30px;
-      }
-  }
-
-.online-user {
-    width: 80%;
-    background-color: $side-bar-color;
-    text-align: center;
-    border-radius: 5px;
-    margin: 10px auto;
     cursor: pointer;
-
-    li {
-      list-style: none;
-      padding: 10px;
-      height: 45px;
-      font-size: 1.4rem;
-    }
-    li:hover {
-        background-color: $main-color;
-        border-radius: 5px;
-    }
-
-    .users-online{
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      p {
-        margin: 0 10px;
-      }
+    color: white;
+    font-size: 1.3rem;
+    padding: 10px;
+    background-color: $list-color;
   }
-
-
-}
-
-
-  .language {
-    background-color: $main-color;
-  }
-
-
-.menu {
-    margin: 0 auto;
-    font-size: 1.1rem;
+  .online-users {
+    width: 80%;
+    // width: 100%;
+    text-align: center;
+    margin: 10px auto;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    background-color: whitesmoke;
-
-    .menu-action {
-      width: 100%;
+    .user {
+      border-radius: 5px;
+      background-color: $side-bar-color;
       cursor: pointer;
-      padding: 0.5em 0;
-      list-style: none;
-
-    }
-    .menu-action:hover {
-      background-color: $main-color;
-    }
-}
-
-
-.div_profile {
-  padding-top: 20px;
-    background-color: $main-color;
-    /* border-radius: 10px; */
-    margin: 10px auto 0 auto;
-    width: 100%;
-    height: auto;
-
-    .profile {
-      padding-bottom: 20px;
-      width: 90%;
-      margin: 0 auto;
-    }
-
-    .profile-email {
-      font-size: 1rem;
-      margin-bottom: 13px;
-      border-bottom: $side-bar-color 3px solid;
-      padding-bottom: 10px;
-    }
-    .profile-language {
-      display: flex;
-      flex-wrap: wrap;
-      margin: 0 30px;
-
-      .list-languages {
-        align-items: center;
-        font-size: 1rem;
-        padding: 0.2em;
-        height: 1.3rem;
+      position: relative;
+      padding: 5px;
+      padding-left: 30px;
+      margin-bottom: 10px;
+      img {
+        position: absolute;
+        left: 15px;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        width: 20px;
+        height: 20px;
+      }
+      li {
+        list-style: none;
+        background-color: $side-bar-color;
+        // width: 80%;
+        font-size: 1.4rem;
+        border-radius: 5px;
+        // margin: 11px auto;
       }
     }
-
-    p {
-      margin-bottom: 0;
+    &.hide {
+      .user {
+        display: none;
+      }
     }
+  }
+  img.user-avatar {
+    width: 30px;
+  }
 }
 
+// .online-user {
+//   width: 80%;
+//   background-color: $side-bar-color;
+//   text-align: center;
+//   border-radius: 5px;
+//   margin: 10px auto;
+//   cursor: pointer;
 
+//   li {
+//     list-style: none;
+//     padding: 10px;
+//     height: 45px;
+//     font-size: 1.4rem;
+//   }
+//   li:hover {
+//     background-color: $main-color;
+//     border-radius: 5px;
+//   }
+
+//   .users-online {
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+
+//     p {
+//       margin: 0 10px;
+//     }
+//   }
+// }
+
+// .language {
+//   background-color: $main-color;
+// }
+
+// .menu {
+//   margin: 0 auto;
+//   font-size: 1.1rem;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+//   padding: 0;
+//   background-color: whitesmoke;
+
+//   .menu-action {
+//     width: 100%;
+//     cursor: pointer;
+//     padding: 0.5em 0;
+//     list-style: none;
+//   }
+//   .menu-action:hover {
+//     background-color: $main-color;
+//   }
+// }
+
+// .div_profile {
+//   padding-top: 20px;
+//   background-color: $main-color;
+//   /* border-radius: 10px; */
+//   margin: 10px auto 0 auto;
+//   width: 100%;
+//   height: auto;
+
+//   .profile {
+//     padding-bottom: 20px;
+//     width: 90%;
+//     margin: 0 auto;
+//   }
+
+//   .profile-email {
+//     font-size: 1rem;
+//     margin-bottom: 13px;
+//     border-bottom: $side-bar-color 3px solid;
+//     padding-bottom: 10px;
+//   }
+//   .profile-language {
+//     display: flex;
+//     flex-wrap: wrap;
+//     margin: 0 30px;
+
+//     .list-languages {
+//       align-items: center;
+//       font-size: 1rem;
+//       padding: 0.2em;
+//       height: 1.3rem;
+//     }
+//   }
+
+//   p {
+//     margin-bottom: 0;
+//   }
+// }

@@ -1,21 +1,33 @@
-import { useState, useCallback, useEffect, useContext, useRef, createContext } from "react";
+import {
+  useState,
+  useCallback,
+  useEffect,
+  useContext,
+  useRef,
+  createContext,
+} from "react";
 import MessageForm from "./MessageForm";
 import Avatar from "./Avatar.jsx";
+import Cookies from "universal-cookie";
 import {
   SOCKET_EVENT,
   makePublicMessage,
   makePrivateMessage,
 } from "./socket/socket";
-import { SocketContext } from "../App_backup.js";
-import { UserListContext, MsgContext } from "../App_backup.js";
-
+import { SocketContext, UserListContext } from "../App.js";
+// import { UserListContext, MsgContext } from "../App.js";
 
 function ChatRoom(props) {
   const { socket } = useContext(SocketContext);
-  const { recipient, user } = useContext(UserListContext);
+  const { room } = useContext(UserListContext);
+  const cookies = new Cookies().getAll();
+  const userCookie = cookies.userdata;
+  const username = userCookie.userName;
 
-  const { username, room } = props;
-  const [messages, setMessages] = useState([]);
+  // const { recipient, user } = useContext(UserListContext);
+
+  // const { username, room } = props;
+  // const [messages, setMessages] = useState([]);
   const chatWindow = useRef(null);
   const moveScrollToReceiveMessage = useCallback(() => {
     if (chatWindow.current) {
@@ -29,39 +41,52 @@ function ChatRoom(props) {
     (pongData) => {
       // console.log("PONG", pongData)
       const newPublicMessage = makePublicMessage(pongData);
-      setMessages((prev) => [...prev, newPublicMessage]);
+      // setMessages((prev) => [...prev, newPublicMessage]);
       moveScrollToReceiveMessage();
     },
     [moveScrollToReceiveMessage]
   );
 
-
   const handleReceivePrivateMessage = useCallback(
     (pongData) => {
       const newPrivateMessage = makePrivateMessage(pongData);
-      setMessages((prev) => [...prev, newPrivateMessage]);
+      // setMessages((prev) => [...prev, newPrivateMessage]);
       moveScrollToReceiveMessage();
     },
     [moveScrollToReceiveMessage]
   );
 
   useEffect(() => {
-    socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); // 이벤트 리스너 - 퍼블릭 메세지
-    socket.on("PRIVATE", handleReceivePrivateMessage); // 이벤트 리스너 - 프라이빗 메세지
+    socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); 
+    socket.on("PRIVATE", handleReceivePrivateMessage); 
 
     return () => {
       socket.disconnect();
-      // socket.off(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); // 이벤트 리스너 해제
-      //@@이거 왜 off 안하고 disconnect로 함?
     };
   }, [socket, handleReceiveMessage]);
 
-
   return (
     <div className="d-flex flex-column chat-form">
-      <div className="text-box">
-        <p><span>{username}</span>, Welcome!</p>
+      <div id="greeting-box">
+        <span className="username">{username}</span>
+        joined in
+        <span className="room">{room}</span>
+        room.
       </div>
+      <div className="chat-window card" ref={chatWindow}>
+        <div className="d-flex flex-row chat-content">
+          <div className="message-nickname">
+            <Avatar url="../images/boy1-face.png" />
+            {" "}
+            hey to hi : content
+          </div>
+        </div>
+      </div>
+      <MessageForm 
+      username={username}
+      //  recipient={recipient} user={user} 
+      />
+      {/* 
       <div className="chat-window card" ref={chatWindow}>
         {messages.map((message, index) => {
           const { nickname, content, time, user } = message;
@@ -84,10 +109,9 @@ function ChatRoom(props) {
           );
         })}
       </div>
-      <MessageForm nickname={username} recipient={recipient} user={user} />
+      <MessageForm nickname={username} recipient={recipient} user={user} /> */}
     </div>
   );
-
 }
 
 export default ChatRoom;

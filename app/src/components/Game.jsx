@@ -4,15 +4,16 @@ import "./Game.scss";
 import Cookies from "universal-cookie";
 import { useLocation } from "react-router-dom";
 import Canvas from "./Canvas";
-// import Chat from "./Chat";
-// import Online from "./Online";
+import Chat from "./Chat";
+import Online from "./Online";
+import FriendList from "./FriendsList";
 // import Profile from "./Profile.jsx";
-// import FriendList from "./FriendsList";
 
 export default function Game(props) {
   const { socket } = useContext(SocketContext);
-  const cookies = new Cookies();
-  const location = useLocation();
+  const {userCookie} = useContext(UserListContext)
+
+
   useMemo(() => {
 
   }, [])
@@ -51,7 +52,7 @@ export default function Game(props) {
 
     <div className='main'>
       <Canvas />
-
+      <Chat />
       {/* <div className="main-container">
         <div className="lecture-container">
           { location.pathname === '/game/js' && <button className="lecture-btn" onClick={showLecture}>LECTURE</button>}
@@ -76,11 +77,11 @@ export default function Game(props) {
           room={props.room}
           handleSubmitNickname={props.handleSubmitNickname}
         />
-      </div>
+      </div>*/}
       <div className="side-bar">
           <FriendList />
           <Online />
-        </div> */}
+        </div> 
     </div>
   );
 }

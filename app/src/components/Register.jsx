@@ -219,14 +219,15 @@ export default function Register(props) {
                     alert(`
                     Registration failed. Please try with different email or username
                   `);
-                  if (res.data.userName) {
-                    setUser(res.data.userName);
-                    cookies.set("userdata", res.data, { maxAge: 3600 });
+                  const target = res.data;
+                  if (target.userName) {
+                    setUser(target.userName);
+                    cookies.set("userdata", target, { maxAge: 3600 });
                     goChat(
-                      res.data.userName,
-                      res.data.avatar,
-                      res.data.userLanguages,
-                      res.data.userID
+                      target.userName,
+                      target.avatar,
+                      target.userLanguages,
+                      target.userID
                     );
                   } else {
                     alert(

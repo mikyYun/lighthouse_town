@@ -1,4 +1,4 @@
-const cameraControl = (keyCode, cameraPosition, setCameraPosition, screen, userCharacters, username) => {
+const cameraControl = (keyCode, setCameraPosition, screen, userCharacters, username) => {
   // console.log(horCenter, verCenter);
   // console.log(x, y) // avatar position
 
@@ -10,7 +10,7 @@ const cameraControl = (keyCode, cameraPosition, setCameraPosition, screen, userC
     const verticalCenter = screen.height / 2
     const horizontalLimit = 1120 - screen.width
     const horizontalCenter = screen.width / 2
-    if (keyCode == 38) {
+    if (keyCode === 38) {
       if (640 - avatarYPosition > 300) {
         const decreaseY = (positionY) => {
           positionY -= 10;
@@ -22,12 +22,8 @@ const cameraControl = (keyCode, cameraPosition, setCameraPosition, screen, userC
           y: decreaseY(prev.y)
         }));
       }
-      // if (cameraPosition.y < 0 && screen.height - 250 > avatarXPosition) {
-      //   cameraPosition.y = cameraPosition.y - 10;
-      //   if (cameraPosition.y < 0) cameraPosition.y = 0;
-      // }
     }
-    if (keyCode == 40) {
+    if (keyCode === 40) {
 
       if (
         avatarYPosition > verticalCenter
@@ -45,14 +41,11 @@ const cameraControl = (keyCode, cameraPosition, setCameraPosition, screen, userC
       }
     }
     // LEFT
-    if (keyCode == 37) {
+    if (keyCode === 37) {
       if (
-        // 1120 - avatarXPosition > 300
         avatarXPosition < 1120 - horizontalCenter
         &&
         avatarXPosition % horizontalCenter > 0
-        // avatarXPosition + horizontalCenter < 1120 
-        // if (avatarXPosition > horizontalCenter
       ) {
         const increaseX = (positionX) => {
           positionX += 10;
@@ -66,14 +59,14 @@ const cameraControl = (keyCode, cameraPosition, setCameraPosition, screen, userC
       }
     }
     // RIGHT
-    if (keyCode == 39) {
+    if (keyCode === 39) {
       if (
         avatarXPosition < 1120 - 63.5
         &&
         avatarXPosition > horizontalCenter
         ) {
           const decreaseX = (positionX) => {
-            if (-positionX == 1120 - screen.width ) return positionX;
+            if (-positionX === 1120 - screen.width ) return positionX;
             positionX -= 10;
           if (-positionX > 1120 - screen.width) positionX = -(1120 - screen.width);
           return positionX;

@@ -1,7 +1,7 @@
 import cameraControl from "./helper/cameraControl";
 import React, { useEffect, useRef, useState, useContext, useMemo } from "react";
 import Characters from "./helper/Characters";
-import { SocketContext } from "../App";
+import { SocketContext, UserListContext } from "../App";
 import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from "universal-cookie";
 const ScreenSizeDetector = require("screen-size-detector");
@@ -55,7 +55,7 @@ const Canvas = () => {
       userCharacters[username]?.move(keyCode);
       // console.log("AVATARPOSITION", userCharacters[username].state.x);
       console.log()
-      cameraControl(keyCode, cameraPosition, setCameraPosition, screen, userCharacters, username);
+      cameraControl(keyCode, setCameraPosition, screen, userCharacters, username);
 
       setUserCharacters((prev) => ({
         ...prev,
@@ -320,14 +320,9 @@ const Canvas = () => {
         style={{
           left: cameraPosition.x,
           bottom: cameraPosition.y,
-          // zIndex: 2,
-          // backgroundPositionX: cameraPosition.x,
-          // backgroundPositionY: cameraPosition.y,
         }}
       ></canvas>
       <div className="camera"></div>
-      <section className="control_section"></section>
-      <section className="message_section"></section>
     </div>
   );
 };

@@ -17,7 +17,6 @@ function App() {
   const [room, setRoom] = useState("plaza");
   const [character, setCharacter] = useState({})
   const roomList = ["plaza", "js", "ruby", "react", "coffee"]
-
   const roomRoute = roomList.map(roomName => {
     return (
       <Route path={`/game/${roomName}`}  element={<Game character={character} setCharacter={setCharacter} />} key={roomName}/>

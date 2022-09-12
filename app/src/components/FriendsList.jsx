@@ -1,5 +1,5 @@
 import { useEffect, useContext, useState, useMemo } from "react";
-import { SocketContext, UserListContext } from "../App_backup.js";
+import { SocketContext, UserListContext } from "../App.js";
 import "./FriendsList.scss";
 import Cookies from "universal-cookie";
 
@@ -10,7 +10,10 @@ export default function FriendList() {
   const [toggle, setToggle] = useState(false);
   const cookies = new Cookies();
   const [friends, setFriens] = useState([]);
-
+  const [showFriends, setShowFriends] = useState("show")
+  const toggleFriends = (showFriends) => {
+    showFriends === "show" ? setShowFriends("hide") : setShowFriends("show")
+  }
   const handleToggle = (value) => {
     if (toggle) {
       setToggle(false);
@@ -69,8 +72,10 @@ export default function FriendList() {
   });
 
   return (
-    <div className="friendsList">
-      <div className="side-bar-label">My Friends</div>
+    <div className={`friendsList ${showFriends}`} >
+      <div className="side-bar-label" onClick={() => {
+      toggleFriends(showFriends)
+    }}>My Friends</div>
       {friendsListing}
     </div>
   );

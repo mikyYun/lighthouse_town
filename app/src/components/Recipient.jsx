@@ -3,15 +3,15 @@ import Select from 'react-select';
 import { SocketContext, UserListContext } from '../App_backup.js'
 
 function Recipient() {
-  const { recipient, setRecipient, nickname, online } = useContext(UserListContext);
+  // const { recipient, setRecipient, nickname, online } = useContext(UserListContext);
 
 
   const [otherUsers, setOtherUsers] = useState([])
-  useEffect(() => {
+  // useEffect(() => {
 
-    const onlineOthers = online.filter(user => user.value !== nickname)
-    return setOtherUsers(onlineOthers)
-  }, [online, nickname])
+  //   const onlineOthers = online.filter(user => user.value !== nickname)
+  //   return setOtherUsers(onlineOthers)
+  // }, [online, nickname])
 
   return (
     <div className="card d-flex flex-row chat-to-container" >
@@ -22,10 +22,14 @@ function Recipient() {
         type="text"
         id="pdown"
         maxLength={12}
-        value={recipient !== null && (recipient || { value: "all", label: "all" })}
-        defaultValue={recipient}
-        onChange={setRecipient}
-        options={otherUsers}
+        value={
+          // recipient !== null && (recipient || 
+            { value: "all", label: "all" }
+            // )
+          }
+        defaultValue={"all"}
+        // onChange={setRecipient}
+        // options={otherUsers}
       />
 
     </div>

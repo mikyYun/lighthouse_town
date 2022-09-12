@@ -4,45 +4,53 @@ $second-color: #9883c4;
 $list-color: #5f436d;
 $side-bar-color: #e2ecc2f5;
 
-
-
-.side-bar-label {
+.friendsList {
+  // align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .side-bar-label {
+    width: 100%;
+    cursor: pointer;
     color: white;
     font-size: 1.3rem;
     padding: 10px;
     text-align: center;
-    margin-top: 4vh;
+    margin-top: 0;
     background-color: $list-color;
-}
-
-.friend {
+  }
+  &.hide {
+    .friend {
+      display: none;
+    }
+  }
+  .friend {
     background-color: $side-bar-color;
     width: 80%;
     font-size: 1.4rem;
     border-radius: 5px;
-    margin: 11px auto;
+    margin-bottom: 11px;
+    padding: 5px;
 
     :hover {
-        background-color: #bada55;
-        color: black;
-        border-radius: 5px;
-        cursor: pointer;
+      background-color: #bada55;
+      color: black;
+      border-radius: 5px;
+      cursor: pointer;
     }
 
     .name {
-        text-align: center;
-        height: 45px;
-        padding: 5px;
-        p {
-            margin: 0;
-        }
-    }
-
-    .languageLists {
+      text-align: center;
+      p {
+        margin: 0;
+      }
+      .languageLists {
         text-align: center;
         font-size: 1rem;
         padding: 1rem 0;
-        background-color: whitesmoke
+        background-color: whitesmoke;
+      }
     }
+  }
 }
-
