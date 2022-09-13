@@ -19,6 +19,9 @@ $side-bar-color: #e2ecc2f5;
     text-align: center;
     margin-top: 0;
     background-color: $list-color;
+    &:hover {
+      opacity: .5;
+    }
   }
   &.hide {
     .friend {

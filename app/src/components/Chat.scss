@@ -4,11 +4,15 @@ $second-color: #9883c4;
 
 .chatroom {
   position: fixed;
-  bottom: 0;
+  // bottom: 0;
+  top: 640px;
   width: 100%;
-  //   background-color: grey;
-  height: 250px;
+  // background-color: $main-color;
+  // height: 250px;
+  // height: calc(100% - 640px);
   z-index: 10;
+  // max-height: 18rem;
+  height: 100%;
   .card.chat-to-container {
     position: relative;
     padding-left: 150px;
@@ -27,8 +31,9 @@ $second-color: #9883c4;
   div.chat-form {
     width: 100%;
     height: 100%;
-    background-color: white;
+    background-color: $main-color;
     opacity: 0.5;
+    opacity: 1;
     #greeting-box {
       span {
         margin: 10px;
@@ -41,21 +46,43 @@ $second-color: #9883c4;
         font-weight: bold;
       }
     }
-    #type-area {
-      .form-control {
-        caret-color: transparent;
-        height: 40px;
-      }
-      .send-btn {
-        background-color: #9883c4;
-        width: 149px;
-        margin-top: 10px;
-        font-size: 1.2rem;
-        border-radius: 5px;
-        border: none;
-        height: 40px;
+    div.chat-window.card {
+      overflow-y: scroll;
+      max-height: 5rem;
+      padding-left: 10px;
+      img {
+        width: 15px;
       }
     }
+    #type-area {
+      .type-box {
+        padding-right: 149px;
+        position: relative;
+        .form-control {
+          padding-left: 10px;
+          caret-color: transparent;
+          height: 3rem;
+          color: blue;
+        }
+        .send-btn {
+          background-color: #9883c4;
+          width: 149px;
+          margin-top: 10px;
+          font-size: 1.2rem;
+          border-radius: 5px;
+          // height: 40px;
+          position: absolute;
+          right: 0;
+          top: 0;
+          height: 3rem;
+          margin: 0;
+        }
+      }
+    }
+  }
+  @media screen and (max-height: 790px) {
+    // top: 500px;
+    bottom: 150px;
   }
 }
 

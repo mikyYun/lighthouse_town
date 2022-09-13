@@ -26,7 +26,7 @@ function ChatRoom(props) {
 
   // const { recipient, user } = useContext(UserListContext);
 
-  // const { username, room } = props;
+  const { recipient } = props;
   // const [messages, setMessages] = useState([]);
   const chatWindow = useRef(null);
   const moveScrollToReceiveMessage = useCallback(() => {
@@ -57,13 +57,17 @@ function ChatRoom(props) {
   );
 
   useEffect(() => {
-    socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage); 
-    socket.on("PRIVATE", handleReceivePrivateMessage); 
+    socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage);
+    socket.on("PRIVATE", handleReceivePrivateMessage);
 
     return () => {
       socket.disconnect();
     };
   }, [socket, handleReceiveMessage]);
+
+  useEffect(() => {
+    console.log(recipient)
+  }, [recipient])
 
   return (
     <div className="d-flex flex-column chat-form">
@@ -76,15 +80,34 @@ function ChatRoom(props) {
       <div className="chat-window card" ref={chatWindow}>
         <div className="d-flex flex-row chat-content">
           <div className="message-nickname">
-            <Avatar url="../images/boy1-face.png" />
-            {" "}
-            hey to hi : content
+            <Avatar url="../images/boy1-face.png" /> hey to hi : content
+          </div>
+        </div>
+        <div className="d-flex flex-row chat-content">
+          <div className="message-nickname">
+            <Avatar url="../images/boy1-face.png" /> hey to hi : content
+          </div>
+        </div>
+        <div className="d-flex flex-row chat-content">
+          <div className="message-nickname">
+            <Avatar url="../images/boy1-face.png" /> hey to hi : content
+          </div>
+        </div>
+        <div className="d-flex flex-row chat-content">
+          <div className="message-nickname">
+            <Avatar url="../images/boy1-face.png" /> hey to hi : content
+          </div>
+        </div>
+        <div className="d-flex flex-row chat-content">
+          <div className="message-nickname">
+            <Avatar url="../images/boy1-face.png" /> hey to hi : content
           </div>
         </div>
       </div>
-      <MessageForm 
-      username={username}
-      //  recipient={recipient} user={user} 
+      <MessageForm
+        username={username}
+        recipient={recipient}
+        // user={user}
       />
       {/* 
       <div className="chat-window card" ref={chatWindow}>

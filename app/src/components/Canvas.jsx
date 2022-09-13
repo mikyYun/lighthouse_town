@@ -1,3 +1,5 @@
+import Online from "./Online";
+import FriendList from "./FriendsList";
 import cameraControl from "./helper/cameraControl";
 import React, { useEffect, useRef, useState, useContext, useMemo } from "react";
 import Characters from "./helper/Characters";
@@ -11,6 +13,7 @@ const Canvas = () => {
   const [username, setUsername] = useState();
   const canvasRef = useRef(null);
   const location = useLocation();
+  const navigate = useNavigate();
   const path = location.pathname.split("/")[2];
   const [msg, setMsg] = useState({});
   const [userCharacters, setUserCharacters] = useState({});
@@ -18,12 +21,46 @@ const Canvas = () => {
     x: 0,
     y: 0,
   });
-  const navigate = useNavigate();
+  const [sizeCheck, setSizeCheck] = useState();
   const screen = new ScreenSizeDetector();
   // const horCenter = (screen.width - 63.5) / 2;
   // const verCenter = (screen.height - 63.5) / 2;
-  
-  
+
+  useEffect(() => {
+
+    const initialMapHeight = (screenHeight) => {
+      if (screenHeight < 640) {
+        return 640 - screenHeight;
+      }
+    };
+
+    setCameraPosition((prev) => ({
+      ...prev,
+      y: initialMapHeight(screen.height),
+      // y : -150,
+    }));
+
+    const getWindowDimentions = () => {
+      const { innerWidth: innerWidth, innerHeight: innerHeight } = window;
+
+      console.log(innerWidth);
+      // setCameraPosition(prev => ({
+      //   ...prev,
+      //   x: 0
+      // }))
+      return { innerWidth, innerHeight };
+    };
+    const handleResize = () => {
+      setSizeCheck(getWindowDimentions());
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   let canvas;
   // const canvas = canvasRef.current;
   // canvas.width = 1120;
@@ -34,7 +71,7 @@ const Canvas = () => {
     const cookies = new Cookies();
     const allCookies = cookies.getAll();
     if (!allCookies.userData) {
-      navigate("/")
+      navigate("/");
     }
     const userData = allCookies.userdata;
     setUsername(userData.userName);
@@ -52,13 +89,22 @@ const Canvas = () => {
       }),
     });
   }, []);
+
   useEffect(() => {
+    const screen = new ScreenSizeDetector();
+
     document.addEventListener("keydown", (e) => {
       const keyCode = e.keyCode;
       userCharacters[username]?.move(keyCode);
       // console.log("AVATARPOSITION", userCharacters[username].state.x);
-      console.log()
-      cameraControl(keyCode, setCameraPosition, screen, userCharacters, username);
+      console.log();
+      cameraControl(
+        keyCode,
+        setCameraPosition,
+        screen,
+        userCharacters,
+        username
+      );
 
       setUserCharacters((prev) => ({
         ...prev,
@@ -258,20 +304,19 @@ const Canvas = () => {
   //   });
   // }, [socket])
 
-  useEffect(() => {
-    const initialMapHeight = (screenHeight) => {
-      if (screenHeight < 640) {
-        return 640 - screenHeight;
-      }
-    };
+  // useEffect(() => {
+  //   const initialMapHeight = (screenHeight) => {
+  //     if (screenHeight < 640) {
+  //       return 640 - screenHeight;
+  //     }
+  //   };
 
-    setCameraPosition((prev) => ({
-      ...prev,
-      y: initialMapHeight(screen.height),
-      // y : -150,
-    }));
-    console.log(cameraPosition)
-  }, []);
+  //   setCameraPosition((prev) => ({
+  //     ...prev,
+  //     y: initialMapHeight(screen.height),
+  //     // y : -150,
+  //   }));
+  // }, []);
 
   useEffect(() => {
     canvas = canvasRef.current;
@@ -316,7 +361,13 @@ const Canvas = () => {
   // };
 
   return (
-    <div className={`game-container ${path}`}>
+    <div
+      className={`game-container ${path}`}
+      // style={{
+      //   left: cameraPosition.x,
+      //   bottom: cameraPosition.y,
+      // }}
+    >
       <canvas
         className={`game-canvas ${path}`}
         ref={canvasRef}
@@ -325,7 +376,11 @@ const Canvas = () => {
           bottom: cameraPosition.y,
         }}
       ></canvas>
-      <div className="camera"></div>
+      {/* <div className="camera"></div> */}
+      <div className="side-bar">
+        <FriendList />
+        <Online />
+      </div>
     </div>
   );
 };

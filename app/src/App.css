@@ -6,12 +6,27 @@ html, body {
   margin: 0;
   box-sizing: border-box;
   font-size: 16px;
-}
-
-body {
-  background-color: #1f1f1e;
   font-family: "Share Tech Mono", monospace;
 }
+@media screen and (max-width: 1250px) {
+  html {
+    /* font-size: 10px; */
+  }
+}
+@media screen and (max-height: 700px) {
+  html {
+    font-size: 10px;
+  }
+}
+@media screen and (max-width: 700px) {
+  html {
+    font-size: 10px;
+  }
+}
+/* 
+body {
+  background-color: #1f1f1e;
+} */
 
 .logo_img {
   width: 5rem;
@@ -28,11 +43,11 @@ body {
   position: relative;
 } */
 
-.main {
+/* .main {
   width: 100vw;
   height: 100vh;
   padding-top: 1px;
   display: flex;
   overflow: hidden;
-}
+} */
 

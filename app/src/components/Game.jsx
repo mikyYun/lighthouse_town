@@ -78,10 +78,10 @@ export default function Game(props) {
           handleSubmitNickname={props.handleSubmitNickname}
         />
       </div>*/}
-      <div className="side-bar">
+      {/* <div className="side-bar">
           <FriendList />
           <Online />
-        </div> 
+        </div>  */}
     </div>
   );
 }

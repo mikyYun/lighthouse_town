@@ -5,6 +5,7 @@ import Menu from "./Menu.jsx";
 import Profile from "./Profile.jsx";
 import "./Online.scss";
 import selectAvatar from "./helper/selectAvatar.js";
+import Cookies from "universal-cookie";
 
 export default function Online(props) {
   const { socket } = useContext(SocketContext);
@@ -14,14 +15,18 @@ export default function Online(props) {
     showOnline === "show" ? setShowOnline("hide") : setShowOnline("show");
   };
   // const [onlineList, setOnlineList] = useState([room])
-  // useEffect(() => {
-  //   socket.on("REMOVE LOGOUT USER", (updatedUserNames) => {
-  //     console.log(onlineList[updatedUserNames]);
-  //   });
-  //   return () => {
-  //     socket.disconnect();
-  //   }
-  // }, []);
+  useEffect(() => {
+    // socket.on("REMOVE LOGOUT USER", (updatedUserNames) => {
+    //   console.log(onlineList[updatedUserNames]);
+    // });
+    // return () => {
+    //   socket.disconnect();
+    // }
+    const cookies = new Cookies();
+    const allCookies = cookies.getAll();
+    const username = allCookies.userdata.userName;
+    // onlineList[username]
+  }, []);
 
   // useEffect(() => {
   //   console.log("TEST")

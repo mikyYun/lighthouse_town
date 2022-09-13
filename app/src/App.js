@@ -27,6 +27,7 @@ function App() {
   const cookie = new Cookies().getAll().userdata;
   const username = cookie?.userName;
   const filterMyName = (userNamesArr) => {
+    console.log(username)
     return userNamesArr.filter(userName => userName !== username)
   }
   // useEffect(() => {
@@ -74,7 +75,7 @@ function App() {
     return () => {
       socket.disconnect();
     };
-  }, [socket]);
+  }, [socket, onlineList]);
 
   const updateUserSocketId = (username) => {
     if (username) {

@@ -10,7 +10,7 @@ export default function FriendList() {
   const [toggle, setToggle] = useState(false);
   const cookies = new Cookies();
   const [friends, setFriens] = useState([]);
-  const [showFriends, setShowFriends] = useState("show")
+  const [showFriends, setShowFriends] = useState("hide")
   const toggleFriends = (showFriends) => {
     showFriends === "show" ? setShowFriends("hide") : setShowFriends("show")
   }

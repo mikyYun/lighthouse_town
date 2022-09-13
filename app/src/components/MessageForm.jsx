@@ -18,19 +18,20 @@ function MessageForm({ username, recipient, user }) {
 
   const handleSendMesssage = useCallback(() => {
     const noContent = typingMessage.trim() === "";
-
+    
     if (noContent) {
       // console.log("no content received");
       return;
     }
-    if (recipient.value !== "all") {
-      socket.emit("PRIVATE", {
-        username, // whole user information
-        content: typingMessage,
-        recipient: recipient,
-        senderSocketId: socket.id,
-        user,
-      });
+    if (recipient !== "all") {
+      console.log(typingMessage)
+      // socket.emit("PRIVATE", {
+      //   username, // whole user information
+      //   content: typingMessage,
+      //   recipient,
+      //   senderSocketId: socket.id,
+      //   user,
+      // });
     } else {
       socket.emit(SOCKET_EVENT.SEND_MESSAGE, {
         username,
@@ -51,18 +52,17 @@ function MessageForm({ username, recipient, user }) {
         <textarea
           className="form-control"
           placeholder="type your message here "
-          // ref={focusTextArea}
+          ref={focusTextArea}
           readOnly={textareaDisable}
-          // maxLength={400}
-          // value={typingMessage}
-          // onChange={handleChangeTypingMessage}
-          // onMouseDown={() => {
-            // setTextareaDisable(false)
-          //   focusTextArea.current.focus()
-          // }}
+          maxLength={400}
+          value={typingMessage}
+          onChange={handleChangeTypingMessage}
+          onMouseDown={() => {
+            setTextareaDisable(false)
+            focusTextArea.current.focus()
+          }}
           onFocus={() => {
             setTextareaDisable(false)
-
           }}
         />
         <button

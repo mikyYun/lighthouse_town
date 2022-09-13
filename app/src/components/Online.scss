@@ -19,6 +19,9 @@ $side-bar-color: #e2ecc2f5;
     font-size: 1.3rem;
     padding: 10px;
     background-color: $list-color;
+    &:hover {
+      opacity: .5;
+    }
   }
   .online-users {
     width: 80%;
