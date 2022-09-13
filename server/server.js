@@ -225,9 +225,8 @@ io.on("connection", (socket) => {
 
   // FOR USER MOVEMENT (Canvas)
   socket.on('sendData', data => {
-
-    // const { userState, room, removeFrom } = data;
-
+    const { userState, room, removeFrom } = data;
+    console.log(userState, room, removeFrom)
     // // console.log('got data', data);
     // if (!usersInRooms[room]) {
     //   usersInRooms[room] = {};
@@ -245,7 +244,10 @@ io.on("connection", (socket) => {
     // usersInRooms[room][userState.username] = userState;
     // // console.log('usersInROMMs', usersInRooms)
 
-    // io.emit('sendData', { usersInRooms, room }); // 다시 Canvas.jsx -> const newCharactersData = data;
+    // io.emit(`sendData ${room}`, { usersInRooms, room }); // 다시 Canvas.jsx -> const newCharactersData = data;
+    /** io.emit SEND DATA to ALL users INCLUDING SENDER */
+    // io.emit(`sendData ${room}`, userState); // 다시 Canvas.jsx -> const newCharactersData = data;
+    socket.to(room).emit("sendData", userState)
 
   });
 

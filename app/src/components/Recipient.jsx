@@ -29,20 +29,22 @@ function Recipient(props) {
   // }, [recipient]);
 
   useEffect(() => {
-    const option = [{ value: "all", label: "all" }];
     const updateRecipientsList = () => {
+      const option = [{ value: "all", label: "all" }];
       onlineList.map((onlineUserName) => {
         option.push({ value: onlineUserName, label: onlineUserName });
       });
       return option;
     };
 
-    setOtherUsers([
-      { value: "all", label: "all" },
-      { value: "heesoo", label: "heesoo" },
-      { value: "moon", label: "moon" },
-      { value: "jordon", label: "jordon" },
-    ]);
+    // setOtherUsers([
+    //   { value: "all", label: "all" },
+    //   { value: "heesoo", label: "heesoo" },
+    //   { value: "moon", label: "moon" },
+    //   { value: "jordon", label: "jordon" },
+    // ]);
+    console.log("ONLINELIST UPDATED")
+    setOtherUsers(updateRecipientsList())
     // setOtherUsers(prev => ({
     // ...prev
     // }));

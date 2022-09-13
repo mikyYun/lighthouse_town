@@ -23,12 +23,12 @@ export default function FriendList() {
     // console.log(toggle);
   };
 
-  useMemo(() => {
-    socket.emit("")
-  }, [toggle])
+  // useMemo(() => {
+  //   socket.emit("")
+  // }, [toggle])
 
   useEffect(() => {
-    socket.emit("friendsList", { socketID: socket.id });
+    socket && socket.emit("friendsList", { socketID: socket.id });
     return () => {
       socket.disconnect();
     };

@@ -10,6 +10,7 @@ const ScreenSizeDetector = require("screen-size-detector");
 
 const Canvas = () => {
   const { socket } = useContext(SocketContext);
+  const { room, userCookie } = useContext(UserListContext);
   const [username, setUsername] = useState();
   const canvasRef = useRef(null);
   const location = useLocation();
@@ -23,10 +24,44 @@ const Canvas = () => {
   });
   const [sizeCheck, setSizeCheck] = useState();
   const screen = new ScreenSizeDetector();
-  // const horCenter = (screen.width - 63.5) / 2;
-  // const verCenter = (screen.height - 63.5) / 2;
+  let canvas;
 
   useEffect(() => {
+    const screen = new ScreenSizeDetector();
+
+    document.addEventListener("keydown", (e) => {
+      const keyCode = e.keyCode;
+      userCharacters[username]?.move(keyCode);
+      // console.log("AVATARPOSITION", userCharacters[username].state.x);
+      cameraControl(
+        keyCode,
+        setCameraPosition,
+        screen,
+        userCharacters,
+        username
+      );
+
+      setUserCharacters((prev) => ({
+        ...prev,
+        [username]: prev[username],
+      }));
+      sendData();
+      // canvas = canvasRef.current;
+      // const ctx = canvas.getContext("2d");
+      // userCharacters[username].drawFrame(ctx);
+      // userCharacters[username].showName(ctx);
+      // userCharacters[username].drawFrame(ctx);
+      // userCharacters[username].showName(ctx);
+    });
+    document.addEventListener("keyup", (e) => {
+      const keyCode = e.keyCode;
+      userCharacters[username]?.stop(keyCode);
+      setUserCharacters((prev) => ({
+        ...prev,
+        [username]: prev[username],
+      }));
+      sendData();
+    });
 
     const initialMapHeight = (screenHeight) => {
       if (screenHeight < 640) {
@@ -39,34 +74,31 @@ const Canvas = () => {
       y: initialMapHeight(screen.height),
       // y : -150,
     }));
+    /** make map responsive */
+    // const getWindowDimentions = () => {
+    //   const { innerWidth: innerWidth, innerHeight: innerHeight } = window;
 
-    const getWindowDimentions = () => {
-      const { innerWidth: innerWidth, innerHeight: innerHeight } = window;
+    //   // setCameraPosition(prev => ({
+    //   //   ...prev,
+    //   //   x: 0
+    //   // }))
+    //   return { innerWidth, innerHeight };
+    // };
+    // const handleResize = () => {
+    //   setSizeCheck(getWindowDimentions());
+    // };
 
-      console.log(innerWidth);
-      // setCameraPosition(prev => ({
-      //   ...prev,
-      //   x: 0
-      // }))
-      return { innerWidth, innerHeight };
-    };
-    const handleResize = () => {
-      setSizeCheck(getWindowDimentions());
-    };
+    // window.addEventListener("resize", handleResize);
 
-    window.addEventListener("resize", handleResize);
-
+    // return () => {
+    //   window.removeEventListener("resize", handleResize);
+    // };
     return () => {
-      window.removeEventListener("resize", handleResize);
+      document.removeEventListener("keydown");
+      document.removeEventListener("keyup");
     };
   }, []);
 
-  let canvas;
-  // const canvas = canvasRef.current;
-  // canvas.width = 1120;
-  // canvas.height = 640;
-  // console.log("TEST")
-  // const ctx = canvas.getContext("2d");
   useMemo(() => {
     const cookies = new Cookies();
     const allCookies = cookies.getAll();
@@ -91,45 +123,52 @@ const Canvas = () => {
   }, []);
 
   useEffect(() => {
-    const screen = new ScreenSizeDetector();
-
-    document.addEventListener("keydown", (e) => {
-      const keyCode = e.keyCode;
-      userCharacters[username]?.move(keyCode);
-      // console.log("AVATARPOSITION", userCharacters[username].state.x);
-      console.log();
-      cameraControl(
-        keyCode,
-        setCameraPosition,
-        screen,
-        userCharacters,
-        username
-      );
-
-      setUserCharacters((prev) => ({
-        ...prev,
-        [username]: prev[username],
-      }));
-      // canvas = canvasRef.current;
-      // const ctx = canvas.getContext("2d");
-      // userCharacters[username].drawFrame(ctx);
-      // userCharacters[username].showName(ctx);
-      // userCharacters[username].drawFrame(ctx);
-      // userCharacters[username].showName(ctx);
-    });
-    document.addEventListener("keyup", (e) => {
-      const keyCode = e.keyCode;
-      userCharacters[username]?.stop(keyCode);
-      setUserCharacters((prev) => ({
-        ...prev,
-        [username]: prev[username],
-      }));
-    });
-    return () => {
-      document.removeEventListener("keydown");
-      document.removeEventListener("keyup");
-    };
+    // const screen = new ScreenSizeDetector();
+    // document.addEventListener("keydown", (e) => {
+    //   const keyCode = e.keyCode;
+    //   userCharacters[username]?.move(keyCode);
+    //   // console.log("AVATARPOSITION", userCharacters[username].state.x);
+    //   cameraControl(
+    //     keyCode,
+    //     setCameraPosition,
+    //     screen,
+    //     userCharacters,
+    //     username
+    //   );
+    //   setUserCharacters((prev) => ({
+    //     ...prev,
+    //     [username]: prev[username],
+    //   }));
+    //   sendData()
+    //   // canvas = canvasRef.current;
+    //   // const ctx = canvas.getContext("2d");
+    //   // userCharacters[username].drawFrame(ctx);
+    //   // userCharacters[username].showName(ctx);
+    //   // userCharacters[username].drawFrame(ctx);
+    //   // userCharacters[username].showName(ctx);
+    // });
+    // document.addEventListener("keyup", (e) => {
+    //   const keyCode = e.keyCode;
+    //   userCharacters[username]?.stop(keyCode);
+    //   setUserCharacters((prev) => ({
+    //     ...prev,
+    //     [username]: prev[username],
+    //   }));
+    //   sendData()
+    // });
+    // return () => {
+    //   document.removeEventListener("keydown");
+    //   document.removeEventListener("keyup");
+    // };
   }, []);
+
+  useEffect(() => {
+    console.log(room)
+    socket.on(`sendData`, userState => {
+      console.log(userState)
+    })
+    // return () => socket.off();
+  }, [socket])
 
   // const userDataInCookies = allCookies.userdata
   // const navigate = useNavigate();
@@ -352,13 +391,18 @@ const Canvas = () => {
   //   navigate(0, { state: [props.username, props.avatar, userLanguages, userID] })
   // };
 
-  // function sendData(removeFromRoom) {
-  //   socket && socket.emit("sendData", {
-  //     userState: userCharacters[props.username].state,
-  //     room: props.room,
-  //     removeFrom: removeFromRoom
-  //   });
-  // };
+  function sendData(removeFromRoom) {
+    // console.log("canvasUserCookie",userCookie)
+    // console.log(userCharacters[userCookie.userName])
+    const cookie = new Cookies().getAll().userdata;
+    const username = cookie.userName;
+    socket &&
+      socket.emit("sendData", {
+        userState: userCharacters[username].state,
+        room,
+        removeFrom: removeFromRoom,
+      });
+  }
 
   return (
     <div

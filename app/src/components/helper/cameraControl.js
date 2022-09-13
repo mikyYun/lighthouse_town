@@ -77,8 +77,6 @@ const cameraControl = (keyCode, setCameraPosition, screen, userCharacters, usern
         }));
       }
     }
-
-
   }
 };
 

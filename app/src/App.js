@@ -23,6 +23,8 @@ function App() {
       <Route path={`/game/${roomName}`} element={<Game character={character} setCharacter={setCharacter} />} key={roomName} />
     );
   });
+  const [userCookie, setUserCookie] = useState({})
+
   const navigate = useNavigate();
   const cookie = new Cookies().getAll().userdata;
   const username = cookie?.userName;
@@ -49,7 +51,7 @@ function App() {
     /** PAGE REFRESH UPDATE NEW SOCKET ID */
     // const cookie = new Cookies().getAll().userdata;
     // const username = cookie?.userName;
-
+    // storeUserCookie(cookie)
     updateUserSocketId(username);
 
     return () => {
@@ -59,45 +61,61 @@ function App() {
 
   useEffect(() => {
     // ALL SOCKET RECEIVER
-    socket.on(room, (userNamesObj) => {
+    socket && socket.on(room, (userNamesObj) => {
       const userNames = userNamesObj.userNames;
       const filterUserNames = filterMyName(userNames);
       
       setOnlineList(filterUserNames);
     });
 
-    socket.on("REMOVE LOGOUT USER", ({updatedUserNames}) => {
+    socket && socket.on("REMOVE LOGOUT USER", ({updatedUserNames}) => {
 
       const filterUserNames = filterMyName(updatedUserNames)
       setOnlineList(filterUserNames)
     })
 
     return () => {
-      socket.disconnect();
+      // socket.off();
     };
   }, [socket, onlineList]);
 
+  // const storeUserCookie = (userCookieData) => {
+  //   console.log("HE", userCookieData)
+  //   if (userCookieData) {
+  //     setUserCookie(userCookieData)
+  //     console.log(userCookie)
+  //   }
+  // }
+
   const updateUserSocketId = (username) => {
     if (username) {
-
+      console.log(username, room, "EXIST")
       socket && socket.emit("UPDATE SOCKETID", {
         username, currentRoom: room
       });
     }
   };
+  // useEffect(() => {
+    // console.log("userCookie", userCookie)
+  // }, [userCookie])
 
-  const createSocketIdNameObj = (username) => {
-
+  const createSocketIdNameObj = (userData) => {
+    setUserCookie(userData)
     socket && socket.emit("SET USERNAME", {
       socketID: socket.id,
-      username: username,
+      username: userData.userName,
       currentRoom: room
     });
     navigate(`game/${room}`);
   };
+
+  const moveAvatar = (userData) => {
+
+  }
+
   return (
     <SocketContext.Provider value={{ socket }}>
-      <UserListContext.Provider value={{ room, onlineList }}>
+      <UserListContext.Provider value={{ room, onlineList, userCookie }}>
         <Routes>
           <Route path="/register" element={<Register setUser={createSocketIdNameObj} />} />
           <Route path="/" element={<Login setUser={createSocketIdNameObj} />} />

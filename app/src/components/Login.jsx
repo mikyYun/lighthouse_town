@@ -61,19 +61,19 @@ export default function Login(props) {
             className="btn"
             type="submit"
             onClick={(e) => {
-              // const loginInfo = { userEmail, userPassword }
-              const loginInfo = {
-                userEmail: "test2@test.com",
-                userPassword: "mike",
-              };
+              const loginInfo = { userEmail, userPassword }
+              // const loginInfo = {
+              //   userEmail: "test2@test.com",
+              //   userPassword: "mike",
+              // };
               // cookies.set("username", userEmail)
               axios
                 .post("/login", loginInfo)
                 .then((res) => {
-                  if (res.data.userName) {
-                    const target = res.data;
+                  const target = res.data;
+                  if (target.userName) {
                     cookies.set("userdata", target, { maxAge: 3600 });
-                    setUser(target.userName)
+                    setUser(target)
                     // goChat(target.userName, target.avatar, target.userLanguages, target.userID)
                     // goChat();
                   }

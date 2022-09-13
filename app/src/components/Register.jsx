@@ -221,7 +221,7 @@ export default function Register(props) {
                   `);
                   const target = res.data;
                   if (target.userName) {
-                    setUser(target.userName);
+                    setUser(target);
                     cookies.set("userdata", target, { maxAge: 3600 });
                     goChat(
                       target.userName,
