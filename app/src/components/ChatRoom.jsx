@@ -61,7 +61,7 @@ function ChatRoom(props) {
     socket.on("PRIVATE", handleReceivePrivateMessage);
 
     return () => {
-      socket.disconnect();
+      socket.off();
     };
   }, [socket, handleReceiveMessage]);
 

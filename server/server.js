@@ -64,9 +64,10 @@ io.on("connection", (socket) => {
   // socketID and username matching triggered when user login
   socket.on("UPDATE SOCKETID", ({ username, currentRoom }) => {
     currentUsers[username] = socket.id;
+    socket.join(currentRoom);
     console.log(username, "joined", currentRoom, "with ID ", socket.id);
     const userNames = Object.keys(currentUsers);
-
+    // socket.to(currentRoom).emit(currentRoom, {userNames})
     io.emit(currentRoom, { userNames });
   });
 
@@ -76,6 +77,7 @@ io.on("connection", (socket) => {
     /** LOGIN OR REGISTERED USER JOIN ROOM PLAZA */
     socket.join(currentRoom);
     const userNames = Object.keys(currentUsers);
+    // socket.to(currentRoom).emit(currentRoom, {userNames})
     io.emit(currentRoom, { userNames });
   });
 
@@ -248,6 +250,7 @@ io.on("connection", (socket) => {
     /** io.emit SEND DATA to ALL users INCLUDING SENDER */
     // io.emit(`sendData ${room}`, userState); // 다시 Canvas.jsx -> const newCharactersData = data;
     socket.to(room).emit("sendData", userState)
+    // io.emit("sendData", userState)
 
   });
 
@@ -406,8 +409,8 @@ io.on("connection", (socket) => {
 
 
   /* 오브젝트에서 종료되는 유저 삭제 */
-  socket.on("disconnect", () => {
-    console.log("Server.js - DISCONNECT", socket.id);
+  socket.on("disconnect", (msg) => {
+    // msg = transport close
 
     const alluserNames = Object.keys(currentUsers);
     // let disconnectedUsername;
@@ -417,7 +420,7 @@ io.on("connection", (socket) => {
       // disconnectedUsername = name;
     });
     const updatedUserNames = Object.keys(currentUsers)
-    console.log(updatedUserNames)
+    console.log("currentUsers",updatedUserNames)
     io.emit("REMOVE LOGOUT USER", {updatedUserNames})
     // io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기
   });

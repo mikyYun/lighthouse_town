@@ -15,6 +15,9 @@ export default function Profile(props) {
         }
         // console.log("THIS second", profiles)
     })
+    return () => {
+      socket.off();
+    }
   }, [profiles])
 
 

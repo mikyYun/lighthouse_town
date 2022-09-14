@@ -18,14 +18,11 @@ function App() {
   const [character, setCharacter] = useState({});
   const roomList = ["plaza", "js", "ruby", "react", "coffee"];
   const [onlineList, setOnlineList] = useState([]);
-  const roomRoute = roomList.map(roomName => {
-    return (
-      <Route path={`/game/${roomName}`} element={<Game character={character} setCharacter={setCharacter} />} key={roomName} />
-    );
-  });
-  const [userCookie, setUserCookie] = useState({})
+  const [updateUserState, setUpdateUserState] = useState({})
 
+  const [userCookie, setUserCookie] = useState({})
   const navigate = useNavigate();
+  const location = useLocation();
   const cookie = new Cookies().getAll().userdata;
   const username = cookie?.userName;
   const filterMyName = (userNamesArr) => {
@@ -52,15 +49,21 @@ function App() {
     // const cookie = new Cookies().getAll().userdata;
     // const username = cookie?.userName;
     // storeUserCookie(cookie)
-    updateUserSocketId(username);
+    console.log("username",username)
+    // if (location.pathname !== "/") {
+      // updateUserSocketId(username);
+    // }
 
     return () => {
-      socket.disconnect();
+      socket.off();
     };
   }, []);
 
   useEffect(() => {
-    // ALL SOCKET RECEIVER
+    /** ALL SOCKET SENDER */
+    // updateUserSocketId(username);
+
+    /** ALL SOCKET RECEIVER */
     socket && socket.on(room, (userNamesObj) => {
       const userNames = userNamesObj.userNames;
       const filterUserNames = filterMyName(userNames);
@@ -74,8 +77,12 @@ function App() {
       setOnlineList(filterUserNames)
     })
 
+    socket.on(`sendData`, (userState) => {
+      setUpdateUserState(userState)
+    })
+
     return () => {
-      // socket.off();
+      socket.off();
     };
   }, [socket, onlineList]);
 
@@ -87,14 +94,14 @@ function App() {
   //   }
   // }
 
-  const updateUserSocketId = (username) => {
-    if (username) {
-      console.log(username, room, "EXIST")
-      socket && socket.emit("UPDATE SOCKETID", {
-        username, currentRoom: room
-      });
-    }
-  };
+  // const updateUserSocketId = (username) => {
+  //   if (username) {
+  //     console.log(username, room, "APP")
+  //     socket && socket.emit("UPDATE SOCKETID", {
+  //       username, currentRoom: room
+  //     });
+  //   }
+  // };
   // useEffect(() => {
     // console.log("userCookie", userCookie)
   // }, [userCookie])
@@ -113,15 +120,21 @@ function App() {
 
   }
 
+  const roomRoute = roomList.map(roomName => {
+    return (
+      <Route path={`/game/${roomName}`} element={<Game character={character} setCharacter={setCharacter} />} key={roomName} />
+    );
+  });
+
   return (
     <SocketContext.Provider value={{ socket }}>
-      <UserListContext.Provider value={{ room, onlineList, userCookie }}>
+      <UserListContext.Provider value={{ room, onlineList, userCookie, updateUserState }}>
         <Routes>
           <Route path="/register" element={<Register setUser={createSocketIdNameObj} />} />
           <Route path="/" element={<Login setUser={createSocketIdNameObj} />} />
           <Route path="/login" element={<Login setUser={createSocketIdNameObj} />} />
-          {/* <Route path={`/game/${room}`} element={<Game />} /> */}
           {roomRoute}
+          {/* <Route path={`/game/${}`} element={<RETURN />} /> */}
         </Routes>
       </UserListContext.Provider>
     </SocketContext.Provider>
