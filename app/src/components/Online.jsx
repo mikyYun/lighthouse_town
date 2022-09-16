@@ -9,7 +9,7 @@ import Cookies from "universal-cookie";
 
 export default function Online(props) {
   const { socket } = useContext(SocketContext);
-  const { room, onlineList } = useContext(UserListContext);
+  const { room, userCookie, onlineList } = useContext(UserListContext);
   const [showOnline, setShowOnline] = useState("show");
   const toggleOnline = (showOnline) => {
     showOnline === "show" ? setShowOnline("hide") : setShowOnline("show");
@@ -22,9 +22,9 @@ export default function Online(props) {
     // return () => {
     //   socket.disconnect();
     // }
-    const cookies = new Cookies();
-    const allCookies = cookies.getAll();
-    const username = allCookies.userdata.userName;
+    // const cookies = new Cookies();
+    // const allCookies = cookies.getAll();
+    // const username = allCookies.userdata.userName;
     // onlineList[username]
   }, []);
 
@@ -70,8 +70,10 @@ export default function Online(props) {
   // useEffect(() => {
   //   socket.emit("friendsList", { socketID: socket.id });
   // }, [online]);
-
+  
   const onlineUserList = onlineList.map((user) => {
+    console.log("userCookie", userCookie)
+    if (user !== userCookie.userName)
     return (
       <div className="user" key={user}>
         <li className="users-online">{user}</li>
