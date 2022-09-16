@@ -43,7 +43,6 @@ function Recipient(props) {
     //   { value: "moon", label: "moon" },
     //   { value: "jordon", label: "jordon" },
     // ]);
-    console.log("ONLINELIST UPDATED")
     setOtherUsers(updateRecipientsList())
     // setOtherUsers(prev => ({
     // ...prev

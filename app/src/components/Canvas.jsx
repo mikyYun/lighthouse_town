@@ -1,3 +1,4 @@
+import axios from "axios";
 import Online from "./Online";
 import FriendList from "./FriendsList";
 import cameraControl from "./helper/cameraControl";
@@ -10,7 +11,7 @@ const ScreenSizeDetector = require("screen-size-detector");
 
 const Canvas = () => {
   const { socket } = useContext(SocketContext);
-  const { room, userCookie, updateUserState } = useContext(UserListContext);
+  const { room, userCookie, updateUserState, onlineLIst } = useContext(UserListContext);
   const [username, setUsername] = useState();
   const canvasRef = useRef(null);
   const location = useLocation();
@@ -26,7 +27,7 @@ const Canvas = () => {
   const [targetUser, setTargetUser] = useState();
 
   const [sizeCheck, setSizeCheck] = useState();
-  const screen = new ScreenSizeDetector();
+  // const screen = new ScreenSizeDetector();
   let canvas;
 
   useEffect(() => {
@@ -62,6 +63,7 @@ const Canvas = () => {
       // userCharacters[username].drawFrame(ctx);
       // userCharacters[username].showName(ctx);
     });
+
     document.addEventListener("keyup", (e) => {
       const keyCode = e.keyCode;
       if (
@@ -115,8 +117,13 @@ const Canvas = () => {
     };
   }, []);
 
+  // useEffect(() => {
+  //   console.log("ONLINELINST", onlineLIst)
+  // }, [onlineLIst])
+
   useMemo(() => {
-    console.log("CANVAS RENDERED")
+    /** FIRST RENDERING */
+    console.log("CANVAS RENDERED", onlineLIst)
     const cookies = new Cookies();
     const allCookies = cookies.getAll();
     if (!allCookies.userData) {
@@ -128,6 +135,7 @@ const Canvas = () => {
       if (username) {
         console.log(username, room, "EXIST");
         setUsername(username);
+        
         socket &&
           socket.emit("UPDATE SOCKETID", {
             username,
@@ -150,61 +158,8 @@ const Canvas = () => {
         avatar,
       }),
     });
-    // sendData();
     return () => socket.off();
   }, []);
-
-  useEffect(() => {
-    // const screen = new ScreenSizeDetector();
-    // document.addEventListener("keydown", (e) => {
-    //   const keyCode = e.keyCode;
-    //   userCharacters[username]?.move(keyCode);
-    //   // console.log("AVATARPOSITION", userCharacters[username].state.x);
-    //   cameraControl(
-    //     keyCode,
-    //     setCameraPosition,
-    //     screen,
-    //     userCharacters,
-    //     username
-    //   );
-    //   setUserCharacters((prev) => ({
-    //     ...prev,
-    //     [username]: prev[username],
-    //   }));
-    //   sendData()
-    //   // canvas = canvasRef.current;
-    //   // const ctx = canvas.getContext("2d");
-    //   // userCharacters[username].drawFrame(ctx);
-    //   // userCharacters[username].showName(ctx);
-    //   // userCharacters[username].drawFrame(ctx);
-    //   // userCharacters[username].showName(ctx);
-    // });
-    // document.addEventListener("keyup", (e) => {
-    //   const keyCode = e.keyCode;
-    //   userCharacters[username]?.stop(keyCode);
-    //   setUserCharacters((prev) => ({
-    //     ...prev,
-    //     [username]: prev[username],
-    //   }));
-    //   sendData()
-    // });
-    // return () => {
-    //   document.removeEventListener("keydown");
-    //   document.removeEventListener("keyup");
-    // };
-  }, []);
-
-  useEffect(() => {
-    if (targetUser) {
-      canvas = canvasRef.current;
-      canvas.width = 1120;
-      canvas.height = 640;
-      const ctx = canvas.getContext("2d");
-      console.log(targetUser);
-      otherUsersCharacter[targetUser].drawFrame(ctx);
-      otherUsersCharacter[targetUser].showName(ctx);
-    }
-  }, [otherUsersCharacter, targetUser]);
 
   useEffect(() => {
     /** USER AVATAR ONLY */
@@ -217,32 +172,13 @@ const Canvas = () => {
     // sendData();
 
     /** OTHER ONLINE USERS */
-
+    console.log("TARGETUSER", targetUser)
     if (targetUser) {
-      // canvas = canvasRef.current;
-      // canvas.width = 1120;
-      // canvas.height = 640;
-      // const ctx = canvas.getContext("2d");
-      // console.log(targetUser);
       otherUsersCharacter[targetUser].drawFrame(ctx);
       otherUsersCharacter[targetUser].showName(ctx);
     }
 
-    // for (const userChar in userCharacters) {
-    //   userCharacters[userChar].drawFrame(ctx);
-    //   userCharacters[userChar].showName(ctx);
-    //   const msgToShow = msg[userCharacters[userChar].state.username];
-    //   if (msgToShow !== undefined) {
-    //     // userCharacters[userChar].showBubble(ctx);
-    //     userCharacters[userChar].showChat(ctx, msgToShow);
-    //   }
-    // }
-    // document.addEventListener("keydown", (e) => {
-    // const code = e.keyCode;
-    // userCharacters[username]?.move(code);
 
-    // setUserCharacters(prev => ({...prev, [username]: }))
-    // });
   }, [userCharacter, otherUsersCharacter, targetUser]);
 
   useEffect(() => {

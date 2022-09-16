@@ -1,5 +1,5 @@
 const poolGroup = require("./coding_buddy_db");
-const { pool, tryLogin, registerUser } = poolGroup;
+const { pool, tryLogin, registerUser, findAvatar } = poolGroup;
 
 /** USE .env */
 require("dotenv").config();
@@ -57,22 +57,28 @@ const sendCurrentUsersLists = (currentUsersObj) => {
 // OPEN SOCKET
 io.on("connection", (socket) => {
   const session = socket.request.session;
+  /** CONNECTED SOCKET SAVE IN SESSION */
   session.save();
   console.log("SOCKET CONNECTED", socket.id);
-  // console.log(currentUsers)
-  // LOGIN USER CONNECTED
-  // socketID and username matching triggered when user login
+
+  /** RECONNECTED USER (PAGE REFRESH) */
   socket.on("UPDATE SOCKETID", ({ username, currentRoom }) => {
     currentUsers[username] = socket.id;
     socket.join(currentRoom);
-    console.log(username, "joined", currentRoom, "with ID ", socket.id);
     const userNames = Object.keys(currentUsers);
-    // socket.to(currentRoom).emit(currentRoom, {userNames})
-    io.emit(currentRoom, { userNames });
+    console.log(username, "joined", currentRoom, "with ID ", socket.id);
+    const updatedUserName = username;
+
+    findAvatar(username)
+      .then((res) => {
+        const avatar = res.avatar_id;
+        io.emit(currentRoom, { userNames, updatedUserName, avatar });
+      });
+
   });
 
   socket.on("SET USERNAME", ({ socketID, username, currentRoom }) => {
-    
+    console.log(currentRoom);
     currentUsers[username] = socketID;
     /** LOGIN OR REGISTERED USER JOIN ROOM PLAZA */
     socket.join(currentRoom);
@@ -228,7 +234,7 @@ io.on("connection", (socket) => {
   // FOR USER MOVEMENT (Canvas)
   socket.on('sendData', data => {
     const { userState, room, removeFrom } = data;
-    console.log(userState, room, removeFrom)
+    console.log(userState, room, removeFrom);
     // // console.log('got data', data);
     // if (!usersInRooms[room]) {
     //   usersInRooms[room] = {};
@@ -249,7 +255,7 @@ io.on("connection", (socket) => {
     // io.emit(`sendData ${room}`, { usersInRooms, room }); // 다시 Canvas.jsx -> const newCharactersData = data;
     /** io.emit SEND DATA to ALL users INCLUDING SENDER */
     // io.emit(`sendData ${room}`, userState); // 다시 Canvas.jsx -> const newCharactersData = data;
-    socket.to(room).emit("sendData", userState)
+    socket.to(room).emit("sendData", userState);
     // io.emit("sendData", userState)
 
   });
@@ -414,14 +420,16 @@ io.on("connection", (socket) => {
 
     const alluserNames = Object.keys(currentUsers);
     // let disconnectedUsername;
+    let removedName;
     alluserNames.forEach((name) => {
       if (currentUsers[name] === socket.id)
         delete currentUsers[name];
+      removedName = [name];
       // disconnectedUsername = name;
     });
-    const updatedUserNames = Object.keys(currentUsers)
-    console.log("currentUsers",updatedUserNames)
-    io.emit("REMOVE LOGOUT USER", {updatedUserNames})
+    const updatedUserNames = Object.keys(currentUsers);
+    console.log("currentUsers", updatedUserNames);
+    io.emit("REMOVE LOGOUT USER", { updatedUserNames, removedName });
     // io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기
   });
 });
@@ -438,6 +446,9 @@ app.post("/register", (req, res) => {
   return registerUser(req, res);
 });
 
+app.post("/avatar", async (req, res) => {
+  return findAvatar(req.body.username);
+});
 
 httpServer.listen(PORT, () => {
   console.log(

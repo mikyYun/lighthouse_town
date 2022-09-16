@@ -208,6 +208,16 @@ const registerUser = (req, res) => {
     });
 };
 
+const findAvatar = async (username) => {
+  const avatarData = await pool.query(
+    `SELECT avatar_id
+      FROM users
+      WHERE users.username = $1`,
+      [username])
+  const avatar_id = await avatarData.rows[0]
+  return avatar_id
+}
+
 // PUT : updated data in an existing user
 const updateUser = (req, res) => {
   const id = parseInt(req.params.id);
@@ -235,6 +245,7 @@ const poolGroup = {
   pool,
   tryLogin,
   registerUser,
+  findAvatar,
   // filterEssentials,
   // getUsers,
   // updateUser,

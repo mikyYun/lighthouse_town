@@ -4,6 +4,7 @@ import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Cookies from "universal-cookie";
 import classroom from "./components/game_img/classroom.png";
 import { socket } from "./components/socket/socket.js";
+import axios from "axios";
 
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -25,9 +26,8 @@ function App() {
   const location = useLocation();
   const cookie = new Cookies().getAll().userdata;
   const username = cookie?.userName;
-  const filterMyName = (userNamesArr) => {
-    console.log(username)
-    return userNamesArr.filter(userName => userName !== username)
+  const filterMyName = (userNamesArr, removedName) => {
+    return userNamesArr.filter(userName => userName !== username && userName !== removedName)
   }
   // useEffect(() => {
   //   socket.on("connection", (serverSocket) => {
@@ -64,17 +64,34 @@ function App() {
     // updateUserSocketId(username);
 
     /** ALL SOCKET RECEIVER */
-    socket && socket.on(room, (userNamesObj) => {
-      const userNames = userNamesObj.userNames;
+    socket && socket.on(room, ({userNames, updatedUserName, avatar}) => {
       const filterUserNames = filterMyName(userNames);
-      
+
+      console.log("TEST POINT", userNames, updatedUserName, avatar)
+      if (username !== updatedUserName) {
+        const initAvatarPosition = {
+          username,
+          avatar,
+          x: 200,
+          y: 420,
+          currentDirection: 0,
+          frameCount: 0
+        }
+        setUpdateUserState(initAvatarPosition)
+      }
       setOnlineList(filterUserNames);
     });
 
-    socket && socket.on("REMOVE LOGOUT USER", ({updatedUserNames}) => {
-
-      const filterUserNames = filterMyName(updatedUserNames)
+    socket && socket.on("REMOVE LOGOUT USER", ({updatedUserNames, removedName}) => {
+      console.log("REMOVEUSERNAME", removedName)
+      const filterUserNames = filterMyName(updatedUserNames, removedName)
       setOnlineList(filterUserNames)
+      const removeAvatar = {
+        username: removedName,
+        remove: true
+      }
+      setUpdateUserState(removeAvatar)
+      // setUpdateUserState() // remove from current object
     })
 
     socket.on(`sendData`, (userState) => {
