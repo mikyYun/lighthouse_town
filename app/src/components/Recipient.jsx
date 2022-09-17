@@ -37,16 +37,9 @@ function Recipient(props) {
       return option;
     };
 
-    // setOtherUsers([
-    //   { value: "all", label: "all" },
-    //   { value: "heesoo", label: "heesoo" },
-    //   { value: "moon", label: "moon" },
-    //   { value: "jordon", label: "jordon" },
-    // ]);
+
     setOtherUsers(updateRecipientsList())
-    // setOtherUsers(prev => ({
-    // ...prev
-    // }));
+
   }, [onlineList]);
 
   // const { recipient, setRecipient, nickname, online } = useContext(UserListContext);

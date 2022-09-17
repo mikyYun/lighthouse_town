@@ -11,7 +11,9 @@ const ScreenSizeDetector = require("screen-size-detector");
 
 const Canvas = () => {
   const { socket } = useContext(SocketContext);
-  const { room, userCookie, updateUserState, onlineLIst } = useContext(UserListContext);
+  const { room, userCookie, updateUserState, onlineLIst, reSendData, setReSendData } =
+    useContext(UserListContext);
+  // let { reSendData } = useContext(UserListContext);
   const [username, setUsername] = useState();
   const canvasRef = useRef(null);
   const location = useLocation();
@@ -29,6 +31,15 @@ const Canvas = () => {
   const [sizeCheck, setSizeCheck] = useState();
   // const screen = new ScreenSizeDetector();
   let canvas;
+
+  // useEffect(() => {
+  //   if (reSendData) {
+  //     sendData();
+  //     console.log("RESEND", reSendData);
+  //     reSendData = false;
+  //   }
+  //   return () => socket.off();
+  // }, [reSendData]);
 
   useEffect(() => {
     const screen = new ScreenSizeDetector();
@@ -81,18 +92,19 @@ const Canvas = () => {
       }
     });
 
-    const initialMapHeight = (screenHeight) => {
-      if (screenHeight < 640) {
-        return 640 - screenHeight;
-      }
-    };
-
-    setCameraPosition((prev) => ({
-      ...prev,
-      y: initialMapHeight(screen.height),
-      // y : -150,
-    }));
     /** make map responsive */
+
+    // const initialMapHeight = (screenHeight) => {
+    //   if (screenHeight < 640) {
+    //     return 640 - screenHeight;
+    //   }
+    // };
+
+    // setCameraPosition((prev) => ({
+    //   ...prev,
+    //   y: initialMapHeight(screen.height),
+    //   // y : -150,
+    // }));
     // const getWindowDimentions = () => {
     //   const { innerWidth: innerWidth, innerHeight: innerHeight } = window;
 
@@ -121,43 +133,65 @@ const Canvas = () => {
   //   console.log("ONLINELINST", onlineLIst)
   // }, [onlineLIst])
 
+  // useEffect(() => {
+  /** RESEND MY POSITION */
+  // socket && socket.on("RESEND DATA", () => {
+  //   console.log("SENDINGDATA")
+  //   sendData();
+  // })
+  // return () => socket.off();
+  // }, [socket])
+
   useMemo(() => {
     /** FIRST RENDERING */
-    console.log("CANVAS RENDERED", onlineLIst)
     const cookies = new Cookies();
     const allCookies = cookies.getAll();
-    if (!allCookies.userData) {
-      navigate("/");
+    if (!allCookies.userdata) {
+      console.log("NO COOKIE");
+      return navigate("/");
     }
+    /** IF A USER DATA STORED IN Cookie
+     * open socket to update onlineUserObj
+     * AND SEND THE NEW USER's POSITIO TO ALL USERS
+     */
     const userData = allCookies.userdata;
+    const avatar = userData.avatar;
 
-    const updateUserSocketId = (username) => {
-      if (username) {
-        console.log(username, room, "EXIST");
-        setUsername(username);
-        
-        socket &&
-          socket.emit("UPDATE SOCKETID", {
-            username,
-            currentRoom: room,
-          });
-      }
+    const updateUserSocketId = (targetUserName) => {
+      console.log(targetUserName, room, "EXIST");
+      setUsername(targetUserName);
+
+      socket &&
+        socket.emit("UPDATE SOCKETID", {
+          username: targetUserName,
+          avatar,
+          currentRoom: room,
+        });
     };
 
     updateUserSocketId(userData.userName);
-    const avatar = userData.avatar;
+
     const startingPosition = { x: 200, y: 420 };
 
+    const userState = {
+      username: userData.userName,
+      x: startingPosition.x,
+      y: startingPosition.y,
+      currentDirection: 0,
+      frameCount: 0,
+      avatar,
+    };
+
     setUserCharacter({
-      [userData.userName]: new Characters({
-        username: userData.userName,
-        x: startingPosition.x,
-        y: startingPosition.y,
-        currentDirection: 0,
-        frameCount: 0,
-        avatar,
-      }),
+      [userData.userName]: new Characters(userState),
     });
+
+    /** RESEND MY POSITION */
+    // socket && socket.on("RESEND DATA", () => {
+    //   console.log("SENDINGDATA")
+    //   sendData();
+    // })
+    // sendData();
     return () => socket.off();
   }, []);
 
@@ -172,55 +206,97 @@ const Canvas = () => {
     // sendData();
 
     /** OTHER ONLINE USERS */
-    console.log("TARGETUSER", targetUser)
-    if (targetUser) {
-      otherUsersCharacter[targetUser].drawFrame(ctx);
-      otherUsersCharacter[targetUser].showName(ctx);
-    }
+    console.log("otherUsersCharacter", otherUsersCharacter);
 
+    const cookies = new Cookies();
+    const allCookies = cookies.getAll();
+    const myName = allCookies.userdata?.userName;
 
+    Object.keys(otherUsersCharacter).forEach((user) => {
+      if (user !== myName) {
+        otherUsersCharacter[user].drawFrame(ctx);
+        otherUsersCharacter[user].showName(ctx);
+        console.log("DRAW USER", user);
+      }
+    });
+
+    // if (targetUser) {
+    //   otherUsersCharacter[targetUser].drawFrame(ctx);
+    //   otherUsersCharacter[targetUser].showName(ctx);
+    // }
   }, [userCharacter, otherUsersCharacter, targetUser]);
 
   useEffect(() => {
-    console.log("updateUserState", updateUserState)
     // console.log("room", room);
     // socket &&
     // socket.on(`sendData`, (userState) => {
-        const username = updateUserState.username && updateUserState.username;
-        setTargetUser(username);
+    const cookies = new Cookies();
+    const allCookies = cookies.getAll();
+    const myName = allCookies.userdata?.userName;
+    if (
+      myName !== updateUserState.username &&
+      updateUserState.username !== undefined
+    ) {
+      const targetUsername =
+        updateUserState.username && updateUserState.username;
+      console.log("TARGETUSER", targetUsername);
+      setTargetUser(targetUsername);
+      // console.log(myName, "updateUserState", updateUserState, otherUsersCharacter);
+
+      console.log(targetUsername, updateUserState);
+      if (otherUsersCharacter[targetUsername]) {
+        console.log("EXISTING USER");
+        otherUsersCharacter[targetUsername].state = updateUserState;
         setOtherUsersCharacter((prev) => ({
           ...prev,
-          [username]: new Characters(updateUserState),
+          // prev[targetUsername]
+          // [targetUsername]: new Characters(updateUserState),
         }));
-        // console.log(otherUsersCharacter[username]);
-        // canvas = canvasRef.current;
-        // canvas.width = 1120;
-        // canvas.height = 640;
-        // const ctx = canvas.getContext("2d");
-        // otherUsersCharacter[username].drawFrame(ctx);
-        // otherUsersCharacter[username].showName(ctx);
-        // otherUsersCharacter[userState.username] ? (
-        //   setOtherUsersCharacter(prev => ({
-        //     ...prev,
-        //     [userState.username] : userState
-        //   }))
-        // ) : (
-        //   setOtherUsersCharacter(prev => ({
+      }
+      if (!otherUsersCharacter[targetUsername]) {
+        console.log("NEW USER");
 
-        //   }))
-        // )
-        // setUserCharacter({
-        //   [userData.userName]: new Characters({
-        //     username: userData.userName,
-        //     x: startingPosition.x,
-        //     y: startingPosition.y,
-        //     currentDirection: 0,
-        //     frameCount: 0,
-        //     avatar,
-        //   }),
-        // });
-      // });
-    // return () => socket.off();
+        setOtherUsersCharacter((prev) => ({
+          ...prev,
+          [targetUsername]: new Characters(updateUserState),
+        }));
+      }
+    }
+    console.log("RESEND", reSendData);
+    if (reSendData) {
+      sendData();
+      setReSendData(false)
+    }
+    // sendData();
+    // console.log(otherUsersCharacter[username]);
+    // canvas = canvasRef.current;
+    // canvas.width = 1120;
+    // canvas.height = 640;
+    // const ctx = canvas.getContext("2d");
+    // otherUsersCharacter[username].drawFrame(ctx);
+    // otherUsersCharacter[username].showName(ctx);
+    // otherUsersCharacter[userState.username] ? (
+    //   setOtherUsersCharacter(prev => ({
+    //     ...prev,
+    //     [userState.username] : userState
+    //   }))
+    // ) : (
+    //   setOtherUsersCharacter(prev => ({
+
+    //   }))
+    // )
+    // setUserCharacter({
+    //   [userData.userName]: new Characters({
+    //     username: userData.userName,
+    //     x: startingPosition.x,
+    //     y: startingPosition.y,
+    //     currentDirection: 0,
+    //     frameCount: 0,
+    //     avatar,
+    //   }),
+    // });
+    //   });
+    // return () => sendData();
   }, [updateUserState]);
 
   // const userDataInCookies = allCookies.userdata

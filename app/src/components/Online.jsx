@@ -71,8 +71,9 @@ export default function Online(props) {
   //   socket.emit("friendsList", { socketID: socket.id });
   // }, [online]);
   
+
   const onlineUserList = onlineList.map((user) => {
-    console.log("userCookie", userCookie)
+    console.log("onlineList", onlineList)
     if (user !== userCookie.userName)
     return (
       <div className="user" key={user}>

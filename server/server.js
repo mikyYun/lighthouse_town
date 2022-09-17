@@ -46,12 +46,6 @@ io.adapter(createAdapter(pool));
 const currentUsers = {}; // => {username : socket.id}
 const usersInRooms = {};
 
-const sendCurrentUsersLists = (currentUsersObj) => {
-  const names = Object.keys(currentUsersObj);
-  names.map(username => {
-
-  });
-};
 
 
 // OPEN SOCKET
@@ -62,18 +56,23 @@ io.on("connection", (socket) => {
   console.log("SOCKET CONNECTED", socket.id);
 
   /** RECONNECTED USER (PAGE REFRESH) */
-  socket.on("UPDATE SOCKETID", ({ username, currentRoom }) => {
+  socket.on("UPDATE SOCKETID", ({ username, avatar, currentRoom }) => {
     currentUsers[username] = socket.id;
     socket.join(currentRoom);
     const userNames = Object.keys(currentUsers);
     console.log(username, "joined", currentRoom, "with ID ", socket.id);
     const updatedUserName = username;
 
-    findAvatar(username)
-      .then((res) => {
-        const avatar = res.avatar_id;
+    // const tellMeYourPosition = async () => {
+    //   io.emit("TELL ME YOUR POSITION", )
+    // }
+
+    socket.to(currentRoom).emit("RESEND DATA", true)
+    // findAvatar(username)
+      // .then((res) => {
+        // const avatar = res.avatar_id;
         io.emit(currentRoom, { userNames, updatedUserName, avatar });
-      });
+      // });
 
   });
 
@@ -83,7 +82,7 @@ io.on("connection", (socket) => {
     /** LOGIN OR REGISTERED USER JOIN ROOM PLAZA */
     socket.join(currentRoom);
     const userNames = Object.keys(currentUsers);
-    // socket.to(currentRoom).emit(currentRoom, {userNames})
+    // socket.to(currentRoom).emit("RESEND DATA", true)
     io.emit(currentRoom, { userNames });
   });
 
@@ -230,6 +229,11 @@ io.on("connection", (socket) => {
     // }
   });
 
+
+  // socket.on("resendData", data => {
+  //   const { userState, room } = data;
+  //   socket.to(room).emit("sendData", userState);
+  // })
 
   // FOR USER MOVEMENT (Canvas)
   socket.on('sendData', data => {
@@ -424,7 +428,7 @@ io.on("connection", (socket) => {
     alluserNames.forEach((name) => {
       if (currentUsers[name] === socket.id)
         delete currentUsers[name];
-      removedName = [name];
+      removedName = name;
       // disconnectedUsername = name;
     });
     const updatedUserNames = Object.keys(currentUsers);
