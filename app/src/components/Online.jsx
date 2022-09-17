@@ -73,7 +73,6 @@ export default function Online(props) {
   
 
   const onlineUserList = onlineList.map((user) => {
-    console.log("onlineList", onlineList)
     if (user !== userCookie.userName)
     return (
       <div className="user" key={user}>

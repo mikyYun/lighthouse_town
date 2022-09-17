@@ -13,7 +13,6 @@ const Canvas = () => {
   const { socket } = useContext(SocketContext);
   const { room, userCookie, updateUserState, onlineLIst, reSendData, setReSendData } =
     useContext(UserListContext);
-  // let { reSendData } = useContext(UserListContext);
   const [username, setUsername] = useState();
   const canvasRef = useRef(null);
   const location = useLocation();
@@ -32,14 +31,7 @@ const Canvas = () => {
   // const screen = new ScreenSizeDetector();
   let canvas;
 
-  // useEffect(() => {
-  //   if (reSendData) {
-  //     sendData();
-  //     console.log("RESEND", reSendData);
-  //     reSendData = false;
-  //   }
-  //   return () => socket.off();
-  // }, [reSendData]);
+
 
   useEffect(() => {
     const screen = new ScreenSizeDetector();
@@ -147,7 +139,7 @@ const Canvas = () => {
     const cookies = new Cookies();
     const allCookies = cookies.getAll();
     if (!allCookies.userdata) {
-      console.log("NO COOKIE");
+      alert("INVALID ACCESS");
       return navigate("/");
     }
     /** IF A USER DATA STORED IN Cookie
@@ -158,7 +150,6 @@ const Canvas = () => {
     const avatar = userData.avatar;
 
     const updateUserSocketId = (targetUserName) => {
-      console.log(targetUserName, room, "EXIST");
       setUsername(targetUserName);
 
       socket &&
@@ -206,7 +197,6 @@ const Canvas = () => {
     // sendData();
 
     /** OTHER ONLINE USERS */
-    console.log("otherUsersCharacter", otherUsersCharacter);
 
     const cookies = new Cookies();
     const allCookies = cookies.getAll();
@@ -216,7 +206,6 @@ const Canvas = () => {
       if (user !== myName) {
         otherUsersCharacter[user].drawFrame(ctx);
         otherUsersCharacter[user].showName(ctx);
-        console.log("DRAW USER", user);
       }
     });
 
@@ -239,13 +228,11 @@ const Canvas = () => {
     ) {
       const targetUsername =
         updateUserState.username && updateUserState.username;
-      console.log("TARGETUSER", targetUsername);
       setTargetUser(targetUsername);
       // console.log(myName, "updateUserState", updateUserState, otherUsersCharacter);
 
       console.log(targetUsername, updateUserState);
       if (otherUsersCharacter[targetUsername]) {
-        console.log("EXISTING USER");
         otherUsersCharacter[targetUsername].state = updateUserState;
         setOtherUsersCharacter((prev) => ({
           ...prev,
@@ -254,7 +241,6 @@ const Canvas = () => {
         }));
       }
       if (!otherUsersCharacter[targetUsername]) {
-        console.log("NEW USER");
 
         setOtherUsersCharacter((prev) => ({
           ...prev,

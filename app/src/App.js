@@ -4,7 +4,6 @@ import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Cookies from "universal-cookie";
 import classroom from "./components/game_img/classroom.png";
 import { socket } from "./components/socket/socket.js";
-import axios from "axios";
 
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -49,8 +48,6 @@ function App() {
   useEffect(() => {
     /** PAGE REFRESH UPDATE NEW SOCKET ID */
 
-    console.log("username", userCookie.userName);
-
     return () => {
       socket.off();
     };
@@ -64,7 +61,6 @@ function App() {
     /** ALL SOCKET RECEIVER */
     socket && socket.on(room, ({ userNames, updatedUserName, avatar }) => {
       const filterUserNames = filterMyName(userNames, myName);
-      console.log("RECEIVE", filterUserNames, updatedUserName);
 
       if (myName !== updatedUserName) {
         const initAvatarPosition = {
@@ -98,15 +94,12 @@ function App() {
     });
 
     socket.on(`sendData`, (userState) => {
-      console.log("SENDDATA", userState.username, myName)
       if (userState.username !== myName) {
         setUpdateUserState(userState);
       }
     });
 
     socket.on("RESEND DATA", (e) => {
-      console.log("RESENDDATA", e)
-      // reSendData = e
       setReSendData(e)
     })
 
