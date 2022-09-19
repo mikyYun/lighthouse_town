@@ -71,6 +71,7 @@ io.on("connection", (socket) => {
      * ONLY IF ONLINEUSERS ARE MORE THAN ONE
      */
     if (userNames.length > 1) {
+      // io.of(currentRoom).emit(currentRoom, { userNames, updatedUserName, avatar, reSend: true})
       socket.to(currentRoom).emit(currentRoom, { userNames, updatedUserName, avatar, reSend: true})
     }
         // io.emit(currentRoom, { userNames, updatedUserName, avatar, reSend: true});
@@ -250,16 +251,19 @@ io.on("connection", (socket) => {
 
   // FOR USER MOVEMENT (Canvas)
   socket.on('sendData', data => {
-    const { userState, room, removeFrom, addTo } = data;
+    const { userState, room, addTo } = data;
     // console.log('got data', !removeFrom);
     // if (!usersInRooms[room]) {
     //   usersInRooms[room] = {};
     // }
-    if (removeFrom) {
-      socket.leave(removeFrom)
-    }
+    // if (removeFrom) {
+    // }
     if (addTo) {
+      userState["remove"] = true;
+      socket.leave(room)
+      console.log(userState, "LEAVE", room)
       socket.join(addTo)
+      socket.to(addTo).emit("sendData", userState);
     }
     // // console.log('BEFORE LOOP', usersInRooms);
     // //when usersInRooms have some properties

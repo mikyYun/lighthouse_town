@@ -117,8 +117,10 @@ function App() {
 
     socket.on(`sendData`, (userState) => {
       if (userState.username !== myName) {
-        setUpdateUserState(userState);
+          setUpdateUserState(userState);
+
       }
+
     });
 
     socket.on("CURRENT USERS STATE", (resendUserState) => {

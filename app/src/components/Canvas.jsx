@@ -97,7 +97,6 @@ const Canvas = () => {
           userCharacter[username].state.y <= 470
         ) {
           handleRoom("ruby", username);
-
         }
       }
       // move to the Plaza
@@ -108,30 +107,28 @@ const Canvas = () => {
           userCharacter[username].state.y <= 450
         ) {
           handleRoom("plaza", username);
-
         }
       }
-    }
+    };
 
     document.addEventListener("keydown", keyDown);
 
     const keyUp = (e) => {
-        const keyCode = e.keyCode;
-        console.log(path)
-        if (
-          keyCode === 37 ||
-          keyCode === 38 ||
-          keyCode === 39 ||
-          keyCode === 40
-        ) {
-          userCharacter[username]?.stop(keyCode);
-          setUserCharacter((prev) => ({
-            ...prev,
-            [username]: prev[username],
-          }));
-          sendData();
-        }
+      const keyCode = e.keyCode;
+      if (
+        keyCode === 37 ||
+        keyCode === 38 ||
+        keyCode === 39 ||
+        keyCode === 40
+      ) {
+        userCharacter[username]?.stop(keyCode);
+        setUserCharacter((prev) => ({
+          ...prev,
+          [username]: prev[username],
+        }));
+        sendData();
       }
+    };
 
     document.addEventListener("keyup", keyUp);
 
@@ -166,10 +163,6 @@ const Canvas = () => {
     // return () => {
     //   window.removeEventListener("resize", handleResize);
     // };
-    const removeEventListeners = () => {
-      document.removeEventListener("keydown");
-      document.removeEventListener("keyup");
-    }
 
     return () => {
       document.removeEventListener("keydown", keyDown);
@@ -187,7 +180,9 @@ const Canvas = () => {
       // return <Redirect to="/" />
       navigate("/");
     } else if (allCookies.userdata) {
-      setPath(location.pathname.split("/")[2]);
+      const currentPath = location.pathname.split("/")[2];
+      setPath(currentPath);
+      console.log(currentPath);
       // setRoom(location.pathname.split("/")[2])
 
       /** IF A USER DATA STORED IN Cookie
@@ -204,7 +199,7 @@ const Canvas = () => {
           socket.emit("UPDATE SOCKETID", {
             username: targetUserName,
             avatar,
-            currentRoom: path,
+            currentRoom: currentPath,
           });
       };
 
@@ -224,10 +219,10 @@ const Canvas = () => {
         userCharacter[username].reset();
         setCameraPosition({
           x: 0,
-          y: 0
-        })
-      //   [userCharacter[userData.userName]] = userCharacter[userData.userName].reset();
-    }
+          y: 0,
+        });
+        //   [userCharacter[userData.userName]] = userCharacter[userData.userName].reset();
+      }
       if (!userCharacter[userData.userName]) {
         setUserCharacter({
           [userData.userName]: new Characters(userState),
@@ -249,7 +244,7 @@ const Canvas = () => {
 
     /** OTHER ONLINE USERS */
     Object.keys(otherUsersCharacter).forEach((user) => {
-      if (user !== username) {
+      if (user !== undefined && user !== username) {
         otherUsersCharacter[user].drawFrame(ctx);
         otherUsersCharacter[user].showName(ctx);
       }
@@ -261,19 +256,26 @@ const Canvas = () => {
       username !== updateUserState.username &&
       updateUserState.username !== undefined
     ) {
-      const targetUsername =
-        updateUserState.username && updateUserState.username;
-      if (otherUsersCharacter[targetUsername]) {
-        otherUsersCharacter[targetUsername].state = updateUserState;
+      if (updateUserState.remove) {
+        delete otherUsersCharacter[updateUserState.username]
         setOtherUsersCharacter((prev) => ({
           ...prev,
         }));
-      }
-      if (!otherUsersCharacter[targetUsername]) {
-        setOtherUsersCharacter((prev) => ({
-          ...prev,
-          [targetUsername]: new Characters(updateUserState),
-        }));
+      } else {
+        const targetUsername =
+          updateUserState.username && updateUserState.username;
+        if (otherUsersCharacter[targetUsername]) {
+          otherUsersCharacter[targetUsername].state = updateUserState;
+          setOtherUsersCharacter((prev) => ({
+            ...prev,
+          }));
+        }
+        if (!otherUsersCharacter[targetUsername]) {
+          setOtherUsersCharacter((prev) => ({
+            ...prev,
+            [targetUsername]: new Characters(updateUserState),
+          }));
+        }
       }
     }
     // if (reSendData) {
@@ -478,17 +480,17 @@ const Canvas = () => {
   // // if user hit the specific position -> redirect to the page
 
   useEffect(() => {
-    setPath(location.pathname.split("/")[2])
-  }, [navigate])
+    setPath(location.pathname.split("/")[2]);
+  }, [navigate]);
 
-  useEffect(() => {
+  useEffect(() => {}, [path]);
 
-  }, [path])
-
-  function handleRoom(roomTo, userName) {
-    sendData(room, roomTo);
-    // setUserCharacter({ ...userCharacter, [userName]: undefined });
+  function handleRoom(roomTo) {
+    setOtherUsersCharacter({});
+    sendData(path, roomTo);
     navigate(`game/${roomTo}`);
+    /** CLEAR OTHER USERS */
+    // setUserCharacter({ ...userCharacter, [userName]: undefined });
     // setPath(roomTo);
     // console.log("ROOMTO", path)
     // setRoom(roomTo)
@@ -514,8 +516,8 @@ const Canvas = () => {
     socket &&
       socket.emit("sendData", {
         userState: userCharacter[username].state,
-        room,
-        removeFrom: removeFromRoom,
+        room: path,
+        // removeFrom: removeFromRoom,
         addTo: addToRoom,
       });
   }
