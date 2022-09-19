@@ -75,7 +75,6 @@ function ChatRoom(props) {
   }, [recipient]);
 
   const createMessage = () => {
-    console.log(messageHistory);
     if (messageHistory.length > 0) {
       return messageHistory.map((msgContent, index) => {
         if (index !== 0) {
@@ -92,10 +91,10 @@ function ChatRoom(props) {
                 <span className="content">{msgContent.content}</span>
               </div>
             </div>
-          )
+          );
         }
-      })
-    };
+      });
+    }
   };
 
   return (
@@ -106,8 +105,9 @@ function ChatRoom(props) {
         <span className="room">{room}</span>
         room.
       </div>
-      <div className="chat-window card" ref={chatWindow}>
+      <div className="chat-window card">
         {createMessage()}
+        <div className="d-flex flex-row chat-content" ref={chatWindow}></div>
       </div>
       <MessageForm username={username} recipient={recipient} user={username} />
       {/* 

@@ -334,34 +334,36 @@ io.on("connection", (socket) => {
     // io.emit("PASS", "PASS");
   });
 
-  socket.on("PRIVATE_MESSAGE", (msg) => {
-    console.log("PRIVATE", msg)
+  socket.on("SEND_MESSAGE", (msg) => {
     // msg = {nickname, content: "", recipient: recipient}
     // nickname = 보내는사람
     // content = 내용
     // recipient = 받는사람
     // const Name target
-    const sendMessage = {
-      ...msg,
-      type: "PRIVATE",
-      time: new Date()
-    };
-
-
-    // const content = msg.content;
-    const recipient = msg.recipient;
-    // const senderSocketID = msg.senderSocketId;
-    const senderSocketID = currentUsers[msg.sender];
-
-    const recipientSocketId = currentUsers[recipient]; // get target's socketid
-    // console.log("SENDERSOCKETID", senderSocketID);
-    // console.log(currentUsers);
-    io
-      .to(recipientSocketId)
-      .emit("PRIVATE_MESSAGE", sendMessage);
-    io
-      .to(senderSocketID)
-      .emit("PRIVATE_MESSAGE", sendMessage);
+    if (msg.isPrivate) {
+      const sendMessage = {
+        ...msg,
+        type: "PRIVATE",
+        time: new Date()
+      };
+  
+      const recipient = msg.recipient;
+      const senderSocketID = currentUsers[msg.sender];
+      const recipientSocketId = currentUsers[recipient]; 
+      io
+        .to(recipientSocketId)
+        .emit("RECEIVE_MESSAGE", sendMessage);
+      io
+        .to(senderSocketID)
+        .emit("RECEIVE_MESSAGE", sendMessage);
+    } else if (!msg.isPrivate) {
+      const sendMessage = {
+        ...msg,
+        type: "PUBLIC",
+        time: new Date()
+      }; 
+      io.to(msg.room).emit("RECEIVE_MESSAGE", sendMessage);
+    }
   });
 
   /* ADDED FROM socket/index.js */

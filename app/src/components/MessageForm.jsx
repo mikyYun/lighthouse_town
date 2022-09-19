@@ -7,7 +7,7 @@ import Cookies from "universal-cookie";
 function MessageForm({ username, recipient, user }) {
   const [typingMessage, setTypingMessage] = useState("");
   const { socket } = useContext(SocketContext);
-  const { message } = useContext(UserListContext);
+  const { message, room } = useContext(UserListContext);
   const [textareaDisable, setTextareaDisable] = useState(true)
   const focusTextArea = useRef()
   
@@ -33,13 +33,13 @@ function MessageForm({ username, recipient, user }) {
 
     if (recipient !== "all") {
       /** PRIVATE CHAT */
-      console.log(typingMessage)
-      socket.emit(SOCKET_EVENT.PRIVATE_MESSAGE, {
+      socket.emit(SOCKET_EVENT.SEND_MESSAGE, {
         username: recipient,
         content: typingMessage,
         recipient,
         sender,
-        avatar      
+        avatar,
+        isPrivate: true
       })
       // socket.emit("PRIVATE", {
       //   username, // whole user information
@@ -54,7 +54,8 @@ function MessageForm({ username, recipient, user }) {
         username,
         content: typingMessage,
         sender,
-        avatar
+        avatar,
+        room: room
       });
     }
     setTypingMessage("");

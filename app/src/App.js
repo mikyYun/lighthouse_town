@@ -136,8 +136,9 @@ function App() {
     //   setReSendData(e)
     // })
 
-    socket.on(SOCKET_EVENT.PRIVATE_MESSAGE, (messageContents) => {
-      console.log("sendMessage", messageContents)
+    /** MESSAGES */
+    socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, (messageContents) => {
+      console.log("sendMessage", messageContents.type)
       setMessage({...messageContents})
     })
 
