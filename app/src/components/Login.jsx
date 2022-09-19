@@ -72,7 +72,7 @@ export default function Login(props) {
                 .then((res) => {
                   const target = res.data;
                   if (target.userName) {
-                    cookies.set("userdata", target, { maxAge: 3600 });
+                    // cookies.set("userdata", target, { maxAge: 3600 });
                     setUser(target)
                     // goChat(target.userName, target.avatar, target.userLanguages, target.userID)
                     // goChat();

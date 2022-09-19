@@ -31,7 +31,9 @@ function Recipient(props) {
   useEffect(() => {
     const updateRecipientsList = () => {
       const option = [{ value: "all", label: "all" }];
-      onlineList.map((onlineUserName) => {
+      const onlineUsersList = Object.keys(onlineList)
+      // onlineList.map((onlineUserName) => {
+        onlineUsersList.map((onlineUserName) => {
         option.push({ value: onlineUserName, label: onlineUserName });
       });
       return option;

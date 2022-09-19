@@ -6,7 +6,7 @@ import "./Chat.scss";
 
 export default function Chat(props) {
   // const { username, room } = props;
-  const [recipient, setRecipient] = useState("");
+  const [recipient, setRecipient] = useState("all");
 
   // useEffect(() => {
   //   console.log("RECIPIENT UPDATED", recipient)

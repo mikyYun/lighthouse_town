@@ -86,28 +86,41 @@ const tryLogin = (req, res) => {
     WHERE (users.email = $1 AND users.password = $2)
     `, [email, password])
     .then((result) => {
+      console.log(result.rows)
       const userName = result.rows[0].username;
       const avatar = result.rows[0].avatar_id;
       const userID = result.rows[0].id;
-      const userFriendsList = [];
+      const userFriendsList = {};
       const userLanguages = [];
       pool.query(`
-        SELECT username FROM users 
-          JOIN favorites 
-            ON users.id = favorites.added
-          WHERE favorites.added_by = $1
+      SELECT avatar_id AS avatar, friends.username FROM users
+        JOIN (
+          SELECT username, users.id FROM users 
+            JOIN favorites 
+              ON users.id = favorites.added
+            WHERE favorites.added_by = $1
+        ) AS friends
+        ON friends.id = users.id
         `, [userID])
         .then((res) => {
-          res.rows.forEach(friendName => {
-            userFriendsList.push(friendName.username);
-          });
-        })
-        .then(() => {
+          console.log(res.rows)
+          const friendsAvatar = res.rows
+          friendsAvatar.forEach(friend => {
+            userFriendsList[friend.username] = {
+              username: friend.username,
+              avatar: friend.avatar
+            }
+          })
+          // res.rows.forEach(friendName => {
+          //   userFriendsList.push(friendName.username);
+          // });
           result.rows.forEach((userData) => {
             userLanguages.push(userData.language_name);
             // userFriendsList.push(userData.added);
           });
         })
+        // .then(() => {
+        // })
         .then(() => {
           const loginUserData = {
             userName,

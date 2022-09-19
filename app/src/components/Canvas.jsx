@@ -11,12 +11,12 @@ const ScreenSizeDetector = require("screen-size-detector");
 
 const Canvas = () => {
   const { socket } = useContext(SocketContext);
-  const { room, userCookie, updateUserState, onlineLIst, reSendData, setReSendData } =
-    useContext(UserListContext);
+  const { room, userCookie, updateUserState, onlineLIst, reSendData, setReSendData } = useContext(UserListContext);
   const [username, setUsername] = useState();
   const canvasRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
+
   const path = location.pathname.split("/")[2];
   const [msg, setMsg] = useState({});
   const [userCharacter, setUserCharacter] = useState({});
@@ -25,7 +25,7 @@ const Canvas = () => {
     x: 0,
     y: 0,
   });
-  const [targetUser, setTargetUser] = useState();
+  // const [targetUser, setTargetUser] = useState();
 
   const [sizeCheck, setSizeCheck] = useState();
   // const screen = new ScreenSizeDetector();
@@ -139,18 +139,21 @@ const Canvas = () => {
     const cookies = new Cookies();
     const allCookies = cookies.getAll();
     if (!allCookies.userdata) {
+      // console.log(allCookies.userdata)
       alert("INVALID ACCESS");
-      return navigate("/");
-    }
-    /** IF A USER DATA STORED IN Cookie
-     * open socket to update onlineUserObj
-     * AND SEND THE NEW USER's POSITIO TO ALL USERS
-     */
-    const userData = allCookies.userdata;
-    const avatar = userData.avatar;
+      // return <Redirect to="/" />
+      navigate("/");
+    } else if (allCookies.userdata) {
 
-    const updateUserSocketId = (targetUserName) => {
-      setUsername(targetUserName);
+      /** IF A USER DATA STORED IN Cookie
+       * open socket to update onlineUserObj
+     * AND SEND THE NEW USER's POSITIO TO ALL USERS
+       */
+      const userData = allCookies.userdata;
+      const avatar = userData.avatar;
+      
+      const updateUserSocketId = (targetUserName) => {
+        setUsername(targetUserName);
 
       socket &&
         socket.emit("UPDATE SOCKETID", {
@@ -159,11 +162,11 @@ const Canvas = () => {
           currentRoom: room,
         });
     };
-
+    
     updateUserSocketId(userData.userName);
-
+    
     const startingPosition = { x: 200, y: 420 };
-
+    
     const userState = {
       username: userData.userName,
       x: startingPosition.x,
@@ -172,20 +175,21 @@ const Canvas = () => {
       frameCount: 0,
       avatar,
     };
-
+    
     setUserCharacter({
       [userData.userName]: new Characters(userState),
     });
-
+  }
+    
     /** RESEND MY POSITION */
     // socket && socket.on("RESEND DATA", () => {
-    //   console.log("SENDINGDATA")
+      //   console.log("SENDINGDATA")
     //   sendData();
     // })
     // sendData();
     return () => socket.off();
   }, []);
-
+  
   useEffect(() => {
     /** USER AVATAR ONLY */
     canvas = canvasRef.current;
@@ -203,7 +207,7 @@ const Canvas = () => {
     const myName = allCookies.userdata?.userName;
 
     Object.keys(otherUsersCharacter).forEach((user) => {
-      if (user !== myName) {
+      if (user !== username) {
         otherUsersCharacter[user].drawFrame(ctx);
         otherUsersCharacter[user].showName(ctx);
       }
@@ -213,7 +217,7 @@ const Canvas = () => {
     //   otherUsersCharacter[targetUser].drawFrame(ctx);
     //   otherUsersCharacter[targetUser].showName(ctx);
     // }
-  }, [userCharacter, otherUsersCharacter, targetUser]);
+  }, [userCharacter, otherUsersCharacter]);
 
   useEffect(() => {
     // console.log("room", room);
@@ -222,16 +226,17 @@ const Canvas = () => {
     const cookies = new Cookies();
     const allCookies = cookies.getAll();
     const myName = allCookies.userdata?.userName;
+    console.log("updateUserState.username",updateUserState)
     if (
-      myName !== updateUserState.username &&
+      username !== updateUserState.username &&
       updateUserState.username !== undefined
     ) {
       const targetUsername =
         updateUserState.username && updateUserState.username;
-      setTargetUser(targetUsername);
+      // setTargetUser(targetUsername);
       // console.log(myName, "updateUserState", updateUserState, otherUsersCharacter);
 
-      console.log(targetUsername, updateUserState);
+      // console.log(targetUsername, updateUserState);
       if (otherUsersCharacter[targetUsername]) {
         otherUsersCharacter[targetUsername].state = updateUserState;
         setOtherUsersCharacter((prev) => ({
@@ -249,10 +254,17 @@ const Canvas = () => {
       }
     }
     console.log("RESEND", reSendData);
-    if (reSendData) {
-      sendData();
-      setReSendData(false)
-    }
+    // if (reSendData) {
+    //   // sendData();
+
+    //   socket &&
+    //     socket.emit("resendData", {
+    //       userState: userCharacter[username].state,
+    //       room,
+    //   //     removeFrom: removeFromRoom,
+    //     });
+    //   setReSendData(false)
+    // }
     // sendData();
     // console.log(otherUsersCharacter[username]);
     // canvas = canvasRef.current;
@@ -284,6 +296,21 @@ const Canvas = () => {
     //   });
     // return () => sendData();
   }, [updateUserState]);
+
+  useEffect(() => {
+    console.log("RESENDING MY STATE", reSendData)
+    if (reSendData) {
+      // sendData();
+      setReSendData(false)
+      socket &&
+        socket.emit("resendData", {
+          userState: userCharacter[username].state,
+          room,
+      //     removeFrom: removeFromRoom,
+        });
+    }
+    // return () => socket.off();
+  }, [reSendData])
 
   // const userDataInCookies = allCookies.userdata
   // const navigate = useNavigate();

@@ -19,11 +19,19 @@ import { SocketContext, UserListContext } from "../App.js";
 
 function ChatRoom(props) {
   const { socket } = useContext(SocketContext);
-  const { room } = useContext(UserListContext);
+  const { room, message } = useContext(UserListContext);
   const cookies = new Cookies().getAll();
   const userCookie = cookies.userdata;
   const username = userCookie.userName;
+  const [messageHistory, setMessageHistory] = useState([])
 
+  useEffect(() => {
+    setMessageHistory(prev => ([
+      ...prev,
+      message
+    ]))
+
+  }, [message])
   // const { recipient, user } = useContext(UserListContext);
 
   const { recipient } = props;
@@ -49,16 +57,17 @@ function ChatRoom(props) {
 
   const handleReceivePrivateMessage = useCallback(
     (pongData) => {
-      const newPrivateMessage = makePrivateMessage(pongData);
+      console.log(pongData);
+      // const newPrivateMessage = makePrivateMessage(pongData);
       // setMessages((prev) => [...prev, newPrivateMessage]);
-      moveScrollToReceiveMessage();
+      // moveScrollToReceiveMessage();
     },
     [moveScrollToReceiveMessage]
   );
 
   useEffect(() => {
-    socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage);
-    socket.on("PRIVATE", handleReceivePrivateMessage);
+    // socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage);
+    socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceivePrivateMessage);
 
     return () => {
       socket.off();
@@ -66,8 +75,30 @@ function ChatRoom(props) {
   }, [socket, handleReceiveMessage]);
 
   useEffect(() => {
-    console.log(recipient)
-  }, [recipient])
+    console.log(recipient);
+  }, [recipient]);
+
+  const createMessage = () => {
+    return messageHistory.map(msgContent => {
+      console.log("CREATEMESSAGE")
+      console.log(msgContent)
+      // username,
+      // content: typingMessage,
+      // sender,
+      // avatar,
+      // type: "PRIVATE",
+      // time: new Date()
+    })
+    // return (
+    //   <div className="d-flex flex-row chat-content">
+    //     <div className="message-nickname">
+    //       <Avatar url={1} /> hey to hi : content
+    //     </div>
+    //   </div>
+    // );
+  };
+
+  
 
   return (
     <div className="d-flex flex-column chat-form">
@@ -78,37 +109,34 @@ function ChatRoom(props) {
         room.
       </div>
       <div className="chat-window card" ref={chatWindow}>
-        <div className="d-flex flex-row chat-content">
+        {/* <div className="d-flex flex-row chat-content">
           <div className="message-nickname">
-            <Avatar url="../images/boy1-face.png" /> hey to hi : content
+            <Avatar url={1} /> hey to hi : content
           </div>
         </div>
         <div className="d-flex flex-row chat-content">
           <div className="message-nickname">
-            <Avatar url="../images/boy1-face.png" /> hey to hi : content
+            <Avatar url={1} /> hey to hi : content
           </div>
         </div>
         <div className="d-flex flex-row chat-content">
           <div className="message-nickname">
-            <Avatar url="../images/boy1-face.png" /> hey to hi : content
+            <Avatar url={1} /> hey to hi : content
           </div>
         </div>
         <div className="d-flex flex-row chat-content">
           <div className="message-nickname">
-            <Avatar url="../images/boy1-face.png" /> hey to hi : content
+            <Avatar url={1} /> hey to hi : content
           </div>
         </div>
         <div className="d-flex flex-row chat-content">
           <div className="message-nickname">
-            <Avatar url="../images/boy1-face.png" /> hey to hi : content
+            <Avatar url={1} /> hey to hi : content
           </div>
-        </div>
+        </div> */}
+      {createMessage()}
       </div>
-      <MessageForm
-        username={username}
-        recipient={recipient}
-        // user={user}
-      />
+      <MessageForm username={username} recipient={recipient} user={username} />
       {/* 
       <div className="chat-window card" ref={chatWindow}>
         {messages.map((message, index) => {

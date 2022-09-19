@@ -54,25 +54,26 @@ io.on("connection", (socket) => {
   /** CONNECTED SOCKET SAVE IN SESSION */
   session.save();
   console.log("SOCKET CONNECTED", socket.id);
-
+  
   /** RECONNECTED USER (PAGE REFRESH) */
   socket.on("UPDATE SOCKETID", ({ username, avatar, currentRoom }) => {
     currentUsers[username] = socket.id;
     socket.join(currentRoom);
     const userNames = Object.keys(currentUsers);
+    console.log("CURRENT USERS", currentUsers);
     console.log(username, "joined", currentRoom, "with ID ", socket.id);
     const updatedUserName = username;
 
-    // const tellMeYourPosition = async () => {
-    //   io.emit("TELL ME YOUR POSITION", )
+    // const onlineUsersInfo = {
+      // name : {name, avatar}
     // }
-
-    socket.to(currentRoom).emit("RESEND DATA", true)
-    // findAvatar(username)
-      // .then((res) => {
-        // const avatar = res.avatar_id;
-        io.emit(currentRoom, { userNames, updatedUserName, avatar });
-      // });
+    /** SEND TO ALL USERS IN currentRoom BUT NOT SENDER
+     * ONLY IF ONLINEUSERS ARE MORE THAN ONE
+     */
+    if (userNames.length > 1) {
+      socket.to(currentRoom).emit(currentRoom, { userNames, updatedUserName, avatar, reSend: true})
+    }
+        // io.emit(currentRoom, { userNames, updatedUserName, avatar, reSend: true});
 
   });
 
@@ -235,10 +236,21 @@ io.on("connection", (socket) => {
   //   socket.to(room).emit("sendData", userState);
   // })
 
+
+  socket.on("resendData", data => {
+    const { userState, room } = data;
+    // const resendUserState = {
+    //   [userState.username] : {
+    //     ...userState
+    //   } 
+    // }
+    // console.log("filtered",resendUserState)
+    socket.to(room).emit("CURRENT USERS STATE", userState);
+  })
+
   // FOR USER MOVEMENT (Canvas)
   socket.on('sendData', data => {
     const { userState, room, removeFrom } = data;
-    console.log(userState, room, removeFrom);
     // // console.log('got data', data);
     // if (!usersInRooms[room]) {
     //   usersInRooms[room] = {};
@@ -322,32 +334,34 @@ io.on("connection", (socket) => {
     // io.emit("PASS", "PASS");
   });
 
-  socket.on("PRIVATE", (obj) => {
-    // obj = {nickname, content: "", recipient: recipient}
+  socket.on("PRIVATE_MESSAGE", (msg) => {
+    console.log("PRIVATE", msg)
+    // msg = {nickname, content: "", recipient: recipient}
     // nickname = 보내는사람
     // content = 내용
     // recipient = 받는사람
     // const Name target
-    const responseData = {
-      ...obj,
+    const sendMessage = {
+      ...msg,
       type: "PRIVATE",
       time: new Date()
     };
 
 
-    // const content = obj.content;
-    const recipient = obj.recipient;
-    const senderSocketID = obj.senderSocketId;
+    // const content = msg.content;
+    const recipient = msg.recipient;
+    // const senderSocketID = msg.senderSocketId;
+    const senderSocketID = currentUsers[msg.sender];
 
-    const recipientSocketId = currentUsers[recipient.value]; // get target's socketid
+    const recipientSocketId = currentUsers[recipient]; // get target's socketid
     // console.log("SENDERSOCKETID", senderSocketID);
     // console.log(currentUsers);
     io
       .to(recipientSocketId)
-      .emit("PRIVATE", responseData);
+      .emit("PRIVATE_MESSAGE", sendMessage);
     io
       .to(senderSocketID)
-      .emit("PRIVATE", responseData);
+      .emit("PRIVATE_MESSAGE", sendMessage);
   });
 
   /* ADDED FROM socket/index.js */
@@ -355,53 +369,54 @@ io.on("connection", (socket) => {
   const rooms = ['plaza', 'js', 'ruby'];
   let newRoom;
 
-  socket.on("JOIN_ROOM", (requestData) => {
-    // 콜백함수의 파라미터는 클라이언트에서 보내주는 데이터.
-    // 이 데이터를 소켓 서버에 던져줌.
-    // 소켓서버는 데이터를 받아 콜백함수를 실행.
-    // const currentRoom = usersWithRoom[requestData[0]];
+  // socket.on("JOIN_ROOM", (requestData) => {
+  //   // 콜백함수의 파라미터는 클라이언트에서 보내주는 데이터.
+  //   // 이 데이터를 소켓 서버에 던져줌.
+  //   // 소켓서버는 데이터를 받아 콜백함수를 실행.
+  //   // const currentRoom = usersWithRoom[requestData[0]];
 
-    newRoom = requestData[1];
-    socket.join(newRoom); // user를 "room 1" 방에 참가시킴.
-    const responseData = {
-      ...requestData,
-      type: "JOIN_ROOM",
-      time: new Date(),
-    };
-    // console.log('JOIN TO NEW ROOM', newRoom)
+  //   newRoom = requestData[1];
+  //   socket.join(newRoom); // user를 "room 1" 방에 참가시킴.
+  //   const responseData = {
+  //     ...requestData,
+  //     type: "JOIN_ROOM",
+  //     time: new Date(),
+  //   };
+  //   // console.log('JOIN TO NEW ROOM', newRoom)
 
-    // receive.message는 ChatRoom.jsx 에서 defined
-    // --------------- SEND MESSAGE ---------------
-    socket.on("SEND_MESSAGE", (requestData) => {
-      //emiting back to receive message in line 67
-      // console.log('REQUEST', requestData);
-      const responseData = {
-        ...requestData,
-        type: "SEND_MESSAGE",
-        time: new Date(),
-      };
-      // console.log("SEND TO NEWROOM", responseData)
-      // SVGPreserveAspectRatio.to(roomName).emit
-      io.to(newRoom).emit("RECEIVE_MESSAGE", responseData);
+  //   // receive.message는 ChatRoom.jsx 에서 defined
+  //   // --------------- SEND MESSAGE ---------------
+  //   socket.on("SEND_MESSAGE", (requestData) => {
+  //     console.log(requestData)
+  //     //emiting back to receive message in line 67
+  //     // console.log('REQUEST', requestData);
+  //     const responseData = {
+  //       ...requestData,
+  //       type: "SEND_MESSAGE",
+  //       time: new Date(),
+  //     };
+  //     // console.log("SEND TO NEWROOM", responseData)
+  //     // SVGPreserveAspectRatio.to(roomName).emit
+  //     // io.to(newRoom).emit("RECEIVE_MESSAGE", responseData);
 
-      //responseData = chat message
-      //@@@@@@ ChatRoom.jsx line 21
-      // console.log(
-      //   `"SEND_MESSAGE" is fired with data: ${JSON.stringify(responseData)}`
-      // );
-      io.emit("dataToCanvas", responseData);
-    });
+  //     //responseData = chat message
+  //     //@@@@@@ ChatRoom.jsx line 21
+  //     // console.log(
+  //     //   `"SEND_MESSAGE" is fired with data: ${JSON.stringify(responseData)}`
+  //     // );
+  //     // io.emit("dataToCanvas", responseData);
+  //   });
 
 
-    // "room 1"에는 이벤트타입과 서버에서 받은 시각을 덧붙여 데이터를 그대로 전송.
-    io.to(newRoom).emit("RECEIVE_MESSAGE", responseData);
-    // 클라이언트에 이벤트를 전달.
-    // 클라이언트에서는 RECEIVE_MESSAGE 이벤트 리스너를 가지고 있어서 그쪽 콜백 함수가 또 실행됌. 서버구현 마치고 클라이언트 구현은 나중에.
-    console.log(
-      `JOIN_ROOM is fired with data: ${JSON.stringify(responseData)}`
-    );
-    // io.to(roomName).emit("all user names", "jasklefjl;ksajv@@@@@")
-  });
+  //   // "room 1"에는 이벤트타입과 서버에서 받은 시각을 덧붙여 데이터를 그대로 전송.
+  //   io.to(newRoom).emit("RECEIVE_MESSAGE", responseData);
+  //   // 클라이언트에 이벤트를 전달.
+  //   // 클라이언트에서는 RECEIVE_MESSAGE 이벤트 리스너를 가지고 있어서 그쪽 콜백 함수가 또 실행됌. 서버구현 마치고 클라이언트 구현은 나중에.
+  //   console.log(
+  //     `JOIN_ROOM is fired with data: ${JSON.stringify(responseData)}`
+  //   );
+  //   // io.to(roomName).emit("all user names", "jasklefjl;ksajv@@@@@")
+  // });
 
   socket.on("UPDATE_NICKNAME", (requestData) => {
     const responseData = {

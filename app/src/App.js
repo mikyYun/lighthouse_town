@@ -3,7 +3,7 @@ import "./App.css";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Cookies from "universal-cookie";
 import classroom from "./components/game_img/classroom.png";
-import { socket } from "./components/socket/socket.js";
+import { socket, SOCKET_EVENT } from "./components/socket/socket.js";
 
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -17,14 +17,14 @@ function App() {
   const [room, setRoom] = useState("plaza");
   const [character, setCharacter] = useState({});
   const roomList = ["plaza", "js", "ruby", "react", "coffee"];
-  const [onlineList, setOnlineList] = useState([]);
+  const [onlineList, setOnlineList] = useState({});
   const [updateUserState, setUpdateUserState] = useState({});
   const [userCookie, setUserCookie] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
   // let reSendData = false;
   const [reSendData, setReSendData] = useState(false)
-
+  const [message, setMessage] = useState({})
   const filterMyName = (userNamesArr, myName, removedName,) => {
     // console.log("CHECK",userNamesArr, removedName, myName)
     return userNamesArr.filter(userName => userName !== myName && userName !== removedName);
@@ -59,10 +59,12 @@ function App() {
     /** ALL SOCKET SENDER */
 
     /** ALL SOCKET RECEIVER */
-    socket && socket.on(room, ({ userNames, updatedUserName, avatar }) => {
+    socket && socket.on(room, ({ userNames, updatedUserName, avatar, reSend }) => {
+      
+      if (reSend) setReSendData(reSend);
       const filterUserNames = filterMyName(userNames, myName);
-
-      if (myName !== updatedUserName) {
+      
+      if (myName !== updatedUserName ) {
         const initAvatarPosition = {
           username: updatedUserName,
           avatar,
@@ -72,15 +74,28 @@ function App() {
           frameCount: 0
         };
         setUpdateUserState(initAvatarPosition);
+        if (onlineList[updatedUserName] !== undefined) {
+          // setOnlineList(filterUserNames);
+          setOnlineList(prev => ({
+            ...prev,
+            [updatedUserName]: {
+              username: updatedUserName,
+              avatar
+            }
+          }))
+        }
       }
-      setOnlineList(filterUserNames);
     });
 
     socket && socket.on("REMOVE LOGOUT USER", ({ updatedUserNames, removedName }) => {
 
       const filterUserNames = filterMyName(updatedUserNames, myName, removedName);
-
-      setOnlineList(filterUserNames);
+      console.log("CURRENTONLINEUSER", onlineList)
+      // delete onlineList[removedName]
+      const copyOnlineList = {...onlineList}
+      delete copyOnlineList[removedName]
+      setOnlineList(copyOnlineList);
+      console.log("CURRENTONLINEUSER2", onlineList)
       // console.log("HERE")
       // setOnlineList(updatedUserNames)
 
@@ -99,8 +114,31 @@ function App() {
       }
     });
 
-    socket.on("RESEND DATA", (e) => {
-      setReSendData(e)
+    socket.on("CURRENT USERS STATE", (resendUserState) => {
+      // const checkUserName = myName === Object.Keys(filterMyName)
+      // console.log(myName, filterUserState)
+      console.log("RECEIVED USER STATE", resendUserState)
+      // const userName = Object.keys(resendUserState)[0]
+      // console.log(userName)
+      setOnlineList(prev => ({
+        ...prev,
+        [resendUserState.username]: {
+          username: resendUserState.username,
+          avatar: resendUserState.avatar
+        }
+      }))
+      setUpdateUserState(resendUserState)
+      // setReSendData(false)
+    })
+
+
+    // socket.on("RESEND DATA", (e) => {
+    //   setReSendData(e)
+    // })
+
+    socket.on(SOCKET_EVENT.PRIVATE_MESSAGE, (messageContents) => {
+      console.log("sendMessage", messageContents)
+      setMessage({...messageContents})
     })
 
     return () => {
@@ -130,6 +168,16 @@ function App() {
 
   const createSocketIdNameObj = (userData) => {
     setUserCookie(userData);
+    const cookies = new Cookies()
+    const cookie = cookies.getAll();
+    // const myName = cookie.userdata?.userName;
+    if (cookie.userdata) {
+      cookie.userdata = userData
+    }
+    if (!cookie.userdata) {
+      cookies.set("userdata", userData, { maxAge: 36000 });
+    }
+
     socket && socket.emit("SET USERNAME", {
       socketID: socket.id,
       username: userData.userName,
@@ -150,7 +198,7 @@ function App() {
 
   return (
     <SocketContext.Provider value={{ socket }}>
-      <UserListContext.Provider value={{ room, onlineList, userCookie, updateUserState, reSendData, setReSendData }}>
+      <UserListContext.Provider value={{ room, onlineList, userCookie, updateUserState, reSendData, setReSendData, message }}>
         <Routes>
           <Route path="/register" element={<Register setUser={createSocketIdNameObj} />} />
           <Route path="/" element={<Login setUser={createSocketIdNameObj} />} />

@@ -10,51 +10,60 @@ $side-bar-color: #e2ecc2f5;
   // top: 0;
   color: black;
   text-align: center;
-  height: 100%;
+  // height: 100%;
   // background-color: $second-color;
   .side-bar-label {
     width: 100%;
     cursor: pointer;
+    text-align: center;
     color: white;
     font-size: 1.3rem;
     padding: 10px;
     background-color: $list-color;
     &:hover {
-      opacity: .5;
+      opacity: 0.5;
     }
   }
   .online-users {
-    width: 80%;
     // width: 100%;
     text-align: center;
-    margin: 10px auto;
+    align-items: center;
     display: flex;
     flex-direction: column;
     .user {
+      min-width: 125px;
+      font-size: 1.4rem;
+      width: 80%;
       border-radius: 5px;
       background-color: $side-bar-color;
       cursor: pointer;
       position: relative;
       padding: 5px;
-      // padding-left: 30px;
-      margin-bottom: 10px;
-      // img {
-      //   position: absolute;
-      //   left: 15px;
-      //   top: 0;
-      //   bottom: 0;
-      //   margin: auto;
-      //   width: 20px;
-      //   height: 20px;
-      // }
-      li {
-        list-style: none;
-        background-color: $side-bar-color;
-        // width: 80%;
-        font-size: 1.4rem;
+      padding-left: 45px;
+      &:hover {
+        background-color: #bada55;
+        color: black;
         border-radius: 5px;
-        // margin: 11px auto;
+        cursor: pointer;
       }
+      .user-avatar {
+        position: absolute;
+        left: 0;
+        top: 5px;
+        bottom: 5px;
+        width: 2rem;
+        margin-left: 10px;
+      }
+      .name {
+        text-align: center;
+        margin: 0;
+      }
+      // li {
+      //   list-style: none;
+      //   background-color: $side-bar-color;
+      //   font-size: 1.4rem;
+      //   border-radius: 5px;
+      // }
     }
     &.hide {
       .user {

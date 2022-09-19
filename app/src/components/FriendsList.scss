@@ -20,13 +20,19 @@ $side-bar-color: #e2ecc2f5;
     margin-top: 0;
     background-color: $list-color;
     &:hover {
-      opacity: .5;
+      opacity: 0.5;
     }
   }
   &.hide {
     .friend {
       display: none;
     }
+  }
+  &:hover {
+    .side-bar-label {
+      opacity: 0.5;
+    }
+    
   }
   .friend {
     background-color: $side-bar-color;
@@ -35,25 +41,32 @@ $side-bar-color: #e2ecc2f5;
     border-radius: 5px;
     margin-bottom: 11px;
     padding: 5px;
-
-    :hover {
+    position: relative;
+    padding-left: 45px;
+    min-width: 125px;
+    &:hover {
       background-color: #bada55;
       color: black;
       border-radius: 5px;
       cursor: pointer;
     }
-
+    .user-avatar {
+      position: absolute;
+      left: 0;
+      top: 5px;
+      bottom: 5px;
+      width: 2rem;
+      margin-left: 10px;
+    }
     .name {
       text-align: center;
-      p {
-        margin: 0;
-      }
-      .languageLists {
-        text-align: center;
-        font-size: 1rem;
-        padding: 1rem 0;
-        background-color: whitesmoke;
-      }
+      margin: 0;
+    }
+    .languageLists {
+      text-align: center;
+      font-size: 1rem;
+      padding: 1rem 0;
+      background-color: whitesmoke;
     }
   }
 }

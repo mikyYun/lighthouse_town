@@ -222,13 +222,13 @@ export default function Register(props) {
                   const target = res.data;
                   if (target.userName) {
                     setUser(target);
-                    cookies.set("userdata", target, { maxAge: 3600 });
-                    goChat(
-                      target.userName,
-                      target.avatar,
-                      target.userLanguages,
-                      target.userID
-                    );
+                    // cookies.set("userdata", target, { maxAge: 3600 });
+                    // goChat(
+                    //   target.userName,
+                    //   target.avatar,
+                    //   target.userLanguages,
+                    //   target.userID
+                    // );
                   } else {
                     alert(
                       "Registration failed. Please try with different email or username"

@@ -70,45 +70,24 @@ export default function Online(props) {
   // useEffect(() => {
   //   socket.emit("friendsList", { socketID: socket.id });
   // }, [online]);
-  
 
-  const onlineUserList = onlineList.map((user) => {
+  console.log("ONLINELIST", onlineList);
+  const onlineUserNames = Object.keys(onlineList);
+  // const onlineUserList = onlineList.map((user) => {
+  const onlineUserList = onlineUserNames.map((user) => {
     if (user !== userCookie.userName)
-    return (
-      <div className="user" key={user}>
-        <li className="users-online">{user}</li>
-      </div>
-    );
+      return (
+        <div className="user" key={user}>
+          <Avatar url={onlineList[user].avatar} />
+          {user}
+          {/* <li className="users-online">{user}</li> */}
+        </div>
+      );
   });
 
   const usersOnline = (
     <div className={`online-users ${showOnline}`}>
-      {/* {onlineList.map} */}
-      {onlineUserList}
-      {/* <div className="user">
-        <img src="../images/boy1-face.png" alt="" />
-        <li className="users-online">list</li>
-      </div>
-      <div className="user">
-        <img src="" alt="" />
-        <li className="users-online">list</li>
-      </div>
-      <div className="user">
-        <img src="" alt="" />
-        <li className="users-online">list</li>
-      </div>
-      <div className="user">
-        <img src="" alt="" />
-        <li className="users-online">list</li>
-      </div>
-      <div className="user">
-        <img src="" alt="" />
-        <li className="users-online">list</li>
-      </div>
-      <div className="user">
-        <img src="" alt="" />
-        <li className="users-online">list</li>
-      </div> */}
+      <div className="name">{onlineUserList}</div>
     </div>
   );
 
