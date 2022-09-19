@@ -71,7 +71,7 @@ function App() {
       if (reSend) setReSendData(reSend);
       const filterUserNames = filterMyName(userNames, myName);
       
-      if (myName !== updatedUserName ) {
+      if (myName !== updatedUserName && updatedUserName ) {
         const initAvatarPosition = {
           username: updatedUserName,
           avatar,
@@ -81,7 +81,8 @@ function App() {
           frameCount: 0
         };
         setUpdateUserState(initAvatarPosition);
-        if (onlineList[updatedUserName] !== undefined) {
+        console.log("TESTPOINT", updatedUserName)
+        if (!onlineList[updatedUserName]) {
           // setOnlineList(filterUserNames);
           setOnlineList(prev => ({
             ...prev,
@@ -102,7 +103,7 @@ function App() {
       const copyOnlineList = {...onlineList}
       delete copyOnlineList[removedName]
       setOnlineList(copyOnlineList);
-      console.log("CURRENTONLINEUSER2", onlineList)
+      console.log("CURRENTONLINEUSER2", copyOnlineList)
       // console.log("HERE")
       // setOnlineList(updatedUserNames)
 
@@ -150,11 +151,11 @@ function App() {
       console.log("sendMessage", messageContents.type)
       setMessage({...messageContents})
     })
-
+    console.log("ROOMROOM", room)
     return () => {
       socket.off();
     };
-  }, [socket, onlineList]);
+  }, [socket, onlineList, room]);
 
   // const storeUserCookie = (userCookieData) => {
   //   console.log("HE", userCookieData)

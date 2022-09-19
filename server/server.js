@@ -246,7 +246,9 @@ io.on("connection", (socket) => {
     //   } 
     // }
     // console.log("filtered",resendUserState)
-    socket.to(room).emit("CURRENT USERS STATE", userState);
+    if (userState.username !== undefined) {
+      socket.to(room).emit("CURRENT USERS STATE", userState);
+    }
   })
 
   // FOR USER MOVEMENT (Canvas)

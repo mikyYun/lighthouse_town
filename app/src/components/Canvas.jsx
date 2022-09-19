@@ -483,7 +483,9 @@ const Canvas = () => {
     setPath(location.pathname.split("/")[2]);
   }, [navigate]);
 
-  useEffect(() => {}, [path]);
+  useEffect(() => {
+    setRoom(path)
+  }, [path]);
 
   function handleRoom(roomTo) {
     setOtherUsersCharacter({});
