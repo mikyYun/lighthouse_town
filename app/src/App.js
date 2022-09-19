@@ -53,12 +53,12 @@ function App() {
   // }, [socket])
 
   useEffect(() => {
-    /** PAGE REFRESH UPDATE NEW SOCKET ID */
-
-    return () => {
-      socket.off();
-    };
-  }, []);
+    /** CHANGE ROOM */
+    setOnlineList({})
+    // return () => {
+    //   socket.off();
+    // };
+  }, [room]);
 
   useEffect(() => {
     const cookie = new Cookies().getAll();
@@ -98,14 +98,9 @@ function App() {
     socket && socket.on("REMOVE LOGOUT USER", ({ updatedUserNames, removedName }) => {
 
       const filterUserNames = filterMyName(updatedUserNames, myName, removedName);
-      console.log("CURRENTONLINEUSER", onlineList)
-      // delete onlineList[removedName]
       const copyOnlineList = {...onlineList}
       delete copyOnlineList[removedName]
       setOnlineList(copyOnlineList);
-      console.log("CURRENTONLINEUSER2", copyOnlineList)
-      // console.log("HERE")
-      // setOnlineList(updatedUserNames)
 
       const removeAvatar = {
         username: removedName,
@@ -117,9 +112,13 @@ function App() {
     });
 
     socket.on(`sendData`, (userState) => {
+      if (userState.remove) {
+        const copyOnlineList = { ...onlineList };
+        delete copyOnlineList[userState.username];
+        setOnlineList(copyOnlineList)
+      }
       if (userState.username !== myName) {
           setUpdateUserState(userState);
-
       }
 
     });
@@ -151,7 +150,6 @@ function App() {
       console.log("sendMessage", messageContents.type)
       setMessage({...messageContents})
     })
-    console.log("ROOMROOM", room)
     return () => {
       socket.off();
     };

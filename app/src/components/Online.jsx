@@ -1,4 +1,5 @@
 import { useEffect, useContext, useState, useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import { SocketContext, UserListContext } from "../App.js";
 import Avatar from "./Avatar.jsx";
 import Menu from "./Menu.jsx";
@@ -16,6 +17,8 @@ export default function Online(props) {
   };
   // const [onlineList, setOnlineList] = useState([room])
   useEffect(() => {
+    console.log("ONLINECHECK")
+    
     // socket.on("REMOVE LOGOUT USER", (updatedUserNames) => {
     //   console.log(onlineList[updatedUserNames]);
     // });
@@ -26,7 +29,7 @@ export default function Online(props) {
     // const allCookies = cookies.getAll();
     // const username = allCookies.userdata.userName;
     // onlineList[username]
-  }, []);
+  }, [room]);
 
   // useEffect(() => {
   //   console.log("TEST")

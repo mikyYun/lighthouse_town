@@ -263,9 +263,14 @@ io.on("connection", (socket) => {
     if (addTo) {
       userState["remove"] = true;
       socket.leave(room)
-      console.log(userState, "LEAVE", room)
       socket.join(addTo)
       socket.to(addTo).emit("sendData", userState);
+      userState.remove = true;
+      
+      console.log(userState, "LEAVE", room)
+      socket.to(room).emit("sendData", userState);
+    } else {
+      socket.to(room).emit("sendData", userState);
     }
     // // console.log('BEFORE LOOP', usersInRooms);
     // //when usersInRooms have some properties
@@ -283,7 +288,6 @@ io.on("connection", (socket) => {
     // io.emit(`sendData ${room}`, { usersInRooms, room }); // 다시 Canvas.jsx -> const newCharactersData = data;
     /** io.emit SEND DATA to ALL users INCLUDING SENDER */
     // io.emit(`sendData ${room}`, userState); // 다시 Canvas.jsx -> const newCharactersData = data;
-    socket.to(room).emit("sendData", userState);
     // io.emit("sendData", userState)
 
   });
@@ -459,7 +463,7 @@ io.on("connection", (socket) => {
       type: "UPDATE_NICKNAME",
       time: new Date(),
     };
-    io.to(roomName).emit("RECEIVE_MESSAGE", responseData);
+    // io.to(roomName).emit("RECEIVE_MESSAGE", responseData);
     console.log(
       `UPDATE_NICKNAME is fired with data: ${JSON.stringify(responseData)}`
     );
@@ -482,7 +486,7 @@ io.on("connection", (socket) => {
       // disconnectedUsername = name;
     });
     const updatedUserNames = Object.keys(currentUsers);
-    console.log("currentUsers", updatedUserNames);
+    // console.log("currentUsers", updatedUserNames);
     io.emit("REMOVE LOGOUT USER", { updatedUserNames, removedName });
     // io.emit("update login users information", { disconnectedUser: disconnectedUsername }); // App.jsx & Recipients.jsx 로 보내기
   });
