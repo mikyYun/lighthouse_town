@@ -36,10 +36,12 @@ $side-bar-color: #e2ecc2f5;
       width: 80%;
       border-radius: 5px;
       background-color: $side-bar-color;
+      margin-bottom: 11px;
       cursor: pointer;
       position: relative;
       padding: 5px;
       padding-left: 45px;
+      // overflow: hidden;
       &:hover {
         background-color: #bada55;
         color: black;
@@ -57,6 +59,8 @@ $side-bar-color: #e2ecc2f5;
       .name {
         text-align: center;
         margin: 0;
+        max-width: calc(125px - 2rem);
+        overflow-x: hidden;
       }
       // li {
       //   list-style: none;

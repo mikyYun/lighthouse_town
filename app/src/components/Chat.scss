@@ -50,8 +50,17 @@ $second-color: #9883c4;
       overflow-y: scroll;
       max-height: 5rem;
       padding-left: 10px;
-      img {
-        width: 15px;
+      .message-nickname {
+        font-size: 1.5rem;
+        .sender,
+        .recipient {
+          margin-right: 5px;
+          margin-left: 5px;
+          font-weight: 500;
+        }
+        img {
+          width: 15px;
+        }
       }
     }
     #type-area {

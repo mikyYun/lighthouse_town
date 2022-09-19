@@ -79,7 +79,7 @@ export default function Online(props) {
       return (
         <div className="user" key={user}>
           <Avatar url={onlineList[user].avatar} />
-          {user}
+          <div className="name">{user}</div>
           {/* <li className="users-online">{user}</li> */}
         </div>
       );

@@ -23,15 +23,11 @@ function ChatRoom(props) {
   const cookies = new Cookies().getAll();
   const userCookie = cookies.userdata;
   const username = userCookie.userName;
-  const [messageHistory, setMessageHistory] = useState([])
+  const [messageHistory, setMessageHistory] = useState([]);
 
   useEffect(() => {
-    setMessageHistory(prev => ([
-      ...prev,
-      message
-    ]))
-
-  }, [message])
+    setMessageHistory((prev) => [...prev, message]);
+  }, [message]);
   // const { recipient, user } = useContext(UserListContext);
 
   const { recipient } = props;
@@ -79,26 +75,28 @@ function ChatRoom(props) {
   }, [recipient]);
 
   const createMessage = () => {
-    return messageHistory.map(msgContent => {
-      console.log("CREATEMESSAGE")
-      console.log(msgContent)
-      // username,
-      // content: typingMessage,
-      // sender,
-      // avatar,
-      // type: "PRIVATE",
-      // time: new Date()
-    })
-    // return (
-    //   <div className="d-flex flex-row chat-content">
-    //     <div className="message-nickname">
-    //       <Avatar url={1} /> hey to hi : content
-    //     </div>
-    //   </div>
-    // );
+    console.log(messageHistory);
+    if (messageHistory.length > 0) {
+      return messageHistory.map((msgContent, index) => {
+        if (index !== 0) {
+          return (
+            <div
+              className="d-flex flex-row chat-content"
+              key={msgContent.sender + msgContent.username + index}
+            >
+              <div className="message-nickname">
+                <Avatar url={msgContent.avatar} />
+                <span className="sender">{msgContent.sender}</span>
+                to
+                <span className="recipient">{msgContent.username}</span>:
+                <span className="content">{msgContent.content}</span>
+              </div>
+            </div>
+          )
+        }
+      })
+    };
   };
-
-  
 
   return (
     <div className="d-flex flex-column chat-form">
@@ -109,32 +107,7 @@ function ChatRoom(props) {
         room.
       </div>
       <div className="chat-window card" ref={chatWindow}>
-        {/* <div className="d-flex flex-row chat-content">
-          <div className="message-nickname">
-            <Avatar url={1} /> hey to hi : content
-          </div>
-        </div>
-        <div className="d-flex flex-row chat-content">
-          <div className="message-nickname">
-            <Avatar url={1} /> hey to hi : content
-          </div>
-        </div>
-        <div className="d-flex flex-row chat-content">
-          <div className="message-nickname">
-            <Avatar url={1} /> hey to hi : content
-          </div>
-        </div>
-        <div className="d-flex flex-row chat-content">
-          <div className="message-nickname">
-            <Avatar url={1} /> hey to hi : content
-          </div>
-        </div>
-        <div className="d-flex flex-row chat-content">
-          <div className="message-nickname">
-            <Avatar url={1} /> hey to hi : content
-          </div>
-        </div> */}
-      {createMessage()}
+        {createMessage()}
       </div>
       <MessageForm username={username} recipient={recipient} user={username} />
       {/* 
