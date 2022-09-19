@@ -250,11 +250,17 @@ io.on("connection", (socket) => {
 
   // FOR USER MOVEMENT (Canvas)
   socket.on('sendData', data => {
-    const { userState, room, removeFrom } = data;
-    // // console.log('got data', data);
+    const { userState, room, removeFrom, addTo } = data;
+    // console.log('got data', !removeFrom);
     // if (!usersInRooms[room]) {
     //   usersInRooms[room] = {};
     // }
+    if (removeFrom) {
+      socket.leave(removeFrom)
+    }
+    if (addTo) {
+      socket.join(addTo)
+    }
     // // console.log('BEFORE LOOP', usersInRooms);
     // //when usersInRooms have some properties
     // for (const rooms in usersInRooms) {
@@ -340,11 +346,32 @@ io.on("connection", (socket) => {
     // content = 내용
     // recipient = 받는사람
     // const Name target
+    const monthNames = {
+      01: "January", 
+      02: "February",
+      03: "March", 
+      04: "April", 
+      05: "May",
+      06: "June",
+      07: "July",
+      08: "August",
+      09: "September",
+      10: "October",
+      11: "November",
+      12: "December"
+  };
+    const TIME = new Date();
+    const MONTH = monthNames[TIME.getMonth()].slice(0, 3);
+    const DAY = TIME.getDate();
+    const HOUR = TIME.getHours();
+    const MINUITE = TIME.getMinutes();
+    const timeFormat = `${MONTH}/${DAY} ${HOUR}:${MINUITE}`
+
     if (msg.isPrivate) {
       const sendMessage = {
         ...msg,
         type: "PRIVATE",
-        time: new Date()
+        time: timeFormat
       };
   
       const recipient = msg.recipient;
@@ -360,7 +387,7 @@ io.on("connection", (socket) => {
       const sendMessage = {
         ...msg,
         type: "PUBLIC",
-        time: new Date()
+        time: timeFormat
       }; 
       io.to(msg.room).emit("RECEIVE_MESSAGE", sendMessage);
     }

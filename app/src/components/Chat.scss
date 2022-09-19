@@ -51,7 +51,11 @@ $second-color: #9883c4;
       max-height: 5rem;
       padding-left: 10px;
       .message-nickname {
+        position: relative;
+        width: 100%;
         font-size: 1.5rem;
+        // height: 2rem;
+        padding-right: 8rem;
         .sender,
         .recipient {
           margin-right: 5px;
@@ -61,6 +65,15 @@ $second-color: #9883c4;
         img {
           width: 15px;
         }
+        .time {
+          position: absolute;
+          top: 0.5rem;
+          right: 3px;
+          font-size: 1rem;
+        }
+      }
+      .private {
+
       }
     }
     #type-area {

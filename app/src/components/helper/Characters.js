@@ -29,32 +29,41 @@ class Characters {
     this.frameLimit = 4;
   }
 
+
+
   frameDirection = () => {
     this.state.frameCount += 1;
-    // console.log(this.state.frameCount)
     if (this.state.frameCount >= this.frameLimit) {
       this.state.frameCount = 0;
     }
   }
 
+  reset = () => {
+    this.state.x = 200;
+    this.state.y = 420;
+    this.frameCount = 0;
+    this.currentDirection = 0
+    // this.state = {
+    //   username: this.username,
+    //   x: 200,
+    //   y: 420,
+    //   currentDirection: 0,
+    //   frameCount: 0,
+    //   avatar: this.avatar
+    // }
+  }
+
   // add websocket
   move = (keyCode) => {
-    // console.log('inside move', this)
+    if (this.state.x > 0 && this.state.x < 1070) {
 
-    // console.log(e.keyCode)
-    if (keyCode == 38) {
-      this.state.y -= this.movement_speed;
-      this.state.currentDirection = facing.up;
-      this.frameDirection()
+    }
+    if (this.state.y > 0 && this.state.y < 570) {
+
     }
     if (keyCode == 37) {
       this.state.x -= this.movement_speed;
       this.state.currentDirection = facing.left;
-      this.frameDirection()
-    }
-    if (keyCode == 40) {
-      this.state.y += this.movement_speed;
-      this.state.currentDirection = facing.down;
       this.frameDirection()
     }
     if (keyCode == 39) {
@@ -62,9 +71,20 @@ class Characters {
       this.state.currentDirection = facing.right;
       this.frameDirection()
     }
+    if (keyCode == 38) {
+      this.state.y -= this.movement_speed;
+      this.state.currentDirection = facing.up;
+      this.frameDirection()
+    }
+    if (keyCode == 40) {
+      this.state.y += this.movement_speed;
+      this.state.currentDirection = facing.down;
+      this.frameDirection()
+    }
   }
-
+  
   stop = (keyCode) => {
+    console.log(this.state.x, this.state.y)
     if (keyCode == 37 || keyCode == 38 || keyCode == 39 || keyCode == 40) {
       this.state.frameCount = 0;
     }
@@ -72,7 +92,6 @@ class Characters {
 
   drawFrame = (ctx) => {
     const frameX = cycleLoop[this.state.frameCount];
-    // console.log(frameX, this.state.frameCount)
     ctx.drawImage(this.img,
       frameX * this.width, this.state.currentDirection * this.height,
       this.width, this.height,

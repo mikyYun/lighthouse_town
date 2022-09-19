@@ -71,7 +71,6 @@ export default function Online(props) {
   //   socket.emit("friendsList", { socketID: socket.id });
   // }, [online]);
 
-  console.log("ONLINELIST", onlineList);
   const onlineUserNames = Object.keys(onlineList);
   // const onlineUserList = onlineList.map((user) => {
   const onlineUserList = onlineUserNames.map((user) => {

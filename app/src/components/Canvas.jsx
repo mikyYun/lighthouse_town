@@ -11,13 +11,23 @@ const ScreenSizeDetector = require("screen-size-detector");
 
 const Canvas = () => {
   const { socket } = useContext(SocketContext);
-  const { room, userCookie, updateUserState, onlineLIst, reSendData, setReSendData } = useContext(UserListContext);
+  const {
+    room,
+    userCookie,
+    updateUserState,
+    onlineLIst,
+    reSendData,
+    setReSendData,
+    roomList,
+    setRoom,
+    navigate,
+  } = useContext(UserListContext);
   const [username, setUsername] = useState();
   const canvasRef = useRef(null);
   const location = useLocation();
-  const navigate = useNavigate();
-
-  const path = location.pathname.split("/")[2];
+  // const navigate = useNavigate();
+  const [path, setPath] = useState();
+  // const path = location.pathname.split("/")[2];
   const [msg, setMsg] = useState({});
   const [userCharacter, setUserCharacter] = useState({});
   const [otherUsersCharacter, setOtherUsersCharacter] = useState({});
@@ -31,12 +41,11 @@ const Canvas = () => {
   // const screen = new ScreenSizeDetector();
   let canvas;
 
-
-
   useEffect(() => {
     const screen = new ScreenSizeDetector();
+    // console.log("LOCATION", location, "NAVIGATE", navigate)
 
-    document.addEventListener("keydown", (e) => {
+    const keyDown = (e) => {
       const keyCode = e.keyCode;
       if (
         keyCode === 37 ||
@@ -59,32 +68,74 @@ const Canvas = () => {
         }));
         sendData();
       }
-      // canvas = canvasRef.current;
-      // const ctx = canvas.getContext("2d");
-      // userCharacters[username].drawFrame(ctx);
-      // userCharacters[username].showName(ctx);
-      // userCharacters[username].drawFrame(ctx);
-      // userCharacters[username].showName(ctx);
-    });
 
-    document.addEventListener("keyup", (e) => {
-      const keyCode = e.keyCode;
-      if (
-        keyCode === 37 ||
-        keyCode === 38 ||
-        keyCode === 39 ||
-        keyCode === 40
-      ) {
-        userCharacter[username]?.stop(keyCode);
-        setUserCharacter((prev) => ({
-          ...prev,
-          [username]: prev[username],
-        }));
-        sendData();
+      /** NAVIGATE ROOMS */
+
+      // move to JS
+      if (path === "plaza") {
+        if (
+          userCharacter[username].state.x >= 420 &&
+          userCharacter[username].state.x <= 460 &&
+          userCharacter[username].state.y >= 120 &&
+          userCharacter[username].state.y <= 140
+        ) {
+          // sendData(room);
+          // setUserCharacter({ ...userCharacter, [username]: undefined });
+          // console.log(location.pathname)
+          // location.pathname="game/js"
+          // navigate("game/js")
+          // setPath("js")
+          // history.push("js")
+          handleRoom("js", username);
+        }
+
+        // move to Ruby
+        if (
+          userCharacter[username].state.x >= 710 &&
+          userCharacter[username].state.x <= 770 &&
+          userCharacter[username].state.y >= 430 &&
+          userCharacter[username].state.y <= 470
+        ) {
+          handleRoom("ruby", username);
+
+        }
       }
-    });
+      // move to the Plaza
+      if (path !== "plaza") {
+        if (
+          userCharacter[username].state.x <= 50 &&
+          userCharacter[username].state.y >= 410 &&
+          userCharacter[username].state.y <= 450
+        ) {
+          handleRoom("plaza", username);
 
-    /** make map responsive */
+        }
+      }
+    }
+
+    document.addEventListener("keydown", keyDown);
+
+    const keyUp = (e) => {
+        const keyCode = e.keyCode;
+        console.log(path)
+        if (
+          keyCode === 37 ||
+          keyCode === 38 ||
+          keyCode === 39 ||
+          keyCode === 40
+        ) {
+          userCharacter[username]?.stop(keyCode);
+          setUserCharacter((prev) => ({
+            ...prev,
+            [username]: prev[username],
+          }));
+          sendData();
+        }
+      }
+
+    document.addEventListener("keyup", keyUp);
+
+    /** MAKE MAP RESPONSIVE */
 
     // const initialMapHeight = (screenHeight) => {
     //   if (screenHeight < 640) {
@@ -115,24 +166,16 @@ const Canvas = () => {
     // return () => {
     //   window.removeEventListener("resize", handleResize);
     // };
-    return () => {
+    const removeEventListeners = () => {
       document.removeEventListener("keydown");
       document.removeEventListener("keyup");
+    }
+
+    return () => {
+      document.removeEventListener("keydown", keyDown);
+      document.removeEventListener("keyup", keyUp);
     };
-  }, []);
-
-  // useEffect(() => {
-  //   console.log("ONLINELINST", onlineLIst)
-  // }, [onlineLIst])
-
-  // useEffect(() => {
-  /** RESEND MY POSITION */
-  // socket && socket.on("RESEND DATA", () => {
-  //   console.log("SENDINGDATA")
-  //   sendData();
-  // })
-  // return () => socket.off();
-  // }, [socket])
+  }, [path]);
 
   useMemo(() => {
     /** FIRST RENDERING */
@@ -144,52 +187,57 @@ const Canvas = () => {
       // return <Redirect to="/" />
       navigate("/");
     } else if (allCookies.userdata) {
+      setPath(location.pathname.split("/")[2]);
+      // setRoom(location.pathname.split("/")[2])
 
       /** IF A USER DATA STORED IN Cookie
        * open socket to update onlineUserObj
-     * AND SEND THE NEW USER's POSITIO TO ALL USERS
+       * AND SEND THE NEW USER's POSITIO TO ALL USERS
        */
       const userData = allCookies.userdata;
       const avatar = userData.avatar;
-      
+
       const updateUserSocketId = (targetUserName) => {
         setUsername(targetUserName);
 
-      socket &&
-        socket.emit("UPDATE SOCKETID", {
-          username: targetUserName,
-          avatar,
-          currentRoom: room,
+        socket &&
+          socket.emit("UPDATE SOCKETID", {
+            username: targetUserName,
+            avatar,
+            currentRoom: path,
+          });
+      };
+
+      updateUserSocketId(userData.userName);
+
+      const startingPosition = { x: 200, y: 420 };
+
+      const userState = {
+        username: userData.userName,
+        x: startingPosition.x,
+        y: startingPosition.y,
+        currentDirection: 0,
+        frameCount: 0,
+        avatar,
+      };
+      if (userCharacter[userData.userName]) {
+        userCharacter[username].reset();
+        setCameraPosition({
+          x: 0,
+          y: 0
+        })
+      //   [userCharacter[userData.userName]] = userCharacter[userData.userName].reset();
+    }
+      if (!userCharacter[userData.userName]) {
+        setUserCharacter({
+          [userData.userName]: new Characters(userState),
         });
-    };
-    
-    updateUserSocketId(userData.userName);
-    
-    const startingPosition = { x: 200, y: 420 };
-    
-    const userState = {
-      username: userData.userName,
-      x: startingPosition.x,
-      y: startingPosition.y,
-      currentDirection: 0,
-      frameCount: 0,
-      avatar,
-    };
-    
-    setUserCharacter({
-      [userData.userName]: new Characters(userState),
-    });
-  }
-    
-    /** RESEND MY POSITION */
-    // socket && socket.on("RESEND DATA", () => {
-      //   console.log("SENDINGDATA")
-    //   sendData();
-    // })
-    // sendData();
+      }
+      console.log("RENDERING", userCharacter);
+    }
     return () => socket.off();
-  }, []);
-  
+  }, [navigate]);
+
   useEffect(() => {
     /** USER AVATAR ONLY */
     canvas = canvasRef.current;
@@ -198,62 +246,36 @@ const Canvas = () => {
     const ctx = canvas.getContext("2d");
     userCharacter[username].drawFrame(ctx);
     userCharacter[username].showName(ctx);
-    // sendData();
 
     /** OTHER ONLINE USERS */
-
-    const cookies = new Cookies();
-    const allCookies = cookies.getAll();
-    const myName = allCookies.userdata?.userName;
-
     Object.keys(otherUsersCharacter).forEach((user) => {
       if (user !== username) {
         otherUsersCharacter[user].drawFrame(ctx);
         otherUsersCharacter[user].showName(ctx);
       }
     });
-
-    // if (targetUser) {
-    //   otherUsersCharacter[targetUser].drawFrame(ctx);
-    //   otherUsersCharacter[targetUser].showName(ctx);
-    // }
   }, [userCharacter, otherUsersCharacter]);
 
   useEffect(() => {
-    // console.log("room", room);
-    // socket &&
-    // socket.on(`sendData`, (userState) => {
-    const cookies = new Cookies();
-    const allCookies = cookies.getAll();
-    const myName = allCookies.userdata?.userName;
-    console.log("updateUserState.username",updateUserState)
     if (
       username !== updateUserState.username &&
       updateUserState.username !== undefined
     ) {
       const targetUsername =
         updateUserState.username && updateUserState.username;
-      // setTargetUser(targetUsername);
-      // console.log(myName, "updateUserState", updateUserState, otherUsersCharacter);
-
-      // console.log(targetUsername, updateUserState);
       if (otherUsersCharacter[targetUsername]) {
         otherUsersCharacter[targetUsername].state = updateUserState;
         setOtherUsersCharacter((prev) => ({
           ...prev,
-          // prev[targetUsername]
-          // [targetUsername]: new Characters(updateUserState),
         }));
       }
       if (!otherUsersCharacter[targetUsername]) {
-
         setOtherUsersCharacter((prev) => ({
           ...prev,
           [targetUsername]: new Characters(updateUserState),
         }));
       }
     }
-    console.log("RESEND", reSendData);
     // if (reSendData) {
     //   // sendData();
 
@@ -298,19 +320,15 @@ const Canvas = () => {
   }, [updateUserState]);
 
   useEffect(() => {
-    console.log("RESENDING MY STATE", reSendData)
     if (reSendData) {
-      // sendData();
-      setReSendData(false)
+      setReSendData(false);
       socket &&
         socket.emit("resendData", {
           userState: userCharacter[username].state,
           room,
-      //     removeFrom: removeFromRoom,
         });
     }
-    // return () => socket.off();
-  }, [reSendData])
+  }, [reSendData]);
 
   // const userDataInCookies = allCookies.userdata
   // const navigate = useNavigate();
@@ -408,49 +426,6 @@ const Canvas = () => {
   // }, []);
   //     sendData()
 
-  //     // move to JS
-  //     if (props.room === 'plaza') {
-  //       // console.log("Im in Plaza")
-  //       if (
-  //         userCharacters[props.username].state.x >= 420 &&
-  //         userCharacters[props.username].state.x <= 460 &&
-  //         userCharacters[props.username].state.y >= 120 &&
-  //         userCharacters[props.username].state.y <= 140
-  //       ) {
-  //         sendData(props.room);
-  //         setUserCharacters({ ...userCharacters, [props.username]: undefined })
-  //         handleRoom('js');
-  //       }
-
-  //       // move to Ruby
-  //       if (
-  //         userCharacters[props.username].state.x >= 710&&
-  //         userCharacters[props.username].state.x <= 770 &&
-  //         userCharacters[props.username].state.y >= 430 &&
-  //         userCharacters[props.username].state.y <= 470
-  //         ) {
-  //           sendData(props.room);
-  //           setUserCharacters({ ...userCharacters, [props.username]: undefined })
-  //           handleRoom('ruby');
-  //         }
-  //     }
-  //     // move to the Plaza
-  //     if (props.room !== 'plaza') {
-  //       // console.log("Im in LANG romm ")
-
-  //       if (
-  //         userCharacters[props.username].state.x <= 50 &&
-  //         userCharacters[props.username].state.y >= 410 &&
-  //         userCharacters[props.username].state.y <= 450
-  //       ) {
-  //         sendData(props.room);
-  //         setUserCharacters({ ...userCharacters, [props.username]: undefined })
-  //         handleRoom('plaza');
-  //       }
-  //     }
-
-  //   });
-
   //   window.addEventListener("keyup", () => {
   //     setUserCharacters(userCharacters)
   //     if (userCharacters[props.username] !== undefined) {
@@ -501,25 +476,47 @@ const Canvas = () => {
 
   // //--------- functions
   // // if user hit the specific position -> redirect to the page
-  // function handleRoom(room) {
-  //   // userDataInCookies
-  //   // navigate(roomLists[room], { state: [props.username, props.avatar] });
-  //   const userLanguages = userDataInCookies.userLanguages
-  //   const userID = userDataInCookies.id
-  //   navigate(roomLists[room], { state: [props.username, props.avatar, userLanguages, userID] });
-  //   navigate(0, { state: [props.username, props.avatar, userLanguages, userID] })
-  // };
 
-  function sendData(removeFromRoom) {
+  useEffect(() => {
+    setPath(location.pathname.split("/")[2])
+  }, [navigate])
+
+  useEffect(() => {
+
+  }, [path])
+
+  function handleRoom(roomTo, userName) {
+    sendData(room, roomTo);
+    // setUserCharacter({ ...userCharacter, [userName]: undefined });
+    navigate(`game/${roomTo}`);
+    // setPath(roomTo);
+    // console.log("ROOMTO", path)
+    // setRoom(roomTo)
+    // navigate(`${roomTo}`)
+    // userDataInCookies
+    // navigate(roomLists[room], { state: [props.username, props.avatar] });
+    // const cookies = new Cookies();
+    // const userDataInCookies = cookies.getAll().userdata;
+    // const userLanguages = userDataInCookies.userLanguages;
+    // const userID = userDataInCookies.id;
+    // const avatar = userDataInCookies.avatar;
+    // navigate(roomLists[roomTo], {
+    // state: [username, avatar, userLanguages, userID],
+    // });
+    // navigate(0, { state: [username, avatar, userLanguages, userID] });
+  }
+
+  function sendData(removeFromRoom, addToRoom) {
     // console.log("canvasUserCookie",userCookie)
     // console.log(userCharacters[userCookie.userName])
-    const cookie = new Cookies().getAll().userdata;
-    const username = cookie.userName;
+    // const cookie = new Cookies().getAll().userdata;
+    // const username = cookie.userName;
     socket &&
       socket.emit("sendData", {
         userState: userCharacter[username].state,
         room,
         removeFrom: removeFromRoom,
+        addTo: addToRoom,
       });
   }
 

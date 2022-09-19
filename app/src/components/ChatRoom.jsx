@@ -77,18 +77,22 @@ function ChatRoom(props) {
   const createMessage = () => {
     if (messageHistory.length > 0) {
       return messageHistory.map((msgContent, index) => {
+        const privateOrPublic = msgContent.type === "PRIVATE" ? "private" : "public"
         if (index !== 0) {
           return (
             <div
               className="d-flex flex-row chat-content"
               key={msgContent.sender + msgContent.username + index}
             >
-              <div className="message-nickname">
+              <div className={`message-nickname ${privateOrPublic}`}>
                 <Avatar url={msgContent.avatar} />
                 <span className="sender">{msgContent.sender}</span>
                 to
                 <span className="recipient">{msgContent.username}</span>:
                 <span className="content">{msgContent.content}</span>
+                <span className="time">
+                  {msgContent.time}
+                </span>
               </div>
             </div>
           );
