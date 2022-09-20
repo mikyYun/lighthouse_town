@@ -73,36 +73,65 @@ const Canvas = () => {
 
       /** NAVIGATE ROOMS */
 
+      const navigator = (minX, maxX, minY, maxY, goTo) => {
+        if (
+          userCharacter[username].state.x >= minX &&
+          userCharacter[username].state.x <= maxX &&
+          userCharacter[username].state.y >= minY &&
+          userCharacter[username].state.y <= maxY
+        ) {
+          handleRoom(goTo, username);
+        }
+      }
+
       // move to JS
       if (path === "plaza") {
-        if (
-          userCharacter[username].state.x >= 420 &&
-          userCharacter[username].state.x <= 460 &&
-          userCharacter[username].state.y >= 120 &&
-          userCharacter[username].state.y <= 140
-        ) {
-          // sendData(room);
-          // setUserCharacter({ ...userCharacter, [username]: undefined });
-          // console.log(location.pathname)
-          // location.pathname="game/js"
-          // navigate("game/js")
-          // setPath("js")
-          // history.push("js")
-          handleRoom("js", username);
-        }
+        navigator(420, 460, 120, 140, "js")
+        navigator(710, 770, 430, 470, "ruby")
+        navigator(920, 960, 350, 400, "react")
+        navigator(760, 800, 80, 130, "coffee")
+        // if (
+        //   userCharacter[username].state.x >= 420 &&
+        //   userCharacter[username].state.x <= 460 &&
+        //   userCharacter[username].state.y >= 120 &&
+        //   userCharacter[username].state.y <= 140
+        // ) {
+        //   handleRoom("js", username);
+        // }
 
-        // move to Ruby
-        if (
-          userCharacter[username].state.x >= 710 &&
-          userCharacter[username].state.x <= 770 &&
-          userCharacter[username].state.y >= 430 &&
-          userCharacter[username].state.y <= 470
-        ) {
-          handleRoom("ruby", username);
-        }
+        // // move to Ruby
+        // if (
+        //   userCharacter[username].state.x >= 710 &&
+        //   userCharacter[username].state.x <= 770 &&
+        //   userCharacter[username].state.y >= 430 &&
+        //   userCharacter[username].state.y <= 470
+        // ) {
+        //   handleRoom("ruby", username);
+        // }
+        // // react
+        // if (
+        //   userCharacter[username].state.x >= 920 &&
+        //   userCharacter[username].state.x <= 960 &&
+        //   userCharacter[username].state.y >= 350 &&
+        //   userCharacter[username].state.y <= 400
+        // ) {
+        //   handleRoom("react", username);
+        // }
+
+        // // coffee
+        // if (
+        //   userCharacter[username].state.x >= 760 &&
+        //   userCharacter[username].state.x <= 800 &&
+        //   userCharacter[username].state.y >= 80 &&
+        //   userCharacter[username].state.y <= 130
+        // ) {
+        //   handleRoom("coffee", username);
+        // }
       }
       // move to the Plaza
       if (path !== "plaza") {
+
+
         if (
           userCharacter[username].state.x <= 50 &&
           userCharacter[username].state.y >= 410 &&
@@ -174,21 +203,21 @@ const Canvas = () => {
 
   useEffect(() => {
     const resetMessage = setTimeout(() => {
-        setMsg((prev) => ({
-          ...prev,
-          [message.sender]: "",
-        }));
-      }, 3000);
+      setMsg((prev) => ({
+        ...prev,
+        [message.sender]: "",
+      }));
+    }, 3000);
 
     const overheadMessage = () => {
       setMsg((prev) => ({
         ...prev,
         [message.sender]: message.content,
       }));
-    }
-    overheadMessage()
+    };
+    overheadMessage();
 
-    return () => clearTimeout(resetMessage)
+    return () => clearTimeout(resetMessage);
   }, [message]);
 
   useMemo(() => {
@@ -196,15 +225,12 @@ const Canvas = () => {
     const cookies = new Cookies();
     const allCookies = cookies.getAll();
     if (!allCookies.userdata) {
-      // console.log(allCookies.userdata)
       alert("INVALID ACCESS");
       // return <Redirect to="/" />
       navigate("/");
     } else if (allCookies.userdata) {
       const currentPath = location.pathname.split("/")[2];
       setPath(currentPath);
-      console.log(currentPath);
-      // setRoom(location.pathname.split("/")[2])
 
       /** IF A USER DATA STORED IN Cookie
        * open socket to update onlineUserObj
@@ -249,7 +275,6 @@ const Canvas = () => {
           [userData.userName]: new Characters(userState),
         });
       }
-      console.log("RENDERING", userCharacter);
     }
     return () => socket.off();
   }, [navigate]);
@@ -271,13 +296,13 @@ const Canvas = () => {
         otherUsersCharacter[user].showName(ctx);
       }
     });
-    const target = message.username
+    const target = message.username;
     if (target === username) {
       // console.log("MY MESSGE", username)
-        userCharacter[username].showChat(ctx, msg[username]);
-        // setTimeout(() => {
-        // userCharacter[username].showChat(ctx, "");
-        // }, 2000)
+      userCharacter[username].showChat(ctx, msg[username]);
+      // setTimeout(() => {
+      // userCharacter[username].showChat(ctx, "");
+      // }, 2000)
     }
     if (target !== username && otherUsersCharacter[target]) {
       otherUsersCharacter[target].showChat(ctx, msg[target]);
@@ -285,7 +310,6 @@ const Canvas = () => {
       //   otherUsersCharacter[target].showChat(ctx, "");
       //   }, 2000)
       // console.log("YOUR MESSGE", username, msg)
-
     }
   }, [username, userCharacter, otherUsersCharacter, msg]);
 
@@ -526,9 +550,13 @@ const Canvas = () => {
   }, [path]);
 
   function handleRoom(roomTo) {
-    setOtherUsersCharacter({});
-    sendData(path, roomTo);
-    navigate(`game/${roomTo}`);
+    if (roomTo === "react" || roomTo === "coffee") {
+      navigate("notready")
+    } else {
+      setOtherUsersCharacter({});
+      sendData(path, roomTo);
+      navigate(`game/${roomTo}`);
+    }
     /** CLEAR OTHER USERS */
     // setUserCharacter({ ...userCharacter, [userName]: undefined });
     // setPath(roomTo);

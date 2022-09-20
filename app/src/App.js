@@ -9,6 +9,10 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Game from "./components/Game";
 
+import NotReady from "./components/NotReady";
+
+
+
 export const SocketContext = createContext(socket);
 export const UserListContext = createContext({});
 export const MsgContext = createContext([]);
@@ -213,6 +217,7 @@ function App() {
           <Route path="/" element={<Login setUser={createSocketIdNameObj} />} />
           <Route path="/login" element={<Login setUser={createSocketIdNameObj} />} />
           {roomRoute}
+          <Route path={`/notready`} element={<NotReady character={character} setCharacter={setCharacter} />} />
           {/* <Route path={`/game/${}`} element={<RETURN />} /> */}
         </Routes>
       </UserListContext.Provider>

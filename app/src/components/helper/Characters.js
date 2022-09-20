@@ -55,31 +55,29 @@ class Characters {
 
   // add websocket
   move = (keyCode) => {
-    if (this.state.x > 0 && this.state.x < 1070) {
-
+    if (this.state.x >= 0 && this.state.x <= 1070) {
+      if (keyCode == 37 && this.state.x > 10) {
+        this.state.x -= this.movement_speed;
+        this.state.currentDirection = facing.left;
+        this.frameDirection()
+      }
+      if (keyCode == 39 && this.state.x < 1060) {
+        this.state.x += this.movement_speed;
+        this.state.currentDirection = facing.right;
+        this.frameDirection()
+      }
     }
-    if (this.state.y > 0 && this.state.y < 570) {
-
-    }
-    if (keyCode == 37) {
-      this.state.x -= this.movement_speed;
-      this.state.currentDirection = facing.left;
-      this.frameDirection()
-    }
-    if (keyCode == 39) {
-      this.state.x += this.movement_speed;
-      this.state.currentDirection = facing.right;
-      this.frameDirection()
-    }
-    if (keyCode == 38) {
-      this.state.y -= this.movement_speed;
-      this.state.currentDirection = facing.up;
-      this.frameDirection()
-    }
-    if (keyCode == 40) {
-      this.state.y += this.movement_speed;
-      this.state.currentDirection = facing.down;
-      this.frameDirection()
+    if (this.state.y >= 0 && this.state.y <= 570) {
+      if (keyCode == 38 && this.state.y > 10) {
+        this.state.y -= this.movement_speed;
+        this.state.currentDirection = facing.up;
+        this.frameDirection()
+      }
+      if (keyCode == 40 && this.state.y < 560) {
+        this.state.y += this.movement_speed;
+        this.state.currentDirection = facing.down;
+        this.frameDirection()
+      }
     }
   }
   
