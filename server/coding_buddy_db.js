@@ -37,9 +37,9 @@ const pool = new Pool({
 
 /** LANGUAGES MATCHING WITH ID AND LANGUAGE_NAME */
 /** ONLY ONCE */
-const langIDAndName = {};
 
 const getLanguages = () => {
+  const langIDAndName = {};
   pool.query(`
     SELECT id, language_name FROM languages
   `, (err, result) => {
@@ -51,7 +51,7 @@ const getLanguages = () => {
   );
 };
 /** LANG_ID : LANG_NAME */
-getLanguages();
+const languageIdAndName = getLanguages();
 
 /** GET to get all users from DB */
 const getUsers = (req, res) => {
@@ -221,6 +221,43 @@ const registerUser = (req, res) => {
     });
 };
 
+const getUserInfo = (req, res) => {
+  const username = req.body.username
+  console.log(username)
+  pool.query(`
+    SELECT languages.language_name, user_info.email
+     FROM languages
+    JOIN (
+      SELECT language_id, users.id, email
+        FROM users
+        JOIN user_language
+        ON user_language.user_id = users.id
+        WHERE username = $1
+    ) AS user_info
+      ON user_info.language_id = languages.id
+    `,
+    [username])
+  .then(response => {
+    const userInfo = {
+      [username]: {}
+    } 
+    response.rows.forEach(langAndEmail => {
+      if (userInfo[username].email) {
+        if (!userInfo[username].languages) {
+          userInfo[username].languages = []
+        }
+        userInfo[username].languages.push(langAndEmail.language_name)
+      }
+      if (!userInfo[username].email) {
+        userInfo[username].email = langAndEmail.email
+      }
+
+    })
+    res.status(200).send(userInfo)
+  })
+}
+
+
 const findAvatar = async (username) => {
   const avatarData = await pool.query(
     `SELECT avatar_id
@@ -230,6 +267,9 @@ const findAvatar = async (username) => {
   const avatar_id = await avatarData.rows[0]
   return avatar_id
 }
+
+
+
 
 // PUT : updated data in an existing user
 const updateUser = (req, res) => {
@@ -253,12 +293,16 @@ const deleteUser = (req, res) => {
   });
 };
 
+
+
+
 /** REQUIRE poolGroup OBJ inside Server */
 const poolGroup = {
   pool,
   tryLogin,
   registerUser,
-  findAvatar,
+  getUserInfo
+  // findAvatar,
   // filterEssentials,
   // getUsers,
   // updateUser,

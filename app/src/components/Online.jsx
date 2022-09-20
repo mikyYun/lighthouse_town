@@ -75,26 +75,19 @@ export default function Online(props) {
   // }, [online]);
 
   const onlineUserNames = Object.keys(onlineList);
-  // const onlineUserList = onlineList.map((user) => {
   const onlineUserList = onlineUserNames.map((user) => {
     if (user !== userCookie.userName)
       return (
         <div className="user" key={user}>
           <Avatar url={onlineList[user].avatar} />
           <div className="name">{user}</div>
-          {/* <li className="users-online">{user}</li> */}
         </div>
       );
   });
 
-  const usersOnline = (
-    <div className={`online-users ${showOnline}`}>
-      <div className="name">{onlineUserList}</div>
-    </div>
-  );
 
   return (
-    <div className="online-list">
+    <div className={`online-list ${showOnline}`}>
       {/* <FriendList /> */}
       <div
         className="side-bar-label"
@@ -104,7 +97,7 @@ export default function Online(props) {
       >
         Online
       </div>
-      {usersOnline}
+      {onlineUserList}
     </div>
   );
 }

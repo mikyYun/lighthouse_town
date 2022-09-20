@@ -1,5 +1,5 @@
 const poolGroup = require("./coding_buddy_db");
-const { pool, tryLogin, registerUser, findAvatar } = poolGroup;
+const { pool, tryLogin, registerUser, getUserInfo } = poolGroup;
 
 /** USE .env */
 require("dotenv").config();
@@ -504,9 +504,15 @@ app.post("/register", (req, res) => {
   return registerUser(req, res);
 });
 
-app.post("/avatar", async (req, res) => {
-  return findAvatar(req.body.username);
-});
+app.post("/user", (req, res) => {
+  // console.log("REQ.BODY", req.body)
+  return getUserInfo(req, res)
+  // return getUserInfo(req.body.username)
+})
+
+// app.post("/avatar", async (req, res) => {
+//   return findAvatar(req.body.username);
+// });
 
 httpServer.listen(PORT, () => {
   console.log(

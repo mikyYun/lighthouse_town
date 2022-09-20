@@ -12,7 +12,10 @@ import FriendList from "./FriendsList";
 export default function Game(props) {
   const { socket } = useContext(SocketContext);
   const {userCookie} = useContext(UserListContext)
-
+  const [recipient, setRecipient] = useState("all");
+  const changeRecipient = (newRecipient) => {
+    setRecipient(newRecipient);
+  };
 
   useMemo(() => {
 
@@ -51,8 +54,8 @@ export default function Game(props) {
   return (
 
     <div className='main'>
-      <Canvas />
-      <Chat />
+      <Canvas changeRecipient={changeRecipient}/>
+      <Chat recipient={recipient} changeRecipient={changeRecipient}/>
       {/* <div className="main-container">
         <div className="lecture-container">
           { location.pathname === '/game/js' && <button className="lecture-btn" onClick={showLecture}>LECTURE</button>}

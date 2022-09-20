@@ -9,7 +9,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from "universal-cookie";
 const ScreenSizeDetector = require("screen-size-detector");
 
-const Canvas = () => {
+const Canvas = (props) => {
   const { socket } = useContext(SocketContext);
   const {
     room,
@@ -38,7 +38,7 @@ const Canvas = () => {
   });
   // const [ctx, setCtx] = useState()
   // const [targetUser, setTargetUser] = useState();
-
+  const { changeRecipient } = props;
   const [sizeCheck, setSizeCheck] = useState();
   // const screen = new ScreenSizeDetector();
   let canvas;
@@ -82,14 +82,14 @@ const Canvas = () => {
         ) {
           handleRoom(goTo, username);
         }
-      }
+      };
 
       // move to JS
       if (path === "plaza") {
-        navigator(420, 460, 120, 140, "js")
-        navigator(710, 770, 430, 470, "ruby")
-        navigator(920, 960, 350, 400, "react")
-        navigator(760, 800, 80, 130, "coffee")
+        navigator(420, 460, 120, 140, "js");
+        navigator(710, 770, 430, 470, "ruby");
+        navigator(920, 960, 350, 400, "react");
+        navigator(760, 800, 80, 130, "coffee");
         // if (
         //   userCharacter[username].state.x >= 420 &&
         //   userCharacter[username].state.x <= 460 &&
@@ -130,8 +130,6 @@ const Canvas = () => {
       }
       // move to the Plaza
       if (path !== "plaza") {
-
-
         if (
           userCharacter[username].state.x <= 50 &&
           userCharacter[username].state.y >= 410 &&
@@ -551,7 +549,7 @@ const Canvas = () => {
 
   function handleRoom(roomTo) {
     if (roomTo === "react" || roomTo === "coffee") {
-      navigate("notready")
+      navigate("notready");
     } else {
       setOtherUsersCharacter({});
       sendData(path, roomTo);
@@ -608,8 +606,8 @@ const Canvas = () => {
       ></canvas>
       {/* <div className="camera"></div> */}
       <div className="side-bar">
-        <FriendList />
-        <Online />
+        <FriendList changeRecipient={changeRecipient}/>
+        <Online changeRecipient={changeRecipient}/>
       </div>
     </div>
   );

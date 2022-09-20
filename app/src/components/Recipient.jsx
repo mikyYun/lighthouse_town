@@ -6,11 +6,12 @@ import Cookies from "universal-cookie";
 function Recipient(props) {
   const { socket } = useContext(SocketContext);
   const { room, onlineList } = useContext(UserListContext);
-  const { changeRecipient } = props;
+  const { changeRecipient, recipient } = props;
   // const { recipient, setRecipient } = useState({ value: "all", label: "all" });
   const [otherUsers, setOtherUsers] = useState([
     { value: "all", label: "all" },
   ]);
+  const [selectValue, setSelectValue] = useState()
   // const [otherUsers, setOtherUsers] = useState([{ value: "username", label: "username" }, { value: "username", label: "username" }, { value: "username", label: "username" }]);
 
   // const updateOtherUsers = (username) => {
@@ -31,26 +32,22 @@ function Recipient(props) {
   useEffect(() => {
     const updateRecipientsList = () => {
       const option = [{ value: "all", label: "all" }];
-      const onlineUsersList = Object.keys(onlineList)
+      const onlineUsersList = Object.keys(onlineList);
       // onlineList.map((onlineUserName) => {
-        onlineUsersList.map((onlineUserName) => {
+      onlineUsersList.map((onlineUserName) => {
         option.push({ value: onlineUserName, label: onlineUserName });
       });
       return option;
     };
 
-
-    setOtherUsers(updateRecipientsList())
-
+    setOtherUsers(updateRecipientsList());
   }, [onlineList]);
 
-  // const { recipient, setRecipient, nickname, online } = useContext(UserListContext);
+  useEffect(() => {
+    console.log("RERERE", recipient);
+    // setSelectValue(recipient)
+  }, [recipient]);
 
-  // useEffect(() => {
-
-  //   const onlineOthers = online.filter(user => user.value !== nickname)
-  //   return setOtherUsers(onlineOthers)
-  // }, [online, nickname])
 
   return (
     <div className="card d-flex flex-row chat-to-container">
@@ -61,12 +58,10 @@ function Recipient(props) {
         type="text"
         id="pdown"
         maxLength={12}
-        // value={
-        // recipient
-        // recipient !== null && (recipient ||
-        // { value: "all", label: "all" }
-        // )
-        // }
+        value={
+          // recipient
+          (!recipient && { value: "all", label: "all" }) || {value: recipient, label: recipient}
+        }
         defaultValue={{ value: "all", label: "all" }}
         onChange={(e) => changeRecipient(e.value)}
         options={otherUsers}

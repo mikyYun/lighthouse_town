@@ -5,12 +5,11 @@ $list-color: #5f436d;
 $side-bar-color: #e2ecc2f5;
 
 .friendsList {
-  // align-items: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  
+  position: relative;
   .side-bar-label {
     width: 100%;
     cursor: pointer;
@@ -26,31 +25,25 @@ $side-bar-color: #e2ecc2f5;
   }
   &.hide {
     .friend {
-      height: 0;
       display: none;
     }
   }
-  &:hover {
-    .side-bar-label {
-      opacity: 0.5;
-    }
-    
-  }
   .friend {
     background-color: $side-bar-color;
-    width: 80%;
+    min-width: 125px;
     font-size: 1.4rem;
+    width: 80%;
     border-radius: 5px;
     margin-bottom: 11px;
-    padding: 5px;
+    cursor: pointer;
     position: relative;
+    padding: 5px;
     padding-left: 45px;
-    min-width: 125px;
+    max-width: 200px;
+    overflow: hidden;
     &:hover {
       background-color: #bada55;
-      color: black;
       border-radius: 5px;
-      cursor: pointer;
     }
     .user-avatar {
       position: absolute;
@@ -62,13 +55,80 @@ $side-bar-color: #e2ecc2f5;
     }
     .name {
       text-align: center;
+      // max-width: calc(125px - 2rem);
       margin: 0;
+      overflow-x: hidden;
     }
     .languageLists {
       text-align: center;
+      color: black;
       font-size: 1rem;
       padding: 1rem 0;
       background-color: whitesmoke;
+      width: 100px;
+      height: 200px;
+    }
+  }
+  .friend_info_box {
+    position: fixed;
+    top: 10px;
+    right: 9px;
+    // z-index: 100;
+    background-color: #777;
+    opacity: 0.8;
+    width: 250px;
+    color: white;
+    // padding-left: 10px;
+    cursor: context-menu;
+    padding-bottom: 10px;
+    .material-icons.close {
+      position: absolute;
+      right: 5px;
+      top: 0;
+      color: $side-bar-color;
+      opacity: 1;
+      z-index: 50;
+      &:hover {
+        font-size: 1.8rem;
+      }
+    }
+    .friend_info_container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      .friend_title {
+        font-size: 1.5rem;
+      }
+      .friend_email {
+        font-size: 1.2rem;
+        // margin-left: -50%;
+        // margin-right: 100%;
+      }
+      .friend_info {
+        .languages {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          .language {
+          }
+        }
+      }
+      .controller {
+        display: flex;
+        justify-content: space-between;
+        .send_message {
+          margin-right: 10px;
+          background-color: grey;
+        }
+        .delete_friend {
+          margin-left: 10px;
+          background-color: red;
+        }
+      }
+
     }
   }
 }
