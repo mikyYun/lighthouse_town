@@ -30,7 +30,6 @@ function MessageForm({ username, recipient, user }) {
     const cookie = new Cookies().getAll().userdata
     const sender = cookie.userName
     const avatar = cookie.avatar
-
     if (recipient !== "all") {
       /** PRIVATE CHAT */
       socket.emit(SOCKET_EVENT.SEND_MESSAGE, {
@@ -53,6 +52,7 @@ function MessageForm({ username, recipient, user }) {
       socket.emit(SOCKET_EVENT.SEND_MESSAGE, {
         username,
         content: typingMessage,
+        recipient,
         sender,
         avatar,
         room: room
@@ -60,10 +60,6 @@ function MessageForm({ username, recipient, user }) {
     }
     setTypingMessage("");
   }, [socket, username, typingMessage, recipient]);
-
-  function chatBubble() {
-
-  }
 
   return (
     <form id="type-area">

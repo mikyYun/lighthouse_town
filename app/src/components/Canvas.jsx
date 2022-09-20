@@ -21,6 +21,7 @@ const Canvas = () => {
     roomList,
     setRoom,
     navigate,
+    message,
   } = useContext(UserListContext);
   const [username, setUsername] = useState();
   const canvasRef = useRef(null);
@@ -35,6 +36,7 @@ const Canvas = () => {
     x: 0,
     y: 0,
   });
+  // const [ctx, setCtx] = useState()
   // const [targetUser, setTargetUser] = useState();
 
   const [sizeCheck, setSizeCheck] = useState();
@@ -170,6 +172,25 @@ const Canvas = () => {
     };
   }, [path]);
 
+  useEffect(() => {
+    const resetMessage = setTimeout(() => {
+        setMsg((prev) => ({
+          ...prev,
+          [message.sender]: "",
+        }));
+      }, 3000);
+
+    const overheadMessage = () => {
+      setMsg((prev) => ({
+        ...prev,
+        [message.sender]: message.content,
+      }));
+    }
+    overheadMessage()
+
+    return () => clearTimeout(resetMessage)
+  }, [message]);
+
   useMemo(() => {
     /** FIRST RENDERING */
     const cookies = new Cookies();
@@ -192,12 +213,12 @@ const Canvas = () => {
       const userData = allCookies.userdata;
       const avatar = userData.avatar;
 
-      const updateUserSocketId = (targetUserName) => {
-        setUsername(targetUserName);
+      const updateUserSocketId = (usernameInCookie) => {
+        setUsername(usernameInCookie);
 
         socket &&
           socket.emit("UPDATE SOCKETID", {
-            username: targetUserName,
+            username: usernameInCookie,
             avatar,
             currentRoom: currentPath,
           });
@@ -238,6 +259,7 @@ const Canvas = () => {
     canvas = canvasRef.current;
     canvas.width = 1120;
     canvas.height = 640;
+    // setCtx(canvas.getContext("2d"))
     const ctx = canvas.getContext("2d");
     userCharacter[username].drawFrame(ctx);
     userCharacter[username].showName(ctx);
@@ -249,7 +271,23 @@ const Canvas = () => {
         otherUsersCharacter[user].showName(ctx);
       }
     });
-  }, [userCharacter, otherUsersCharacter]);
+    const target = message.username
+    if (target === username) {
+      // console.log("MY MESSGE", username)
+        userCharacter[username].showChat(ctx, msg[username]);
+        // setTimeout(() => {
+        // userCharacter[username].showChat(ctx, "");
+        // }, 2000)
+    }
+    if (target !== username && otherUsersCharacter[target]) {
+      otherUsersCharacter[target].showChat(ctx, msg[target]);
+      // setTimeout(() => {
+      //   otherUsersCharacter[target].showChat(ctx, "");
+      //   }, 2000)
+      // console.log("YOUR MESSGE", username, msg)
+
+    }
+  }, [username, userCharacter, otherUsersCharacter, msg]);
 
   useEffect(() => {
     if (
@@ -257,7 +295,7 @@ const Canvas = () => {
       updateUserState.username !== undefined
     ) {
       if (updateUserState.remove) {
-        delete otherUsersCharacter[updateUserState.username]
+        delete otherUsersCharacter[updateUserState.username];
         setOtherUsersCharacter((prev) => ({
           ...prev,
         }));
@@ -484,7 +522,7 @@ const Canvas = () => {
   }, [navigate]);
 
   useEffect(() => {
-    setRoom(path)
+    setRoom(path);
   }, [path]);
 
   function handleRoom(roomTo) {

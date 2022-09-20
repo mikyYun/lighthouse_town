@@ -119,15 +119,26 @@ class Characters {
   };
 
 
+  clearChat = (ctx) => {
+    this.message = "";
+    ctx.fillText(
+      "",
+      this.state.x - 5,
+      this.state.y - 13
+    )
+  }
+
   showChat = (ctx, msg) => {
     ctx.font = 'bold 30px monospace'
     ctx.fillStyle = "blue"
+    this.message = msg
+    // console.log("CTX", ctx)
     ctx.fillText(
       msg,
-      this.state.x,
-      this.state.y - 13
-    );
-  }
+      this.state.x - 5,
+      this.state.y - 13, 
+      );
+    }
 };
 
 export default Characters;

@@ -126,7 +126,7 @@ function App() {
     socket.on("CURRENT USERS STATE", (resendUserState) => {
       // const checkUserName = myName === Object.Keys(filterMyName)
       // console.log(myName, filterUserState)
-      console.log("RECEIVED USER STATE", resendUserState)
+      // console.log("RECEIVED USER STATE", resendUserState)
       // const userName = Object.keys(resendUserState)[0]
       // console.log(userName)
       setOnlineList(prev => ({
@@ -147,7 +147,6 @@ function App() {
 
     /** MESSAGES */
     socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, (messageContents) => {
-      console.log("sendMessage", messageContents.type)
       setMessage({...messageContents})
     })
     return () => {

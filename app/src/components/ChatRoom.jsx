@@ -27,6 +27,7 @@ function ChatRoom(props) {
 
   useEffect(() => {
     setMessageHistory((prev) => [...prev, message]);
+    console.log("MESSAGE", message)
   }, [message]);
   // const { recipient, user } = useContext(UserListContext);
 
@@ -88,7 +89,7 @@ function ChatRoom(props) {
                 <Avatar url={msgContent.avatar} />
                 <span className="sender">{msgContent.sender}</span>
                 to
-                <span className="recipient">{msgContent.username}</span>:
+                <span className="recipient">{msgContent.recipient}</span>:
                 <span className="content">{msgContent.content}</span>
                 <span className="time">
                   {msgContent.time}
