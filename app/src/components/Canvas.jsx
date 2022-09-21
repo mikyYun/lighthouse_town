@@ -84,49 +84,12 @@ const Canvas = (props) => {
         }
       };
 
-      // move to JS
+      // room navigator
       if (path === "plaza") {
         navigator(420, 460, 120, 140, "js");
         navigator(710, 770, 430, 470, "ruby");
         navigator(920, 960, 350, 400, "react");
         navigator(760, 800, 80, 130, "coffee");
-        // if (
-        //   userCharacter[username].state.x >= 420 &&
-        //   userCharacter[username].state.x <= 460 &&
-        //   userCharacter[username].state.y >= 120 &&
-        //   userCharacter[username].state.y <= 140
-        // ) {
-        //   handleRoom("js", username);
-        // }
-
-        // // move to Ruby
-        // if (
-        //   userCharacter[username].state.x >= 710 &&
-        //   userCharacter[username].state.x <= 770 &&
-        //   userCharacter[username].state.y >= 430 &&
-        //   userCharacter[username].state.y <= 470
-        // ) {
-        //   handleRoom("ruby", username);
-        // }
-        // // react
-        // if (
-        //   userCharacter[username].state.x >= 920 &&
-        //   userCharacter[username].state.x <= 960 &&
-        //   userCharacter[username].state.y >= 350 &&
-        //   userCharacter[username].state.y <= 400
-        // ) {
-        //   handleRoom("react", username);
-        // }
-
-        // // coffee
-        // if (
-        //   userCharacter[username].state.x >= 760 &&
-        //   userCharacter[username].state.x <= 800 &&
-        //   userCharacter[username].state.y >= 80 &&
-        //   userCharacter[username].state.y <= 130
-        // ) {
-        //   handleRoom("coffee", username);
-        // }
       }
       // move to the Plaza
       if (path !== "plaza") {
@@ -296,18 +259,10 @@ const Canvas = (props) => {
     });
     const target = message.username;
     if (target === username) {
-      // console.log("MY MESSGE", username)
       userCharacter[username].showChat(ctx, msg[username]);
-      // setTimeout(() => {
-      // userCharacter[username].showChat(ctx, "");
-      // }, 2000)
     }
     if (target !== username && otherUsersCharacter[target]) {
       otherUsersCharacter[target].showChat(ctx, msg[target]);
-      // setTimeout(() => {
-      //   otherUsersCharacter[target].showChat(ctx, "");
-      //   }, 2000)
-      // console.log("YOUR MESSGE", username, msg)
     }
   }, [username, userCharacter, otherUsersCharacter, msg]);
 
@@ -338,47 +293,6 @@ const Canvas = (props) => {
         }
       }
     }
-    // if (reSendData) {
-    //   // sendData();
-
-    //   socket &&
-    //     socket.emit("resendData", {
-    //       userState: userCharacter[username].state,
-    //       room,
-    //   //     removeFrom: removeFromRoom,
-    //     });
-    //   setReSendData(false)
-    // }
-    // sendData();
-    // console.log(otherUsersCharacter[username]);
-    // canvas = canvasRef.current;
-    // canvas.width = 1120;
-    // canvas.height = 640;
-    // const ctx = canvas.getContext("2d");
-    // otherUsersCharacter[username].drawFrame(ctx);
-    // otherUsersCharacter[username].showName(ctx);
-    // otherUsersCharacter[userState.username] ? (
-    //   setOtherUsersCharacter(prev => ({
-    //     ...prev,
-    //     [userState.username] : userState
-    //   }))
-    // ) : (
-    //   setOtherUsersCharacter(prev => ({
-
-    //   }))
-    // )
-    // setUserCharacter({
-    //   [userData.userName]: new Characters({
-    //     username: userData.userName,
-    //     x: startingPosition.x,
-    //     y: startingPosition.y,
-    //     currentDirection: 0,
-    //     frameCount: 0,
-    //     avatar,
-    //   }),
-    // });
-    //   });
-    // return () => sendData();
   }, [updateUserState]);
 
   useEffect(() => {
@@ -391,153 +305,6 @@ const Canvas = (props) => {
         });
     }
   }, [reSendData]);
-
-  // const userDataInCookies = allCookies.userdata
-  // const navigate = useNavigate();
-  // const roomLists = {
-  //   plaza: '/game/plaza',
-  //   html: "/game/html",
-  //   css: "/game/css",
-  //   js: "/game/js",
-  //   react: "/game/react",
-  //   ruby: "/game/ruby",
-  // };
-
-  // // pathname changes -> add classname
-
-  // useEffect(() => {
-  //   const canvas = canvasRef.current;
-  //   canvas.width = 1120;
-  //   canvas.height = 640;
-  //   const ctx = canvas.getContext("2d");
-
-  //   //join to chat room
-  //   socket.emit('JOIN_ROOM', [props.username,path])
-
-  //     sendData()
-  //     socket.on("sendData", (data) => {
-  //       const newCharactersData = data;
-  //       newCharactersData[props.username] = userCharacters[props.username];
-
-  //       const newCharacters = { ...userCharacters };
-  //       // set main user character
-  //       newCharacters[props.username] = userCharacters[props.username];
-  //       // console.log("before create New CHARACTERS", newCharacters)
-
-  //       const allUsersState = data.usersInRooms[props.room];
-  //       Object.keys(allUsersState).map(user => {
-  //         // console.log(user)
-  //         if (typeof user !== 'undefined') {
-  //           if (user !== props.username) {
-  //             newCharacters[user] = new Characters(allUsersState[user])
-  //           }
-  //         }
-  //       }
-  //       // console.log("New CHARACTERS", newCharacters)
-  //     );
-
-  //     setUserCharacters(newCharacters);
-  //     // console.log('AFTER SETTING: ', newCharacters)
-  //   });
-
-  //   for (const userChar in userCharacters) {
-  //     userCharacters[userChar].drawFrame(ctx);
-  //     userCharacters[userChar].showName(ctx);
-
-  //     // Text on head.
-  //     ctx.font = '20px monospace';
-  //     ctx.fillText(
-  //       userCharacters[userChar].state.username,
-  //       userCharacters[userChar].state.x + 15,
-  //       userCharacters[userChar].state.y + 10
-  //     );
-  //     ctx.fillStyle = "purple";
-  //   }
-
-  //   // });   //socket ends
-
-  // useEffect(() => {
-
-  // window.addEventListener("keydown", (e) => {
-  //   userCharacters[username].move(e.keyCode);
-  //   console.log(userCharacters[username].state);
-  //   setUserCharacters(userCharacters);
-  //   console.log(userCharacters);
-  // });
-  // window.addEventListener("keyup", (e) => {
-  //   // userCharacters[username].move(e.keyCode);
-  //   // setUserCharacters(userCharacters);
-  //   if (userCharacters[username] !== undefined) {
-  //     // sendData();
-  //   }
-  // });
-
-  // return () => {
-  // console.log("EVENTLISTENER RETURN")
-  // window.removeEventListener("keydown", (e) => {
-  // const keyCode = e.keyCode;
-  // userCharacters[username].move(keyCode);
-  // setUserCharacters(userCharacters)
-  // })
-  // controlAvatar();
-  // window.removeEventListener("keydown", (e) =>
-  //   userCharacters[0].move(e.keyCode)
-  // );
-  // window.removeEventListener("keyup", () => userCharacters[0].stop());
-  // };
-  // }, []);
-  //     sendData()
-
-  //   window.addEventListener("keyup", () => {
-  //     setUserCharacters(userCharacters)
-  //     if (userCharacters[props.username] !== undefined) {
-  //       sendData();
-  //     }
-  //   });
-
-  //   return () => {
-  //     window.removeEventListener("keydown", (e) => userCharacters[0].move(e));
-  //     window.removeEventListener("keyup", () => userCharacters[0].stop());
-  //   };
-
-  // }, []);
-
-  // useEffect(() => {
-
-  //   socket.on("dataToCanvas", data => {
-
-  //     // when msg comes in, setMsg with its user
-  //     // setTimeout for setMsg to be ""
-
-  //     setMsg(prev => ({
-  //       ...prev,
-  //       [data.nickname]: data.content
-  //     }))
-  //     setTimeout(() => {
-  //       setMsg(prev => ({
-  //         ...prev,
-  //         [data.nickname]: ""
-  //       }))
-  //     }, 7000);
-  //   });
-  // }, [socket])
-
-  // useEffect(() => {
-  //   const initialMapHeight = (screenHeight) => {
-  //     if (screenHeight < 640) {
-  //       return 640 - screenHeight;
-  //     }
-  //   };
-
-  //   setCameraPosition((prev) => ({
-  //     ...prev,
-  //     y: initialMapHeight(screen.height),
-  //     // y : -150,
-  //   }));
-  // }, []);
-
-  // //--------- functions
-  // // if user hit the specific position -> redirect to the page
 
   useEffect(() => {
     setPath(location.pathname.split("/")[2]);
@@ -552,38 +319,16 @@ const Canvas = (props) => {
       navigate("notready");
     } else {
       setOtherUsersCharacter({});
-      sendData(path, roomTo);
+      sendData(roomTo);
       navigate(`game/${roomTo}`);
     }
-    /** CLEAR OTHER USERS */
-    // setUserCharacter({ ...userCharacter, [userName]: undefined });
-    // setPath(roomTo);
-    // console.log("ROOMTO", path)
-    // setRoom(roomTo)
-    // navigate(`${roomTo}`)
-    // userDataInCookies
-    // navigate(roomLists[room], { state: [props.username, props.avatar] });
-    // const cookies = new Cookies();
-    // const userDataInCookies = cookies.getAll().userdata;
-    // const userLanguages = userDataInCookies.userLanguages;
-    // const userID = userDataInCookies.id;
-    // const avatar = userDataInCookies.avatar;
-    // navigate(roomLists[roomTo], {
-    // state: [username, avatar, userLanguages, userID],
-    // });
-    // navigate(0, { state: [username, avatar, userLanguages, userID] });
   }
 
-  function sendData(removeFromRoom, addToRoom) {
-    // console.log("canvasUserCookie",userCookie)
-    // console.log(userCharacters[userCookie.userName])
-    // const cookie = new Cookies().getAll().userdata;
-    // const username = cookie.userName;
+  function sendData(addToRoom) {
     socket &&
       socket.emit("sendData", {
         userState: userCharacter[username].state,
         room: path,
-        // removeFrom: removeFromRoom,
         addTo: addToRoom,
       });
   }
@@ -604,7 +349,6 @@ const Canvas = (props) => {
           bottom: cameraPosition.y,
         }}
       ></canvas>
-      {/* <div className="camera"></div> */}
       <div className="side-bar">
         <FriendList changeRecipient={changeRecipient}/>
         <Online changeRecipient={changeRecipient}/>

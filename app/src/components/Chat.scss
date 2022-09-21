@@ -4,14 +4,9 @@ $second-color: #9883c4;
 
 .chatroom {
   position: fixed;
-  // bottom: 0;
   top: 640px;
   width: 100%;
-  // background-color: $main-color;
-  // height: 250px;
-  // height: calc(100% - 640px);
   z-index: 10;
-  // max-height: 18rem;
   height: 100%;
   .card.chat-to-container {
     position: relative;
@@ -98,6 +93,30 @@ $second-color: #9883c4;
           height: 3rem;
           margin: 0;
         }
+      }
+    }
+  }
+  .logout-box {
+    background-color: #9883c4;
+    color: white;
+    width: 145px;
+    height: 38px;
+    position: absolute;
+    top: 0;
+    right: -11px;
+    padding: px;
+    padding-right: 11px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px white solid;
+    .logout-button {
+    // background-color: #9883c4;
+    width: 100%;
+      height: 100%;
+      border-radius: 5px;
+      &:hover {
+        background-color: $main-color;
       }
     }
   }

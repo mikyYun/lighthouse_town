@@ -19,21 +19,11 @@ export default function Online({ changeRecipient }) {
     showOnline === "show" ? setShowOnline("hide") : setShowOnline("show");
   };
   const [onlineUserNames, setOnlineUserNames] = useState(
-    Object.keys(onlineList)
+    []
   );
   // const [onlineList, setOnlineList] = useState([room])
   useEffect(() => {
-    // console.log("ONLINECHECK");
-    // socket.on("REMOVE LOGOUT USER", (updatedUserNames) => {
-    //   console.log(onlineList[updatedUserNames]);
-    // });
-    // return () => {
-    //   socket.disconnect();
-    // }
-    // const cookies = new Cookies();
-    // const allCookies = cookies.getAll();
-    // const username = allCookies.userdata.userName;
-    // onlineList[username]
+    setOnlineUserNames([]);
   }, [room]);
 
   useEffect(() => {
@@ -43,7 +33,6 @@ export default function Online({ changeRecipient }) {
   const addFriend = (userName, avatar) => {
     // console.log(userCookie)
     const cookie = new Cookies().getAll().userdata;
-    console.log(cookie);
     const userID = cookie.userID;
     axios
       .post("/user/add", { userID, add: userName, avatar })
@@ -59,12 +48,10 @@ export default function Online({ changeRecipient }) {
   const userInfoBox = (userName) => {
     return (
       <div className="box">
-        {/* <div className="box-close"> */}
         <span
           className="material-icons close"
           onClick={() => {
             setToggle(false);
-            console.log("CLOSE");
           }}
         >
           close
@@ -93,53 +80,10 @@ export default function Online({ changeRecipient }) {
       </div>
     );
   };
-  // useEffect(() => {
-  //   console.log("TEST")
-  //   // socket && socket.emit("SET USERNAME", {
-  //   //   socketID: socket.id,
-  //   //   username: "moon",
-  //   //   currentRoom: room
-  //   // })
-  //   socket.on("PLAZA", (userNames) => {
-  //     console.log("datat",userNames)
-  //   })
-  //   return () => {
-  //     socket.disconnect();
-  //   }
-  // }, [socket])
-  // const { setClicked, setShow, nickname, online } = useContext(UserListContext);
-  // const [showMenu, setShowMenu] = useState(false);
-  // const removeSelfAndAll = online.filter(obj =>
-  //   obj.value !== "all" && obj.value !== nickname
-  // )
 
-  // const closeMenu = () => {
-  //   setShowMenu(false)
-  // }
-
-  // const usersOnline = removeSelfAndAll.map((obj, i) =>
-  //   <div className="online-user" key={i}>
-  //     <li className="users-online" onClick={() => {
-  //       setShowMenu(showMenu === false ? obj.value : false);
-  //       setClicked(obj);
-  //       setShow(true); // 클릭 뒤 사라지게
-  //       // console.log(obj)
-  //     }}>
-  //       {<Avatar url={obj.avatar} alt="avatar" />}
-  //       <p>{obj.value}</p>
-  //     </li>
-  //     { showMenu === obj.value ?<Menu close={closeMenu} obj={obj} /> : null }
-  //   </div>
-  //   );
-
-  // useEffect(() => {
-  //   socket.emit("friendsList", { socketID: socket.id });
-  // }, [online]);
-
-  // const onlineUserNames = Object.keys(onlineList);
-  const onlineUserList = onlineUserNames.map((user) => {
-    if (user !== userCookie.userName)
-      return (
+  const onlineUserList = onlineUserNames.length > 0 && onlineUserNames.map((user) => {
+    if (user !== userCookie.userName && onlineList[user])
+    return (
         <div className="user-container" key={user}>
           <div
             className="user"
@@ -159,7 +103,6 @@ export default function Online({ changeRecipient }) {
 
   return (
     <div className={`online-list ${showOnline}`}>
-      {/* <FriendList /> */}
       <div
         className="side-bar-label"
         onClick={() => {
@@ -169,7 +112,6 @@ export default function Online({ changeRecipient }) {
         Online
       </div>
       {onlineUserList}
-      {/* {toggle && userInfoBox(toggle)} */}
     </div>
   );
 }

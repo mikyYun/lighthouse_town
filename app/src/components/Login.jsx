@@ -1,5 +1,4 @@
 import { useState, useContext } from "react";
-import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Login.scss";
@@ -9,19 +8,9 @@ export default function Login(props) {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const { setUser } = props;
-  const cookies = new Cookies();
   const navigate = useNavigate();
   const goRegister = () => {
     navigate("/register");
-  };
-  const { room } = useContext(UserListContext);
-
-  const goChat = () => {
-    // const goChat = (userData) => {
-    // const data = [...userData]
-    // navigate(`/game/plaza`, { state: data })
-    // navigate(0, { state: data })
-    navigate(`/game/${room}`);
   };
 
   return (
@@ -62,20 +51,12 @@ export default function Login(props) {
             type="submit"
             onClick={(e) => {
               const loginInfo = { userEmail, userPassword }
-              // const loginInfo = {
-              //   userEmail: "test2@test.com",
-              //   userPassword: "mike",
-              // };
-              // cookies.set("username", userEmail)
               axios
                 .post("/login", loginInfo)
                 .then((res) => {
                   const target = res.data;
                   if (target.userName) {
-                    // cookies.set("userdata", target, { maxAge: 3600 });
                     setUser(target)
-                    // goChat(target.userName, target.avatar, target.userLanguages, target.userID)
-                    // goChat();
                   }
                 })
                 .catch((err, res) => {

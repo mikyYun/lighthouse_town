@@ -254,20 +254,15 @@ io.on("connection", (socket) => {
   // FOR USER MOVEMENT (Canvas)
   socket.on('sendData', data => {
     const { userState, room, addTo } = data;
-    // console.log('got data', !removeFrom);
-    // if (!usersInRooms[room]) {
-    //   usersInRooms[room] = {};
-    // }
-    // if (removeFrom) {
-    // }
+
     if (addTo) {
-      userState["remove"] = true;
+      if (addTo !== "logout") {
+        socket.join(addTo)
+        socket.to(addTo).emit("sendData", userState);
+      }
       socket.leave(room)
-      socket.join(addTo)
-      socket.to(addTo).emit("sendData", userState);
-      userState.remove = true;
+      userState["remove"] = true;
       
-      console.log(userState, "LEAVE", room)
       socket.to(room).emit("sendData", userState);
     } else {
       socket.to(room).emit("sendData", userState);
@@ -473,9 +468,10 @@ app.post("/user/add", (req, res) => {
 app.post("/user/remove", (req, res) => {
   return removeFriend(req, res)
 })
-// app.post("/avatar", async (req, res) => {
-//   return findAvatar(req.body.username);
-// });
+
+app.post("/logout", (req, res) => {
+
+})
 
 httpServer.listen(PORT, () => {
   console.log(

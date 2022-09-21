@@ -17,12 +17,10 @@ export default function FriendList({ changeRecipient }) {
     showFriends === "show" ? setShowFriends("hide") : setShowFriends("show");
   };
   const handleToggle = (value) => {
-    // console.log(value); // friend name
     if (!friendsInfo[value]) {
       axios
         .post("/user", { username: value })
         .then((res) => {
-          // console.log("RES", res.data)
           const userInfo = res.data;
           setFriendsInfo((prev) => ({
             ...prev,
@@ -37,14 +35,7 @@ export default function FriendList({ changeRecipient }) {
         });
     } else {
       setToggle(value);
-      // setToggle(undefined)
     }
-    // if (toggle) {
-    // setToggle(false);
-    // } else {
-    // setToggle(value);
-    // }
-    // console.log(toggle);
   };
 
   const removeFriend = (removeUserName) => {
@@ -64,10 +55,6 @@ export default function FriendList({ changeRecipient }) {
       });
   };
 
-  // useMemo(() => {
-  //   socket.emit("")
-  // }, [toggle])
-
   useEffect(() => {
     socket && socket.emit("friendsList", { socketID: socket.id });
     return () => {
@@ -78,9 +65,6 @@ export default function FriendList({ changeRecipient }) {
   useEffect(() => {
     const cookies = new Cookies();
     const currentCookies = cookies.getAll();
-    // console.log(currentCookies.userdata)
-    // console.log(currentCookies.userdata.userFriendsList);
-    // console.log(userCookie, currentCookies.userdata.userFriendsList);
     setFriens({ ...currentCookies.userdata.userFriendsList });
   }, [userCookie]);
 
@@ -148,7 +132,6 @@ export default function FriendList({ changeRecipient }) {
             </div>
           </div>
         </div>
-        {/* {languageList} */}
       </div>
     );
   };

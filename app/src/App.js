@@ -59,9 +59,6 @@ function App() {
   useEffect(() => {
     /** CHANGE ROOM */
     setOnlineList({})
-    // return () => {
-    //   socket.off();
-    // };
   }, [room]);
 
   useEffect(() => {
@@ -71,7 +68,6 @@ function App() {
 
     /** ALL SOCKET RECEIVER */
     socket && socket.on(room, ({ userNames, updatedUserName, avatar, reSend }) => {
-      
       if (reSend) setReSendData(reSend);
       const filterUserNames = filterMyName(userNames, myName);
       
@@ -85,9 +81,7 @@ function App() {
           frameCount: 0
         };
         setUpdateUserState(initAvatarPosition);
-        console.log("TESTPOINT", updatedUserName)
         if (!onlineList[updatedUserName]) {
-          // setOnlineList(filterUserNames);
           setOnlineList(prev => ({
             ...prev,
             [updatedUserName]: {
@@ -219,7 +213,21 @@ function App() {
 
     setUserCookie(userData)
   }
-
+  const logout = (path) => {
+    const cookies = new Cookies() 
+    const userData = cookies.getAll().userdata
+  const userState = {
+        username: userData.userName
+      }
+    socket &&
+    socket.emit("sendData", {
+      userState,
+      room: path,
+      addTo: "logout"
+    });
+    cookies.remove("userdata")
+    navigate("/")
+  }
 
 
   const roomLists = Object.keys(roomList)
@@ -231,13 +239,13 @@ function App() {
 
   return (
     <SocketContext.Provider value={{ socket }}>
-      <UserListContext.Provider value={{ room, onlineList, userCookie, updateUserState, reSendData, setReSendData, message, roomList, setRoom, navigate, updateFriendList }}>
+      <UserListContext.Provider value={{ room, onlineList, userCookie, updateUserState, reSendData, setReSendData, message, roomList, setRoom, navigate, updateFriendList, logout }}>
         <Routes>
           <Route path="/register" element={<Register setUser={createSocketIdNameObj} />} />
           <Route path="/" element={<Login setUser={createSocketIdNameObj} />} />
           <Route path="/login" element={<Login setUser={createSocketIdNameObj} />} />
           {roomRoute}
-          <Route path={`/notready`} element={<NotReady character={character} setCharacter={setCharacter} />} />
+          <Route path={`/notready`} element={<NotReady />} />
           {/* <Route path={`/game/${}`} element={<RETURN />} /> */}
         </Routes>
       </UserListContext.Provider>
