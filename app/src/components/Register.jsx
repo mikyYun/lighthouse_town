@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-// import { RegistrationChecker } from "./helper/RegistrationChecker";
-import Cookies from "universal-cookie";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Register.scss";
 
@@ -13,15 +10,7 @@ export default function Register(props) {
   const [userAvatar, setUserAvatar] = useState(1); // 기본 아바타 1
   const [incorrectPassword, setIncorrectPassword] =
     useState("correct_password");
-  const [registerFormCheck, setRegisterFormCheck] = [];
-  const setUser = props.setUser;
-  const cookies = new Cookies();
-  const navigate = useNavigate();
-  // window.addEventListener("click", (e) => {
-  //   console.log("REG PROPS", props)
-  //   props.submitRegistrationInfo("test")
-  // })
-  // console.log("emit to server - Register.js", props.submitRegistrationInfo);
+  const { setUser } = props;
   const insertLanguages = (e, id) => {
     const checked = e.target.checked;
     if (checked) {
@@ -30,12 +19,9 @@ export default function Register(props) {
       setUserLanguages((prev) => prev.filter((el) => el !== id));
     }
   };
+  const [alertUsername, setAlertUsername] = useState(false)
+  const [alertUserpassword, setAlertUserpassword] = useState(false)
 
-  const goChat = (username, avatar, userLanguages, id) => {
-    const data = [username, avatar, userLanguages, id];
-    navigate(`/game/plaza`, { state: data });
-    navigate(0, { state: data });
-  };
   const languageLists = {
     html: "HTML",
     css: "CSS",
@@ -67,22 +53,24 @@ export default function Register(props) {
             className="text-input"
             id="register_name"
             rows="1"
-            placeholder="NAME"
+            placeholder="NAME:min 4 chars"
             type="text"
             value={userName}
             onChange={(e) => {
-              if (e.target.value.length < 4) {
-                console.log(
-                  "username should be longer than 4 chars - Register.js"
-                );
-              }
-              if (e.target.value.length > 10) {
-                alert("cannot have over 10 digits name");
+              if (e.target.value.length < 4 || e.target.value.length > 10) {
+                if (!alertUsername) setAlertUsername(true)
+              } else {
+                if (alertUsername) setAlertUsername(false)
               }
               setUserName(e.target.value);
             }}
           ></input>
         </div>
+        {alertUsername && (
+        <span className="check-username-length">
+          username should be longer than 4  and less than 10 chars
+        </span>
+        )}
         <div className="field">
           <input
             className="text-input"
@@ -93,32 +81,34 @@ export default function Register(props) {
             value={userEmail}
             onChange={(e) => {
               setUserEmail(e.target.value);
-              // console.log("setUserEmail - Register.js", e.target.value);
             }}
           ></input>
         </div>
 
         <div className="field">
           <input
-            // name="password"
             className="text-input"
             id="register_password"
             rows="1"
             placeholder="PASSWORD"
             type="password"
-            // value={userPassword}
             onChange={(e) => {
               if (e.target.value.length < 4) {
-                console.log("password should be longer than 4 chars");
-                // console.log(e.target.value)
+                if (!alertUserpassword) setAlertUserpassword(true)
+              } else {
+                if (alertUserpassword) setAlertUserpassword(false)
               }
               setUserPassword(e.target.value);
             }}
           ></input>
         </div>
+        {alertUserpassword && (
+        <span className="check-password-length">
+          Password should be longer than 4 chars
+        </span>
+        )}
         <div className="field">
           <input
-            // name="password_confirmation"
             className="text-input"
             id="register_password_confirmation"
             rows="1"
@@ -126,18 +116,14 @@ export default function Register(props) {
             type="password"
             onChange={(e) => {
               if (e.target.value !== userPassword) {
-                // console.log(userPassword)
                 setIncorrectPassword("incorrect_password");
-                console.log(
-                  "confirmation password doesn't match. - Register.js"
-                );
               } else {
                 setIncorrectPassword("correct_password");
-                console.log(e.target.value);
               }
             }}
           ></input>
         </div>
+        
         <span className={incorrectPassword}>
           confirmation password is incorrect
         </span>
@@ -215,24 +201,16 @@ export default function Register(props) {
                 userLanguages,
                 userAvatar,
               };
-              axios // client talking to the server. Asynchronous. if it doesn't happen .post,
+              axios
                 .post("/register", { userInfo })
                 .then((res) => {
-                  if (res.data.userName) {
-                    // res.data = [username, avatar_id, userLanguages, id];
-                    console.log(
-                      "register button click and response data",
-                      res.data
-                    );
-                    setUser(res.data.userName);
-                    // props.submitRegistrationInfo(res.data);
-                    cookies.set("userdata", res.data, { maxAge: 3600 });
-                    goChat(
-                      res.data.userName,
-                      res.data.avatar,
-                      res.data.userLanguages,
-                      res.data.userID
-                    );
+                  if (res.data.unique)
+                    alert(`
+                    Registration failed. Please try with different email or username
+                  `);
+                  const target = res.data;
+                  if (target.userName) {
+                    setUser(target);
                   } else {
                     alert(
                       "Registration failed. Please try with different email or username"
@@ -240,7 +218,11 @@ export default function Register(props) {
                     window.location = "/register";
                   }
                 })
-                .catch((error) => console.log(error));
+                .catch((error, msg) => {
+                  alert(
+                    "Registration failed. Please try with different email or username"
+                  );
+                });
             }}
           >
             Register

@@ -1,64 +1,72 @@
 import { useState, useCallback, useContext, useRef } from "react";
-import { SOCKET_EVENT } from "./service/socket.js";
-import { SocketContext } from "../App.js";
+import { SOCKET_EVENT } from "./socket/socket.js";
+import { SocketContext, UserListContext } from "../App.js";
+import Cookies from "universal-cookie";
 
-//이 컴포넌트는 메시지 입력창에 입력하고 있는 텍스트를 state로 관리합니다.그리고 전송 버튼을 누르면 handleSendMessage함수가 실행되어 SEND_MESSAGE 이벤트를 nickname과 입력한 텍스트 데이터와 함께 소켓 서버로 emit합니다.ChatRoom에서 이 컴포넌트를 import 해줍니다.
 
-function MessageForm({ nickname, recipient, user }) {
+function MessageForm({ username, recipient }) {
   const [typingMessage, setTypingMessage] = useState("");
   const { socket } = useContext(SocketContext);
+  const { room } = useContext(UserListContext);
   const [textareaDisable, setTextareaDisable] = useState(true)
   const focusTextArea = useRef()
-
-  // socket, socket_event object
-  // textarea에서 텍스트를 입력하면 typingMessage state를 변경합니다.
   const handleChangeTypingMessage = useCallback((event) => {
     setTypingMessage(event.target.value);
   }, []);
+  
+
 
   const handleSendMesssage = useCallback(() => {
     const noContent = typingMessage.trim() === "";
-
+    // /** TRIM MESSAGE IF EMPTY */
     if (noContent) {
-      // console.log("no content received");
       return;
     }
-    if (recipient.value !== "all") {
-      socket.emit("PRIVATE", {
-        nickname, // whole user information
-        content: typingMessage,
-        recipient: recipient,
-        senderSocketId: socket.id,
-        user,
-      });
-    } else {
+
+    const cookie = new Cookies().getAll().userdata
+    const sender = username
+    const avatar = cookie.avatar
+    if (recipient !== "all") {
+      /** PRIVATE CHAT */
       socket.emit(SOCKET_EVENT.SEND_MESSAGE, {
-        nickname,
+        username,
         content: typingMessage,
-        user,
+        recipient,
+        sender,
+        avatar,
+        isPrivate: true
+      })
+    } else {
+      /** PUBLIC CHAT */
+      socket.emit(SOCKET_EVENT.SEND_MESSAGE, {
+        username,
+        content: typingMessage,
+        recipient,
+        sender,
+        avatar,
+        room: room
       });
     }
     setTypingMessage("");
-  }, [socket, nickname, typingMessage, recipient]);
-
-  function chatBubble() {
-
-  }
+  }, [socket, username, typingMessage, recipient]);
 
   return (
-    <form >
-      <div >
+    <form id="type-area">
+      <div className="type-box">
         <textarea
+          className="form-control"
+          placeholder="type your message here "
           ref={focusTextArea}
           readOnly={textareaDisable}
-          className="form-control"
           maxLength={400}
           value={typingMessage}
-          placeholder="type your message here "
           onChange={handleChangeTypingMessage}
           onMouseDown={() => {
             setTextareaDisable(false)
             focusTextArea.current.focus()
+          }}
+          onFocus={() => {
+            setTextareaDisable(false)
           }}
         />
         <button

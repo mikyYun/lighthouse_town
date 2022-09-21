@@ -1,20 +1,32 @@
+import Cookies from "universal-cookie";
 import { useState, useContext, useEffect } from "react";
-import Select from 'react-select';
-import { SocketContext, UserListContext } from '../App.js'
+import Select from "react-select";
+import { UserListContext } from "../App.js";
 
-function Recipient() {
-  const { recipient, setRecipient, nickname, online } = useContext(UserListContext);
-
-
-  const [otherUsers, setOtherUsers] = useState([])
+function Recipient(props) {
+  const { onlineList } = useContext(UserListContext);
+  const { changeRecipient, recipient } = props;
+  const [otherUsers, setOtherUsers] = useState([
+    { value: "all", label: "all" },
+  ]);
   useEffect(() => {
+    const updateRecipientsList = () => {
+      const option = [{ value: "all", label: "all" }];
+      const onlineUsersList = Object.keys(onlineList);
+      const cookie = new Cookies().getAll().userdata
+      onlineUsersList.map((onlineUserName) => {
+        if (onlineUserName !== cookie.userName && onlineList[onlineUserName] !== undefined) {
+          option.push({ value: onlineUserName, label: onlineUserName });
+        }
+      });
+      return option;
+    };
 
-    const onlineOthers = online.filter(user => user.value !== nickname)
-    return setOtherUsers(onlineOthers)
-  }, [online, nickname])
+    setOtherUsers(updateRecipientsList());
+  }, [onlineList, recipient]);
 
   return (
-    <div className="card d-flex flex-row chat-to-container" >
+    <div className="card d-flex flex-row chat-to-container">
       <label htmlFor="user-name-input" className="chat-to">
         Recipient
       </label>
@@ -22,15 +34,12 @@ function Recipient() {
         type="text"
         id="pdown"
         maxLength={12}
-        value={recipient !== null && (recipient || { value: "all", label: "all" })}
-        defaultValue={recipient}
-        onChange={setRecipient}
+        defaultValue={{ value: "all", label: "all" }}
+        onChange={(e) => changeRecipient(e.value)}
         options={otherUsers}
       />
-
     </div>
-
   );
-};
+}
 
 export default Recipient;

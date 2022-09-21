@@ -1,33 +1,29 @@
 import { useEffect, useContext } from "react";
-import { SocketContext, UserListContext } from "../App.js";
+import { SocketContext, UserListContext } from "../App_backup.js";
 
 export default function Profile(props) {
-  const { clicked, profiles, nickname, setProfiles, profileShow, setProfileShow } = useContext(UserListContext);
+  const { clicked, profiles, nickname, setProfiles } = useContext(UserListContext);
   const {socket} = useContext(SocketContext)
 
   useEffect(() => {
     socket.on("update login users information", ({disconnectedUser}) => {
-      // console.log("THIS second", disconnectedUser)
       const newProfiles = profiles
         if (newProfiles[disconnectedUser]) {
           delete newProfiles[disconnectedUser]
           setProfiles(newProfiles)
         }
-        // console.log("THIS second", profiles)
     })
+    return () => {
+      socket.off();
+    }
   }, [profiles])
 
 
   const profileNames = Object.keys(profiles);
-  // console.log(profileNames)
   const profileArticles = profileNames.map((username, ind) => {
 
-    // when user is not me!
     if (username !== nickname) {
-      // console.log(username)
-      const title = profiles[username].name;
       const email = profiles[username].email;
-      // console.log("TITLE", title, "EMAIL", email)
       const languageLists = profiles[username].languages.map((lang, index) => (
         <li key={index} className="list-languages">{lang}</li>
       ));
@@ -35,17 +31,11 @@ export default function Profile(props) {
       if (clicked.value === username) {
         return (
             <div className='profile' key={ind} onClick={props.closeProfile}>
-              {/* 클릭없이 보고싶으면 밑에 있는것 사용 */}
-              {/* <div className={`profile ${username}`} key={ind} style={{display: "inline"}}> */}
-              {/* <title> */}
-              {/* <div className="profile-name">{title}</div> */}
-
             <div className="profile-email"><p>Email</p>{email}</div>
             <div>
             <p>Languages</p>
               <div className="profile-language">{languageLists}</div>
             </div>
-
           </div>
           );
         }
