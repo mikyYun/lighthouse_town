@@ -130,6 +130,11 @@ class Characters {
     ctx.font = 'bold 30px monospace'
     ctx.fillStyle = "blue"
     this.message = msg
+    // const lineHeight = 30
+    // const lines = msg.split(" ");
+    // for (let i = 0; i < lines.length; i + 2) {
+    //   ctx.fillText(`${lines[i]} ${lines[i + 1]}`, this.state.x, this.state.y - (i * 2 * lineHeight))
+    // }
     // console.log("CTX", ctx)
     ctx.fillText(
       msg,

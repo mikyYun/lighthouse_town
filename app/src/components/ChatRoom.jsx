@@ -28,8 +28,9 @@ function ChatRoom(props) {
   const chatWindow = useRef(null);
 
   useEffect(() => {
-    setMessageHistory((prev) => [...prev, message]);
-    moveScrollToReceiveMessage();
+    console.log("MESSAGE", message)
+    // setMessageHistory((prev) => [...prev, message]);
+    // moveScrollToReceiveMessage();
   }, [message]);
 
   const moveScrollToReceiveMessage = useCallback(() => {
@@ -79,7 +80,6 @@ function ChatRoom(props) {
             <div
               className="d-flex flex-row chat-content"
               key={msgContent.sender + msgContent.username + index}
-              // ref={index === messageHistory.length - 1 && chatWindow}
             >
               <div className={`message-nickname ${privateOrPublic}`}>
                 <Avatar url={msgContent.avatar} />

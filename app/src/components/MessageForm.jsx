@@ -21,9 +21,9 @@ function MessageForm({ username, recipient, user }) {
 
   const handleSendMesssage = useCallback(() => {
     const noContent = typingMessage.trim() === "";
-    /** TRIM MESSAGE IS EMPTY */
+    // /** TRIM MESSAGE IS EMPTY */
     if (noContent) {
-      // console.log("no content received");
+      console.log(noContent)
       return;
     }
 
@@ -32,7 +32,7 @@ function MessageForm({ username, recipient, user }) {
     const avatar = cookie.avatar
     console.log("RECIPIENT", recipient)
     if (recipient !== "all") {
-      /** PRIVATE CHAT */
+    //   /** PRIVATE CHAT */
       socket.emit(SOCKET_EVENT.SEND_MESSAGE, {
         username,
         content: typingMessage,
@@ -41,13 +41,6 @@ function MessageForm({ username, recipient, user }) {
         avatar,
         isPrivate: true
       })
-      // socket.emit("PRIVATE", {
-      //   username, // whole user information
-      //   content: typingMessage,
-      //   recipient,
-      //   senderSocketId: socket.id,
-      //   user,
-      // });
     } else {
       /** PUBLIC CHAT */
       socket.emit(SOCKET_EVENT.SEND_MESSAGE, {
@@ -60,6 +53,7 @@ function MessageForm({ username, recipient, user }) {
       });
     }
     setTypingMessage("");
+    console.log("CLICKED")
   }, [socket, username, typingMessage, recipient]);
 
   return (

@@ -22,6 +22,7 @@ const Canvas = (props) => {
     setRoom,
     navigate,
     message,
+    backToHone
   } = useContext(UserListContext);
   const [username, setUsername] = useState();
   const canvasRef = useRef(null);
@@ -185,11 +186,12 @@ const Canvas = (props) => {
     /** FIRST RENDERING */
     const cookies = new Cookies();
     const allCookies = cookies.getAll();
-    if (!allCookies.userdata) {
-      alert("INVALID ACCESS");
-      // return <Redirect to="/" />
-      navigate("/");
-    } else if (allCookies.userdata) {
+    // if (!allCookies.userdata) {
+    //   alert("INVALID ACCESS");
+    //   // return <Redirect to="/" />
+    // }
+    //  else 
+    if (allCookies.userdata) {
       const currentPath = location.pathname.split("/")[2];
       setPath(currentPath);
 

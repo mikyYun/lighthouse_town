@@ -33,7 +33,6 @@ function Recipient(props) {
     const updateRecipientsList = () => {
       const option = [{ value: "all", label: "all" }];
       const onlineUsersList = Object.keys(onlineList);
-      // onlineList.map((onlineUserName) => {
       onlineUsersList.map((onlineUserName) => {
         option.push({ value: onlineUserName, label: onlineUserName });
       });
@@ -43,10 +42,10 @@ function Recipient(props) {
     setOtherUsers(updateRecipientsList());
   }, [onlineList]);
 
-  useEffect(() => {
-    console.log("RERERE", recipient);
+  // useEffect(() => {
+    // console.log("RERERE", recipient);
     // setSelectValue(recipient)
-  }, [recipient]);
+  // }, [recipient]);
 
   return (
     <div className="card d-flex flex-row chat-to-container">

@@ -61,7 +61,6 @@ const tryLogin = (req, res) => {
     WHERE (users.email = $1 AND users.password = $2)
     `, [email, password])
     .then((result) => {
-      console.log(result.rows);
       const userName = result.rows[0].username;
       const avatar = result.rows[0].avatar_id;
       const userID = result.rows[0].id;
@@ -78,7 +77,6 @@ const tryLogin = (req, res) => {
         ON friends.id = users.id
         `, [userID])
         .then((res) => {
-          console.log(res.rows);
           const friendsAvatar = res.rows;
           friendsAvatar.forEach(friend => {
             userFriendsList[friend.username] = {
@@ -178,14 +176,12 @@ const registerUser = (req, res) => {
       /** GIVEN username OR email IS ALREADY IN DB */
       if (response.rows[0]) {
         isUnique = false;
-        console.log("isUnique", isUnique);
         res.status(409).send({ isUnique });
       }
       /** IF GIVEN INFORMATION is UNIQUE */
       insertRow(userData, res);
     })
     .catch(err => {
-      console.log("REGISTRATION ERROR", err);
       res.status(409).send(false);
     });
 };
@@ -280,7 +276,6 @@ const addFriend = (req, res) => {
 const removeFriend = (req, res) => {
   const { userID, remove } = req.body;
   const bind = [userID, remove];
-  console.log("BIND", bind)
   pool.query(`
   DELETE FROM favorites
     WHERE favorites.added IN (
