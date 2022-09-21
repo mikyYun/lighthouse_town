@@ -1,8 +1,6 @@
 const Pool = require('pg').Pool; //postgres
 require("dotenv").config();
-// export default queryMethos = {getOneUserLanguages}
 
-// const poolGroup = () => {
 /** USE THIS DB */
 const pool = new Pool({
   user: process.env.PGUSER,
@@ -11,29 +9,6 @@ const pool = new Pool({
   password: process.env.PGPASSWORD,
   port: process.env.PGPORT
 });
-
-// when user login, pass essential data
-// const filterEssentials = function (currentUsers) {
-//   pool.query(
-//     "SELECT id, username, email, avatar_id FROM users",
-//     (err, res) => {
-//       // res.rows => {id: , username: , email: , avatar_id}
-//       const allUsersObj = res.rows;
-//       pool.query(
-//         "SELECT languages.id, user_id, language_name FROM user_language JOIN languages ON language_id=languages.id",
-//         (err, res_1) => {
-//           // res.rows_1 => {id(languageID): , user_id: , language_name: }
-//           const userIDAndLang = res_1.rows;
-//           allUsersObj.map(user => {
-//             if (currentUsers[user.username]) {
-
-//             }
-//           });
-//         }
-//       );
-//     }
-//   );
-// };
 
 /** LANGUAGES MATCHING WITH ID AND LANGUAGE_NAME */
 /** ONLY ONCE */
@@ -86,7 +61,7 @@ const tryLogin = (req, res) => {
     WHERE (users.email = $1 AND users.password = $2)
     `, [email, password])
     .then((result) => {
-      console.log(result.rows)
+      console.log(result.rows);
       const userName = result.rows[0].username;
       const avatar = result.rows[0].avatar_id;
       const userID = result.rows[0].id;
@@ -103,24 +78,18 @@ const tryLogin = (req, res) => {
         ON friends.id = users.id
         `, [userID])
         .then((res) => {
-          console.log(res.rows)
-          const friendsAvatar = res.rows
+          console.log(res.rows);
+          const friendsAvatar = res.rows;
           friendsAvatar.forEach(friend => {
             userFriendsList[friend.username] = {
               username: friend.username,
               avatar: friend.avatar
-            }
-          })
-          // res.rows.forEach(friendName => {
-          //   userFriendsList.push(friendName.username);
-          // });
+            };
+          });
           result.rows.forEach((userData) => {
             userLanguages.push(userData.language_name);
-            // userFriendsList.push(userData.added);
           });
         })
-        // .then(() => {
-        // })
         .then(() => {
           const loginUserData = {
             userName,
@@ -222,8 +191,8 @@ const registerUser = (req, res) => {
 };
 
 const getUserInfo = (req, res) => {
-  const username = req.body.username
-  console.log(username)
+  const username = req.body.username;
+  console.log(username);
   pool.query(`
     SELECT languages.language_name, user_info.email
      FROM languages
@@ -237,25 +206,25 @@ const getUserInfo = (req, res) => {
       ON user_info.language_id = languages.id
     `,
     [username])
-  .then(response => {
-    const userInfo = {
-      [username]: {}
-    } 
-    response.rows.forEach(langAndEmail => {
-      if (userInfo[username].email) {
-        if (!userInfo[username].languages) {
-          userInfo[username].languages = []
+    .then(response => {
+      const userInfo = {
+        [username]: {}
+      };
+      response.rows.forEach(langAndEmail => {
+        if (userInfo[username].email) {
+          if (!userInfo[username].languages) {
+            userInfo[username].languages = [];
+          }
+          userInfo[username].languages.push(langAndEmail.language_name);
         }
-        userInfo[username].languages.push(langAndEmail.language_name)
-      }
-      if (!userInfo[username].email) {
-        userInfo[username].email = langAndEmail.email
-      }
+        if (!userInfo[username].email) {
+          userInfo[username].email = langAndEmail.email;
+        }
 
-    })
-    res.status(200).send(userInfo)
-  })
-}
+      });
+      res.status(200).send(userInfo);
+    });
+};
 
 
 const findAvatar = async (username) => {
@@ -263,12 +232,51 @@ const findAvatar = async (username) => {
     `SELECT avatar_id
       FROM users
       WHERE users.username = $1`,
-      [username])
-  const avatar_id = await avatarData.rows[0]
-  return avatar_id
-}
+    [username]);
+  const avatar_id = await avatarData.rows[0];
+  return avatar_id;
+};
 
 
+
+const addFriend = (req, res) => {
+  const { userID, add, avatar } = req.body;
+  const bind = [userID, add];
+  /** CHECK */
+  pool.query(`
+  SELECT * FROM favorites
+    JOIN (
+      SELECT users.id FROM users
+      WHERE users.username = $2
+      ) AS friend
+      ON favorites.added = friend.id
+    WHERE favorites.added_by = $1 AND favorites.added = friend.id
+`, bind, (err, response) => {
+    if (err) res.status(409).send(false);
+    if (response.rows.length > 0) {
+      res.status(409).send(false);
+    } else {
+
+      /** INSERT */
+      pool.query(`
+      INSERT INTO favorites (added_by, added)
+      (
+      SELECT $1, (users.id) FROM users
+      WHERE users.username = $2
+      )
+      `, bind, (err, result) => {
+        /** COOKIE FORM */
+        const updateOnline = {
+          [add]: {
+            username: add,
+            avatar
+          }
+        };
+        res.status(200).send({ updateOnline });
+      });
+    }
+  });
+};
 
 
 // PUT : updated data in an existing user
@@ -286,7 +294,7 @@ const updateUser = (req, res) => {
 // DELETE : delete a user
 const deleteUser = (req, res) => {
   const id = parseInt(req.params.id);
-
+  //
   pool.query("DELETE FROM users WHERE id = $1", [id], (err, result) => {
     if (err) throw err;
     res.status(200).send(`User deleted with ID: ${id}`);
@@ -301,7 +309,8 @@ const poolGroup = {
   pool,
   tryLogin,
   registerUser,
-  getUserInfo
+  getUserInfo,
+  addFriend
   // findAvatar,
   // filterEssentials,
   // getUsers,

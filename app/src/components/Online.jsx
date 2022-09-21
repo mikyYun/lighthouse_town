@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect, useContext, useState, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { SocketContext, UserListContext } from "../App.js";
@@ -8,17 +9,21 @@ import "./Online.scss";
 import selectAvatar from "./helper/selectAvatar.js";
 import Cookies from "universal-cookie";
 
-export default function Online(props) {
+export default function Online({ changeRecipient }) {
   const { socket } = useContext(SocketContext);
-  const { room, userCookie, onlineList } = useContext(UserListContext);
+  const { room, userCookie, onlineList, updateFriendList } =
+    useContext(UserListContext);
+  const [toggle, setToggle] = useState(false);
   const [showOnline, setShowOnline] = useState("show");
   const toggleOnline = (showOnline) => {
     showOnline === "show" ? setShowOnline("hide") : setShowOnline("show");
   };
+  const [onlineUserNames, setOnlineUserNames] = useState(
+    Object.keys(onlineList)
+  );
   // const [onlineList, setOnlineList] = useState([room])
   useEffect(() => {
-    console.log("ONLINECHECK")
-    
+    // console.log("ONLINECHECK");
     // socket.on("REMOVE LOGOUT USER", (updatedUserNames) => {
     //   console.log(onlineList[updatedUserNames]);
     // });
@@ -31,6 +36,63 @@ export default function Online(props) {
     // onlineList[username]
   }, [room]);
 
+  useEffect(() => {
+    setOnlineUserNames(Object.keys(onlineList));
+  }, [onlineList]);
+
+  const addFriend = (userName, avatar) => {
+    // console.log(userCookie)
+    const cookie = new Cookies().getAll().userdata;
+    console.log(cookie);
+    const userID = cookie.userID;
+    axios
+      .post("/user/add", { userID, add: userName, avatar })
+      .then((res) => {
+        const updateOnline = res.data.updateOnline
+        updateFriendList(updateOnline);
+      })
+      .catch((err) => {
+        alert("USER_" + userName + " already in your list");
+      });
+  };
+
+  const userInfoBox = (userName) => {
+    return (
+      <div className="box">
+        {/* <div className="box-close"> */}
+        <span
+          className="material-icons close"
+          onClick={() => {
+            setToggle(false);
+            console.log("CLOSE");
+          }}
+        >
+          close
+        </span>
+        {/* </div> */}
+        <div className="option">
+          <div
+            className="add"
+            onClick={() => {
+              setToggle(false);
+              addFriend(userName, onlineList[userName].avatar);
+            }}
+          >
+            ADD
+          </div>
+          <div
+            className="send_message"
+            onClick={() => {
+              setToggle(false);
+              changeRecipient(userName);
+            }}
+          >
+            SEND MESSAGE
+          </div>
+        </div>
+      </div>
+    );
+  };
   // useEffect(() => {
   //   console.log("TEST")
   //   // socket && socket.emit("SET USERNAME", {
@@ -74,17 +136,26 @@ export default function Online(props) {
   //   socket.emit("friendsList", { socketID: socket.id });
   // }, [online]);
 
-  const onlineUserNames = Object.keys(onlineList);
+  // const onlineUserNames = Object.keys(onlineList);
   const onlineUserList = onlineUserNames.map((user) => {
     if (user !== userCookie.userName)
       return (
-        <div className="user" key={user}>
-          <Avatar url={onlineList[user].avatar} />
-          <div className="name">{user}</div>
+        <div className="user-container" key={user}>
+          <div
+            className="user"
+            // key={user}
+            onClick={() => {
+              setToggle(user);
+              console.log("USER");
+            }}
+          >
+            <Avatar url={onlineList[user].avatar} />
+            <div className="name">{user}</div>
+          </div>
+          {toggle === user && userInfoBox(user, onlineList[user].avatar)}
         </div>
       );
   });
-
 
   return (
     <div className={`online-list ${showOnline}`}>
@@ -98,6 +169,7 @@ export default function Online(props) {
         Online
       </div>
       {onlineUserList}
+      {/* {toggle && userInfoBox(toggle)} */}
     </div>
   );
 }

@@ -5,10 +5,9 @@ import "./FriendsList.scss";
 import Cookies from "universal-cookie";
 import Avatar from "./Avatar.jsx";
 
-export default function FriendList({changeRecipient}) {
+export default function FriendList({ changeRecipient }) {
   const { socket } = useContext(SocketContext);
-  const { friendList } = useContext(UserListContext);
-  // const friendsNames = Object.keys(friendList); // [이름, 이름]
+  const { friendList, userCookie } = useContext(UserListContext);
   const [toggle, setToggle] = useState(false);
   const cookies = new Cookies();
   const [friends, setFriens] = useState({});
@@ -48,6 +47,11 @@ export default function FriendList({changeRecipient}) {
     // console.log(toggle);
   };
 
+  const removeFriend = () => {
+    axios
+      .post("")
+  }
+
   // useMemo(() => {
   //   socket.emit("")
   // }, [toggle])
@@ -63,21 +67,12 @@ export default function FriendList({changeRecipient}) {
     const currentCookies = cookies.getAll();
     // console.log(currentCookies.userdata)
     // console.log(currentCookies.userdata.userFriendsList);
+    console.log(userCookie, currentCookies.userdata.userFriendsList)
     setFriens({ ...currentCookies.userdata.userFriendsList });
-  }, []);
+  }, [userCookie]);
 
   const friendNames = Object.keys(friends);
   const friendsList = friendNames.map((friend, i) => {
-    const lists = () => {
-      // if (friends.length > 0) {
-      const languages = friendsInfo[friend].languages;
-      return languages.map((lang, index) => (
-        <div key={index} className="languageDiv">
-          {lang}
-        </div>
-      ));
-      // }
-    };
 
     return (
       <div
@@ -89,9 +84,6 @@ export default function FriendList({changeRecipient}) {
       >
         <Avatar url={friends[friend].avatar} />
         <div className="name">{friend}</div>
-        {/* {toggle === friend ? (
-          <div className="languageLists">{lists()}</div>
-        ) : null} */}
       </div>
     );
   });
@@ -109,7 +101,9 @@ export default function FriendList({changeRecipient}) {
       <div className="friend_info_box">
         <span
           className="material-icons close"
-          onClick={() => {setToggle(false);}}
+          onClick={() => {
+            setToggle(false);
+          }}
         >
           close
         </span>
@@ -123,15 +117,18 @@ export default function FriendList({changeRecipient}) {
             </div>
           </div>
           <div className="controller">
-            <div className="send_message" onClick={() => {
-              console.log("CLICKED", friendName)
-              changeRecipient(friendName);
-            }}>
+            <div
+              className="send_message"
+              onClick={() => {
+                setToggle(false);
+                changeRecipient(friendName);
+              }}
+            >
               SEND MESSAGE
             </div>
-            <div className="delete_friend" onClick={() => {}}>
+            {/* <div className="delete_friend" onClick={() => {}}>
               DELETE
-            </div>
+            </div> */}
           </div>
         </div>
         {/* {languageList} */}

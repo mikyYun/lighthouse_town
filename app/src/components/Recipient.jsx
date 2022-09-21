@@ -48,7 +48,6 @@ function Recipient(props) {
     // setSelectValue(recipient)
   }, [recipient]);
 
-
   return (
     <div className="card d-flex flex-row chat-to-container">
       <label htmlFor="user-name-input" className="chat-to">

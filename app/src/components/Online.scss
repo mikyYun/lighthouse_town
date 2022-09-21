@@ -9,7 +9,7 @@ $side-bar-color: #e2ecc2f5;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
+  position: relative;
   .side-bar-label {
     width: 100%;
     cursor: pointer;
@@ -27,19 +27,26 @@ $side-bar-color: #e2ecc2f5;
       display: none;
     }
   }
+  .user-container {
+    position: relative;
+    width: 100%;
+    min-width: 125px;
+    max-width: 200px;
+    display: flex;
+    justify-content: center;
     .user {
       background-color: $side-bar-color;
-      min-width: 125px;
+      // min-width: 125px;
       font-size: 1.4rem;
       width: 80%;
       border-radius: 5px;
       margin-bottom: 11px;
-      cursor: pointer;
       position: relative;
+      cursor: pointer;
       padding: 5px;
       padding-left: 45px;
-      max-width: 200px;
-      overflow: hidden;
+      // max-width: 200px;
+      // overflow: hidden;
       cursor: pointer;
       &:hover {
         background-color: #bada55;
@@ -56,21 +63,46 @@ $side-bar-color: #e2ecc2f5;
       .name {
         text-align: center;
         margin: 0;
-        // max-width: calc(125px - 2rem);
         overflow-x: hidden;
       }
-      // li {
-      //   list-style: none;
-      //   background-color: $side-bar-color;
-      //   font-size: 1.4rem;
-      //   border-radius: 5px;
-      // }
     }
-  // }
-
-  // img.user-avatar {
-  //   width: 30px;
-  // }
+    .box {
+      width: 80%;
+      height: 4rem;
+      padding: 5px;
+      position: absolute;
+      // top: 50px;
+      top: 0;
+      cursor: context-menu;
+      z-index: 11;
+      background-color: #333;
+      opacity: .8;
+      .material-icons.close {
+        position: absolute;
+        color: white;
+        top: 5px;
+        right: 5px;
+      }
+      // }
+      .option {
+        display: flex;
+        flex-direction: column;
+        font-size: 1rem;
+        color: white;
+        justify-content: space-around;
+        .send_message {
+          &:hover {
+            color: $main-color;
+          }
+        }
+        .add {
+          &:hover {
+            color: $main-color;
+          }
+        }
+      }
+    }
+  }
 }
 
 // .online-user {

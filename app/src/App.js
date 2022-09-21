@@ -184,7 +184,9 @@ function App() {
     const cookie = cookies.getAll();
     // const myName = cookie.userdata?.userName;
     if (cookie.userdata) {
-      cookie.userdata = userData
+      /** IF cookie userdata EXIST, update with new data */
+      cookies.set("userdata", userData, { maxAge: 36000 });
+      // cookie.userdata = userData
     }
     if (!cookie.userdata) {
       cookies.set("userdata", userData, { maxAge: 36000 });
@@ -202,6 +204,18 @@ function App() {
 
   };
 
+  const updateFriendList = (updateOnline) => {
+    const cookies = new Cookies()
+    const userData = cookies.getAll().userdata
+    userData.userFriendsList = {
+      ...userData.userFriendsList,
+      ...updateOnline
+    }
+    cookies.set("userdata", userData, { maxAge: 36000 });
+
+    setUserCookie(userData)
+  }
+
   const roomLists = Object.keys(roomList)
   const roomRoute = roomLists.map(roomName => {
     return (
@@ -211,7 +225,7 @@ function App() {
 
   return (
     <SocketContext.Provider value={{ socket }}>
-      <UserListContext.Provider value={{ room, onlineList, userCookie, updateUserState, reSendData, setReSendData, message, roomList, setRoom, navigate }}>
+      <UserListContext.Provider value={{ room, onlineList, userCookie, updateUserState, reSendData, setReSendData, message, roomList, setRoom, navigate, updateFriendList }}>
         <Routes>
           <Route path="/register" element={<Register setUser={createSocketIdNameObj} />} />
           <Route path="/" element={<Login setUser={createSocketIdNameObj} />} />

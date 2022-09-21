@@ -1,5 +1,5 @@
 const poolGroup = require("./coding_buddy_db");
-const { pool, tryLogin, registerUser, getUserInfo } = poolGroup;
+const { pool, tryLogin, registerUser, getUserInfo, addFriend } = poolGroup;
 
 /** USE .env */
 require("dotenv").config();
@@ -301,7 +301,18 @@ io.on("connection", (socket) => {
 
   // ADD FRIEND
   // socket.on("add friend", {username, addFreindName})
-  socket.on("add friend", ({ username, addFriendName, userID }) => {
+  // socket.on("add friend", ({ addFriendName, username, userID }) => {
+    socket.on("add friend", ({ userID, add }) => {
+    // pool.query(`
+    //   INSERT INTO favorites (added_by, added)
+    //     SELECT (id) FROM users
+    //       WHERE users.username = $2 
+    //   `, [userID, add], (res) => {
+    //     console.log(res.rows)
+    //   })
+      
+      // VALUES ($1, $2)
+
     // console.log("ADD FRIEND", nameObj)
     // pool.query(
     //   "SELECT id, username FROM users WHERE username=$1", [addFriendName],
@@ -510,6 +521,14 @@ app.post("/user", (req, res) => {
   // return getUserInfo(req.body.username)
 })
 
+app.post("/user/add", (req, res) => {
+  // console.log("ADDFRIEND",req.body)
+  return addFriend(req, res)
+})
+
+app.post("/remove", (req, res) => {
+
+})
 // app.post("/avatar", async (req, res) => {
 //   return findAvatar(req.body.username);
 // });
