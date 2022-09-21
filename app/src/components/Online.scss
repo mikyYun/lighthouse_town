@@ -29,15 +29,15 @@ $side-bar-color: #e2ecc2f5;
   }
   .user-container {
     position: relative;
-    width: 100%;
-    min-width: 125px;
-    max-width: 200px;
+    width: 80%;
     display: flex;
     justify-content: center;
     .user {
+      min-width: 125px;
+      max-width: 200px;
       background-color: $side-bar-color;
       font-size: 1.4rem;
-      width: 80%;
+      width: 100%;
       border-radius: 5px;
       margin-bottom: 11px;
       position: relative;

@@ -22,7 +22,6 @@ export default function Online({ changeRecipient }) {
 
   useEffect(() => {
     setOnlineUserNames(Object.keys(onlineList));
-    console.log("UPDATEONLINE", onlineList)
   }, [onlineList]);
 
   const addFriend = (userName, avatar) => {
