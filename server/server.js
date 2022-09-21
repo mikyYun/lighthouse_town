@@ -94,18 +94,19 @@ io.on("connection", (socket) => {
         let removedName = userState.username;
         delete currentUsers[userState.username];
         const alluserNames = Object.keys(currentUsers);
-
-        socket.to(room).emit("REMOVE LOGOUT USER", {
-          updatedUserNames: alluserNames,
-          removedName
-        });
+        userState["remove"] = true
+        
+        socket.to(room).emit("REMOVE LOGOUT USER", userState)
+        // socket.to(room).emit("REMOVE LOGOUT USER", {
+        //   updatedUserNames: alluserNames,
+        //   removedName
+        // });
         /** CHANGE ROOM */
       } else {
         socket.join(addTo);
         socket.to(addTo).emit("sendData", userState);
         socket.leave(room);
         userState["remove"] = true;
-  
         socket.to(room).emit("sendData", userState);
       }
       /** MOVE */
@@ -190,8 +191,13 @@ io.on("connection", (socket) => {
         delete currentUsers[name];
       removedName = name;
     });
+    const userState = {
+      username: removedName,
+      remove: true
+    }
     const updatedUserNames = Object.keys(currentUsers);
-    io.emit("REMOVE LOGOUT USER", { updatedUserNames, removedName });
+    io.emit("REMOVE LOGOUT USER", userState);
+    // io.emit("REMOVE LOGOUT USER", { updatedUserNames, removedName });
   });
 });
 

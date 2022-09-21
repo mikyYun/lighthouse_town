@@ -22,6 +22,7 @@ export default function Online({ changeRecipient }) {
 
   useEffect(() => {
     setOnlineUserNames(Object.keys(onlineList));
+    console.log("UPDATEONLINE", onlineList)
   }, [onlineList]);
 
   const addFriend = (userName, avatar) => {
@@ -79,7 +80,6 @@ export default function Online({ changeRecipient }) {
         <div className="user-container" key={user}>
           <div
             className="user"
-            // key={user}
             onClick={() => {
               setToggle(user);
             }}
