@@ -10,7 +10,7 @@ const Menu = (props) => {
   const { clicked, setRecipient, setBlockAddFriendAlert, friendList } = useContext(UserListContext);
   const [showProfile, setShowProfile] = useState(false);
   const username = props.username
-  const userID = location.state?.[3]
+  const userID = location.state.id
   // const [addFriend, setAddFriend ] = useState("Add")
   // setProfileShow
   // console.log("online users", online, userID, profiles)

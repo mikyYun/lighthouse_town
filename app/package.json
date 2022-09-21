@@ -2,6 +2,7 @@
   "name": "coding_buddy",
   "version": "0.1.0",
   "proxy": "http://localhost:8000/",
+  "homepage": "https://lighthouse-town.herokuapp.com",
   "private": true,
   "dependencies": {
     "@react-three/cannon": "^6.3.0",
