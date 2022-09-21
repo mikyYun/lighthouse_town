@@ -1,12 +1,7 @@
-import Cookies from "universal-cookie";
-// import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { UserListContext, SocketContext } from "../App";
+import { UserListContext } from "../App";
 const Logout = () => {
-  const {socket} = useContext(SocketContext)
-  const { navigate, setRoom, room, logout } = useContext(UserListContext);
-  // const navigate = useNavigate();
-
+  const { room, logout } = useContext(UserListContext);
 
   return (
     <div className="logout-box">

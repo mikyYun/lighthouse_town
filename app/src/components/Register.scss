@@ -81,13 +81,14 @@ $side-bar-color: #e2ecc2f5;
 .navigation {
   display: flex;
   justify-content: space-between;
-  /* flex-direction: column; */
   align-items: center;
   background-color: $back-color;
   height: 5rem;
   width: 100%;
 }
-.incorrect_password {
+.incorrect_password,
+.check-password-length,
+.check-username-length {
   color: red;
   display: inline-block;
 }

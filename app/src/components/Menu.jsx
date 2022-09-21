@@ -11,10 +11,8 @@ const Menu = (props) => {
   const [showProfile, setShowProfile] = useState(false);
   const username = props.username
   const userID = location.state?.[3]
-  // const [addFriend, setAddFriend ] = useState("Add")
-  // setProfileShow
-  // console.log("online users", online, userID, profiles)
   const currentFriendsNames = Object.keys(friendList)
+  
   const blockAddFriend = (str) => {
     setBlockAddFriendAlert(str)
     setTimeout(() => {
@@ -26,13 +24,8 @@ const Menu = (props) => {
     <div>
       <div className="menu">
         <div className="menu-action" onClick={(e) => {
-          // console.log(clicked.value) // clicked name
           const addFriendName = clicked.value
-          // console.log("add-friend clicked", username, addFriendName, userID);
-          // if addFriiendName is included in current friends list, block add
           currentFriendsNames.includes(addFriendName) ? blockAddFriend("block-friend") : socket.emit("add friend", {username, addFriendName, userID});
-          // console.log("add-friend clicked", e);
-          // socket.emit("add friend", {username, addFriendName, userID});
           props.close();
         }}>Add Friend</div>
 
@@ -42,9 +35,7 @@ const Menu = (props) => {
         }}>Send Message</div>
 
         <div className="menu-action" onClick={(e) => {
-          // console.log("clicked vie-porifle", clicked.value)
           setShowProfile(clicked.value);
-          // console.log(showProfile)
         }}>View Profile
           </div>
       </div>

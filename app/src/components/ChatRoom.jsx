@@ -4,21 +4,14 @@ import {
   useEffect,
   useContext,
   useRef,
-  createContext,
 } from "react";
 import MessageForm from "./MessageForm";
 import Avatar from "./Avatar.jsx";
 import Cookies from "universal-cookie";
-import {
-  SOCKET_EVENT,
-  makePublicMessage,
-  makePrivateMessage,
-} from "./socket/socket";
-import { SocketContext, UserListContext } from "../App.js";
+import { UserListContext } from "../App.js";
 // import { UserListContext, MsgContext } from "../App.js";
 
 function ChatRoom(props) {
-  const { socket } = useContext(SocketContext);
   const { room, message } = useContext(UserListContext);
   const cookies = new Cookies().getAll();
   const userCookie = cookies.userdata;
@@ -29,8 +22,8 @@ function ChatRoom(props) {
 
   useEffect(() => {
     console.log("MESSAGE", message)
-    // setMessageHistory((prev) => [...prev, message]);
-    // moveScrollToReceiveMessage();
+    setMessageHistory((prev) => [...prev, message]);
+    moveScrollToReceiveMessage();
   }, [message]);
 
   const moveScrollToReceiveMessage = useCallback(() => {
@@ -41,36 +34,7 @@ function ChatRoom(props) {
       });
     }
   }, []);
-  // const handleReceiveMessage = useCallback(
-  //   (pongData) => {
-  //     const newPublicMessage = makePublicMessage(pongData);
-  //     setMessages((prev) => [...prev, newPublicMessage]);
-  //     moveScrollToReceiveMessage();
-  //   },
-  //   [moveScrollToReceiveMessage]
-  // );
-
-  // const handleReceivePrivateMessage = useCallback(
-  //   (pongData) => {
-  //     const newPrivateMessage = makePrivateMessage(pongData);
-  //     setMessages((prev) => [...prev, newPrivateMessage]);
-  //     moveScrollToReceiveMessage();
-  //   },
-  //   [moveScrollToReceiveMessage]
-  // );
-
-  // useEffect(() => {
-  //   socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceivePrivateMessage);
-
-  //   return () => {
-  //     socket.off();
-  //   };
-  // }, [socket, handleReceiveMessage]);
-
-  // useEffect(() => {
-  //   console.log(recipient);
-  // }, [recipient]);
-
+  
   const createMessage = () => {
     if (messageHistory.length > 0) {
       return messageHistory.map((msgContent, index) => {

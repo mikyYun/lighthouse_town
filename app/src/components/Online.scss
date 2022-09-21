@@ -36,7 +36,6 @@ $side-bar-color: #e2ecc2f5;
     justify-content: center;
     .user {
       background-color: $side-bar-color;
-      // min-width: 125px;
       font-size: 1.4rem;
       width: 80%;
       border-radius: 5px;
@@ -45,8 +44,6 @@ $side-bar-color: #e2ecc2f5;
       cursor: pointer;
       padding: 5px;
       padding-left: 45px;
-      // max-width: 200px;
-      // overflow: hidden;
       cursor: pointer;
       &:hover {
         background-color: #bada55;
@@ -71,7 +68,6 @@ $side-bar-color: #e2ecc2f5;
       height: 4rem;
       padding: 5px;
       position: absolute;
-      // top: 50px;
       top: 0;
       cursor: context-menu;
       z-index: 11;
@@ -104,96 +100,3 @@ $side-bar-color: #e2ecc2f5;
     }
   }
 }
-
-// .online-user {
-//   width: 80%;
-//   background-color: $side-bar-color;
-//   text-align: center;
-//   border-radius: 5px;
-//   margin: 10px auto;
-//   cursor: pointer;
-
-//   li {
-//     list-style: none;
-//     padding: 10px;
-//     height: 45px;
-//     font-size: 1.4rem;
-//   }
-//   li:hover {
-//     background-color: $main-color;
-//     border-radius: 5px;
-//   }
-
-//   .users-online {
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-
-//     p {
-//       margin: 0 10px;
-//     }
-//   }
-// }
-
-// .language {
-//   background-color: $main-color;
-// }
-
-// .menu {
-//   margin: 0 auto;
-//   font-size: 1.1rem;
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   justify-content: center;
-//   padding: 0;
-//   background-color: whitesmoke;
-
-//   .menu-action {
-//     width: 100%;
-//     cursor: pointer;
-//     padding: 0.5em 0;
-//     list-style: none;
-//   }
-//   .menu-action:hover {
-//     background-color: $main-color;
-//   }
-// }
-
-// .div_profile {
-//   padding-top: 20px;
-//   background-color: $main-color;
-//   /* border-radius: 10px; */
-//   margin: 10px auto 0 auto;
-//   width: 100%;
-//   height: auto;
-
-//   .profile {
-//     padding-bottom: 20px;
-//     width: 90%;
-//     margin: 0 auto;
-//   }
-
-//   .profile-email {
-//     font-size: 1rem;
-//     margin-bottom: 13px;
-//     border-bottom: $side-bar-color 3px solid;
-//     padding-bottom: 10px;
-//   }
-//   .profile-language {
-//     display: flex;
-//     flex-wrap: wrap;
-//     margin: 0 30px;
-
-//     .list-languages {
-//       align-items: center;
-//       font-size: 1rem;
-//       padding: 0.2em;
-//       height: 1.3rem;
-//     }
-//   }
-
-//   p {
-//     margin-bottom: 0;
-//   }
-// }

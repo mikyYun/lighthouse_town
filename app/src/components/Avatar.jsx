@@ -1,5 +1,4 @@
 export default function Avatar(props) {
-  // console.log('PROPS URL:', props.url)
   const loadAvatar = (avatar_id) => {
     let url = "../images/"
     switch(avatar_id) {
@@ -23,8 +22,6 @@ export default function Avatar(props) {
   return (
     <img className="user-avatar" 
     src={loadAvatar(props.url)}
-    // src="../images/boy1-face.png"
      alt="avatar" />
-    // <img className="user-avatar" src={"../images/boy1-face.png"} alt="avatar" />
   )
 }

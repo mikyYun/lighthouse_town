@@ -1,18 +1,15 @@
-import { useState, useCallback, useContext, useRef, useEffect } from "react";
+import { useState, useCallback, useContext, useRef } from "react";
 import { SOCKET_EVENT } from "./socket/socket.js";
 import { SocketContext, UserListContext } from "../App.js";
 import Cookies from "universal-cookie";
 
 
-function MessageForm({ username, recipient, user }) {
+function MessageForm({ username, recipient }) {
   const [typingMessage, setTypingMessage] = useState("");
   const { socket } = useContext(SocketContext);
-  const { message, room } = useContext(UserListContext);
+  const { room } = useContext(UserListContext);
   const [textareaDisable, setTextareaDisable] = useState(true)
   const focusTextArea = useRef()
-  
-  // socket, socket_event object
-  // textarea에서 텍스트를 입력하면 typingMessage state를 변경합니다.
   const handleChangeTypingMessage = useCallback((event) => {
     setTypingMessage(event.target.value);
   }, []);
@@ -21,18 +18,16 @@ function MessageForm({ username, recipient, user }) {
 
   const handleSendMesssage = useCallback(() => {
     const noContent = typingMessage.trim() === "";
-    // /** TRIM MESSAGE IS EMPTY */
+    // /** TRIM MESSAGE IF EMPTY */
     if (noContent) {
-      console.log(noContent)
       return;
     }
 
     const cookie = new Cookies().getAll().userdata
     const sender = username
     const avatar = cookie.avatar
-    console.log("RECIPIENT", recipient)
     if (recipient !== "all") {
-    //   /** PRIVATE CHAT */
+      /** PRIVATE CHAT */
       socket.emit(SOCKET_EVENT.SEND_MESSAGE, {
         username,
         content: typingMessage,
@@ -53,7 +48,6 @@ function MessageForm({ username, recipient, user }) {
       });
     }
     setTypingMessage("");
-    console.log("CLICKED")
   }, [socket, username, typingMessage, recipient]);
 
   return (

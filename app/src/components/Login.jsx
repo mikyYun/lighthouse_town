@@ -1,8 +1,7 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Login.scss";
-import { UserListContext } from "../App.js";
 
 export default function Login(props) {
   const [userEmail, setUserEmail] = useState("");
@@ -59,7 +58,7 @@ export default function Login(props) {
                     setUser(target)
                   }
                 })
-                .catch((err, res) => {
+                .catch((err) => {
                   alert("Invalid information. Please try again");
                 });
               e.preventDefault();

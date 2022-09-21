@@ -1,11 +1,10 @@
-import axios from "axios";
 import Online from "./Online";
 import FriendList from "./FriendsList";
 import cameraControl from "./helper/cameraControl";
 import React, { useEffect, useRef, useState, useContext, useMemo } from "react";
 import Characters from "./helper/Characters";
 import { SocketContext, UserListContext } from "../App";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Cookies from "universal-cookie";
 const ScreenSizeDetector = require("screen-size-detector");
 
@@ -13,23 +12,17 @@ const Canvas = (props) => {
   const { socket } = useContext(SocketContext);
   const {
     room,
-    userCookie,
     updateUserState,
-    onlineLIst,
     reSendData,
     setReSendData,
-    roomList,
     setRoom,
     navigate,
     message,
-    backToHone
   } = useContext(UserListContext);
   const [username, setUsername] = useState();
   const canvasRef = useRef(null);
   const location = useLocation();
-  // const navigate = useNavigate();
   const [path, setPath] = useState();
-  // const path = location.pathname.split("/")[2];
   const [msg, setMsg] = useState({});
   const [userCharacter, setUserCharacter] = useState({});
   const [otherUsersCharacter, setOtherUsersCharacter] = useState({});
@@ -37,16 +30,11 @@ const Canvas = (props) => {
     x: 0,
     y: 0,
   });
-  // const [ctx, setCtx] = useState()
-  // const [targetUser, setTargetUser] = useState();
   const { changeRecipient } = props;
-  const [sizeCheck, setSizeCheck] = useState();
-  // const screen = new ScreenSizeDetector();
   let canvas;
 
   useEffect(() => {
     const screen = new ScreenSizeDetector();
-    // console.log("LOCATION", location, "NAVIGATE", navigate)
 
     const keyDown = (e) => {
       const keyCode = e.keyCode;
@@ -186,11 +174,6 @@ const Canvas = (props) => {
     /** FIRST RENDERING */
     const cookies = new Cookies();
     const allCookies = cookies.getAll();
-    // if (!allCookies.userdata) {
-    //   alert("INVALID ACCESS");
-    //   // return <Redirect to="/" />
-    // }
-    //  else 
     if (allCookies.userdata) {
       const currentPath = location.pathname.split("/")[2];
       setPath(currentPath);
@@ -231,7 +214,6 @@ const Canvas = (props) => {
           x: 0,
           y: 0,
         });
-        //   [userCharacter[userData.userName]] = userCharacter[userData.userName].reset();
       }
       if (!userCharacter[userData.userName]) {
         setUserCharacter({
@@ -247,7 +229,6 @@ const Canvas = (props) => {
     canvas = canvasRef.current;
     canvas.width = 1120;
     canvas.height = 640;
-    // setCtx(canvas.getContext("2d"))
     const ctx = canvas.getContext("2d");
     userCharacter[username].drawFrame(ctx);
     userCharacter[username].showName(ctx);

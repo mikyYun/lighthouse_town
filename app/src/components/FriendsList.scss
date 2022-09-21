@@ -4,6 +4,7 @@ $second-color: #9883c4;
 $list-color: #5f436d;
 $side-bar-color: #e2ecc2f5;
 
+
 .friendsList {
   display: flex;
   flex-direction: column;
@@ -55,7 +56,6 @@ $side-bar-color: #e2ecc2f5;
     }
     .name {
       text-align: center;
-      // max-width: calc(125px - 2rem);
       margin: 0;
       overflow-x: hidden;
     }
@@ -79,6 +79,7 @@ $side-bar-color: #e2ecc2f5;
     color: white;
     cursor: context-menu;
     padding-bottom: 10px;
+    z-index: 100;
     .material-icons.close {
       position: absolute;
       right: 5px;

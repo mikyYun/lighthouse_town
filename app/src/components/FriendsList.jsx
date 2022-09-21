@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useContext, useState, useMemo } from "react";
+import { useEffect, useContext, useState } from "react";
 import { SocketContext, UserListContext } from "../App.js";
 import "./FriendsList.scss";
 import Cookies from "universal-cookie";
@@ -7,7 +7,7 @@ import Avatar from "./Avatar.jsx";
 
 export default function FriendList({ changeRecipient }) {
   const { socket } = useContext(SocketContext);
-  const { friendList, userCookie, updateFriendList } =
+  const { userCookie, updateFriendList } =
     useContext(UserListContext);
   const [toggle, setToggle] = useState(false);
   const [friends, setFriens] = useState({});

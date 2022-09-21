@@ -1,7 +1,6 @@
 $back-color: #1f1f1e;
 $main-color: #b0d36a;
 $second-color: #9883c4;
-// $form-color: #009f92;
 
 body{
   background-color: $back-color;
@@ -19,23 +18,9 @@ body{
     background-size: contain;
     width: 400px;
     height: 170px;
-    /* margin-bottom: 40px; */
     image-rendering: pixelated;
 
   }
-  // h1 {
-  //   color: $main-color;
-  //   font-size: 6rem;
-  //   font-weight: bolder;
-  //   font-family: 'VT323', monospace;
-  // }
-
-  // h2 {
-  //   color: $main-color;
-  //   font-size: 4rem;
-  //   font-weight: bolder;
-  //   font-family: 'VT323', monospace;
-  // }
 }
 
 #form_login {
@@ -43,7 +28,6 @@ body{
   width: 30%;
   min-width: 450px;
   max-width: 550px;
-
   height: 350px;
   margin-top: 30px;
   padding: 50px;
@@ -69,7 +53,6 @@ body{
     margin-bottom: 0;
     color: whitesmoke;
   }
-
   .btns {
     width: 100%;
     display: flex;
@@ -77,9 +60,7 @@ body{
     align-items: center;
     margin-top: 1.5rem;
   }
-
 }
-
 
 .btn {
   background-color: #b0d36a;
