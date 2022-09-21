@@ -31,7 +31,7 @@ export default function FriendList({ changeRecipient }) {
           setToggle(value);
         })
         .catch((err) => {
-          console.log("ERROR", err);
+          console.log(err);
         });
     } else {
       setToggle(value);

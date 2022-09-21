@@ -3,11 +3,9 @@ import "./App.css";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import { socket, SOCKET_EVENT } from "./components/socket/socket.js";
-
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Game from "./components/Game";
-
 import NotReady from "./components/NotReady";
 
 export const SocketContext = createContext(socket);
@@ -35,7 +33,7 @@ function App() {
   };
   
   const backToHone = () => {
-    navigate("")
+    navigate("/")
   }
 
   useEffect(() => {
@@ -53,7 +51,7 @@ function App() {
     const myName = cookie.userdata?.userName;
 
     /** ALL SOCKET RECEIVER */
-    socket && socket.on(room, ({ userNames, updatedUserName, avatar, reSend }) => {
+    socket && socket.on(room, ({ updatedUserName, avatar, reSend }) => {
       if (reSend) setReSendData(reSend);
       
       if (myName !== updatedUserName && updatedUserName ) {
@@ -79,8 +77,6 @@ function App() {
     });
 
     socket && socket.on("REMOVE LOGOUT USER", ({ updatedUserNames, removedName }) => {
-      console.log(updatedUserNames)
-      const filterUserNames = filterMyName(updatedUserNames, myName, removedName);
       const copyOnlineList = {...onlineList}
       delete copyOnlineList[removedName]
       setOnlineList(copyOnlineList);
@@ -94,7 +90,6 @@ function App() {
     });
 
     socket.on(`sendData`, (userState) => {
-      console.log("CHECKPOINT")
       if (userState.remove) {
         const copyOnlineList = { ...onlineList };
         delete copyOnlineList[userState.username];
@@ -119,7 +114,6 @@ function App() {
 
     /** MESSAGES */
     socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, (messageContents) => {
-      console.log("messageContents", messageContents)
       setMessage({...messageContents})
     })
     return () => {
@@ -132,7 +126,6 @@ function App() {
     setUserCookie(userData);
     const cookies = new Cookies()
     const cookie = cookies.getAll();
-    // const myName = cookie.userdata?.userName;
     if (cookie.userdata) {
       /** IF cookie userdata EXIST, update with new data */
       cookies.set("userdata", userData, { maxAge: 36000 });
@@ -198,6 +191,8 @@ function App() {
           <Route path="/login" element={<Login setUser={createSocketIdNameObj} />} />
           {roomRoute}
           <Route path={`/notready`} element={<NotReady />} />
+          <Route path={`/:id`} element={<NotReady />} />
+          <Route path={`/game/:id`} element={<NotReady />} />
           {/* <Route path={`/game/${}`} element={<RETURN />} /> */}
         </Routes>
       </UserListContext.Provider>

@@ -29,7 +29,6 @@ export const makePublicMessage = pongData => {
     }
 
     case SOCKET_EVENT.SEND_MESSAGE: {
-      // console.log(`${nickname} has sent a public message.`)
       contentLabel = String(content); //보내는 메세지
       break;
     }

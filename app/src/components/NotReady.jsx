@@ -1,5 +1,6 @@
 import { UserListContext } from "../App";
 import { useEffect, useContext, useState } from "react";
+import Cookies from "universal-cookie";
 import "./NotReady.scss";
 const NotReady = () => {
   const [count, setCount] = useState(3);
@@ -11,8 +12,10 @@ const NotReady = () => {
     const goBack = setInterval(() => {
       if (count >0) setCount(count - 1);
       if (count === 0) {
+        const cookie = new Cookies().getAll()
         return setTimeout(() => {
-          navigate("/game/plaza");
+          cookie.userdata ? (navigate("/game/plaza")) : (navigate("/"))
+          // navigate("/game/plaza");
         }, 100);
       }
     }, [1000]);

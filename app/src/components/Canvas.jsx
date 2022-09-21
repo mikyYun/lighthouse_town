@@ -174,6 +174,7 @@ const Canvas = (props) => {
     /** FIRST RENDERING */
     const cookies = new Cookies();
     const allCookies = cookies.getAll();
+    if (!allCookies.userdata) navigate("/")
     if (allCookies.userdata) {
       const currentPath = location.pathname.split("/")[2];
       setPath(currentPath);

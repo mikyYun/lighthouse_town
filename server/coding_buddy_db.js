@@ -10,44 +10,6 @@ const pool = new Pool({
   port: process.env.PGPORT
 });
 
-/** LANGUAGES MATCHING WITH ID AND LANGUAGE_NAME */
-/** ONLY ONCE */
-
-const getLanguages = () => {
-  const langIDAndName = {};
-  pool.query(`
-    SELECT id, language_name FROM languages
-  `, (err, result) => {
-    result.rows.map(idAndName => {
-      langIDAndName[idAndName.id] = idAndName.language_name;
-    });
-    return langIDAndName;
-  }
-  );
-};
-/** LANG_ID : LANG_NAME */
-const languageIdAndName = getLanguages();
-
-/** GET to get all users from DB */
-const getUsers = (req, res) => {
-  pool.query("SELECT * FROM users ORDER BY id ASC", (err, result) => {
-    if (err) throw err;
-    res.status(200).json(result.rows);
-    // console.log("result.rows - coding_buddy_db.js", result.rows)
-    return result.rows;
-  });
-};
-
-const getFriendsName = (userID) => {
-  pool.query(`
-    SELECT username FROM users 
-      JOIN favorites 
-        ON users.id = favorites.added
-      WHERE favorites.added_by = $1
-      RETURNING *
-  `, [userID]);
-};
-
 /** GET to identify user information */
 const tryLogin = (req, res) => {
   const email = req.body.userEmail;
@@ -222,17 +184,6 @@ const getUserInfo = (req, res) => {
 };
 
 
-const findAvatar = async (username) => {
-  const avatarData = await pool.query(
-    `SELECT avatar_id
-      FROM users
-      WHERE users.username = $1`,
-    [username]);
-  const avatar_id = await avatarData.rows[0];
-  return avatar_id;
-};
-
-
 
 const addFriend = (req, res) => {
   const { userID, add, avatar } = req.body;
@@ -284,7 +235,6 @@ const removeFriend = (req, res) => {
       ) AND favorites.added_by = $1
   `, bind, (err, result) => {
     if (err) res.status(401).send(false)
-    // if (err) console.log(err)
     const updateOnline = {
       remove: remove
     }
@@ -292,6 +242,7 @@ const removeFriend = (req, res) => {
   })
 }
 
+/** NOT IMPLEMENTED */
 // PUT : updated data in an existing user
 const updateUser = (req, res) => {
   const id = parseInt(req.params.id);
@@ -304,6 +255,7 @@ const updateUser = (req, res) => {
   res.status(200).send(`User modified with ID: ${id}`);
 };
 
+/** NOT IMPLEMENTED */
 // DELETE : delete a user
 const deleteUser = (req, res) => {
   const id = parseInt(req.params.id);
@@ -325,11 +277,6 @@ const poolGroup = {
   getUserInfo,
   addFriend,
   removeFriend
-  // findAvatar,
-  // filterEssentials,
-  // getUsers,
-  // updateUser,
-  // deleteUser
 };
 
 /** EXPORT poolGroup as a MODULE */

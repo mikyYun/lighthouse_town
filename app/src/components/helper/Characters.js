@@ -82,7 +82,6 @@ class Characters {
   };
 
   stop = (keyCode) => {
-    console.log(this.state.x, this.state.y);
     if (keyCode == 37 || keyCode == 38 || keyCode == 39 || keyCode == 40) {
       this.state.frameCount = 0;
     }
@@ -137,7 +136,6 @@ class Characters {
       ) : (
       ((lines.length / 2 - lines.length % (2 / 2)) * 20 - 20)
       )
-    console.log(messageYPosition)
     for (let i = 0; i < lines.length; i += 2) {
       let message;
       if (lines[i + 1]) {

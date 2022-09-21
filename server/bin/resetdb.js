@@ -6,7 +6,6 @@ const dbParams = require("../lib/db.js");
 const db = new Client(dbParams);
 
 const runSchemaFiles = async () => {
-  // console.log("FINDING")
   const schemaFilenames = fs.readdirSync("./db/schema");
   console.log(schemaFilenames)
   for (const fn of schemaFilenames) {
@@ -17,14 +16,6 @@ const runSchemaFiles = async () => {
   }
 };
 
-// const runSeedFiles = async () => {
-//   const schemaFilenames = fs.readdirSync("../db/seeds");
-
-//   for (const fn of schemaFilenames) {
-//     const sql = fs.readFileSync(`../db/seeds/${fn}`, "utf8");
-//     await db.query(sql);
-//   }
-// };
 
 const runResetDB = async () => {
   try {
@@ -32,8 +23,7 @@ const runResetDB = async () => {
     dbParams.connectionString && console.log("Connecting to PG");
     await db.connect();
     await runSchemaFiles();
-    // await runSeedFiles();
-    db.end;
+    db.end();
   } catch (err) {
     console.log("ERROR", err);
     db.end;

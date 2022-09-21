@@ -15,13 +15,12 @@ function ChatRoom(props) {
   const { room, message } = useContext(UserListContext);
   const cookies = new Cookies().getAll();
   const userCookie = cookies.userdata;
-  const username = userCookie.userName;
+  const username = userCookie?.userName;
   const [messageHistory, setMessageHistory] = useState([]);
   const { recipient } = props;
   const chatWindow = useRef(null);
 
   useEffect(() => {
-    console.log("MESSAGE", message)
     setMessageHistory((prev) => [...prev, message]);
     moveScrollToReceiveMessage();
   }, [message]);
