@@ -192,7 +192,6 @@ const registerUser = (req, res) => {
 
 const getUserInfo = (req, res) => {
   const username = req.body.username;
-  console.log(username);
   pool.query(`
     SELECT languages.language_name, user_info.email
      FROM languages
@@ -278,6 +277,25 @@ const addFriend = (req, res) => {
   });
 };
 
+const removeFriend = (req, res) => {
+  const { userID, remove } = req.body;
+  const bind = [userID, remove];
+  console.log("BIND", bind)
+  pool.query(`
+  DELETE FROM favorites
+    WHERE favorites.added IN (
+      SELECT users.id FROM users
+        WHERE users.username = $2
+      ) AND favorites.added_by = $1
+  `, bind, (err, result) => {
+    if (err) res.status(401).send(false)
+    // if (err) console.log(err)
+    const updateOnline = {
+      remove: remove
+    }
+    if (!err) res.status(200).send({updateOnline});
+  })
+}
 
 // PUT : updated data in an existing user
 const updateUser = (req, res) => {
@@ -310,7 +328,8 @@ const poolGroup = {
   tryLogin,
   registerUser,
   getUserInfo,
-  addFriend
+  addFriend,
+  removeFriend
   // findAvatar,
   // filterEssentials,
   // getUsers,

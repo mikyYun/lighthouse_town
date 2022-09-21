@@ -7,9 +7,9 @@ import Avatar from "./Avatar.jsx";
 
 export default function FriendList({ changeRecipient }) {
   const { socket } = useContext(SocketContext);
-  const { friendList, userCookie } = useContext(UserListContext);
+  const { friendList, userCookie, updateFriendList } =
+    useContext(UserListContext);
   const [toggle, setToggle] = useState(false);
-  const cookies = new Cookies();
   const [friends, setFriens] = useState({});
   const [showFriends, setShowFriends] = useState("hide");
   const [friendsInfo, setFriendsInfo] = useState({});
@@ -47,10 +47,22 @@ export default function FriendList({ changeRecipient }) {
     // console.log(toggle);
   };
 
-  const removeFriend = () => {
+  const removeFriend = (removeUserName) => {
+    const cookies = new Cookies().getAll();
+    const userData = cookies.userdata;
+    const userID = userData.userID;
     axios
-      .post("")
-  }
+      .post("/user/remove", { userID, remove: removeUserName })
+      .then((res) => {
+        const updateOnline = res.data.updateOnline;
+        updateFriendList(updateOnline);
+        setToggle(false)
+      })
+      .catch((err) => {
+        alert("Failed. Please contact us");
+        console.log(err)
+      });
+  };
 
   // useMemo(() => {
   //   socket.emit("")
@@ -64,16 +76,16 @@ export default function FriendList({ changeRecipient }) {
   }, [socket]);
 
   useEffect(() => {
+    const cookies = new Cookies();
     const currentCookies = cookies.getAll();
     // console.log(currentCookies.userdata)
     // console.log(currentCookies.userdata.userFriendsList);
-    console.log(userCookie, currentCookies.userdata.userFriendsList)
+    // console.log(userCookie, currentCookies.userdata.userFriendsList);
     setFriens({ ...currentCookies.userdata.userFriendsList });
   }, [userCookie]);
 
   const friendNames = Object.keys(friends);
   const friendsList = friendNames.map((friend, i) => {
-
     return (
       <div
         key={i}
@@ -126,9 +138,14 @@ export default function FriendList({ changeRecipient }) {
             >
               SEND MESSAGE
             </div>
-            {/* <div className="delete_friend" onClick={() => {}}>
+            <div
+              className="delete_friend"
+              onClick={() => {
+                removeFriend(friendName);
+              }}
+            >
               DELETE
-            </div> */}
+            </div>
           </div>
         </div>
         {/* {languageList} */}

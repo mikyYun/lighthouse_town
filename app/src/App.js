@@ -207,14 +207,20 @@ function App() {
   const updateFriendList = (updateOnline) => {
     const cookies = new Cookies()
     const userData = cookies.getAll().userdata
-    userData.userFriendsList = {
-      ...userData.userFriendsList,
-      ...updateOnline
+    if (updateOnline.remove) {
+      delete userData.userFriendsList[updateOnline.remove]
+    } else {
+      userData.userFriendsList = {
+        ...userData.userFriendsList,
+        ...updateOnline
+      }
     }
     cookies.set("userdata", userData, { maxAge: 36000 });
 
     setUserCookie(userData)
   }
+
+
 
   const roomLists = Object.keys(roomList)
   const roomRoute = roomLists.map(roomName => {
