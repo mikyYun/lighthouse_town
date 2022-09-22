@@ -1,5 +1,5 @@
 {
-  "main": "./server/server.js",
+  "main": "server.js",
   "engines": {
     "npm": "^8.5.5",
     "node": "^16.15.0"
