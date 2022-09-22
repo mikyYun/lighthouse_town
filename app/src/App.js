@@ -30,7 +30,6 @@ function App() {
   const navigate = useNavigate();
   const [reSendData, setReSendData] = useState(false);
   const [message, setMessage] = useState({});
-  console.log("process.env", process.env.REACT_APP_BACK_URL)
   if (process.env.REACT_APP_BACK_URL) {
     axios.defaults.baseURL = process.env.REACT_APP_BACK_URL;
   }
