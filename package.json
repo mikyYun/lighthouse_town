@@ -4,7 +4,8 @@
     "node": "^16.15.0"
   },
   "scripts": {
-    "postinstall": "concurrently \"cd ./server && npm install\" \"cd ./app && npm install && npm run build\""
+    "postinstall": "concurrently \"cd ./server && npm install && npm start\" \"cd ./app && npm install && npm run build\"",
+    "start": "concurrently \"cd ./server && npm start\" \"cd ../app && npm start\""
   },
   "dependencies": {
     "concurrently": "^7.4.0"
