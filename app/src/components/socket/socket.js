@@ -1,5 +1,5 @@
 import socketIo from "socket.io-client";
-export const socket = socketIo("http://localhost:8000"
+export const socket = socketIo(process.env.REACT_APP_BACK_URL
 , {
   transports: ["websocket"]
 }
