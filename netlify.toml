@@ -1,4 +1,4 @@
 [build]
   base = "app"
   publish = "build/"
-  command = "cd server/npm start && cd ../app && npm run build"
+  command = "cd npm run build"
