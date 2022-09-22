@@ -3,14 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-  "engines": {
-    "node": "16.x",
-    "npm": "8.x",
-    "yarn": "1.x"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js",
+    "start": "serve -s build",
     "dev": "nodemon server.js",
     "db:reset": "node bin/resetdb.js",
     "dev:client": "cd ../app && npm install && npm build",
