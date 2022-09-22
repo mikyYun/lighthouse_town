@@ -8,6 +8,7 @@ html, body {
   box-sizing: border-box;
   font-size: 16px;
   font-family: "Share Tech Mono", monospace;
+  background-color: #1f1f1e;
 }
 @media screen and (max-width: 1250px) {
   html {
@@ -24,7 +25,8 @@ html, body {
     font-size: 10px;
   }
 }
-
+#root {
+}
 .logo_img {
   width: 5rem;
   height: 5rem;

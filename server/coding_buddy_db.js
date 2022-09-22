@@ -116,6 +116,7 @@ const insertRow = (userData, res) => {
 
 /** POST REGISTER NEW USER */
 const registerUser = (req, res) => {
+  console.log("UNIQUE CHECK")
   const userName = req.body.userInfo.userName;
   const userPassword = req.body.userInfo.userPassword;
   const userEmail = req.body.userInfo.userEmail;
@@ -136,7 +137,9 @@ const registerUser = (req, res) => {
   `, [userName, userEmail])
     .then(response => {
       /** GIVEN username OR email IS ALREADY IN DB */
+      
       if (response.rows[0]) {
+        console.log("IS UNIQUE")  
         isUnique = false;
         res.status(409).send({ isUnique });
       }

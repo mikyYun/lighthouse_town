@@ -3,9 +3,9 @@ import axios from "axios";
 import "./Register.scss";
 
 export default function Register(props) {
-  const [userEmail, setUserEmail] = useState();
-  const [userName, setUserName] = useState();
-  const [userPassword, setUserPassword] = useState();
+  const [userEmail, setUserEmail] = useState("");
+  const [userName, setUserName] = useState("");
+  const [userPassword, setUserPassword] = useState("");
   const [userLanguages, setUserLanguages] = useState([]);
   const [userAvatar, setUserAvatar] = useState(1); // 기본 아바타 1
   const [incorrectPassword, setIncorrectPassword] =

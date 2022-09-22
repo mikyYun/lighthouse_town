@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const fs = require("fs");
 const { Client } = require("pg");
-const dbParams = require("../../lib/db.js");
+const dbParams = require("../lib/db.js");
 const db = new Client(dbParams);
 
 const runSchemaFiles = async () => {
