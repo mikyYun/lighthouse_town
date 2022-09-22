@@ -45,6 +45,7 @@ function MessageForm({ username, recipient }) {
       });
     }
     setTypingMessage("");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, username, typingMessage, recipient]);
 
   return (

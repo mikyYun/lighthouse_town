@@ -43,14 +43,6 @@ class Characters {
     this.state.y = 420;
     this.frameCount = 0;
     this.currentDirection = 0;
-    // this.state = {
-    //   username: this.username,
-    //   x: 200,
-    //   y: 420,
-    //   currentDirection: 0,
-    //   frameCount: 0,
-    //   avatar: this.avatar
-    // }
   };
 
   // add websocket
@@ -130,7 +122,7 @@ class Characters {
     ctx.fillStyle = "blue";
     // this.message = ""
     // const lineHeight = 30
-    const lines = msg.split(" ").filter(word => word != "");
+    const lines = msg.split(" ").filter(word => word !== "");
     let messageYPosition = lines.length % 2 === 0 ? (
       ((lines.length / 2) * 20 - 20)
       ) : (

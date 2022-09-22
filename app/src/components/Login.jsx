@@ -12,10 +12,6 @@ export default function Login(props) {
     navigate("/register");
   };
 
-  const updateLoggedUser = (user) => {
-    props.setLoggedUser(user)
-  };
-
   return (
     <div className="login-page">
       <div className="logo"></div>

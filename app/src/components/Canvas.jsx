@@ -230,6 +230,7 @@ const Canvas = (props) => {
 
   useEffect(() => {
     /** USER AVATAR ONLY */
+    // eslint-disable-next-line
     canvas = canvasRef.current;
     canvas.width = 1120;
     canvas.height = 640;
@@ -302,6 +303,7 @@ const Canvas = (props) => {
 
   useEffect(() => {
     setRoom(path);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path]);
 
   function handleRoom(roomTo) {

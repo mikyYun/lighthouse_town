@@ -20,6 +20,7 @@ const NotReady = () => {
       }
     }, [1000]);
     return () => clearInterval(goBack)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [count]);
 
   const goBackMessage = () => {
