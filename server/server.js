@@ -230,18 +230,20 @@ app.post("/user/remove", (req, res) => {
 app.post("/logout", (req, res) => {
 
 });
+
 app.post("/connection", (req, res) => {
   pool.query(`
     SELECT * FROM users
-  `, (err, res) => {
-
-  })
+  `,)
   .then((result) => {
     res.status(200).send(result.rows)
   })
   .catch(err => {
     res.status(409).send(err)
   })
+})
+app.get("/connection", (req, res) => {
+  res.status(200).send({TEST:TEST})
 })
 
 httpServer.listen(PORT, () => {
