@@ -2,7 +2,7 @@
   "name": "coding_buddy",
   "version": "0.1.0",
   "proxy": "http://localhost:8000/",
-  "homepage": "https://lighthouse-town.herokuapp.com",
+  "homepage": "https://lighthouse-town.netlify.app",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
