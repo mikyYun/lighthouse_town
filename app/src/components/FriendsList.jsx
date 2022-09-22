@@ -1,4 +1,4 @@
-import axios from "axios";
+// import axios from "axios";
 import { useEffect, useContext, useState } from "react";
 import { SocketContext, UserListContext } from "../App.js";
 import "./FriendsList.scss";
@@ -6,9 +6,8 @@ import Cookies from "universal-cookie";
 import Avatar from "./Avatar.jsx";
 
 export default function FriendList({ changeRecipient }) {
-  const { socket } = useContext(SocketContext);
-  const { userCookie, updateFriendList } =
-    useContext(UserListContext);
+  const { socket, axios } = useContext(SocketContext);
+  const { userCookie, updateFriendList } = useContext(UserListContext);
   const [toggle, setToggle] = useState(false);
   const [friends, setFriens] = useState({});
   const [showFriends, setShowFriends] = useState("hide");
@@ -47,11 +46,11 @@ export default function FriendList({ changeRecipient }) {
       .then((res) => {
         const updateOnline = res.data.updateOnline;
         updateFriendList(updateOnline);
-        setToggle(false)
+        setToggle(false);
       })
       .catch((err) => {
         alert("Failed. Please contact us");
-        console.log(err)
+        console.log(err);
       });
   };
 

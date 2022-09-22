@@ -1,6 +1,6 @@
-import axios from "axios";
+// import axios from "axios";
 import { useEffect, useContext, useState } from "react";
-import { UserListContext } from "../App.js";
+import { UserListContext, SocketContext } from "../App.js";
 import Avatar from "./Avatar.jsx";
 import "./Online.scss";
 import Cookies from "universal-cookie";
@@ -8,14 +8,13 @@ import Cookies from "universal-cookie";
 export default function Online({ changeRecipient }) {
   const { room, userCookie, onlineList, updateFriendList } =
     useContext(UserListContext);
+  const { axios } = useContext(SocketContext);
   const [toggle, setToggle] = useState(false);
   const [showOnline, setShowOnline] = useState("show");
   const toggleOnline = (showOnline) => {
     showOnline === "show" ? setShowOnline("hide") : setShowOnline("show");
   };
-  const [onlineUserNames, setOnlineUserNames] = useState(
-    []
-  );
+  const [onlineUserNames, setOnlineUserNames] = useState([]);
   useEffect(() => {
     setOnlineUserNames([]);
   }, [room]);
@@ -30,7 +29,7 @@ export default function Online({ changeRecipient }) {
     axios
       .post("/user/add", { userID, add: userName, avatar })
       .then((res) => {
-        const updateOnline = res.data.updateOnline
+        const updateOnline = res.data.updateOnline;
         updateFriendList(updateOnline);
       })
       .catch((err) => {
@@ -73,23 +72,25 @@ export default function Online({ changeRecipient }) {
     );
   };
 
-  const onlineUserList = onlineUserNames.length > 0 && onlineUserNames.forEach((user) => {
-    if (user !== userCookie.userName && onlineList[user])
-    return (
-        <div className="user-container" key={user}>
-          <div
-            className="user"
-            onClick={() => {
-              setToggle(user);
-            }}
-          >
-            <Avatar url={onlineList[user].avatar} />
-            <div className="name">{user}</div>
+  const onlineUserList =
+    onlineUserNames.length > 0 &&
+    onlineUserNames.forEach((user) => {
+      if (user !== userCookie.userName && onlineList[user])
+        return (
+          <div className="user-container" key={user}>
+            <div
+              className="user"
+              onClick={() => {
+                setToggle(user);
+              }}
+            >
+              <Avatar url={onlineList[user].avatar} />
+              <div className="name">{user}</div>
+            </div>
+            {toggle === user && userInfoBox(user, onlineList[user].avatar)}
           </div>
-          {toggle === user && userInfoBox(user, onlineList[user].avatar)}
-        </div>
-      );
-  });
+        );
+    });
 
   return (
     <div className={`online-list ${showOnline}`}>

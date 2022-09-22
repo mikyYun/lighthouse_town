@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect, createContext } from "react";
 import "./App.css";
 import { Routes, Route, useNavigate } from "react-router-dom";
@@ -21,22 +22,24 @@ function App() {
     ruby: "ruby",
     react: "react",
     coffee: "coffee"
-  }
+  };
   const [onlineList, setOnlineList] = useState({});
   const [updateUserState, setUpdateUserState] = useState({});
   const [userCookie, setUserCookie] = useState({});
   const navigate = useNavigate();
-  const [reSendData, setReSendData] = useState(false)
-  const [message, setMessage] = useState({})
-
-  
-  const backToHone = () => {
-    navigate("/")
+  const [reSendData, setReSendData] = useState(false);
+  const [message, setMessage] = useState({});
+  if (process.env.REACT_APP_BACK_URL) {
+    axios.defaults.baseURL = process.env.REACT_APP_BACK_URL;
   }
+
+  const backToHone = () => {
+    navigate("/");
+  };
 
   useEffect(() => {
     /** CHANGE ROOM */
-    setOnlineList({})
+    setOnlineList({});
   }, [room]);
 
   useEffect(() => {
@@ -44,7 +47,7 @@ function App() {
     const userData = cookie.userdata;
     if (!userData) backToHone();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
   useEffect(() => {
     const cookie = new Cookies().getAll();
     const myName = cookie.userdata?.userName;
@@ -52,8 +55,8 @@ function App() {
     /** ALL SOCKET RECEIVER */
     socket && socket.on(room, ({ updatedUserName, avatar, reSend }) => {
       if (reSend) setReSendData(reSend);
-      
-      if (myName !== updatedUserName && updatedUserName ) {
+
+      if (myName !== updatedUserName && updatedUserName) {
         const initAvatarPosition = {
           username: updatedUserName,
           avatar,
@@ -70,7 +73,7 @@ function App() {
               username: updatedUserName,
               avatar
             }
-          }))
+          }));
         }
       }
     });
@@ -88,10 +91,10 @@ function App() {
       if (userState.remove) {
         const copyOnlineList = { ...onlineList };
         delete copyOnlineList[userState.username];
-        setOnlineList(copyOnlineList)
+        setOnlineList(copyOnlineList);
       }
       if (userState.username !== myName) {
-          setUpdateUserState(userState);
+        setUpdateUserState(userState);
       }
 
     });
@@ -103,15 +106,15 @@ function App() {
           username: resendUserState.username,
           avatar: resendUserState.avatar
         }
-      }))
-      setUpdateUserState(resendUserState)
-    })
+      }));
+      setUpdateUserState(resendUserState);
+    });
 
     /** MESSAGES */
     socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, (messageContents) => {
-      setMessage({...messageContents})
-    })
-    
+      setMessage({ ...messageContents });
+    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     return () => socket.off();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -120,7 +123,7 @@ function App() {
 
   const createSocketIdNameObj = (userData) => {
     setUserCookie(userData);
-    const cookies = new Cookies()
+    const cookies = new Cookies();
     const cookie = cookies.getAll();
     if (cookie.userdata) {
       /** IF cookie userdata EXIST, update with new data */
@@ -139,39 +142,39 @@ function App() {
   };
 
   const updateFriendList = (updateOnline) => {
-    const cookies = new Cookies()
-    const userData = cookies.getAll().userdata
+    const cookies = new Cookies();
+    const userData = cookies.getAll().userdata;
     if (updateOnline.remove) {
-      delete userData.userFriendsList[updateOnline.remove]
+      delete userData.userFriendsList[updateOnline.remove];
     } else {
       userData.userFriendsList = {
         ...userData.userFriendsList,
         ...updateOnline
-      }
+      };
     }
     cookies.set("userdata", userData, { maxAge: 36000 });
 
-    setUserCookie(userData)
-  }
+    setUserCookie(userData);
+  };
   const logout = (path) => {
-    const cookies = new Cookies() 
-    const userData = cookies.getAll().userdata
-  const userState = {
-        username: userData.userName
-      }
+    const cookies = new Cookies();
+    const userData = cookies.getAll().userdata;
+    const userState = {
+      username: userData.userName
+    };
     socket &&
-    socket.emit("sendData", {
-      userState,
-      room: path,
-      addTo: "logout"
-    });
-    cookies.remove("userdata")
-    navigate("/")
-    navigate(0)
-  }
+      socket.emit("sendData", {
+        userState,
+        room: path,
+        addTo: "logout"
+      });
+    cookies.remove("userdata");
+    navigate("/");
+    navigate(0);
+  };
 
 
-  const roomLists = Object.keys(roomList)
+  const roomLists = Object.keys(roomList);
   const roomRoute = roomLists.map(roomName => {
     return (
       <Route path={`/game/${roomName}`} element={<Game character={character} setCharacter={setCharacter} />} key={roomName} />
@@ -179,7 +182,7 @@ function App() {
   });
 
   return (
-    <SocketContext.Provider value={{ socket }}>
+    <SocketContext.Provider value={{ socket, axios }}>
       <UserListContext.Provider value={{ room, onlineList, userCookie, updateUserState, reSendData, setReSendData, message, roomList, setRoom, navigate, updateFriendList, logout, backToHone }}>
         <Routes>
           <Route path="/register" element={<Register setUser={createSocketIdNameObj} />} />

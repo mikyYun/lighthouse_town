@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
+import { SocketContext } from "../App.js";
 import "./Login.scss";
 
 export default function Login(props) {
+  const { axios } = useContext(SocketContext);
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const { setUser } = props;
@@ -49,13 +51,13 @@ export default function Login(props) {
             className="btn"
             type="submit"
             onClick={(e) => {
-              const loginInfo = { userEmail, userPassword }
+              const loginInfo = { userEmail, userPassword };
               axios
                 .post("/login", loginInfo)
                 .then((res) => {
                   const target = res.data;
                   if (target.userName) {
-                    setUser(target)
+                    setUser(target);
                   }
                 })
                 .catch((err) => {

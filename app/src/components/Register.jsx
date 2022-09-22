@@ -1,8 +1,10 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, useContext } from "react";
+import { SocketContext } from "../App";
+// import axios from "axios";
 import "./Register.scss";
 
 export default function Register(props) {
+  const {axios} = useContext(SocketContext)
   const [userEmail, setUserEmail] = useState("");
   const [userName, setUserName] = useState("");
   const [userPassword, setUserPassword] = useState("");
@@ -19,8 +21,8 @@ export default function Register(props) {
       setUserLanguages((prev) => prev.filter((el) => el !== id));
     }
   };
-  const [alertUsername, setAlertUsername] = useState(false)
-  const [alertUserpassword, setAlertUserpassword] = useState(false)
+  const [alertUsername, setAlertUsername] = useState(false);
+  const [alertUserpassword, setAlertUserpassword] = useState(false);
 
   const languageLists = {
     html: "HTML",
@@ -58,18 +60,18 @@ export default function Register(props) {
             value={userName}
             onChange={(e) => {
               if (e.target.value.length < 4 || e.target.value.length > 10) {
-                if (!alertUsername) setAlertUsername(true)
+                if (!alertUsername) setAlertUsername(true);
               } else {
-                if (alertUsername) setAlertUsername(false)
+                if (alertUsername) setAlertUsername(false);
               }
               setUserName(e.target.value);
             }}
           ></input>
         </div>
         {alertUsername && (
-        <span className="check-username-length">
-          username should be longer than 4  and less than 10 chars
-        </span>
+          <span className="check-username-length">
+            username should be longer than 4 and less than 10 chars
+          </span>
         )}
         <div className="field">
           <input
@@ -94,18 +96,18 @@ export default function Register(props) {
             type="password"
             onChange={(e) => {
               if (e.target.value.length < 4) {
-                if (!alertUserpassword) setAlertUserpassword(true)
+                if (!alertUserpassword) setAlertUserpassword(true);
               } else {
-                if (alertUserpassword) setAlertUserpassword(false)
+                if (alertUserpassword) setAlertUserpassword(false);
               }
               setUserPassword(e.target.value);
             }}
           ></input>
         </div>
         {alertUserpassword && (
-        <span className="check-password-length">
-          Password should be longer than 4 chars
-        </span>
+          <span className="check-password-length">
+            Password should be longer than 4 chars
+          </span>
         )}
         <div className="field">
           <input
@@ -123,7 +125,7 @@ export default function Register(props) {
             }}
           ></input>
         </div>
-        
+
         <span className={incorrectPassword}>
           confirmation password is incorrect
         </span>
