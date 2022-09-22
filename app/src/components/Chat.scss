@@ -1,6 +1,7 @@
 $back-color: #1f1f1e;
-$main-color: #b0d36a;
-$second-color: #9883c4;
+$main-color: #bada55;
+$second-color: #7555da;
+
 
 .chatroom {
   position: fixed;
@@ -49,8 +50,10 @@ $second-color: #9883c4;
     div.chat-window.card {
       background-color: white;
       overflow-y: scroll;
-      max-height: 5rem;
+      max-height: 10rem;
+      min-height: 5rem;
       padding-left: 10px;
+      padding-bottom: 19px;
       .message-nickname {
         position: relative;
         font-size: 1.5rem;

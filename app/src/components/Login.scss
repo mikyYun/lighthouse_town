@@ -2,9 +2,6 @@ $back-color: #1f1f1e;
 $main-color: #b0d36a;
 $second-color: #9883c4;
 
-body{
-  background-color: $back-color;
-}
 
 .login-page {
   display: flex;
@@ -12,14 +9,13 @@ body{
   align-items: center;
   justify-content: center;
   height: 100vh;
-
+  background-color: $back-color;
   .logo {
     background: url('./game_img/logo.png') no-repeat;
     background-size: contain;
     width: 400px;
     height: 170px;
     image-rendering: pixelated;
-
   }
 }
 
@@ -36,17 +32,20 @@ body{
   justify-content: center;
   align-items: flex-start;
   border-radius: 10px;
-  box-shadow: 5px 5px #888888;
+  box-shadow: 3px 3px #8888889e;
   font-size: 1.2rem;
 
   div {
     width: 100%;
-    padding: 0.5rem;
     }
 
   input {
     width: 100%;
     border-radius: 5px;
+    height: 3rem;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    margin-bottom: 2rem;
   }
 
   p {
@@ -63,8 +62,10 @@ body{
 }
 
 .btn {
-  background-color: #b0d36a;
+  background-color: $main-color;
   width: 40%;
-  margin: 5px;
-  font-size: 1.2rem;
+  margin: 0 10px;
+  font-size: 1rem;
+  padding: 0.8rem;
+  border-radius: 5px;
 }

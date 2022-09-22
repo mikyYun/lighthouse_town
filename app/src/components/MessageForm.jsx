@@ -3,18 +3,15 @@ import { SOCKET_EVENT } from "./socket/socket.js";
 import { SocketContext, UserListContext } from "../App.js";
 import Cookies from "universal-cookie";
 
-
 function MessageForm({ username, recipient }) {
   const [typingMessage, setTypingMessage] = useState("");
   const { socket } = useContext(SocketContext);
   const { room } = useContext(UserListContext);
-  const [textareaDisable, setTextareaDisable] = useState(true)
-  const focusTextArea = useRef()
+  const [textareaDisable, setTextareaDisable] = useState(true);
+  const focusTextArea = useRef();
   const handleChangeTypingMessage = useCallback((event) => {
     setTypingMessage(event.target.value);
   }, []);
-  
-
 
   const handleSendMesssage = useCallback(() => {
     const noContent = typingMessage.trim() === "";
@@ -23,9 +20,9 @@ function MessageForm({ username, recipient }) {
       return;
     }
 
-    const cookie = new Cookies().getAll().userdata
-    const sender = username
-    const avatar = cookie.avatar
+    const cookie = new Cookies().getAll().userdata;
+    const sender = username;
+    const avatar = cookie.avatar;
     if (recipient !== "all") {
       /** PRIVATE CHAT */
       socket.emit(SOCKET_EVENT.SEND_MESSAGE, {
@@ -34,8 +31,8 @@ function MessageForm({ username, recipient }) {
         recipient,
         sender,
         avatar,
-        isPrivate: true
-      })
+        isPrivate: true,
+      });
     } else {
       /** PUBLIC CHAT */
       socket.emit(SOCKET_EVENT.SEND_MESSAGE, {
@@ -44,7 +41,7 @@ function MessageForm({ username, recipient }) {
         recipient,
         sender,
         avatar,
-        room: room
+        room: room,
       });
     }
     setTypingMessage("");
@@ -62,18 +59,14 @@ function MessageForm({ username, recipient }) {
           value={typingMessage}
           onChange={handleChangeTypingMessage}
           onMouseDown={() => {
-            setTextareaDisable(false)
-            focusTextArea.current.focus()
+            setTextareaDisable(false);
+            focusTextArea.current.focus();
           }}
           onFocus={() => {
-            setTextareaDisable(false)
+            setTextareaDisable(false);
           }}
         />
-        <button
-          type="button"
-          className="send-btn"
-          onClick={handleSendMesssage}
-        >
+        <button type="button" className="send-btn" onClick={handleSendMesssage}>
           SEND
         </button>
       </div>

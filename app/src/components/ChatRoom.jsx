@@ -18,7 +18,7 @@ function ChatRoom(props) {
   const username = userCookie?.userName;
   const [messageHistory, setMessageHistory] = useState([]);
   const { recipient } = props;
-  const chatWindow = useRef(null);
+  const chatWindow = useRef();
 
   useEffect(() => {
     setMessageHistory((prev) => [...prev, message]);
