@@ -6,7 +6,7 @@ require("dotenv").config();
 
 /** REQUIRES */
 const cors = require("cors");
-const PORT = process.env.PGPORT || 8000;
+const PORT = process.env.PORT || 8000;
 const bodyParser = require("body-parser");
 const express = require("express");
 const path = require("path");
