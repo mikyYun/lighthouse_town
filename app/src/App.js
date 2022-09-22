@@ -9,6 +9,7 @@ import Register from "./components/Register";
 import Game from "./components/Game";
 import NotReady from "./components/NotReady";
 
+
 export const SocketContext = createContext(socket);
 export const UserListContext = createContext({});
 export const MsgContext = createContext([]);
@@ -29,6 +30,7 @@ function App() {
   const navigate = useNavigate();
   const [reSendData, setReSendData] = useState(false);
   const [message, setMessage] = useState({});
+  console.log("process.env", process.env.REACT_APP_BACK_URL)
   if (process.env.REACT_APP_BACK_URL) {
     axios.defaults.baseURL = process.env.REACT_APP_BACK_URL;
   }
