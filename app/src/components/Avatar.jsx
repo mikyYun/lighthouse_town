@@ -15,7 +15,7 @@ export default function Avatar(props) {
         url += "girl2-face.png";
         break;
       default:
-        false;
+        url += `boy1-face.png`;
     }
 
     return url;
