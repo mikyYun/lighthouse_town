@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/static/css/main.73dfce5d.css",
-    "main.js": "/static/js/main.d1236255.js",
+    "main.js": "/static/js/main.009b6873.js",
     "static/media/town-map-logo.png": "/static/media/town-map-logo.9768ddaf9f61aed0f45b.png",
     "static/media/logo.png": "/static/media/logo.17eb8c3502d518cb8cb7.png",
     "static/media/lounge-2.png": "/static/media/lounge-2.3e4a685a9baeba6dda31.png",
     "index.html": "/index.html",
     "main.73dfce5d.css.map": "/static/css/main.73dfce5d.css.map",
-    "main.d1236255.js.map": "/static/js/main.d1236255.js.map"
+    "main.009b6873.js.map": "/static/js/main.009b6873.js.map"
   },
   "entrypoints": [
     "static/css/main.73dfce5d.css",
-    "static/js/main.d1236255.js"
+    "static/js/main.009b6873.js"
   ]
 }
