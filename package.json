@@ -1,9 +1,12 @@
 {
-  "engines" : {
+  "engines": {
     "npm": "^8.5.5",
     "node": "^16.15.0"
   },
   "scripts": {
-    "postinstall": "cd server && npm install"
+    "postinstall": "concurrently \"cd server && npm install\" \"cd ../app && npm run build\""
+  },
+  "dependencies": {
+    "concurrently": "^7.4.0"
   }
 }
