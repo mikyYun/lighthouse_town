@@ -131,7 +131,7 @@ class Characters {
     // this.message = ""
     // const lineHeight = 30
     const lines = msg.split(" ").filter(word => word != "");
-    let messageYPosition = lines.length % 2 ==== 0 ? (
+    let messageYPosition = lines.length % 2 === 0 ? (
       ((lines.length / 2) * 20 - 20)
       ) : (
       ((lines.length / 2 - lines.length % (2 / 2)) * 20 - 20)
