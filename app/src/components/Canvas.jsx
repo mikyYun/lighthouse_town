@@ -149,6 +149,7 @@ const Canvas = (props) => {
       document.removeEventListener("keydown", keyDown);
       document.removeEventListener("keyup", keyUp);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path]);
 
   useEffect(() => {
@@ -223,6 +224,8 @@ const Canvas = (props) => {
       }
     }
     return () => socket.off();
+  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   useEffect(() => {
@@ -277,6 +280,7 @@ const Canvas = (props) => {
         }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateUserState]);
 
   useEffect(() => {
@@ -288,10 +292,12 @@ const Canvas = (props) => {
           room,
         });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reSendData]);
 
   useEffect(() => {
     setPath(location.pathname.split("/")[2]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   useEffect(() => {

@@ -43,6 +43,7 @@ function App() {
     const cookie = new Cookies().getAll();
     const userData = cookie.userdata;
     if (!userData) backToHone();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   useEffect(() => {
     const cookie = new Cookies().getAll();
@@ -110,9 +111,9 @@ function App() {
     socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, (messageContents) => {
       setMessage({...messageContents})
     })
-    return () => {
-      socket.off();
-    };
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => socket.off();
   }, [socket, onlineList, room]);
 
 

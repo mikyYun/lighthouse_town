@@ -23,6 +23,7 @@ function ChatRoom(props) {
   useEffect(() => {
     setMessageHistory((prev) => [...prev, message]);
     moveScrollToReceiveMessage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [message]);
 
   const moveScrollToReceiveMessage = useCallback(() => {
@@ -36,7 +37,7 @@ function ChatRoom(props) {
   
   const createMessage = () => {
     if (messageHistory.length > 0) {
-      return messageHistory.map((msgContent, index) => {
+      return messageHistory.forEach((msgContent, index) => {
         const privateOrPublic = msgContent.type === "PRIVATE" ? "private" : "public"
         if (index !== 0) {
           return (

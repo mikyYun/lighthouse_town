@@ -1,8 +1,4 @@
-//client for the socket
-
-// import { createContext } from "react";
 import socketIo from "socket.io-client";
-// export const socket = socketIo("http://localhost:8000"); //io()
 export const socket = socketIo("http://localhost:8000"
 , {
   transports: ["websocket"]
@@ -20,7 +16,7 @@ export const SOCKET_EVENT = {
 
 //makeMessage
 export const makePublicMessage = pongData => {
-  const { nickname, content, type, time, user } = pongData;
+  const { nickname, content, type, user } = pongData;
   let contentLabel = "";
   switch (type) {
     case SOCKET_EVENT.JOIN_ROOM: {
@@ -40,12 +36,11 @@ export const makePublicMessage = pongData => {
     nickname,
     content: contentLabel,
     user
-    // time: dayjs(time).format("HH:mm"),
   };
 };
 
 export const makePrivateMessage = pongData => {
-  const { recipient, nickname, content, type, time, user } = pongData;
+  const { recipient, nickname, content, type, user } = pongData;
   let contentLabel = "";
 
   switch (type) {

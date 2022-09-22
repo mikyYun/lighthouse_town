@@ -14,7 +14,7 @@ function Recipient(props) {
       const option = [{ value: "all", label: "all" }];
       const onlineUsersList = Object.keys(onlineList);
       const cookie = new Cookies().getAll().userdata
-      onlineUsersList.map((onlineUserName) => {
+      onlineUsersList.forEach((onlineUserName) => {
         if (onlineUserName !== cookie.userName && onlineList[onlineUserName] !== undefined) {
           option.push({ value: onlineUserName, label: onlineUserName });
         }
