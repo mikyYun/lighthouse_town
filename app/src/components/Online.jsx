@@ -30,7 +30,7 @@ export default function Online({ changeRecipient }) {
     );
     setOnlineUserNames(filterOnlineList);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onlineList]);
+  }, [onlineList, onlineUserNames]);
 
   // useEffect(() => {
     // if (!loadLists && onlineUserNames.length > 0) setLoadLists(true);
