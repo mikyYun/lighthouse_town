@@ -5,3 +5,8 @@
 
 [build.environment]
   REACT_APP_BACK_URL = "https://db-codding-buddy.herokuapp.com/"
+
+  [[redirects]]
+    from = "/*"
+    to = "/index.html"
+    status = 200
