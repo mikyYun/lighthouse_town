@@ -20,6 +20,7 @@ export default function Online({ changeRecipient }) {
   }, [room]);
 
   useEffect(() => {
+    console.log(onlineList)
     setOnlineUserNames(Object.keys(onlineList));
   }, [onlineList]);
 

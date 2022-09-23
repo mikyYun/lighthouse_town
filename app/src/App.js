@@ -89,7 +89,6 @@ function App() {
     });
 
     socket.on(`sendData`, (userState) => {
-      console.log(userState)
       if (userState.remove) {
         const copyOnlineList = { ...onlineList };
         delete copyOnlineList[userState.username];
