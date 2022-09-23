@@ -37,7 +37,7 @@ export default function Online({ changeRecipient }) {
     if (!loadLists && onlineUserNames.length > 0) setLoadLists(!loadLists);
     console.log(2, onlineList, onlineUserNames, loadLists);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onlineUserNames]);
+  }, [onlineUserNames, loadLists]);
 
   const addFriend = (userName, avatar) => {
     const cookie = new Cookies().getAll().userdata;
