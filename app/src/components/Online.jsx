@@ -77,7 +77,7 @@ export default function Online({ changeRecipient }) {
     return onlineUserNames.length > 0 &&
       onlineUserNames.forEach((user) => {
         if (user !== userName && onlineList[user])
-          console.log("USER", user, userName);
+          console.log("USER", onlineList[user], userName);
         return (
           <div className="user-container" key={user}>
             <div
@@ -86,10 +86,10 @@ export default function Online({ changeRecipient }) {
                 setToggle(user);
               }}
             >
-              <Avatar url={onlineList[user].avatar} />
+              <Avatar url={onlineList[user]?.avatar} />
               <div className="name">{user}</div>
             </div>
-            {toggle === user && userInfoBox(user, onlineList[user].avatar)}
+            {toggle === user && userInfoBox(user, onlineList[user]?.avatar)}
           </div>
         );
       });
