@@ -100,15 +100,9 @@ io.on("connection", (socket) => {
     if (addTo) {
       /** LOGOUT */
       if (addTo === "logout") {
-        let removedName = userState.username;
         delete currentUsers[userState.username];
-        const alluserNames = Object.keys(currentUsers);
         userState["remove"] = true;
         socket.to(room).emit("REMOVE LOGOUT USER", userState);
-        // socket.to(room).emit("REMOVE LOGOUT USER", {
-        //   updatedUserNames: alluserNames,
-        //   removedName
-        // });
         /** CHANGE ROOM */
       } else {
         socket.join(addTo);
