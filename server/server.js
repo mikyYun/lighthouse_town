@@ -1,5 +1,5 @@
 const poolGroup = require("./coding_buddy_db");
-const { pool, tryLogin, registerUser, getUserInfo, addFriend, removeFriend } = poolGroup;
+const { pool, tryLogin, registerUser, getUserInfo, addFriend, removeFriend, connection } = poolGroup;
 
 /** USE .env */
 require("dotenv").config();
@@ -50,7 +50,7 @@ const currentUsers = {}; // => {username : socket.id}
 
 // OPEN SOCKET
 io.on("connection", (socket) => {
-  console.log("SOCKET CONNECTED!!!")
+  console.log("SOCKET CONNECTED!!!");
   // LOGIN USER CONNECTED
   const session = socket.request.session;
   /** CONNECTED SOCKET SAVE IN SESSION */
@@ -96,9 +96,9 @@ io.on("connection", (socket) => {
         let removedName = userState.username;
         delete currentUsers[userState.username];
         const alluserNames = Object.keys(currentUsers);
-        userState["remove"] = true
-        
-        socket.to(room).emit("REMOVE LOGOUT USER", userState)
+        userState["remove"] = true;
+
+        socket.to(room).emit("REMOVE LOGOUT USER", userState);
         // socket.to(room).emit("REMOVE LOGOUT USER", {
         //   updatedUserNames: alluserNames,
         //   removedName
@@ -119,9 +119,9 @@ io.on("connection", (socket) => {
 
   /** NOT IMPLEMENTED YET */
   // socket.on("lecture", url => {
-    // console.log(url)
-    // const address = 'https://www.youtube.com/embed/' + url.split('=')[1];
-    // io.emit("new lecture", address);
+  // console.log(url)
+  // const address = 'https://www.youtube.com/embed/' + url.split('=')[1];
+  // io.emit("new lecture", address);
   // });
 
   socket.on("SEND_MESSAGE", (msg) => {
@@ -196,7 +196,7 @@ io.on("connection", (socket) => {
     const userState = {
       username: removedName,
       remove: true
-    }
+    };
     const updatedUserNames = Object.keys(currentUsers);
     io.emit("REMOVE LOGOUT USER", userState);
     // io.emit("REMOVE LOGOUT USER", { updatedUserNames, removedName });
@@ -232,21 +232,11 @@ app.post("/logout", (req, res) => {
 });
 
 app.post("/connection", (req, res) => {
-  console.log("CONNECTION REQUEST", pool.connectionString)
-  pool.query(`
-    SELECT * FROM users
-  `)
-  .then((result) => {
-    console.log("RESULT", result.rows)
-    res.status(200).send(result.rows)
-  })
-  .catch(err => {
-    res.status(409).send(err)
-  })
-})
+  return connection(req, res);
+});
 app.get("/connection", (req, res) => {
-  res.status(200).send({TEST:"TEST. SERVER LIVE"})
-})
+  res.status(200).send({ TEST: "TEST. SERVER LIVE" });
+});
 
 httpServer.listen(PORT, () => {
   console.log(

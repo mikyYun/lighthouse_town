@@ -274,7 +274,19 @@ const deleteUser = (req, res) => {
   });
 };
 
-
+const connection = (req, res) => {
+  console.log("CONNECTION REQUEST", pool)
+  pool.query(`
+    SELECT * FROM users
+  `)
+  .then((result) => {
+    console.log("RESULT", result.rows)
+    res.status(200).send(result.rows)
+  })
+  .catch(err => {
+    res.status(409).send(err)
+  })
+}
 
 
 /** REQUIRE poolGroup OBJ inside Server */
@@ -284,7 +296,8 @@ const poolGroup = {
   registerUser,
   getUserInfo,
   addFriend,
-  removeFriend
+  removeFriend,
+  connection
 };
 
 /** EXPORT poolGroup as a MODULE */
