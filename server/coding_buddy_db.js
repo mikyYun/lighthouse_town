@@ -15,7 +15,7 @@ const pool = new Pool({
 /** GET to identify user information */
 const tryLogin = (req, res) => {
   console.log("GET", req.body)
-  console.log("POOP", process.env.PGUSER)
+  console.log("POOP", process.env.PGUSER, pool)
   const email = req.body.userEmail;
   const password = req.body.userPassword;
   pool.query(`
