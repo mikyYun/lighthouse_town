@@ -88,7 +88,7 @@ export default function Online({ changeRecipient }) {
 
   const onlineUserList = () => {
     // onlineUserNames.length > 0 &&
-    return onlineUserNames.map((user) => {
+    return onlineUserNames.forEach((user) => {
       if (onlineList[user].avatar) {
         return (
           <div className="user-container" key={user}>
