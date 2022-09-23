@@ -83,7 +83,7 @@ export default function Online({ changeRecipient }) {
 
   const onlineUserList = () => {
     // onlineUserNames.length > 0 &&
-    return onlineUserNames.forEach((user) => {
+    onlineUserNames.forEach((user) => {
       return (
         <div className="user-container" key={user}>
           <div
