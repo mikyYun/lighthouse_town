@@ -14,6 +14,7 @@ export default function Online({ changeRecipient }) {
     showOnline === "show" ? setShowOnline("hide") : setShowOnline("show");
   };
   const [onlineUserNames, setOnlineUserNames] = useState([]);
+  const [loadLists, setLoadLists] = useState(false)
   useEffect(() => {
     setOnlineUserNames([]);
   }, [room]);
@@ -27,7 +28,7 @@ export default function Online({ changeRecipient }) {
         (each) => each !== undefined && each !== userName
       )
     );
-
+    if (!loadLists && onlineUserNames.length > 0) setLoadLists(!loadLists)
     console.log(onlineList, onlineUserNames);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onlineList]);
@@ -83,6 +84,7 @@ export default function Online({ changeRecipient }) {
 
   const onlineUserList = () => {
     // onlineUserNames.length > 0 &&
+    console.log("LIST UPDATE")
     onlineUserNames.forEach((user) => {
       
       return onlineList[user].avatar &&  (
@@ -112,7 +114,7 @@ export default function Online({ changeRecipient }) {
       >
         Online
       </div>
-      {onlineUserNames.length > 0 && onlineUserList()}
+      {loadLists && onlineUserList()}
     </div>
   );
 }
