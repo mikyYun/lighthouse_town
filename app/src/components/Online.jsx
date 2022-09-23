@@ -14,7 +14,7 @@ export default function Online({ changeRecipient }) {
     showOnline === "show" ? setShowOnline("hide") : setShowOnline("show");
   };
   const [onlineUserNames, setOnlineUserNames] = useState([]);
-  const [loadLists, setLoadLists] = useState(false)
+  const [loadLists, setLoadLists] = useState(false);
   useEffect(() => {
     setOnlineUserNames([]);
   }, [room]);
@@ -22,19 +22,22 @@ export default function Online({ changeRecipient }) {
   useEffect(() => {
     const cookie = new Cookies().getAll().userdata;
     const userName = cookie?.userName;
-    const filterOnlineList = Object.keys(onlineList).filter(online => online !== undefined && onlineList[online]?.username && online !== userName)
-    setOnlineUserNames(
-      filterOnlineList
+    const filterOnlineList = Object.keys(onlineList).filter(
+      (online) =>
+        online !== undefined &&
+        onlineList[online]?.username &&
+        online !== userName
     );
-    console.log(1)
+    setOnlineUserNames(filterOnlineList);
+    console.log(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onlineList]);
-  
+
   useEffect(() => {
-    if (!loadLists && onlineUserNames.length > 0) setLoadLists(!loadLists)
+    if (!loadLists && onlineUserNames.length > 0) setLoadLists(!loadLists);
     console.log(2, onlineList, onlineUserNames, loadLists);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onlineUserNames])
+  }, [onlineUserNames]);
 
   const addFriend = (userName, avatar) => {
     const cookie = new Cookies().getAll().userdata;
@@ -87,10 +90,9 @@ export default function Online({ changeRecipient }) {
 
   const onlineUserList = () => {
     // onlineUserNames.length > 0 &&
-    onlineUserNames.forEach((user) => {
-      
-      console.log("LIST UPDATE", onlineList[user])
-      return onlineList[user]?.avatar &&  (
+    return onlineUserNames.map((user) => {
+      console.log("LIST UPDATE", onlineList[user]);
+      return (
         <div className="user-container" key={user}>
           <div
             className="user"
