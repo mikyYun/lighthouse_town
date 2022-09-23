@@ -235,7 +235,7 @@ app.post("/connection", (req, res) => {
   console.log("CONNECTION REQUEST")
   pool.query(`
     SELECT * FROM users
-  `,)
+  `)
   .then((result) => {
     console.log("RESULT", result.rows)
     res.status(200).send(result.rows)
