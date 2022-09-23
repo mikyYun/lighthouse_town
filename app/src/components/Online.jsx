@@ -91,7 +91,7 @@ export default function Online({ changeRecipient }) {
     
     return onlineUserNames.forEach((user) => {
       console.log("STATE", onlineUserNames, onlineList[user])
-      if (onlineList[user].avatar) {
+      if (onlineList[user] && onlineList[user].avatar) {
         return (
           <div className="user-container" key={user}>
             <div
