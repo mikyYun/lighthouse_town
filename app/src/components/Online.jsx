@@ -25,7 +25,7 @@ export default function Online({ changeRecipient }) {
 
     setOnlineUserNames(
       Object.keys(onlineList).filter(
-        (each) => each !== undefined && each !== userName
+        (each) => each && each.username && each !== userName
       )
     );
     if (!loadLists && onlineUserNames.length > 0) setLoadLists(!loadLists)
