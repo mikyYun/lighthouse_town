@@ -74,7 +74,7 @@ export default function Online({ changeRecipient }) {
 
   const onlineUserList = () => {
     const userCookie = new Cookies().getAll().userdata;
-    onlineUserNames.length > 0 &&
+    return onlineUserNames.length > 0 &&
       onlineUserNames.forEach((user) => {
         if (user !== userCookie.userName && onlineList[user])
           console.log("USER", user, userCookie);
