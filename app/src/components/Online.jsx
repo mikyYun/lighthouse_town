@@ -29,13 +29,11 @@ export default function Online({ changeRecipient }) {
         online !== userName
     );
     setOnlineUserNames(filterOnlineList);
-    console.log(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onlineList]);
 
   useEffect(() => {
     if (!loadLists && onlineUserNames.length > 0) setLoadLists(!loadLists);
-    console.log(2, onlineList, onlineUserNames, loadLists);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onlineUserNames, loadLists]);
 
@@ -91,21 +89,22 @@ export default function Online({ changeRecipient }) {
   const onlineUserList = () => {
     // onlineUserNames.length > 0 &&
     return onlineUserNames.map((user) => {
-      console.log("LIST UPDATE", onlineList[user]);
-      return (
-        <div className="user-container" key={user}>
-          <div
-            className="user"
-            onClick={() => {
-              setToggle(user);
-            }}
-          >
-            <Avatar url={onlineList[user].avatar} />
-            <div className="name">{user}</div>
+      if (onlineList[user].avatar) {
+        return (
+          <div className="user-container" key={user}>
+            <div
+              className="user"
+              onClick={() => {
+                setToggle(user);
+              }}
+            >
+              <Avatar url={onlineList[user].avatar} />
+              <div className="name">{user}</div>
+            </div>
+            {toggle === user && userInfoBox(user, onlineList[user].avatar)}
           </div>
-          {toggle === user && userInfoBox(user, onlineList[user].avatar)}
-        </div>
-      );
+        );
+      }
     });
   };
 
