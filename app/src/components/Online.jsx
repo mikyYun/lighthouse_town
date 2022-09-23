@@ -19,8 +19,16 @@ export default function Online({ changeRecipient }) {
   }, [room]);
 
   useEffect(() => {
-    console.log("onlineList", onlineList);
-    setOnlineUserNames(Object.keys(onlineList).filter(each => each !== undefined));
+    const cookie = new Cookies().getAll().userdata;
+    const userName = cookie?.userName;
+
+    setOnlineUserNames(
+      Object.keys(onlineList).filter(
+        (each) => each !== undefined && each !== userName
+      )
+    );
+
+    console.log(onlineList, onlineUserNames);
   }, [onlineList]);
 
   const addFriend = (userName, avatar) => {
@@ -72,28 +80,24 @@ export default function Online({ changeRecipient }) {
     );
   };
 
-  const onlineUserList = () => {
-    const userName = new Cookies().getAll().userdata?.userName;
-    return onlineUserNames.length > 0 &&
-      onlineUserNames.forEach((user) => {
-        if (user !== userName && onlineList[user])
-          console.log("USER", onlineList[user], userName);
-        return (
-          <div className="user-container" key={user}>
-            <div
-              className="user"
-              onClick={() => {
-                setToggle(user);
-              }}
-            >
-              <Avatar url={onlineList[user]?.avatar} />
-              <div className="name">{user}</div>
-            </div>
-            {toggle === user && userInfoBox(user, onlineList[user]?.avatar)}
+  const onlineUserList =
+    onlineUserNames.length > 0 &&
+    onlineUserNames.forEach((user) => {
+      return (
+        <div className="user-container" key={user}>
+          <div
+            className="user"
+            onClick={() => {
+              setToggle(user);
+            }}
+          >
+            <Avatar url={onlineList[user].avatar} />
+            <div className="name">{user}</div>
           </div>
-        );
-      });
-  };
+          {toggle === user && userInfoBox(user, onlineList[user].avatar)}
+        </div>
+      );
+    });
 
   return (
     <div className={`online-list ${showOnline}`}>
@@ -105,7 +109,7 @@ export default function Online({ changeRecipient }) {
       >
         Online
       </div>
-      {onlineUserList()}
+      {onlineUserList}
     </div>
   );
 }
