@@ -22,14 +22,12 @@ export default function Online({ changeRecipient }) {
   useEffect(() => {
     const cookie = new Cookies().getAll().userdata;
     const userName = cookie?.userName;
-
+    const filterOnlineList = Object.keys(onlineList).filter(online => onlineList[online].username && online !== userName)
     setOnlineUserNames(
-      Object.keys(onlineList).filter(
-        (each) => each && each.username && each !== userName
-      )
+      filterOnlineList
     );
     if (!loadLists && onlineUserNames.length > 0) setLoadLists(!loadLists)
-    console.log(onlineList, onlineUserNames);
+    console.log(onlineList, onlineUserNames, loadLists);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onlineList]);
 
