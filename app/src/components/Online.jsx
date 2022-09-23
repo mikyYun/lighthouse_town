@@ -80,9 +80,9 @@ export default function Online({ changeRecipient }) {
     );
   };
 
-  const onlineUserList =
+  const onlineUserList = () => {
     // onlineUserNames.length > 0 &&
-    onlineUserNames.forEach((user) => {
+    return onlineUserNames.forEach((user) => {
       return (
         <div className="user-container" key={user}>
           <div
@@ -98,6 +98,7 @@ export default function Online({ changeRecipient }) {
         </div>
       );
     });
+  };
 
   return (
     <div className={`online-list ${showOnline}`}>
@@ -109,7 +110,7 @@ export default function Online({ changeRecipient }) {
       >
         Online
       </div>
-      {onlineUserNames.length > 0 && onlineUserList}
+      {onlineUserNames.length > 0 && onlineUserList()}
     </div>
   );
 }
