@@ -95,7 +95,8 @@ function App() {
         const copyOnlineList = { ...onlineList };
         delete copyOnlineList[userState.username];
         setOnlineList(copyOnlineList);
-      } else if (userState.username !== myName) {
+      } 
+      if (userState.username !== myName) {
         setUpdateUserState(userState);
       }
 
