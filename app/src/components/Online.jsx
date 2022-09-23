@@ -14,7 +14,7 @@ export default function Online({ changeRecipient }) {
     showOnline === "show" ? setShowOnline("hide") : setShowOnline("show");
   };
   const [onlineUserNames, setOnlineUserNames] = useState([]);
-  const [loadLists, setLoadLists] = useState(false);
+  // const [loadLists, setLoadLists] = useState(false);
   useEffect(() => {
     setOnlineUserNames([]);
   }, [room]);
