@@ -22,7 +22,7 @@ export default function Online({ changeRecipient }) {
   useEffect(() => {
     const cookie = new Cookies().getAll().userdata;
     const userName = cookie?.userName;
-    const filterOnlineList = Object.keys(onlineList).filter(online => onlineList[online].username && online !== userName)
+    const filterOnlineList = Object.keys(onlineList).filter(online => online !== undefined && onlineList[online].username && online !== userName)
     setOnlineUserNames(
       filterOnlineList
     );
