@@ -121,7 +121,7 @@ export default function Online({ changeRecipient }) {
       >
         Online
       </div>
-      {onlineUserList()}
+      {onlineUserList}
     </div>
   );
 }
