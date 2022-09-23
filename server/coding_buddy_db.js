@@ -16,8 +16,6 @@ const pool = new Pool({
 
 /** GET to identify user information */
 const tryLogin = (req, res) => {
-  console.log("GET", req.body)
-  console.log("POOP", process.env.PGUSER, pool)
   const email = req.body.userEmail;
   const password = req.body.userPassword;
   pool.query(`
@@ -29,7 +27,6 @@ const tryLogin = (req, res) => {
     WHERE (users.email = $1 AND users.password = $2)
     `, [email, password])
     .then((result) => {
-      console.log("RESULR", result)
       const userName = result.rows[0].username;
       const avatar = result.rows[0].avatar_id;
       const userID = result.rows[0].id;
@@ -123,7 +120,6 @@ const insertRow = (userData, res) => {
 
 /** POST REGISTER NEW USER */
 const registerUser = (req, res) => {
-  console.log("UNIQUE CHECK")
   const userName = req.body.userInfo.userName;
   const userPassword = req.body.userInfo.userPassword;
   const userEmail = req.body.userInfo.userEmail;
@@ -146,7 +142,6 @@ const registerUser = (req, res) => {
       /** GIVEN username OR email IS ALREADY IN DB */
       
       if (response.rows[0]) {
-        console.log("IS UNIQUE")  
         isUnique = false;
         res.status(409).send({ isUnique });
       }
