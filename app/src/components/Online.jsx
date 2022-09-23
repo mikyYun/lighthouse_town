@@ -37,8 +37,8 @@ export default function Online({ changeRecipient }) {
   // }, [onlineUserNames])
 
   // useEffect(() => {
-    // if (!loadLists && onlineUserNames.length > 0) setLoadLists(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // if (!loadLists && onlineUserNames.length > 0) setLoadLists(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [onlineUserNames, loadLists]);
 
   const addFriend = (userName, avatar) => {
@@ -91,24 +91,23 @@ export default function Online({ changeRecipient }) {
   };
 
   const onlineUserList = onlineUserNames.forEach((user) => {
-      if (onlineList[user] && onlineList[user].avatar) {
-        console.log("STATE", onlineUserNames, onlineList[user])
-        return (
-          <div className="user-container" key={user}>
-            <div
-              className="user"
-              onClick={() => {
-                setToggle(user);
-              }}
-            >
-              <Avatar url={onlineList[user].avatar} />
-              <div className="name">{user}</div>
-            </div>
-            {toggle === user && userInfoBox(user, onlineList[user].avatar)}
+    return (
+      onlineList[user].avatar && (
+        <div className="user-container" key={user}>
+          <div
+            className="user"
+            onClick={() => {
+              setToggle(user);
+            }}
+          >
+            <Avatar url={onlineList[user].avatar} />
+            <div className="name">{user}</div>
           </div>
-        );
-      }
-    });
+          {toggle === user && userInfoBox(user, onlineList[user].avatar)}
+        </div>
+      )
+    );
+  });
   // };
 
   return (
