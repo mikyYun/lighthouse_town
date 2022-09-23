@@ -97,7 +97,6 @@ io.on("connection", (socket) => {
         delete currentUsers[userState.username];
         const alluserNames = Object.keys(currentUsers);
         userState["remove"] = true;
-        console.log("LOGOUT", userState)
         socket.to(room).emit("REMOVE LOGOUT USER", userState);
         // socket.to(room).emit("REMOVE LOGOUT USER", {
         //   updatedUserNames: alluserNames,
@@ -105,7 +104,6 @@ io.on("connection", (socket) => {
         // });
         /** CHANGE ROOM */
       } else {
-        console.log("JOINING", userState)
         socket.join(addTo);
         socket.to(addTo).emit("sendData", userState);
         socket.leave(room);
