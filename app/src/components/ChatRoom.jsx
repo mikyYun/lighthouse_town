@@ -40,33 +40,33 @@ function ChatRoom(props) {
     console.log("MESSAGE UPDATE", messageHistory)
   }, [messageHistory])
 
-  const createMessage = () => {
-    if (messageHistory.length > 0) {
-      return messageHistory.forEach((msgContent, index) => {
-        console.log("MESSAGE LOADING", msgContent)
-        const privateOrPublic = msgContent.type === "PRIVATE" ? "private" : "public"
-        if (index !== 0) {
-          return (
-            <div
-              className="d-flex flex-row chat-content"
-              key={msgContent.sender + msgContent.username + index}
-            >
-              <div className={`message-nickname ${privateOrPublic}`}>
-                <Avatar url={msgContent.avatar} />
-                <span className="sender">{msgContent.sender}</span>
-                to
-                <span className="recipient">{msgContent.recipient}</span>:
-                <span className="content">{msgContent.content}</span>
-                <span className="time">
-                  {msgContent.time}
-                </span>
-              </div>
-            </div>
-          );
-        }
-      });
-    }
-  };
+  // const createMessage = () => {
+  //   if (messageHistory.length > 0) {
+  //     return messageHistory.forEach((msgContent, index) => {
+  //       console.log("MESSAGE LOADING", msgContent)
+  //       const privateOrPublic = msgContent.type === "PRIVATE" ? "private" : "public"
+  //       if (index !== 0) {
+  //         return (
+  //           <div
+  //             className="d-flex flex-row chat-content"
+  //             key={msgContent.sender + msgContent.username + index}
+  //           >
+  //             <div className={`message-nickname ${privateOrPublic}`}>
+  //               <Avatar url={msgContent.avatar} />
+  //               <span className="sender">{msgContent.sender}</span>
+  //               to
+  //               <span className="recipient">{msgContent.recipient}</span>:
+  //               <span className="content">{msgContent.content}</span>
+  //               <span className="time">
+  //                 {msgContent.time}
+  //               </span>
+  //             </div>
+  //           </div>
+  //         );
+  //       }
+  //     });
+  //   }
+  // };
 
   return (
     <div className="d-flex flex-column chat-form">
