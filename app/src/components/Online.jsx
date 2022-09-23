@@ -76,6 +76,7 @@ export default function Online({ changeRecipient }) {
   const onlineUserList =
     onlineUserNames.length > 0 &&
     onlineUserNames.forEach((user) => {
+      console.log("USER", user)
       if (user !== userCookie.userName && onlineList[user])
         return (
           <div className="user-container" key={user}>
