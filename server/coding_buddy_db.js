@@ -1,6 +1,5 @@
 const Pool = require('pg').Pool; //postgres
 require("dotenv").config();
-console.log("CHECK",process.env)
 /** USE THIS DB */
 const pool = new Pool({
   user: process.env.PGUSER,
@@ -13,7 +12,7 @@ const pool = new Pool({
 /** GET to identify user information */
 const tryLogin = (req, res) => {
   console.log("GET", req.body)
-  console.log("POOP", pool)
+  console.log("POOP", pool.user, pool.host, pool.database, pool.port)
   const email = req.body.userEmail;
   const password = req.body.userPassword;
   pool.query(`
