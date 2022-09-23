@@ -19,7 +19,7 @@ export default function Online({ changeRecipient }) {
   }, [room]);
 
   useEffect(() => {
-    console.log(onlineList);
+    console.log("onlineList", onlineList);
     setOnlineUserNames(Object.keys(onlineList));
   }, [onlineList]);
 
@@ -73,11 +73,11 @@ export default function Online({ changeRecipient }) {
   };
 
   const onlineUserList = () => {
-    const userCookie = new Cookies().getAll().userdata;
+    const userName = new Cookies().getAll().userdata?.userName;
     return onlineUserNames.length > 0 &&
       onlineUserNames.forEach((user) => {
-        if (user !== userCookie.userName && onlineList[user])
-          console.log("USER", user, userCookie);
+        if (user !== userName && onlineList[user])
+          console.log("USER", user, userName);
         return (
           <div className="user-container" key={user}>
             <div
