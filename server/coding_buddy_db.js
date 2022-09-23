@@ -15,7 +15,7 @@ const pool = new Pool({
 /** GET to identify user information */
 const tryLogin = (req, res) => {
   console.log("GET", req.body)
-  console.log("POOP", pool.user, pool.host, pool.database, pool.port)
+  console.log("POOP", process.env.REACT_APP_BACK_URL)
   const email = req.body.userEmail;
   const password = req.body.userPassword;
   pool.query(`
