@@ -6,8 +6,7 @@ import "./Online.scss";
 import Cookies from "universal-cookie";
 
 export default function Online({ changeRecipient }) {
-  const { room, onlineList, updateFriendList } =
-    useContext(UserListContext);
+  const { room, onlineList, updateFriendList } = useContext(UserListContext);
   const { axios } = useContext(SocketContext);
   const [toggle, setToggle] = useState(false);
   const [showOnline, setShowOnline] = useState("show");
@@ -20,7 +19,7 @@ export default function Online({ changeRecipient }) {
   }, [room]);
 
   useEffect(() => {
-    console.log(onlineList)
+    console.log(onlineList);
     setOnlineUserNames(Object.keys(onlineList));
   }, [onlineList]);
 
@@ -73,12 +72,12 @@ export default function Online({ changeRecipient }) {
     );
   };
 
-  const onlineUserList =
+  const onlineUserList = () => {
+    const userCookie = new Cookies().getAll().userdata;
     onlineUserNames.length > 0 &&
-    onlineUserNames.forEach((user) => {
-      const userCookie = new Cookies().getAll().userdata;
-      if (user !== userCookie.userName && onlineList[user])
-      console.log("USER", user, userCookie)
+      onlineUserNames.forEach((user) => {
+        if (user !== userCookie.userName && onlineList[user])
+          console.log("USER", user, userCookie);
         return (
           <div className="user-container" key={user}>
             <div
@@ -93,7 +92,8 @@ export default function Online({ changeRecipient }) {
             {toggle === user && userInfoBox(user, onlineList[user].avatar)}
           </div>
         );
-    });
+      });
+  };
 
   return (
     <div className={`online-list ${showOnline}`}>
@@ -105,7 +105,7 @@ export default function Online({ changeRecipient }) {
       >
         Online
       </div>
-      {onlineUserList}
+      {onlineUserList()}
     </div>
   );
 }
