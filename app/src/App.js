@@ -117,6 +117,7 @@ function App() {
 
     /** MESSAGES */
     socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, (messageContents) => {
+      console.log("MESSAGE RECEIVED")
       setMessage({ ...messageContents });
     });
 
