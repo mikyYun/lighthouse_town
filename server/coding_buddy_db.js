@@ -9,7 +9,9 @@ const pool = new Pool({
   // password: process.env.PGPASSWORD,
   // port: process.env.PGPORT,
   connectionString: process.env.DATABASE_URL,
-  sslmode: require
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 /** GET to identify user information */
