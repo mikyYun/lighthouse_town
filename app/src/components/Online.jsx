@@ -26,10 +26,14 @@ export default function Online({ changeRecipient }) {
     setOnlineUserNames(
       filterOnlineList
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onlineList]);
+  
+  useEffect(() => {
     if (!loadLists && onlineUserNames.length > 0) setLoadLists(!loadLists)
     console.log(onlineList, onlineUserNames, loadLists);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onlineList]);
+  }, [onlineUserNames])
 
   const addFriend = (userName, avatar) => {
     const cookie = new Cookies().getAll().userdata;
