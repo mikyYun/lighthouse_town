@@ -90,7 +90,7 @@ export default function Online({ changeRecipient }) {
     // onlineUserNames.length > 0 &&
     
     return onlineUserNames.forEach((user) => {
-      console.log("STATE", onlineUserNames, onlineUserNames[user])
+      console.log("STATE", onlineUserNames, onlineList[user])
       if (onlineList[user].avatar) {
         return (
           <div className="user-container" key={user}>
