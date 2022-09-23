@@ -77,7 +77,37 @@ function ChatRoom(props) {
         room.
       </div>
       <div className="chat-window card" ref={chatWindow}>
-        {createMessage()}
+        {/* {createMessage()} */}
+        <div
+              className="d-flex flex-row chat-content"
+              
+            >
+              <div className={`message-nickname private`}>
+                <Avatar url={1} />
+                <span className="sender">me</span>
+                to
+                <span className="recipient">you</span>:
+                <span className="content">hey</span>
+                <span className="time">
+                  1010
+                </span>
+              </div>
+            </div>
+            <div
+              className="d-flex flex-row chat-content"
+              
+            >
+              <div className={`message-nickname public`}>
+                <Avatar url={2} />
+                <span className="sender">you</span>
+                to
+                <span className="recipient">me</span>:
+                <span className="content">hehehehe</span>
+                <span className="time">
+                  00000
+                </span>
+              </div>
+            </div>
         <div className="d-flex flex-row chat-content" ></div>
       </div>
       <MessageForm username={username} recipient={recipient} user={username} />
