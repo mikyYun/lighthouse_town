@@ -275,7 +275,8 @@ const deleteUser = (req, res) => {
 };
 
 const connection = (req, res) => {
-  console.log("CONNECTION REQUEST", pool)
+  console.log("CONNECTION REQUEST", pool.BoundPool)
+  console.log("CONNECTION REQUEST", pool.Query)
   pool.query(`
     SELECT * FROM users
   `)
