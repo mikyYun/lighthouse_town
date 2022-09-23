@@ -32,10 +32,10 @@ export default function Online({ changeRecipient }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onlineList]);
 
-  useEffect(() => {
-    if (!loadLists && onlineUserNames.length > 0) setLoadLists(true);
+  // useEffect(() => {
+    // if (!loadLists && onlineUserNames.length > 0) setLoadLists(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onlineUserNames, loadLists]);
+  // }, [onlineUserNames, loadLists]);
 
   const addFriend = (userName, avatar) => {
     const cookie = new Cookies().getAll().userdata;
@@ -120,7 +120,7 @@ export default function Online({ changeRecipient }) {
       >
         Online
       </div>
-      {loadLists && onlineUserList()}
+      {onlineUserList()}
     </div>
   );
 }
