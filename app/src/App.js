@@ -91,12 +91,12 @@ function App() {
     });
 
     socket.on(`sendData`, (userState) => {
+      console.log("STATE", userState)
       if (userState.remove) {
         const copyOnlineList = { ...onlineList };
         delete copyOnlineList[userState.username];
         setOnlineList(copyOnlineList);
-      }
-      if (!userState.remove && userState.username !== myName) {
+      } else if (userState.username !== myName) {
         setUpdateUserState(userState);
       }
 
