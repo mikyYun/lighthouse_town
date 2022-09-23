@@ -1,13 +1,13 @@
 const Pool = require('pg').Pool; //postgres
-// require("dotenv").config();
+require("dotenv").config({silent: true});
 /** USE THIS DB */
 const pool = new Pool({
-  // user: process.env.PGUSER,
-  // host: process.env.PGHOST,
-  // database: process.env.PGDATABASE,
-  // password: process.env.PGPASSWORD,
-  // port: process.env.PGPORT,
-  connectionString: process.env.DATABASE_URL,
+  user: process.env.PGUSER,
+  host: process.env.PGHOST,
+  database: process.env.PGDATABASE,
+  password: process.env.PGPASSWORD,
+  port: process.env.PGPORT,
+  // connectionString: process.env.DATABASE_URL,
   sslmode: require
 });
 
@@ -15,7 +15,7 @@ console.log("process.env", process.env)
 /** GET to identify user information */
 const tryLogin = (req, res) => {
   console.log("GET", req.body)
-  console.log("POOP", process.env)
+  console.log("POOP", process.env.PGUSER)
   const email = req.body.userEmail;
   const password = req.body.userPassword;
   pool.query(`
