@@ -1,6 +1,7 @@
 const Pool = require('pg').Pool; //postgres
 require("dotenv").config({silent: true});
 /** USE THIS DB */
+console.log("process.env", process.env)
 const pool = new Pool({
   user: process.env.PGUSER,
   host: process.env.PGHOST,
@@ -11,7 +12,6 @@ const pool = new Pool({
   sslmode: require
 });
 
-console.log("process.env", process.env)
 /** GET to identify user information */
 const tryLogin = (req, res) => {
   console.log("GET", req.body)
@@ -27,6 +27,7 @@ const tryLogin = (req, res) => {
     WHERE (users.email = $1 AND users.password = $2)
     `, [email, password])
     .then((result) => {
+      console.log("RESULR", result)
       const userName = result.rows[0].username;
       const avatar = result.rows[0].avatar_id;
       const userID = result.rows[0].id;
