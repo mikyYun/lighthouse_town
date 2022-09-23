@@ -84,7 +84,8 @@ export default function Online({ changeRecipient }) {
   const onlineUserList = () => {
     // onlineUserNames.length > 0 &&
     onlineUserNames.forEach((user) => {
-      return (
+      
+      return onlineList[user].avatar &&  (
         <div className="user-container" key={user}>
           <div
             className="user"
