@@ -232,7 +232,7 @@ app.post("/logout", (req, res) => {
 });
 
 app.post("/connection", (req, res) => {
-  console.log("CONNECTION REQUEST")
+  console.log("CONNECTION REQUEST", pool.connectionString)
   pool.query(`
     SELECT * FROM users
   `)
