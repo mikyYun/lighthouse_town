@@ -6,7 +6,7 @@ import "./Online.scss";
 import Cookies from "universal-cookie";
 
 export default function Online({ changeRecipient }) {
-  const { room, userCookie, onlineList, updateFriendList } =
+  const { room, onlineList, updateFriendList } =
     useContext(UserListContext);
   const { axios } = useContext(SocketContext);
   const [toggle, setToggle] = useState(false);
@@ -76,8 +76,9 @@ export default function Online({ changeRecipient }) {
   const onlineUserList =
     onlineUserNames.length > 0 &&
     onlineUserNames.forEach((user) => {
-      console.log("USER", user, userCookie)
+      const userCookie = new Cookies().getAll().userdata;
       if (user !== userCookie.userName && onlineList[user])
+      console.log("USER", user, userCookie)
         return (
           <div className="user-container" key={user}>
             <div
