@@ -33,7 +33,7 @@ export default function Online({ changeRecipient }) {
   }, [onlineList]);
 
   useEffect(() => {
-    if (!loadLists && onlineUserNames.length > 0) setLoadLists(!loadLists);
+    if (!loadLists && onlineUserNames.length > 0) setLoadLists(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onlineUserNames, loadLists]);
 
@@ -90,8 +90,8 @@ export default function Online({ changeRecipient }) {
     // onlineUserNames.length > 0 &&
     
     return onlineUserNames.forEach((user) => {
-      console.log("STATE", onlineUserNames, onlineList[user])
       if (onlineList[user] && onlineList[user].avatar) {
+        console.log("STATE", onlineUserNames, onlineList[user])
         return (
           <div className="user-container" key={user}>
             <div
