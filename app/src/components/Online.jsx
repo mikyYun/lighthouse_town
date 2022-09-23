@@ -29,6 +29,7 @@ export default function Online({ changeRecipient }) {
     );
 
     console.log(onlineList, onlineUserNames);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onlineList]);
 
   const addFriend = (userName, avatar) => {
