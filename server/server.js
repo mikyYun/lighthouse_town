@@ -37,6 +37,13 @@ app.use(bodyParser.urlencoded({
   extended: true,
 }));
 
+/** APP REDIRECTION CONTROL */
+app.use(express.static(path.join(__dirname, "../app/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../app/build", "index.html"))
+});
+
 io.use((socket, next) => {
   sessionMiddleware(socket.request, {}, next);
 });
