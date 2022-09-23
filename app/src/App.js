@@ -96,7 +96,7 @@ function App() {
         delete copyOnlineList[userState.username];
         setOnlineList(copyOnlineList);
       }
-      if (userState.username !== myName) {
+      if (!userState.remove && userState.username !== myName) {
         setUpdateUserState(userState);
       }
 

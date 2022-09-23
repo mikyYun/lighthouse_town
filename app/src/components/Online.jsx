@@ -88,6 +88,7 @@ export default function Online({ changeRecipient }) {
 
   const onlineUserList = () => {
     // onlineUserNames.length > 0 &&
+    
     return onlineUserNames.forEach((user) => {
       if (onlineList[user].avatar) {
         return (
