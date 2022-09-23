@@ -80,18 +80,17 @@ function App() {
     });
 
     socket && socket.on("REMOVE LOGOUT USER", (userState) => {
-      const copyOnlineList = { ...onlineList };
-        delete copyOnlineList[userState.username];
-      // setOnlineList(prev => ({
-      //   ...prev,
-      //   [userState.username]: undefined
-      // }));
-      setOnlineList(copyOnlineList);
+      // const copyOnlineList = { ...onlineList };
+      //   delete copyOnlineList[userState.username];
+      //   setOnlineList(copyOnlineList);
+      setOnlineList(prev => ({
+        ...prev,
+        [userState.username]: undefined
+      }));
       setUpdateUserState(userState);
     });
 
     socket.on(`sendData`, (userState) => {
-      console.log("STATE", userState)
       if (userState.remove) {
         const copyOnlineList = { ...onlineList };
         delete copyOnlineList[userState.username];
