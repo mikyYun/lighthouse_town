@@ -276,8 +276,6 @@ const deleteUser = (req, res) => {
 
 const connection = (req, res) => {
   console.log("CONNECTION REQUEST", pool)
-  console.log("CONNECTION REQUEST", pool.BoundPool)
-  console.log("CONNECTION REQUEST", pool.Query)
   console.log("CONNECTION REQUEST", pool.query)
   pool.query(`
     SELECT * FROM users
@@ -287,6 +285,7 @@ const connection = (req, res) => {
     res.status(200).send(result.rows)
   })
   .catch(err => {
+    console.log("ERROR", err)
     res.status(409).send(err)
   })
 }
