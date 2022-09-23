@@ -89,10 +89,7 @@ export default function Online({ changeRecipient }) {
     );
   };
 
-  const onlineUserList = () => {
-    // onlineUserNames.length > 0 &&
-    
-    return onlineUserNames.forEach((user) => {
+  const onlineUserList = onlineUserNames.forEach((user) => {
       if (onlineList[user] && onlineList[user].avatar) {
         console.log("STATE", onlineUserNames, onlineList[user])
         return (
@@ -111,7 +108,7 @@ export default function Online({ changeRecipient }) {
         );
       }
     });
-  };
+  // };
 
   return (
     <div className={`online-list ${showOnline}`}>
