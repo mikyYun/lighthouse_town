@@ -98,7 +98,7 @@ export default function Online({ changeRecipient }) {
             {toggle === user && userInfoBox(user, onlineList[user].avatar)}
           </div>
         );
-      }
+      } else {return null}
     });
   // };
 

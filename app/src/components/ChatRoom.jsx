@@ -65,7 +65,7 @@ function ChatRoom(props) {
               </div>
             </div>
           );
-        }
+        } else {return null}
       });
     // }
 
