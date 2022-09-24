@@ -1,7 +1,7 @@
 {
   "name": "coding_buddy",
   "version": "0.1.0",
-  "proxy": "http://localhost:8000/",
+  "proxy": "https://db-codding-buddy.herokuapp.com/",
   "homepage": "https://lighthouse-town.netlify.app",
   "private": true,
   "browser": {
