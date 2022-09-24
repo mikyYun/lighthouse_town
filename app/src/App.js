@@ -87,13 +87,11 @@ function App() {
       //   ...prev,
       //   [userState.username]: undefined
       // }));
-      console.log("A USER LOGOUT")
       setUpdateUserState(userState);
     });
 
     socket.on(`sendData`, (userState) => {
       if (userState.remove) {
-        console.log("REMOVE")
         const copyOnlineList = { ...onlineList };
         delete copyOnlineList[userState.username];
         setOnlineList(copyOnlineList);
@@ -117,7 +115,6 @@ function App() {
 
     /** MESSAGES */
     socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, (messageContents) => {
-      console.log("MESSAGE RECEIVED")
       setMessage({ ...messageContents });
     });
 

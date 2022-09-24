@@ -82,9 +82,8 @@ export default function Online({ changeRecipient }) {
     );
   };
 
-  const onlineUserList = onlineUserNames.forEach((user) => {
+  const onlineUserList = onlineUserNames.map((user) => {
       if (onlineList[user] && onlineList[user].avatar) {
-        console.log("STATE", onlineUserNames, onlineList[user])
         return (
           <div className="user-container" key={user}>
             <div

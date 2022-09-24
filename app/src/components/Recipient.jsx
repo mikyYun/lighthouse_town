@@ -23,7 +23,8 @@ function Recipient(props) {
     };
 
     setOtherUsers(updateRecipientsList());
-  }, [onlineList, recipient]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onlineList]);
 
   return (
     <div className="card d-flex flex-row chat-to-container">
@@ -34,6 +35,7 @@ function Recipient(props) {
         type="text"
         id="pdown"
         maxLength={12}
+        value={recipient ? {value: recipient, label: recipient} : { value: "all", label: "all" }}
         defaultValue={{ value: "all", label: "all" }}
         onChange={(e) => changeRecipient(e.value)}
         options={otherUsers}

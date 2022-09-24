@@ -21,7 +21,11 @@ function ChatRoom(props) {
   const chatWindow = useRef();
 
   useEffect(() => {
-    setMessageHistory((prev) => [...prev, message]);
+    if (!messageHistory[0]?.username) {
+      setMessageHistory([message])
+    } else {
+      setMessageHistory((prev) => [...prev, message]);
+    }
     moveScrollToReceiveMessage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [message]);
@@ -35,38 +39,35 @@ function ChatRoom(props) {
     }
   }, []);
   
-  useEffect(() => {
-    
-    console.log("MESSAGE UPDATE", messageHistory)
-  }, [messageHistory])
+  // useEffect(() => {
+  //   console.log("MESSAGE UPDATE", messageHistory)
+  // }, [messageHistory])
 
-  // const createMessage = () => {
-  //   if (messageHistory.length > 0) {
-  //     return messageHistory.forEach((msgContent, index) => {
-  //       console.log("MESSAGE LOADING", msgContent)
-  //       const privateOrPublic = msgContent.type === "PRIVATE" ? "private" : "public"
-  //       if (index !== 0) {
-  //         return (
-  //           <div
-  //             className="d-flex flex-row chat-content"
-  //             key={msgContent.sender + msgContent.username + index}
-  //           >
-  //             <div className={`message-nickname ${privateOrPublic}`}>
-  //               <Avatar url={msgContent.avatar} />
-  //               <span className="sender">{msgContent.sender}</span>
-  //               to
-  //               <span className="recipient">{msgContent.recipient}</span>:
-  //               <span className="content">{msgContent.content}</span>
-  //               <span className="time">
-  //                 {msgContent.time}
-  //               </span>
-  //             </div>
-  //           </div>
-  //         );
-  //       }
-  //     });
-  //   }
-  // };
+  const createMessage = 
+    // if (messageHistory.length > 0) {
+       messageHistory.map((msgContent, index) => {
+        const privateOrPublic = msgContent?.type === "PRIVATE" ? "private" : "public"
+        if (msgContent?.username) {
+          return (
+            <div
+              className="d-flex flex-row chat-content"
+              key={msgContent.sender + msgContent.username + index}
+            >
+              <div className={`message-nickname ${privateOrPublic}`}>
+                <Avatar url={msgContent.avatar} />
+                <span className="sender">{msgContent.sender}</span>
+                to
+                <span className="recipient">{msgContent.recipient}</span>:
+                <span className="content">{msgContent.content}</span>
+                <span className="time">
+                  {msgContent.time}
+                </span>
+              </div>
+            </div>
+          );
+        }
+      });
+    // }
 
   return (
     <div className="d-flex flex-column chat-form">
@@ -77,37 +78,8 @@ function ChatRoom(props) {
         room.
       </div>
       <div className="chat-window card" ref={chatWindow}>
-        {/* {createMessage()} */}
-        <div
-              className="d-flex flex-row chat-content"
-              
-            >
-              <div className={`message-nickname private`}>
-                <Avatar url={1} />
-                <span className="sender">me</span>
-                to
-                <span className="recipient">you</span>:
-                <span className="content">hey</span>
-                <span className="time">
-                  1010
-                </span>
-              </div>
-            </div>
-            <div
-              className="d-flex flex-row chat-content"
-              
-            >
-              <div className={`message-nickname public`}>
-                <Avatar url={2} />
-                <span className="sender">you</span>
-                to
-                <span className="recipient">me</span>:
-                <span className="content">hehehehe</span>
-                <span className="time">
-                  00000
-                </span>
-              </div>
-            </div>
+        {createMessage}
+        {/* BOTTOM SPACE */}
         <div className="d-flex flex-row chat-content" ></div>
       </div>
       <MessageForm username={username} recipient={recipient} user={username} />

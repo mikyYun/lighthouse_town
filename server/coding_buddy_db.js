@@ -1,7 +1,6 @@
 const Pool = require('pg').Pool; //postgres
 require("dotenv").config({silent: true});
 /** USE THIS DB */
-console.log("process.env", process.env)
 const pool = new Pool({
   // user: process.env.PGUSER,
   // host: process.env.PGHOST,
