@@ -1,7 +1,7 @@
 {
   "name": "coding_buddy",
   "version": "0.1.0",
-  "proxy": "https://mkpgserver.herokuapp.com/",
+  "proxy": "https://mkpgserver.herokuapp.com",
   "homepage": "https://lighthouse-town.netlify.app",
   "private": true,
   "browser": {
