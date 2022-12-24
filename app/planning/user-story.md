@@ -7,7 +7,7 @@
 - Register / Login
 
 * A user can register with email and password because user should be saved for login
-* A user can choose an avatar when user register(email, password 등록 후 자동으로 로그인 후 아바타 선택화면으로?)
+* A user can choose an avatar when user register(email, password)
 * A user can select programming languages because they want to show what languages they use
 * A user can login the website because each user should be specified
   Chat room

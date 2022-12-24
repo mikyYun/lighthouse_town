@@ -47,6 +47,7 @@ app.get("*", (req, res) => {
 io.use((socket, next) => {
   sessionMiddleware(socket.request, {}, next);
 });
+
 /** ADAPTER TO USE QUERIES */
 io.adapter(createAdapter(pool));
 

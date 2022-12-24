@@ -37,9 +37,7 @@ CREATE TABLE users
   email VARCHAR(255) UNIQUE NOT NULL,
   avatar_id INTEGER REFERENCES avatars(id) ON DELETE CASCADE NOT NULL
 );
--- language_id INTEGER REFERENCES languages(id) ON DELETE CASCADE
 
--- room = all private
 CREATE TABLE private_chats_rooms
 (
   id SERIAL PRIMARY KEY NOT NULL,

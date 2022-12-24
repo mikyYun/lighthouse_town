@@ -9,7 +9,7 @@ import Register from "./components/Register";
 import Game from "./components/Game";
 import NotReady from "./components/NotReady";
 
-
+console.log("SOCKET", process.env.REACT_APP_BACK_URL, socket)
 export const SocketContext = createContext(socket);
 export const UserListContext = createContext({});
 export const MsgContext = createContext([]);
@@ -31,7 +31,7 @@ function App() {
   const [reSendData, setReSendData] = useState(false);
   const [message, setMessage] = useState({});
   if (process.env.REACT_APP_BACK_URL) {
-    axios.defaults.baseURL = process.env.REACT_APP_BACK_URL;
+    axios.defaults.baseURL = process.env.REACT_APP_BACK_URL + "/api_cb/"
   }
 
   const backToHone = () => {

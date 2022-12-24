@@ -1,9 +1,7 @@
 import socketIo from "socket.io-client";
 export const socket = socketIo(process.env.REACT_APP_BACK_URL
-, {
-  transports: ["websocket"]
-}
-);
+, { transports: ["websocket"]
+});
 
 export const SOCKET_EVENT = {
   JOIN_ROOM: "JOIN_ROOM",
@@ -52,9 +50,9 @@ export const makePrivateMessage = pongData => {
   }
 
   return {
-    nickname, //보내는 사람 이름
-    content: contentLabel,  //보내는 메세지
-    recipient: recipient.value,  //recipient object의 value {value: moon, label: moon}
+    nickname,
+    content: contentLabel, 
+    recipient: recipient.value,  
     user,
   };
 };

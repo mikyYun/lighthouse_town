@@ -63,9 +63,6 @@ const tryLogin = (req, res) => {
           };
           res.status(200).send(loginUserData);
         })
-        .catch(err => {
-          res.status(409).send("Invalid information. Please try again");
-        });
     })
     .catch((err) => {
       res.status(409).send("Invalid information. Please try again");
